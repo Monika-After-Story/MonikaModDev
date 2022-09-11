@@ -11,7 +11,8 @@
     },
     "stay_on_start": true,
     "ex_props": {
-        "compat-downtiedstrand": true
+        "compat-downtiedstrand": true,
+        "bare-shoulders": true
     },
     "select_info": {
         "display_name": "Cross Strap Bikini (Green)",
