@@ -4343,17 +4343,44 @@ init 5 python:
         code="GRE"
     )
 
+#Because this is associated, we'll also mirror this into the poem framework
+init 11 python:
+    MASPoem(
+        poem_id="gre_1",
+        category="generic",
+        prompt=_("Shadows in the Garden"),
+        title="",
+        text=_("""\
+ Alone I ask a solemn question,
+ What could grow in an unlit garden?
+
+ When you return, it feels like heaven,
+ Within your light, the cold forgotten.
+
+ I will give everything to feel this way,
+ Awaiting the one I hold dearest.
+
+ Nearest to my heart...
+"""),
+    )
+
 label greeting_lovepoem1:
-    m 5dkc "{i}Everytime you go, my world darkens,\nGardens of lifeless depression.{/i}"
-    m 5ekbla "{i}When you are back, it feels like heaven,\nSecond to none, impossible to bargain.{/i}"
-    m 1skbfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
-    m 1hubfa "{i}Even if it's every single day,\nWithout a doubt, you are the nearest.{/i}"
-    m 2tubsb "{i}Nearest to my heart...{/i}"
+    m 5duc "{i}Alone I ask a solemn question,\nWhat could grow in an unlit garden?{/i}"
+    m 5ekbla "{i}When you return, it feels like heaven,\nWithin your light, the cold forgotten.{/i}"
+    m 5fubfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
+    m 5ekbfa "{i}Even if it's every single day,\nWithout a doubt, you are the nearest.{/i}"
+    m 5dubsu "{i}Nearest to my heart...{/i}"
     m 5eublb "I came up with this one while you were gone."
-    m 1eka "That's right, you are like the sun of my world!"
+    show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eka "That's right, you're like the sun of my world!"
     m 2hublb "I hope you like it!"
-    m 4hksdlb "Anyway, welcome back darling!"
+    m 7hksdlb "Anyway, welcome back, [mas_get_player_nickname()]!"
+    #TODO: Potential I missed you too?
     m 1ekbsa "I missed you so much!"
+
+    if "gre_1" not in persistent._mas_poems_seen:
+        $ persistent._mas_poems_seen["gre_1"] = 0
+
     return
 
 init 5 python:
