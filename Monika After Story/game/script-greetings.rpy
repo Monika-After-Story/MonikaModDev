@@ -4331,16 +4331,22 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 5duc"))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_poem_shadows_in_garden",
             unlocked=True,
             conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            rules=ev_rules,
             aff_range=(mas_aff.ENAMORED, None),
         ),
         code="GRE"
     )
+
+    del ev_rules
 
 #Because this is associated, we'll also mirror this into the poem framework
 init 11 python:
