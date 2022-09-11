@@ -17952,3 +17952,35 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thank you for listening~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_mercury",
+            category=["life"],
+            prompt="Mercury's orbit",
+            random=True
+        )
+    )
+
+label monika_overton:
+    m "Apparently, for a long while the astronomers believed that the planet Mercury is always facing the Sun with the same side."
+    m "In truth, it completes one and a half rotations in one orbital period...{w=0.1}{nw}"
+    extend "which makes the daylight cycle two orbital periods long."
+    m "Imagine a day lasting for two years!"
+    m "Anyway, {w=0.2}{nw}"
+    extend "the biggest issue with observation of Mercury is its closeness to the Sun."
+    m "It's difficult to see even at the most advantageous phase."
+    m "And apparently, Mercury has quite peculiar orbit, which makes it easiest to observe near a particular point."
+    m "Therefore, the optimal observation conditions happen once per year, as the planet passes this point while seen at the most opportune angle."
+    m "And in one Earth year, Mercury completes 4 orbits around the Sun and 6 rotations around its axis..."
+    m "So, as the telescopes became powerful enough to see the surface features, the astronomers found themselves seeing the same side again and again."
+    m "Which resulted in wrong conclusions about the planet's rotation." 
+    m "And it took 20th century radio telescopes to disprove the misconception!"
+    m "You see...{w=0.2}{nw}"
+    extend "sometimes, seeing the same side of things again and again is not because they are always the same way."
+    m "But due to the limitations of your own point of view."
+    m "..."
+    m "Thank you for giving me a chance to be seen from a different angle, [player]."
+    return
