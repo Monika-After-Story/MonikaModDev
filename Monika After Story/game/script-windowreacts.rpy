@@ -640,14 +640,20 @@ init 5 python:
 
 label mas_wrs_crunchyroll:
     python:
-        if persistent._mas_pm_watch_mangime is None:
-            crunchyroll_quips = ["Oh! So you like anime, [player]?"]
+        if persistent._mas_pm_watch_mangime is False:
+            crunchyroll_quips = [
+                "Oh! So you like anime, [player]?",
+                "It's good to see you broadening your horizons.",
+                "Hmm, I wonder what caught your eye?",
+            ]
+
         else:
             crunchyroll_quips = [
                 "What anime are we watching today, [player]?",
                 "Watching some anime, [player]?",
-                "I can't wait to watch anime with you!~"
+                "I can't wait to watch anime with you!~",
             ]
+
         wrs_success = mas_display_notif(m_name, crunchyroll_quips, 'Window Reactions')
 
     #Unlock again if we failed
