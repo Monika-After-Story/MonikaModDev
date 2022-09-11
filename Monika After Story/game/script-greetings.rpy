@@ -4386,6 +4386,7 @@ label greeting_poem_shadows_in_garden:
     if "gre_1" not in persistent._mas_poems_seen:
         $ persistent._mas_poems_seen["gre_1"] = 1
 
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
     return
 
 init 5 python:
