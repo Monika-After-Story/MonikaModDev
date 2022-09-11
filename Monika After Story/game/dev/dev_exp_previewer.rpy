@@ -27,15 +27,17 @@ label dev_exp_previewer:
         prev_moni_state = monika_chr.save_state(True, True, True)
         monika_chr.reset_outfit()
 
-        ui.add(MASExpPreviewer())
-        result = ui.interact()
+        try:
+            ui.add(MASExpPreviewer())
+            result = ui.interact()
 
-        monika_chr.reset_outfit()
-        monika_chr.load_state(prev_moni_state)
-        store.mas_sprites.zoom_level = prev_zoom
-        store.mas_sprites.adjust_zoom()
-        store.mas_sprites.set_filter(prev_flt)
-        HKBShowButtons()
+        finally:
+            monika_chr.reset_outfit()
+            monika_chr.load_state(prev_moni_state)
+            store.mas_sprites.zoom_level = prev_zoom
+            store.mas_sprites.adjust_zoom()
+            store.mas_sprites.set_filter(prev_flt)
+            HKBShowButtons()
 
     show monika at i11
     window auto
@@ -124,6 +126,11 @@ init 999 python:
             "5": ("def", "def")
         }
 
+        # modifier map, for special cases. Currently this should be used
+        # as appenders to image names
+        # NOTE: each expression may use this differently.
+        MOD_MAP = mas_sprite_decoder.MOD_MAP
+
         # Map between sprite code letters and image names
         IMG_NAMES_MAP = {
             "arms": mas_sprite_decoder.ARM_MAP,
@@ -144,7 +151,20 @@ init 999 python:
             "mouth": mas_sprite_decoder.MOUTH_MAP
         }
         # Same as above, but reversed - image names to sprite code letters
-        REVERSE_IMG_NAMES_MAP = {key: {v: k for k, v in sub_map.iteritems()} for key, sub_map in IMG_NAMES_MAP.iteritems()}
+        REVERSE_IMG_NAMES_MAP = {
+            key: {
+                v: k
+                for k, v in sub_map.iteritems()
+            }
+            for key, sub_map in IMG_NAMES_MAP.iteritems()
+        }
+        # And also handle the keys from the mod map
+        # (different keys that actually correspond to the same sprite letters)
+        for key, sub_map in MOD_MAP.iteritems():
+            for k, v in sub_map.iteritems():
+                spr_code_letter = REVERSE_IMG_NAMES_MAP[key][k]
+                for mod_str in v:
+                    REVERSE_IMG_NAMES_MAP[key][k + mod_str] = spr_code_letter
 
         ### sprite code maps
         SEL_TX_MAP = {
@@ -378,11 +398,6 @@ init 999 python:
                 "night",
             ]
         }
-
-        # modifier map, for special cases. Currently this should be used
-        # as appenders to image names
-        # NOTE: each expression may use this differently.
-        MOD_MAP = mas_sprite_decoder.MOD_MAP
 
         # list of keys that matter for a sprite code
         SPRITE_CODE_PARTS = [

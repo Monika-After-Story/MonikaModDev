@@ -4,9 +4,14 @@ define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    # We want these to be available globally, please don't remove
+    # Add more as needed
     import io
+    import os
     import datetime
+    import random
     import traceback
+    from collections import defaultdict # this will be availalable anywhere now
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -4074,12 +4079,12 @@ init -1 python in _mas_root:
         renpy.game.persistent.closed_self = False
         renpy.game.persistent.seen_monika_in_room = False
         renpy.game.persistent._mas_ever_won = collections.defaultdict(bool)
-        renpy.game.persistent.sessions={
-            'last_session_end':datetime.datetime.now(),
-            'current_session_start':datetime.datetime.now(),
-            'total_playtime':datetime.timedelta(seconds=0),
-            'total_sessions':0,
-            'first_session':datetime.datetime.now()
+        renpy.game.persistent.sessions = {
+            "last_session_end": datetime.datetime.now(),
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 0,
+            "first_session": datetime.datetime.now()
         }
         renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
@@ -4112,6 +4117,17 @@ init -1 python in _mas_root:
         # piano
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
+
+        # nou
+        renpy.game.persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_abandoned = 0
+        renpy.game.persistent._mas_game_nou_house_rules = {
+            "points_to_win": 200,
+            "starting_cards": 7,
+            "stackable_d2": False,
+            "unrestricted_wd4": False
+        }
 
         # affection
         renpy.game.persistent._mas_affection["affection"] = 0
@@ -4209,60 +4225,6 @@ init -995 python in mas_utils:
     # timezone cache
     _tz_cache = None
 
-    def compareVersionLists(curr_vers, comparative_vers):
-        """
-        Generic version number checker
-
-        IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
-
-            NOTE: The version numbers can be different lengths
-
-        OUT:
-            integer:
-                - (-1) if the current version number is less than the comparitive version
-                - 0 if the current version is the same as the comparitive version
-                - 1 if the current version is greater than the comparitive version
-        """
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
-
-            IN:
-                smaller_vers_list - the smol list to adjust
-                larger_vers_list - the list we will adjust the smol list to
-
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-        #Let's verify that the lists are the same length
-        if len(curr_vers) < len(comparative_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
-                return 1
-
-            elif curr_vers[index] < comparative_vers[index]:
-                #Comparative version is greater, the rest of this is irrelevant
-                return -1
 
     def all_none(data=None, lata=None):
         """
@@ -4658,6 +4620,8 @@ init -100 python in mas_utils:
     import os
     import math
     from cStringIO import StringIO as fastIO
+    from collections import defaultdict
+    import functools
 
     __secInDay = 24 * 60 * 60
 
@@ -4694,6 +4658,31 @@ init -100 python in mas_utils:
         RETURNS: a list of strings where each string is an item with a bullet.
         """
         return [bullet + " " + str(item) for item in _list]
+
+    
+    def nested_defaultdict(final_factory=None, levels=1):
+        """
+        Generates a nested defaultdict. Basically good for creating an n-level
+        dict of defaults.
+
+        IN:
+            final_factory - the constructor/object factory to use for the
+                innermost defaultdict
+                (Default: None)
+            levels - the number of nested defaultdicts to use. Must be greater
+                than 0 but less than 10.
+                The default value is equivalent to just calling defaultdict
+                (Default: 1)
+
+        RETURNS: a nested defaultdict implementation
+        """
+        def _nested_dd_recur(ff, lvls):
+            if lvls == 1:
+                return ff
+            return functools.partial(defaultdict, _nested_dd_recur(ff, lvls-1))
+
+        levels = min(max(levels, 1), 10)
+        return defaultdict(_nested_dd_recur(final_factory, levels))
 
 
     ### date adjusting functions
@@ -6490,6 +6479,7 @@ init 2 python:
             return "An" if should_capitalize else "an"
         return "A" if should_capitalize else "a"
 
+    #TODO: Add minutes param for verbosity + new function for clearing pause
     def mas_setEventPause(seconds=60):
         """
         Sets a pause 'til next event
@@ -6503,6 +6493,33 @@ init 2 python:
 
         else:
             mas_globals.event_unpause_dt = datetime.datetime.utcnow() + datetime.timedelta(seconds=seconds)
+
+    def mas_getCurrentMoniExp(layer="master"):
+        """
+        Returns Monika's current expression
+
+        IN:
+            layer - the layer to check for Monika's displayable
+                You probably shouldn't change this
+                (Default: 'master')
+
+        OUT:
+            string with sprite code
+            or None if we couldn't get the exp (e.g. if Monika isn't on the screen)
+        """
+        # It can be really problematic to get this, easier to just use try/except
+        try:
+            current_exp = renpy.game.context().images.get_attributes(layer, "monika")[0]
+
+        except:
+            current_exp = None
+
+        else:
+            # If we're showing idle, we should fetch the spr code from it directly
+            if current_exp == "idle":
+                current_exp = mas_moni_idle_disp.current_exp.code
+
+        return current_exp
 
 init 21 python:
     def mas_get_player_nickname(capitalize=False, exclude_names=[], _default=None, regex_replace_with_nullstr=None):
@@ -6745,6 +6762,10 @@ define audio.fall = "sfx/fall.ogg"
 # custom audio
 # big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
+
+# light switch sound created by SPANAC from
+# https://www.freesoundslibrary.com/light-switch-sound-effect/
+define audio.light_switch = "mod_assets/sounds/effects/light-switch-sound-effect.mp3"
 
 # Backgrounds
 image black = "#000000"
@@ -7922,7 +7943,13 @@ default persistent.seen_monika_in_room = False
 default persistent._mas_ever_won = collections.defaultdict(bool)
 # TODO: Delete this as depricated
 # default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
+default persistent.sessions = {
+    "last_session_end": None,
+    "current_session_start": None,
+    "total_playtime": datetime.timedelta(seconds=0),
+    "total_sessions": 0,
+    "first_session": datetime.datetime.now()
+}
 default persistent.random_seen = 0
 default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default persistent._mas_enable_random_repeats = True
@@ -8086,7 +8113,7 @@ init -1 python in mas_randchat:
         """
         Reduces the randchat setting if we're too high for the current affection level
         """
-        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP[aff_level]
+        max_setting_for_level = store.mas_affection.RANDCHAT_RANGE_MAP.get(aff_level, RARELY)
 
         if store.persistent._mas_randchat_freq > max_setting_for_level:
             adjustRandFreq(max_setting_for_level)
@@ -8125,12 +8152,7 @@ init -1 python in mas_randchat:
             displayable string that reprsents the current random chatter
             setting
         """
-        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
-
-        if slider_value is None:
-            return "Never"
-
-        return randchat_disp
+        return SLIDER_MAP_DISP.get(slider_value, "UNKNOWN")
 
 
     def setWaitingTime():
@@ -8183,73 +8205,12 @@ init -1 python in mas_randchat:
 init 4 python:
     import store.mas_randchat as mas_randchat
 
-return
 
-#Gender specific word replacement
-#Those are to be used like this "It is [his] pen." Output:
-#"It is his pen." (if the player's gender is declared as male)
-#"It is her pen." (if the player's gender is decalred as female)
-#"It is their pen." (if player's gender is not declared)
-#Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
-#Please remember to update the list if you add more gender exclusive words. ^
+# Deprecated, call mas_set_pronouns directly
 label mas_set_gender:
-    python:
-        pronoun_gender_map = {
-            "M": {
-                "his": "his",
-                "he": "he",
-                "hes": "he's",
-                "heis": "he is",
-                "bf": "boyfriend",
-                "man": "man",
-                "boy": "boy",
-                "guy": "guy",
-                "him": "him",
-                "himself": "himself",
-                "hero": "hero"
-            },
-            "F": {
-                "his": "her",
-                "he": "she",
-                "hes": "she's",
-                "heis": "she is",
-                "bf": "girlfriend",
-                "man": "woman",
-                "boy": "girl",
-                "guy": "girl",
-                "him": "her",
-                "himself": "herself",
-                "hero": "heroine"
-            },
-            "X": {
-                "his": "their",
-                "he": "they",
-                "hes": "they're",
-                "heis": "they are",
-                "bf": "partner",
-                "man": "person",
-                "boy": "person",
-                "guy": "person",
-                "him": "them",
-                "himself": "themselves",
-                "hero": "hero"
-            }
-        }
-
-        pronouns = pronoun_gender_map[persistent.gender]
-
-        his = pronouns["his"]
-        he = pronouns["he"]
-        hes = pronouns["hes"]
-        heis = pronouns["heis"]
-        bf = pronouns["bf"]
-        man = pronouns["man"]
-        boy = pronouns["boy"]
-        guy = pronouns["guy"]
-        him = pronouns["him"]
-        himself = pronouns["himself"]
-        hero = pronouns["hero"]
+    $ mas_set_pronouns()
     return
+
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+FOLDERNAME="$(ls -1)"
+MAS="Monika_After_Story"
+MASVER="${FOLDERNAME%-dists}"
+MASNAME="${MASVER%*-*}"
+VERE="${MASVER#*-*}"
+
+# check for MAS folder
+if [ "${MASNAME}" != "${MAS}" ]; then
+    echo "No MAS Folder found."
+    exit 1
+fi
+
+# mas folder found, lets go
+mkdir modzip
+mkdir modzip/files
+mv ${FOLDERNAME}/${MASVER}-Mod.zip modzip/
+cd modzip
+unzip -d files ${MASVER}-Mod.zip
+cd files/${MASVER}-Mod/
+mv game/* .
+rmdir game
+7z a mod.zip *
+mv mod.zip ../${MASVER}-Mod.zip
+
+# say where file is
+echo "build at modzip/files/${MASVER}-Mod.zip"
+
+# now grab all spritepacks and combo install
+# 4 levels up then spacks
+for dir in ../../../../spacks/*; do
+    if [ -d "$dir" ]; then
+        cp -r "$dir"/mod_assets .
+    fi
+done
+
+# and compile again
+7z a mod.zip *
+mv mod.zip ../${MASVER}-Mod-Dlx.zip
+
+# say where new file is
+echo "full build at modzip/files/${MASVER}-Mod-Dlx.zip"

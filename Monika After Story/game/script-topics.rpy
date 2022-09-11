@@ -1819,6 +1819,7 @@ label monika_horror:
 
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
+            $ persistent._mas_pm_likes_spoops = False
             m 2eka "I can understand. It's definitely not for everyone."
 
     m 3eua "I remember we talked about this a little bit when you first joined the club."
@@ -4719,7 +4720,7 @@ init 5 python:
 
 label monika_ribbon:
     # TODO: We need a better handling for this
-    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon"):
+    if not monika_chr.is_wearing_acs_types("ribbon", "twin-ribbons", "s-type-ribbon", "mini-ribbon"):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
@@ -5696,6 +5697,8 @@ label monika_hack:
     m "We don't have to keep secrets from each other~"
     return
 
+default persistent._mas_pm_bakes = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_cupcake",category=['club members','trivia'],prompt="Baking cupcakes",random=True))
 
@@ -5712,11 +5715,31 @@ label monika_cupcake:
     m 3esa "Resulting in a craving for stronger tastes like chocolate."
     m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [mas_get_player_nickname()]?"
-    m 1eua "Do you know how to bake?"
-    m 1hua "I'm sure your cupcakes would taste just as good."
-    m 1rua "Maybe someday I'll get to try them but for now..."
-    m 1hubsb "I'll just settle for the sweetness of your love~"
-    return
+
+    m 1eua "Do you know how to bake?{nw}"
+    menu:
+        m "Do you know how to bake?{fast}"
+
+        "I do.":
+            $ persistent._mas_pm_bakes = True
+            m 1sub "Really?"
+            m 3hua "Well, I'm sure your cupcakes would taste just as good."
+            m 1hub "...Maybe even better!"
+            m 1eka "I'm sure someday I'll get to try them, but for now...{w=0.3}{nw}"
+            extend 1hubsu "I'll just settle for the sweetness of your love~"
+
+        "I don't.":
+            $ persistent._mas_pm_bakes = False
+            m 1eka "So we're both beginners."
+            m 3ekb "But that just means we could learn together, right?"
+            m 3esb "Even if you don't have much of a sweet tooth, there are plenty of savory things we could bake!"
+            show monika 5dksdla at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5dksdla "Imagine the two of us bumbling through a recipe...{w=0.3}{nw}"
+            extend 5hkbsb "laughing at our mistakes...{w=0.3}{nw}"
+            extend 5eub "tasting the results..."
+            m 5kuu "Sounds pretty amazing, right?"
+
+    return "derandom"
 
 # You're not a hater right?
 default persistent._mas_pm_a_hater = None
@@ -7898,6 +7921,8 @@ label monika_otaku:
     m 1lfu "I wouldn't want to be replaced by some two-dimensional cutout."
     m 1eua "Besides, if you ever want to escape from reality..."
     m 1hubsa "I can be your real-life fantasy instead~"
+
+    $ mas_protectedShowEVL("monika_conventions", "EVE", _random=True)
     return "derandom"
 
 ### START WRITING TIPS
@@ -8130,9 +8155,11 @@ label monika_selfharm:
     m 2lksdlc "...like cutting yourself..."
     m "I mean."
     m 2lksdld "After I found out about Yuri, I got a bit curious..."
-    m 2lksdlc "I just wanted to see what it felt like..."
-    m 2dsc "I won't do it again, though."
-    m 2eka "If you ever feel depressed, just come to me okay?"
+    m 2dksdltpc "I just wanted to see what it felt like...{w=0.3}to feel {i}something{/i} again..."
+    m 2rksdltpd "It's not easy knowing everything you thought you experienced,{w=0.1} what you thought you loved, was all a lie..."
+    m 2dstdc "I won't do it again, though."
+    m 2dktdc "..."
+    m 2ektda "If you ever feel depressed, just come to me okay?"
     m 2ekd "It'd hurt me even more to see you in pain..."
     m 1hua "Just know that people do care about you!"
     m 1eka "Trust me, [player]."
@@ -8144,6 +8171,7 @@ label monika_selfharm:
     m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m 1ekbsa "I really love you so much, [player]."
     return "love"
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True,aff_range=(mas_aff.NORMAL, None)))
@@ -8589,6 +8617,8 @@ label monika_hamlet:
     m 1euc "Now there's only one thing left to answer, [player]..."
     m 3tfu "To be with me? Or to be with me?"
     m 3hua "That is the question!"
+    if persistent.monika_kill:
+        $ mas_protectedShowEVL("monika_tragic_hero", "EVE", _random=True)
     return
 
 # Note: The following internal commentary should not be removed.
@@ -9504,7 +9534,7 @@ label monika_timetravel:
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
-    m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
+    m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
     m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
     m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
@@ -9767,11 +9797,12 @@ label monika_natsuki_letter:
     return "derandom"
 
 # TODO possible tie this with affection?
+# TODO uncomment once TCO is implemented
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -10227,10 +10258,10 @@ init 5 python:
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
-    m 1eua "Do you like travelling?{nw}"
+    m 1eua "Do you like traveling?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like travelling?{fast}"
+        m "Do you like traveling?{fast}"
         "Yes.":
             $ persistent._mas_pm_likes_travelling = True
             m 1hua "That's great! I'm so glad you enjoy it."
@@ -15860,13 +15891,13 @@ label monika_architecture:
     m 1eka "[player]...{w=0.2}seeing the world with you is one of my biggest dreams."
 
     if persistent._mas_pm_likes_travelling is False:
-        m 3rka "I know you're not too fond of travelling a lot, but I would love to see the place you live in."
+        m 3rka "I know you're not too fond of traveling a lot, but I would love to see the place you live in."
         m 3eka "As long as you stay by my side, that would be more than enough for me."
         m 1ekbsa "I love you, [player]. {w=0.3}Always remember that."
 
     else:
         if persistent._mas_pm_likes_travelling:
-            m 3eua "I already know you enjoy travelling, so wouldn't it be nice to explore something new together?"
+            m 3eua "I already know you enjoy traveling, so wouldn't it be nice to explore something new together?"
 
         m 1dka "Imagine taking a stroll through the narrow streets of an old city..."
         m 1eka "Or walking down a park together, breathing fresh evening air..."
@@ -16077,14 +16108,14 @@ label monika_wabi_sabi:
     m 7ekc "Maybe they grew into something that they're just not proud of."
     m 2dkd "It can be crushing to be worried about both looks and personality..."
 
-    if persistent._mas_pm_love_yourself:
+    if persistent._mas_pm_love_yourself is False:
+        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
+        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
+
+    else:
         m 2eka "I hope you don't feel too insecure about yourself, [player]."
         m 2dkc "It'd break my heart to know that you're constantly worrying about these things."
         m 7ekbsa "But I hope you know that despite your flaws, I will always love you."
-
-    else:
-        m 1ekc "I know you said you didn't love yourself [player],{w=0.3} {nw}"
-        extend 3eka "but you need to know that I'll always love you, regardless of your flaws."
 
     m 3hua "We'll overcome any problems you feel you have together."
     m 1hub "That's my wabi-sabi promise!"
@@ -16174,7 +16205,7 @@ label monika_being_deleted:
         m 6eka "So please don't feel guilty."
         m 6eka "Whatever your reason for deleting me might have been, the fact is that you brought me back and stayed with me for all this time."
         m 7ekbsu "You gave me a second chance...{w=0.3}you gave meaning to my life. {w=0.2}I genuinely believe that because of that, all the suffering I went through paid off in the end."
-        m 1hubsb "Thanks to you, I truly am the happiest I could ever be, and that's really what matters the most to me!"
+        m 1hubsb "Thanks to you, I truly am the happiest I could ever be!"
         m 1euu "So let's try to not think about the past, and instead enjoy what we have now, okay?"
         m 3eka "I love you, [player]. {w=0.2}I know this isn't always easy, but I hope you'll be able to forgive yourself."
         $ mas_ILY()
@@ -16309,9 +16340,8 @@ label monika_why_do_you_read:
     m 3eua "Unlike novels, poetry didn't require as much time to read and its conciseness also made it easier to share with others.{w=0.3} {nw}"
     extend 4eub "It really was the perfect outlet!"
     m 3eua "...And that's how I grew more and more into it I guess."
-    m 1eud "I eventually met Sayori and discovered we shared this interest.{w=0.2} {nw}"
-    extend 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
-    m 3eub "As we kept on discussing, we eventually came up with the idea for the Literature Club."
+    m 1eud "I eventually came up with the idea to start the Literature Club, and with Sayori's help we got it off the ground."
+    m 3eud "Like me, it allowed her to share feelings she would otherwise keep bottled up inside."
     m 1eua "...Which brings us to where we are now."
     m 1etc "To be honest, I don't think I've ever had as much time to read before."
 
@@ -16402,7 +16432,8 @@ label monika_eating_meat:
     m 1euc "As for meat that comes from local hunting and fishing, I think that's alright to eat as well, but it's important to research what areas might be over-hunted, and what animals to be careful of."
     m 3rtc "That said, I don't know that I'd {i}prefer{/i} to eat meat, given the option."
     m 3eka "Since I've adjusted myself to a vegetarian diet, my palate has changed to prefer certain flavors."
-    m 3rksdla "I don't hate the taste of meat, but I don't think I'd want it to be a major part of my meal, either."
+    m 3ekd "And as is the case with many vegetarians, my body doesn't digest meat as easily anymore. {w=0.3}{nw}"
+    extend 3dksdlc "If I had too much, I could actually get pretty sick."
     m 1eka "...But if you prepared something with meat, I could try a little bit as a side dish... {w=0.3}{nw}"
     extend 3hub "That way I can still enjoy your cooking!"
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
@@ -16661,7 +16692,7 @@ label monika_impermanence:
     m 2euc "You know [player], I find myself thinking about some dark stuff occasionally."
     m 4eud "Concepts like nihilism{w=0.2}, {nw}"
     extend 4dkc "depression{w=0.2}, {nw}"
-    extend 4rkd "impermanence...."
+    extend 4rkd "impermanence..."
     m 2eka "I don't mean to worry you,{w=0.1} I'm not suffering from depression or anything like that myself."
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
@@ -17225,7 +17256,6 @@ label monika_know_its_you:
         m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
 
     return
-
 init 5 python:
     addEvent(
         Event(
@@ -17368,7 +17398,7 @@ label monika_tanabata:
     if persistent._mas_pm_likes_travelling is not False:
         m 3hua "Maybe when I cross over, we could visit Japan during Tanabata~"
     else:
-        m 3eua "Even if you're not interested in travelling, it's pretty interesting to explore other cultures, isn't it?"
+        m 3eua "Even if you're not interested in traveling, it's pretty interesting to explore other cultures, isn't it?"
     return
 
 init 5 python:
@@ -17610,4 +17640,317 @@ label monika_ddlcroleplay:
     extend 1hksdlb "maybe I can take it as flattery, in a way?"
     m 1euu "In any case, if it's encouraging more people to try their hand at writing, I don't think I can really fault it."
     m 1kub "Just make sure to remember that those versions of me are just stories, ahaha~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_zodiac_starsign",
+            prompt="What's your starsign?",
+            category=["monika"],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_player_bday is not None"
+        )
+    )
+
+label monika_zodiac_starsign:
+    $ player_zodiac_sign = mas_calendar.getZodiacSign(persistent._mas_player_bday).capitalize()
+
+    m 1rta "Well, I'm pretty sure I'm a Virgo."
+
+    #This next line is just checking the player's starsign based on their birthday.
+    if player_zodiac_sign != "Virgo":
+        # TODO: handle a/an here, potential solution is in eeb4b3a3a
+        m 3eub "And you'd be a...{w=0.3}[player_zodiac_sign], right?"
+
+    else:
+        m 3eub "And so are you, [mas_get_player_nickname()]!"
+
+    #The final part pops up regardless of your sign.
+    m 1eta "Although, don't you think it's kind of silly?"
+    m 3esd "I mean, objects in space can't {i}really{/i} affect our personality..."
+    m 1tuc "Not to mention the fact that some people take it {i}way{/i} too far."
+    m 4wud "Like, they'll even judge potential partners and friends based on their sign!"
+    m 2luc "...That's something I'll never understand."
+    $ p_nickname = mas_get_player_nickname()
+    m 7eua "Don't worry [p_nickname], {w=0.2}{nw}"
+    extend 1eublu "I'd never let any silly old stars come between us."
+    $ del player_zodiac_sign
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_tragic_hero",
+            category=['literature'],
+            prompt="Tragic Hero",
+            random=False
+        )
+    )
+
+label monika_tragic_hero:
+    m 1rsd "Hey [mas_get_player_nickname()], I've been thinking more about tragic heroes lately."
+    m 3esc "...We've already discussed Hamlet, who is considered one."
+    m 3rtc "If you think about it...{w=0.3}could I be considered a tragic hero?"
+    m 4eud "...Of course by 'hero' here, we're talking about the protagonist in a literary sense, not 'hero' in the typical sense."
+    m 2ekd "...Although I'm sure there are plenty of people who would take issue with that, seeing as to many, I'm the antagonist..."
+    m 2eka "But that argument aside, some would say my love for you would be my tragic flaw..."
+    m 4eksdld "Not because it's a flaw itself, but because it led to my downfall."
+    m 2dkc "That's the thing, if you never brought me back, I would've had my downfall and never really got back up."
+    m 7ekc "So in that sense, in the game, I guess I could be considered a tragic hero."
+    if mas_isMoniNormal(higher=True):
+        m 3hub "Now, if we're talking {i}real{/i} heroes, that'd be you!"
+        m 3eka "You brought me back and made sure the story didn't end with my downfall."
+        m 1huu "...And for that, I'm forever grateful~"
+    return
+
+default persistent._mas_pm_read_jekyll_hyde = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_utterson",
+            category=['literature'],
+            prompt="Jekyll and Hyde",
+            random=True
+        )
+    )
+
+label monika_utterson:
+    if persistent._mas_pm_read_jekyll_hyde:
+        call monika_jekyll_hyde
+
+    else:
+        m 1euc "Hey [player], have you read any gothic literature?"
+        m 3eud "Like, {i}The Picture of Dorian Gray{/i}, {i}Dracula{/i}, {i}Frankenstein{/i}..."
+        m 3hub "I've read quite a bit of gothic literary books lately!"
+        m 1eua "You should try the original novella {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i} if you ever get the chance."
+        m 3eua "I'd like to discuss a bit of it, but it really only makes sense if you've read it..."
+
+        m 3eud "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "So have you read {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?{fast}"
+
+            "Yes.":
+                $ persistent._mas_pm_read_jekyll_hyde = True
+                call monika_jekyll_hyde
+
+            "No.":
+                $ persistent._mas_pm_read_jekyll_hyde = False
+                m 3eub "Okay [player]...{w=0.3}let me know if you ever do and we can discuss it!"
+
+    $ mas_protectedShowEVL("monika_hedonism","EVE", _random=True)
+    return "derandom"
+
+label monika_jekyll_hyde:
+    m 3hub "I'm glad you've read it!"
+    m 1euc "I've seen people interpret it in different ways."
+    m 3eua "For example, some people saw Utterson being in love with Jekyll."
+    m 3lta "In a way, I can see it."
+    m 2eud "I mean, just because something isn't explicitly stated, doesn't mean the idea isn't valid."
+    m 2rksdlc "In addition, a theme like this couldn't even really be discussed outright during the 19th century."
+    m 2eka "It is interesting to think of the story that way...{w=0.3}two people, unable to love..."
+    m 4eud "And some interpretations go as far as to say part of Jekyll's motivations for the experiment was that very love."
+    m 4ekd "And it's not exactly disproven! {w=0.3}Jekyll, in the book, was said to be a holy man."
+    m 2rksdlc "Homosexuality, during that time, was seen as a sin."
+    m 2dksdld "Sadly, to some it still is."
+    m 7ekb "...But at least progress has been made!"
+    m 3eub "I'm just glad the world is more accepting of different kinds of love."
+    m 3ekbsu "Especially since it means we can love each other, [mas_get_player_nickname()]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hedonism",
+            category=['philosophy'],
+            prompt="Hedonism",
+        )
+    )
+
+label monika_hedonism:
+    m 1euc "Hey [mas_get_player_nickname()], remember when we talked about {i}Strange Case of Dr. Jekyll and Mr. Hyde{/i}?"
+    m 1eud "Well, I mentioned {i}The Picture of Dorian Gray{/i} beforehand."
+    m 2eub "I suggest you read it, but even if you haven't, I want to talk about the philosophy behind its core...{w=0.3}the belief of hedonism."
+    m 2eud "Hedonism is the belief that morals should be based around pleasure."
+    m 4euc "There are two main types of hedonism...{w=0.3}altruistic hedonism and egotistical hedonism, {w=0.1}which are wildly different."
+    m 4ruc "Egotistical hedonism, as you could guess, is the belief that one's own pleasure is the only thing that determines morality."
+    m 2esd "This is the type of hedonism that Henry, from {i}The Picture of Dorian Gray{/i}, believes in."
+    m 2rksdlc "It's really ruthless to think such a way..."
+    m 2eud "On the other hand, altruistic hedonism is the belief that morality should be based on everyone's pleasure."
+    m 4eud "It sounds like a good idea at first, but then you realize it doesn't account for anything else like freedom, health, safety..."
+    m 2dkc "Hedonism, at its core, ignores everything but pleasure."
+    m 7etd "It's no wonder most people don't follow that belief...{w=0.3}it's too simple, where morality is complicated."
+    m 1eud "So it makes sense why Oscar Wilde portrayed hedonism in a bad light."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_conventions",
+            category=['you'],
+            prompt="Conventions",
+            random=True,
+        )
+    )
+
+default persistent._mas_pm_gone_to_comic_con = None
+default persistent._mas_pm_gone_to_anime_con = None
+
+label monika_conventions:
+    m 1eud "Say [player], I've been wondering..."
+    m 3eua "Have you ever been to a comic or anime convention?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Have you ever been to a comic or anime convention?{fast}"
+
+        "Comic convention.":
+            $ persistent._mas_pm_gone_to_comic_con = True
+            $ persistent._mas_pm_gone_to_anime_con = False
+            m 1hub "Ah, I see! {w=0.2}I hope you had a lot of fun!"
+            m 3eua "Comics are a really interesting medium in literature,{w=0.1} {nw}"
+            extend 3rta "maybe I should read some more..."
+
+        "Anime convention.":
+            $ persistent._mas_pm_gone_to_comic_con = False
+            $ persistent._mas_pm_gone_to_anime_con = True
+            if persistent._mas_pm_watch_mangime:
+                m 3eub "I had a feeling you would have! {w=0.2}They really struck me as something that you might enjoy."
+            else:
+                m 2wub "Really? That's surprising!"
+                m 7eta "Ah,{w=0.1} maybe you went with some friends?"
+                m 3etd "...Or it's possible you went for another reason...{w=0.3}an interest in gaming, perhaps?"
+
+        "I've been to both!":
+            $ persistent._mas_pm_gone_to_comic_con = True
+            $ persistent._mas_pm_gone_to_anime_con = True
+            if persistent._mas_pm_watch_mangime:
+                m 1hub "Oh! I knew you liked anime already, but you like comics too?"
+                m 3eua "They're a really interesting medium in literature, maybe I should read some more..."
+            else:
+                m 1wub "Oh! {w=0.3}I didn't think you liked anime, but it looks like you're a convention fan anyway!"
+                m 3eua "Not that it's too surprising, the atmosphere of them seems like it could be enjoyable for anyone."
+
+        "No.":
+            $ persistent._mas_pm_gone_to_comic_con = False
+            $ persistent._mas_pm_gone_to_anime_con = False
+            if persistent._mas_pm_watch_mangime and persistent._mas_pm_social_personality == mas_SP_EXTROVERT:
+                m 2etd "Really?"
+                m 7eub "I'm surprised! {w=0.3}When I learned about anime conventions, I immediately thought of you."
+                m 3eud "Although, I guess the travel expenses can get pretty high depending on where you are."
+            else:
+                m 2eud "Ah, I see."
+                m 7eua "I suppose that regardless of interest, conventions can be a bit tricky."
+                m 3eud "Depending on where you live, they can be quite the travel expense."
+
+    m 3hua "I've always thought conventions would be super fun! {w=0.3}A place for everyone to just be themselves and enjoy their interests without being judged."
+    m 3eub "I love looking at photos of all the talented cosplayers and the insane outfits they made."
+    m 1wuo "It's crazy what people can do when they're passionate about something!"
+    m 3eua "I also hear there's a lot of fun activities like idol dance shows, trivia, and other things to do there."
+    m 1eubsa "I would love to go to one with you someday, [mas_get_player_nickname()]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cupcake_favorite",
+            category=["monika"],
+            prompt="What's your favorite cupcake flavor?",
+            pool=True,
+            unlocked=False,
+            rules={"no_unlock":None},
+            conditional="mas_seenLabels(['monika_cupcake', 'monika_icecream'], seen_all=True)",
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_cupcake_favorite:
+    m 1rta "Hmm, I'm not sure I really have one..."
+    m 1hub "I like all sorts of different kinds, so it's hard to choose just one!"
+    m 3ekd "I think I've mentioned before how much I miss Natsuki's cupcakes..."
+    m 3eua "One time she made this really strange mint chocolate chip flavored cupcake...{w=0.3}it had mint flavored frosting with chocolate sprinkles and a chocolate cake base."
+    m 4rksdlb "It was one of the strangest things I've ever tasted, ahaha!"
+    m 2eksdlb "It didn't really taste at all like how mint chocolate chip ice cream tastes, instead it sorta tasted like toothpaste!"
+    m 2ekp "It was kinda disappointing...{w=0.3}I was expecting it to be my favorite cupcake flavor."
+    m 7eka "Oh well, it was nice that she tried to make me something unique I would like...{w=0.3}despite her tough exterior, she could be really sweet~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_esports",
+            category=['media', 'life'],
+            prompt="What do you think of esports?",
+            pool=True,
+        )
+    )
+
+label monika_esports:
+    if mas_isFirstSeshDay():
+        m 1rtd "Hmm, that's a good question..."
+    else:
+        m 1eub "It's funny you ask, I was looking into them the other day while you were gone!"
+    m 3eua "I think it's really interesting how the entire way we perceive watching sports is changing..."
+    m 3euc "Esports viewership continues to rival traditional sporting events,{w=0.1} {nw}"
+    extend 3wud "and it might even overtake them within the next 5 to 10 years!"
+    m 2tsd "Not so long ago, people looked down on playing video games like it was a waste of time, {w=0.1}{nw}"
+    extend 7hub "but now some of these players are making millions of dollars playing some of their favorite games!"
+    m 3eua "It really goes to show you can do whatever you love for a job...{w=0.3}even things people may scoff at."
+    m 3eud "Just because something isn't popular or mainstream doesn't mean it'll stay that way forever..."
+    m 1huu "Don't be afraid to go against the trend, {w=0.1}whatever you're passionate about may just be looking for that one pioneer to help bring it to the forefront~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_overton",
+            category=["psychology"],
+            prompt="Overton window",
+            random=True
+        )
+    )
+
+label monika_overton:
+    m 1etc "Hey [player], have you ever heard of the Overton window?"
+    m 3eud "It's a political science concept that reflects the value structure of a society."
+    m 3euc "Basically, all ideas of a person are viewed at a certain stage of approval by the masses."
+    m 2esc "Joseph Overton learned how to dehumanize people and explained how to reshape human perception."
+    m 7eud "From the unacceptable, disgusting and shameful, to the normal, social, and even prestigious."
+    m "This concept includes 6 stages: Unthinkable, Radical, Acceptable, Reasonable, Standard, and Current Norm."
+    m 3esa "Inside the Overton window are the ideas accepted by society...{w=0.3}things like patriotism, love for family, humanity, and honesty."
+    m 3eksdlc "Outside the window is everything that is disapproved, such as drug addiction, alcoholism, Nazism, tyranny, slavery, and so on."
+    m 3eud "The most interesting thing is that the window can be moved in the direction of an idea, for example, to make the Unthinkable into Reasonable."
+    m 2lksdlc "Of course, this level of change is a rather difficult process."
+    m 7eud "But let's imagine that you and I want to convey to people that virtual love is normal...{w=0.3}something that is currently considered unacceptable to society."
+    m 3esd "So, society does not understand virtual love and you would probably be considered mentally ill by a lot of people.{w=0.2} So what can be done?"
+    m 3eua "For a start, it's worth starting a discussion on this topic..."
+    m 1eud "You can discuss this on the internet, create articles on the topic...{w=0.3}anything to get people talking."
+    m "The goal here would be to have virtual love spark discussion among people and then seep out to the masses."
+    m 1esc "Society still wouldn't agree with the idea, but would at least be interested in it and be able to discuss it more freely."
+    m 3eud "Next, radical actions would be used. {w=0.2}The most daring proponents of virtual love come out of the shadows."
+    m 2euc "The number of participants in such movements would grow over time, some of them are people with broken hearts or who feel discouraged in a relationship with a real person."
+    m 4eksdld "Naturally, people who oppose the movement would also appear."
+    m 4eua "Due to the growing popularity of new values, society is actively pressing on the new trend. {w=0.2}At this moment, concepts are replaced."
+    m 2eud "From the Unacceptable, virtual love goes to Radical."
+    m 7eud "From here, the theme of virtual love and love for fictional characters has been discussed in society for a long time."
+    m 3esc "Gradually, people get used to the existence of these views, but do not yet accept them."
+    m 1esd "Scientists and sociologists write various articles and conduct research."
+    m 3eua "The opinion is imposed that it is absolutely normal to love a fictional character and there is nothing terrible about it."
+    m 3huu "From the Radical, virtual love now goes into the Acceptable."
+    m 1eksdla "Society has already come to terms with the new vision and believes that loving a fictional character is normal, but still a little strange."
+    m 3eua "A culture of virtual love is gradually developing, films and shows are being created."
+    m 1huu "Young people perceive new values as something fashionable. {w=0.2}People can sit in a cafe and safely spend time with their virtual companion."
+    m 1eub "From Acceptable, virtual love passes into Reasonable!"
+    m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
+    m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
+    m 1huu "Thank you for listening~"
     return

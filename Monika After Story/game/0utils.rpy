@@ -624,6 +624,145 @@ python early in mas_utils:
         trydel(old_path)
 
 
+    class IsolatedFlexProp(object):
+        """
+        class that supports flexible attributes.
+        all attributes that are set are stored in a 
+        separate internal structure. Supports a few additional behaviors
+        because of this.
+
+        Supports:
+            - extracting the vars that were manually set into a dict format
+                - _to_dict/_from_dict
+            - clearing all vars that were manually set
+                - _clear
+            - direct attribute get/set (obj.attribute)
+            - key-based get/set (obj[key])
+                Don't use this to access built-ins.
+            - attribute existence ("attribute" in obj)
+        """
+        __slots__ = ("_default_val", "_set_vars")
+
+        def __init__(self, default_val=None):
+            """
+            Constructor
+
+            IN:
+                default_val - the value to return as default when retrieving
+                    a prop that does not exist.
+                    (Default: None)
+            """
+            self._default_val = default_val
+            self._set_vars = {}
+
+        def __repr__(self):
+            return "<{}: (def value: {}, data: {})>".format(
+                type(self).__name__,
+                self._default_val,
+                self._set_vars
+            )
+
+        def __contains__(self, item):
+            return item in self._set_vars
+
+        def __getattr__(self, name):
+            if name.startswith("_"):
+                return super(IsolatedFlexProp, self).__getattribute__(name)
+            return self._set_vars.get(name, self._default_val)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                super(IsolatedFlexProp, self).__setattr__(name, value)
+            else:
+                self._set_vars[name] = value
+
+        def __getitem__(self, key):
+            return self.__getattr__(key)
+
+        def __setitem__(self, key, value):
+            self.__setattr__(key, value)
+
+        def _clear(self):
+            """
+            Clears manually set attributes
+            """
+            self._set_vars.clear()
+
+        def _from_dict(self, data):
+            """
+            sets internal data using a dict
+
+            IN:
+                data - dictionary to load from
+            """
+            for key in data:
+                self[key] = data[key]
+
+        def _to_dict(self):
+            """
+            Returns manually set data in raw format for persistent
+
+            RETURNS: dict of the manually set data (shallow copy)
+            """
+            return dict(self._set_vars)
+
+
+    def compareVersionLists(curr_vers, comparative_vers):
+        """
+        Generic version number checker
+
+        IN:
+            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a list, same format as above
+
+            NOTE: The version numbers can be different lengths
+
+        OUT:
+            integer:
+                - (-1) if the current version number is less than the comparitive version
+                - 0 if the current version is the same as the comparitive version
+                - 1 if the current version is greater than the comparitive version
+        """
+        #Define a local function to use to fix up the version lists if need be
+        def fixVersionListLen(smaller_vers_list, larger_vers_list):
+            """
+            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+
+            IN:
+                smaller_vers_list - the smol list to adjust
+                larger_vers_list - the list we will adjust the smol list to
+
+            OUT:
+                adjusted version list
+
+            NOTE: fills missing indeces with 0's
+            """
+            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
+                smaller_vers_list.append(0)
+            return smaller_vers_list
+
+        #Let's verify that the lists are the same length
+        if len(curr_vers) < len(comparative_vers):
+            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
+
+        elif len(curr_vers) > len(comparative_vers):
+            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
+
+        #Check if the lists are the same. If so, we're the same version and can return 0
+        if comparative_vers == curr_vers:
+            return 0
+
+        #Now we iterate and check the version numbers sequentially from left to right
+        for index in range(len(curr_vers)):
+            if curr_vers[index] > comparative_vers[index]:
+                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+                return 1
+
+            elif curr_vers[index] < comparative_vers[index]:
+                #Comparative version is greater, the rest of this is irrelevant
+                return -1
+
+
     def copyfile(oldpath, newpath):
         """
         Copies the file at oldpath into a file at newpath
@@ -645,6 +784,47 @@ python early in mas_utils:
         except Exception as e:
             mas_log.error(_mas__failcp.format(oldpath, newpath, str(e)))
         return False
+
+
+    def _get_version_nums(ver_str):
+        """
+        Gets version numbers from a version string
+
+        IN:
+            ver_str - version string to get version from
+
+        RETURNS: version numbers as a list of ints
+        """
+        return list(map(int, ver_str.partition("-")[0].split(".")))
+
+
+    def is_ver_stable(ver_str):
+        """
+        Checks if a version number is stable or not.
+        A stable version is generally a 3-tiered version number.
+
+        IN:
+            ver_str - version number string to check
+
+        RETURNS: true if version is stable, False if not.
+        """
+        return len(_get_version_nums(ver_str)) == 3
+
+
+    def _is_downgrade(from_ver_str, to_ver_str):
+        """
+        Checks if the version transition given is a downgrade
+
+        IN:
+            from_ver_str - starting version (as ver str)
+            to_ver_str - ending version (as ver str)
+
+        RETURNS: true if downgrade, False if not
+        """
+        return compareVersionLists(
+            _get_version_nums(from_ver_str),
+            _get_version_nums(to_ver_str)
+        ) > 0
 
 
     def trydel(f_path, log=False):

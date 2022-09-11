@@ -312,7 +312,7 @@ label mas_fun_fact_king_snakes:
     m 1dsc "Hmm..."
     m 3eub "Did you know that if a snake has the word 'king' in its name, it devours other snakes?"
     m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
-    m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
+    m 1tfu "Does that mean if I eat you up, I would become Queen Monika?"
     m 1hksdlb "Ahaha, I'm just kidding, [player]."
     m 1hub "Sorry for being a little weird~"
     #Call the end
@@ -899,4 +899,41 @@ label mas_fun_fact_round_earth:
     m 1msblu "But do you know where science says the center of the universe is now?"
     m 3kubsu "It's you.{w=0.2} You're the center of {i}my{/i} universe, [mas_get_player_nickname()]."
     m 3hubsb "Ahaha!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_fun_facts_database,
+            eventlabel="mas_fun_fact_maplesyrup",
+        ),
+        code="FFF"
+    )
+
+label mas_fun_fact_maplesyrup:
+    m 3hksdlb "Here's another {w=0.2}{i}sweet {/i}{w=0.2} fact for you..." #double space is intentional due to ital/no ital spacing
+    m 1eua "Every type of maple tree produces sap that can be used to make maple syrup, {w=0.1}{nw}"
+    extend 1eud "but commercially-made syrup usually comes from the sugar maple."
+    m 3eua "You can most easily tell the specific type of maple tree from the shape of the leaves..."
+    m 3eub "You might be able to recognize a sugar maple leaf already, because it's the one featured on the Canadian flag!"
+    m 1euc "That said, the sugar maple has a limited native range and doesn't grow in {i}all{/i} of Canada."
+    m 1wud "...Yet Canada produces over three quarters of the world's maple syrup!"
+    m 3wud "And it may even be more surprising to learn that to make just one gallon of maple syrup it takes {i}40{/i} gallons of sap!"
+    m 1eua "It also takes a lot more effort to produce it than I was expecting..."
+    m 1esc "The sap has to be boiled down to make it into syrup...which obviously takes a while, given how much is needed."
+    m 3eud "Also, I've heard that if you boil it just a little bit more and then pour it out on a fresh bed of snow...{w=0.2}{nw}"
+    extend 3hub "you can even make a candy!"
+
+    if mas_isMoniNormal(higher=True):
+        if persistent._mas_pm_gets_snow is not False:
+            m 3euu "Sounds like a fun thing we could try together, huh [player]?"
+            m 1etc "It might be a while before we get a chance, though..."
+            m 1eua "But it's alright if I have to wait a bit longer...{w=0.3}{nw}"
+            extend 1hublu "you're already sweet enough for me~"
+
+        else:
+            m 1eua "Sure seems like that would be extremely sweet..."
+            m 1rkblu "But nowhere near as sweet as you, ehehe~"
+
+    call mas_fun_facts_end
     return

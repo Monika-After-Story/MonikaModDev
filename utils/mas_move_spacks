@@ -1,0 +1,44 @@
+#!/bin/bash
+
+SPACKS="/home/potato/dddlc/builds/spacks/"
+SCOMB="sp_combined"
+SCOMB_G="${SCOMB}/gifts"
+SCOMB_MA="${SCOMB}/mod_assets"
+
+ZIP_SPACK="spritepacks.zip"
+ZIP_SPACK_C="spritepacks-combined.zip"
+
+# now grab all spritepacks and copy to spacks
+for dir in /home/potato/gitDirect/MonikaModDev/spritepacks/released/*; do
+    if [ -d "$dir" ]; then
+        for pack in ${dir}/*; do
+            if [ -d "$pack" ]; then
+                cp -r "$pack" ${SPACKS}
+            fi
+        done
+    fi
+done
+
+# do initial stuff when loading dir
+cd ${SPACKS}
+rm ${ZIP_SPACK} ${ZIP_SPACK_C}
+rm -rf ${SCOMB}
+
+# and compile into spritepacks.zip
+7z a ${ZIP_SPACK} *
+
+# then setup a gifts + mod_assets
+mkdir ${SCOMB} ${SCOMB_G} ${SCOMB_MA}
+for dir in ./*; do
+    if [[ -d "$dir" && "$dir" != "./sp_combined" ]]; then
+        if [[ -d "$dir"/gifts ]]; then
+            cp -rf "$dir"/gifts/* ${SCOMB_G}/
+        fi
+        cp -rf "$dir"/mod_assets/* ${SCOMB_MA}/
+    fi
+done
+
+# and compile into zip
+7z a ${ZIP_SPACK_C} ./${SCOMB}/*
+
+echo "spritepacks updated"
