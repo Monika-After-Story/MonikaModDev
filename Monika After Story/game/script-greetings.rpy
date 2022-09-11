@@ -4330,14 +4330,13 @@ label greeting_back_from_hangout:
 
     return
 
-    jump monikaroom_greeting_choice
-
 init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel="greeting_lovepoem1",
+            eventlabel="greeting_poem_shadows_in_garden",
             unlocked=True,
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
             aff_range=(mas_aff.ENAMORED, None),
         ),
         code="GRE"
@@ -4364,7 +4363,7 @@ init 11 python:
 """),
     )
 
-label greeting_lovepoem1:
+label greeting_poem_shadows_in_garden:
     m 5duc "{i}Alone I ask a solemn question,\nWhat could grow in an unlit garden?{/i}"
     m 5ekbla "{i}When you return, it feels like heaven,\nWithin your light, the cold forgotten.{/i}"
     m 5fubfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
