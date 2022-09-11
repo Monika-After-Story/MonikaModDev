@@ -873,7 +873,9 @@ label mas_chess_remenu:
                 "options": [
                     ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
                     ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
-                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960))
+                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960)),
+                    # Keep this last
+                    ("Can you explain these game-modes?", "explain_modes", False, False)
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -887,6 +889,7 @@ label mas_chess_remenu:
                 "options": [
                     ("Casual Rules", True, False, casual_rules),
                     ("Traditional Rules", False, False, not casual_rules),
+                    # Keep this last
                     ("What's the difference?", 0, False, False)
                 ],
                 "final_items": [
@@ -958,7 +961,25 @@ label mas_chess_remenu:
 
         #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            $ chessmode = _return
+            if _return == "explain_modes":
+                # Take Monika back, so we won't face an empty right-side screen.
+                show monika at t11
+
+                m 1eub "Sure! {w=0.2}{nw}"
+                extend 1eua "Naturally, {i}Normal Chess{/i} means standard chess."
+                m 3eua "Then there's {i}Randomized Chess{/i}, a mode based on {i}Really Bad Chess{/i}."
+                m 3eub "We get completely random pieces which adds the factor of luck to make it fun for players of any skill level."
+                m 1eua "Alternatively, there's a more fair random chess mode called {i}Chess 960{/i}, also known as {i}Fischer Random Chess{/i}."
+                m 3eud "In this mode, the pieces in the back row are randomly shuffled while ensuring the bishops are placed on opposite color squares and the king is placed between two rooks."
+                m 4hua "There's 960 possible starting positions, so it was called {i}Chess 960{/i}."
+                m 1eua "{i}Chess 960{/i} allows players to avoid the complex opening theory while still testing their understanding of chess."
+                m 1etu "So which mode do you prefer? {w=0.3}{nw}"
+                extend 1hub "Ahaha~"
+
+                # There goes our Monika again.
+                show monika at t21
+            else:
+                $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":

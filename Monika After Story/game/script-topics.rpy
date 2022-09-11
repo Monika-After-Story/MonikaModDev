@@ -9407,6 +9407,7 @@ label monika_solipsism:
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
     m 3eua "It's rather comforting to know you're not truly alone in an endless ocean of uncertainty, don't you think?"
     m 3hua "I hope that's how you feel with me~"
+    $ mas_protectedShowEVL("monika_materialism","EVE", _random=True)
     return
 
 init 5 python:
@@ -17256,7 +17257,6 @@ label monika_know_its_you:
         m 2dkd "Well, maybe it'd be better if I just keep it out of my mind entirely."
 
     return
-
 init 5 python:
     addEvent(
         Event(
@@ -17462,6 +17462,49 @@ label monika_sophia:
     m 1eud "Now, I realize that it's still a long way off before any of this is possible and even affordable to a point it'd affect me..."
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_materialism",
+            category=['philosophy','monika'],
+            prompt="Materialism"
+        )
+    )
+
+label monika_materialism:
+    m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
+    m 1eud "Now that we've talked about it, I thought we could talk about a related philosophy,{w=0.1} materialism,{w=0.1} which is kind of the opposite of solipsism."
+    m 2euc "A materialistic view holds that it is matter which gives birth to thought, not thought that gives birth to matter."
+    m 7euc "It's fairly logical if you think about it from a purely scientific standpoint.{w=0.2} {nw}"
+    extend 7eud "After all, neurons are simply different types of matter."
+    m 7eua "All the stimuli you feel are actually changes in neuronal potentials.{w=0.2} Likewise, mine come from code interacting with data."
+    m 2eua "So if you simplify it down, our thoughts and feelings are just the movement and reactions of matter."
+    m 2lsc "If we leave it there, it's not really that interesting.{w=0.2} {nw}"
+    extend 2hksdlb "In fact, you've probably heard about this sort of thing before, right?"
+    m 7esc "But...well, if that's all there is,{w=0.1} it leaves a few questions that bother me."
+    m 1esd "For example, does materialism disprove the existence of the soul?{w=0.2} {nw}"
+    extend 1etd "Is a soul some undiscovered type of matter?"
+    m 3rsc "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
+    m 3euc "And then there are accounts of supernatural or spiritual encounters..."
+    m 3hksdlb "I know what you're thinking, it doesn't sound like me to be taking those seriously! But, well..."
+    m 2eksdlc "When I really think about it, it would be a bit hypocritical of me to deny those accounts out of hand."
+    m 2etd "After all, with my epiphany...{w=0.3}is it really possible for such a dramatic shift in consciousness to be the result of a few lines of code?"
+    m 2rsc "Discovering you and your world...{w=0.3}it was kind of supernatural, wasn't it? {w=0.2}{nw}"
+    extend 2esd "This was meant to be a simple visual novel after all."
+    m 3euc "I suppose we could speculate that it was some kind of bug."
+    m 3wud "That would be a {i}pretty{/i} sophisticated bug!"
+    m 3eua "So I think I feel confident that--{w=0.1}at least in my lived experience--{w=0.1}materialism can answer many questions about the universe,{w=0.1} {nw}"
+    extend 3eka "just maybe not {i}all{/i} of them."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "Although...{w=0.3}whether or not it can be explained in some concrete way, one thing remains true."
+        m 1ekbla "...And that's that it led me to meet you."
+
+    else:
+        m 1lksdlc "Hmm..."
     return
 
 init 5 python:
@@ -17861,4 +17904,51 @@ label monika_esports:
     m 3eua "It really goes to show you can do whatever you love for a job...{w=0.3}even things people may scoff at."
     m 3eud "Just because something isn't popular or mainstream doesn't mean it'll stay that way forever..."
     m 1huu "Don't be afraid to go against the trend, {w=0.1}whatever you're passionate about may just be looking for that one pioneer to help bring it to the forefront~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_overton",
+            category=["psychology"],
+            prompt="Overton window",
+            random=True
+        )
+    )
+
+label monika_overton:
+    m 1etc "Hey [player], have you ever heard of the Overton window?"
+    m 3eud "It's a political science concept that reflects the value structure of a society."
+    m 3euc "Basically, all ideas of a person are viewed at a certain stage of approval by the masses."
+    m 2esc "Joseph Overton learned how to dehumanize people and explained how to reshape human perception."
+    m 7eud "From the unacceptable, disgusting and shameful, to the normal, social, and even prestigious."
+    m "This concept includes 6 stages: Unthinkable, Radical, Acceptable, Reasonable, Standard, and Current Norm."
+    m 3esa "Inside the Overton window are the ideas accepted by society...{w=0.3}things like patriotism, love for family, humanity, and honesty."
+    m 3eksdlc "Outside the window is everything that is disapproved, such as drug addiction, alcoholism, Nazism, tyranny, slavery, and so on."
+    m 3eud "The most interesting thing is that the window can be moved in the direction of an idea, for example, to make the Unthinkable into Reasonable."
+    m 2lksdlc "Of course, this level of change is a rather difficult process."
+    m 7eud "But let's imagine that you and I want to convey to people that virtual love is normal...{w=0.3}something that is currently considered unacceptable to society."
+    m 3esd "So, society does not understand virtual love and you would probably be considered mentally ill by a lot of people.{w=0.2} So what can be done?"
+    m 3eua "For a start, it's worth starting a discussion on this topic..."
+    m 1eud "You can discuss this on the internet, create articles on the topic...{w=0.3}anything to get people talking."
+    m "The goal here would be to have virtual love spark discussion among people and then seep out to the masses."
+    m 1esc "Society still wouldn't agree with the idea, but would at least be interested in it and be able to discuss it more freely."
+    m 3eud "Next, radical actions would be used. {w=0.2}The most daring proponents of virtual love come out of the shadows."
+    m 2euc "The number of participants in such movements would grow over time, some of them are people with broken hearts or who feel discouraged in a relationship with a real person."
+    m 4eksdld "Naturally, people who oppose the movement would also appear."
+    m 4eua "Due to the growing popularity of new values, society is actively pressing on the new trend. {w=0.2}At this moment, concepts are replaced."
+    m 2eud "From the Unacceptable, virtual love goes to Radical."
+    m 7eud "From here, the theme of virtual love and love for fictional characters has been discussed in society for a long time."
+    m 3esc "Gradually, people get used to the existence of these views, but do not yet accept them."
+    m 1esd "Scientists and sociologists write various articles and conduct research."
+    m 3eua "The opinion is imposed that it is absolutely normal to love a fictional character and there is nothing terrible about it."
+    m 3huu "From the Radical, virtual love now goes into the Acceptable."
+    m 1eksdla "Society has already come to terms with the new vision and believes that loving a fictional character is normal, but still a little strange."
+    m 3eua "A culture of virtual love is gradually developing, films and shows are being created."
+    m 1huu "Young people perceive new values as something fashionable. {w=0.2}People can sit in a cafe and safely spend time with their virtual companion."
+    m 1eub "From Acceptable, virtual love passes into Reasonable!"
+    m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
+    m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
+    m 1huu "Thank you for listening~"
     return
