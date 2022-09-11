@@ -17852,7 +17852,7 @@ label monika_pizza:
     m 1hua "It's not always the healthiest choice, but it can be a nice treat and a filling meal."
     m 1eub "And the toppings can be versatile enough to please most people--{w=0.2}there are even pizzas without cheese for vegan or lactose-intolerant people."
     m 1duc "If I were to choose a favorite topping, hmm...{w=0.3}{nw}"
-    extend 3eub "Spinach is surprisingly good. It adds a nice textural element to each bite."
+    extend 3eub "spinach is surprisingly good. It adds a nice textural element to each bite."
     m 3hublb "I'm happy to try most veggie toppings though. {w=0.2}And of course, you can't go wrong with plain cheese either."
     m 3luc "Hmm..."
     m 3eud "I have a feeling there's another question on your mind--{w=0.2}{nw}"
