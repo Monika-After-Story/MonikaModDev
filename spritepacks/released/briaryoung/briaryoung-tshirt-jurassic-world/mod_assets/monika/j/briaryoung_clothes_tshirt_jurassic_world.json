@@ -1,0 +1,71 @@
+{
+    "__author": "Briar Young",
+    "ex_props": {
+        "home": true
+    },
+    "version": 3,
+    "type": 2,
+    "name": "briaryoung_tshirt_jurassic_world",
+    "img_sit": "briaryoung_tshirt_jurassic_world",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": false,
+        "use_reg_for_l": true,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "T-Shirt (Jurassic World)",
+        "thumb": "briaryoung_tshirt_jurassic_world",
+        "group": "clothes",
+        "select_dlg": [
+            "Dinosaurs are so fascinating!",
+            "Well [player]? Do I look... prehistoric? Ahaha!"
+        ]
+    },
+    "giftname": "tshirtjurassicworld",
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5"
+        }
+    }
+}

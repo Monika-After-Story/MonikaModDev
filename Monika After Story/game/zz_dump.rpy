@@ -356,6 +356,25 @@ init 999 python:
                 )
             )
 
+            if mas_isGameUnlocked("NOU"):
+                _total_nou_games = float(store.mas_nou.get_total_games())
+                _var_data_file.write(
+                    "NOU GAMES: {:.0f}\nMONIKA W/R: {}\nPLAYER W/R: {}\n\n".format(
+                        _total_nou_games,
+                        (
+                            "{:.1%}".format(store.mas_nou.get_wins_for("Monika")/_total_nou_games)
+                            if _total_nou_games != 0
+                            else "N/A"
+                        ),
+                        (
+                            "{:.1%}".format(store.mas_nou.get_wins_for("Player")/_total_nou_games)
+                            if _total_nou_games != 0
+                            else "N/A"
+                        )
+                    )
+                )
+                del _total_nou_games
+
             # add data lines here
             #Consumables stuff
             for consumable_id in persistent._mas_consumable_map.keys():

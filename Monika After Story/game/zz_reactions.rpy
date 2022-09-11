@@ -1442,7 +1442,7 @@ label mas_thermos_mug_handler(thermos_acs, disp_name, giftname, ignore_case=True
         m 1hub "Thanks so much, [player], I can't wait to use it!"
 
     else:
-        m 1wud "Oh!{w=0.3} [mas_a_an_str(disp_name, ignore_case).capitalize()] thermos!"
+        m 1wud "Oh!{w=0.3} It's [mas_a_an_str(disp_name, ignore_case)] thermos!"
         m 1hua "Now I can bring something to drink when we go out together~"
         m 1hub "Thanks so much, [player]!"
         $ persistent._mas_given_thermos_before = True
@@ -2786,4 +2786,94 @@ label mas_reaction_gift_clothes_mocca_bun_blackandwhitestripedpullover:
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
+    return
+
+init 5 python:
+    # TODO: Add a way to generalize this
+    if not mas_seenEvent("mas_reaction_gift_noudeck"):
+        addReaction("mas_reaction_gift_noudeck", "noudeck", is_good=True)
+
+label mas_reaction_gift_noudeck:
+    python:
+        mas_giftCapGainAff(0.5)
+        # She keeps the deck at any aff
+        mas_unlockGame("nou")
+        mas_unlockEVL("monika_explain_nou_rules", "EVE")
+
+    if mas_isMoniNormal(higher=True):
+        m 1wub "Oh!{w=0.3} A deck of cards!"
+        m 3eua "And I think I know how to play this game!"
+        m 1esc "I heard it might {i}affect{/i} your relationships with the people you're playing with."
+
+        if mas_isMoniAff(higher=True):
+            show monika 5eubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5eubsa "But I know our relationship can stand much more than just a simple card game~"
+            m 5hubsa "Ehehe~"
+            show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+
+        else:
+            m 1hub "Ahaha!"
+            m 1eua "I'm just kidding, [player]."
+
+        m 1eua "Have you ever played 'NOU', [player]?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Have you ever played 'NOU', [player]?{fast}"
+
+            # If you're an advanced nou'r, we unlock house rules for you from the start
+            "Yes.":
+                m 1rksdlb "Ahaha..."
+                m 1eksdla "Of course you have, you gave me the deck after all."
+                call mas_reaction_gift_noudeck_have_played
+
+            "No.":
+                m 3tuu "How about 'UNO' then, ehehe?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "How about 'UNO' then, ehehe?{fast}"
+
+                    "Yes.":
+                        m 3hub "Great! {w=0.3}{nw}"
+                        extend 3tub "'NOU' is {i}very{/i} similar, ahaha..."
+                        call mas_reaction_gift_noudeck_have_played
+
+                    "No.":
+                        call mas_reaction_gift_noudeck_havent_played
+
+        m 3hub "I can't wait to play it with you!"
+
+    elif mas_isMoniDis(higher=True):
+        m 2euc "A deck?"
+        m 2rka "Actually it might be...{nw}"
+        $ _history_list.pop()
+        m 2rkc "Nevermind..."
+        m 2esc "I'm not in the mood to play it right now, [player]."
+
+    else:
+        m 6ckc "..."
+
+    python:
+        mas_receivedGift("mas_reaction_gift_noudeck")
+        gift_ev = mas_getEV("mas_reaction_gift_noudeck")
+        if gift_ev:
+            store.mas_filereacts.delete_file(gift_ev.category)
+
+    return
+
+label mas_reaction_gift_noudeck_havent_played:
+    m 1eka "Oh, that's fine."
+    m 4eub "It's a popular card game where you need to play all your cards before your opponents to win."
+    m 1rssdlb "That might sound quite obvious, ahaha~"
+    m 3eub "But it's a really fun game to play with friends and loved ones~"
+    m 1eua "I'll explain the basic rules for you later, just ask."
+    return
+
+label mas_reaction_gift_noudeck_have_played:
+    m 1eua "You probably already know that some people play with house rules."
+    m 3eub "And if you'd like to, we can make our own rules too."
+    m 3eua "Alternatively, if you don't remember the rules, I can always remind you, just ask."
+    python:
+        mas_unlockEVL("monika_change_nou_house_rules", "EVE")
+        persistent._seen_ever["monika_introduce_nou_house_rules"] = True
+        persistent._seen_ever["monika_explain_nou_rules"] = True
     return

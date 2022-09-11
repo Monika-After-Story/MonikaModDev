@@ -246,6 +246,7 @@ init -10 python:
 
     mas_idle_mailbox = MASIdleMailbox()
 
+
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -289,12 +290,25 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-init python:
 
+# Gender specific word replacement
+define MAS_PRONOUN_GENDER_MAP = {
+    "his": {"M": "his", "F": "her", "X": "their"},
+    "he": {"M": "he", "F": "she", "X": "they"},
+    "hes": {"M": "he's", "F": "she's", "X": "they're"},
+    "heis": {"M": "he is", "F": "she is", "X": "they are"},
+    "bf": {"M": "boyfriend", "F": "girlfriend", "X": "partner"},
+    "man": {"M": "man", "F": "woman", "X": "person"},
+    "boy": {"M": "boy", "F": "girl", "X": "person"},
+    "guy": {"M": "guy", "F": "girl", "X": "person"},
+    "him": {"M": "him", "F": "her", "X": "them"},
+    "himself": {"M": "himself", "F": "herself", "X": "themselves"},
+    "hero": {"M": "hero", "F": "heroine", "X": "hero"}
+}
+
+init python:
     import subprocess
     import os
     import eliza      # mod specific
@@ -656,19 +670,6 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
-    def mas_resetIdleMode():
-        """
-        Resets specific idle mode vars.
-
-        This is meant to basically clear idle mode for holidays or other
-        things that hijack main flow
-        """
-        store.mas_globals.in_idle_mode = False
-        persistent._mas_in_idle_mode = False
-        persistent._mas_idle_data = {}
-        mas_idle_mailbox.get_idle_cb()
-
-
     def mas_enableTextSpeed():
         """
         Enables text speed
@@ -796,6 +797,33 @@ init python:
         RETURNS: True if safe to reference dokis
         """
         return store.persistent._mas_pm_cares_about_dokis is False
+
+    def mas_set_pronouns(key=None):
+        """
+        Sets gender specific word replacements
+
+        Few examples:
+            "It is his pen." (if the player's gender is declared as male)
+            "It is her pen." (if the player's gender is declared as female)
+            "It is their pen." (if player's gender is not declared)
+
+        For all available pronouns/words check the keys in MAS_PRONOUN_GENDER_MAP
+
+        IN:
+            key - Optional[Literal["M", "F", "X"]] - key (perhaps current gender) to set the pronouns for
+                If None, uses persistent.gender
+        """
+        store = renpy.store
+
+        if key is None:
+            key = store.persistent.gender
+
+        for word, sub_map in store.MAS_PRONOUN_GENDER_MAP.items():
+            if key in sub_map:
+                value = sub_map[key]
+            else:
+                value = sub_map["X"]
+            setattr(store, word, value)
 
 
 # IN:
@@ -1519,8 +1547,9 @@ label ch30_post_mid_loop_eval:
         if not mas_HKBIsEnabled():
             $ mas_HKBDropShield()
 
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
+    # Just finished a topic, so we set clear current topic in case user
+    # quits and restarts
+    $ MASEventList.clear_current()
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:
@@ -1797,6 +1826,9 @@ label ch30_day:
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
 
+    # sync up current_monikatopic and eli data
+    $ MASEventList.sync_current()
+
     python:
         # xp fixes and adjustments
         if persistent._mas_xp_lvl < 0:
@@ -1838,11 +1870,11 @@ label ch30_reset:
         if not persistent._mas_pm_has_rpy:
             if mas_hasRPYFiles():
                 if not mas_inEVL("monika_rpy_files"):
-                    queueEvent("monika_rpy_files")
+                    MASEventList.queue("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
-                    persistent.current_monikatopic = 0
+                    MASEventList.clear_current()
                 mas_rmallEVL("monika_rpy_files")
 
     python:
@@ -1855,6 +1887,7 @@ label ch30_reset:
             "chess": "mas_unlock_chess",
             mas_games.HANGMAN_NAME: "mas_unlock_hangman",
             "piano": "mas_unlock_piano",
+            "nou": "mas_reaction_gift_noudeck"
         }
         mas_unlockGame("pong") # always unlock pong
 
@@ -2018,22 +2051,7 @@ label ch30_reset:
     $ mas_check_player_derand()
 
     # clean up the event list of baka events
-    python:
-        for index in range(len(persistent.event_list)-1, -1, -1):
-            item = persistent.event_list[index]
-
-            # type check
-            if type(item) != tuple:
-                new_data = (item, False)
-            else:
-                new_data = item
-
-            # label check
-            if renpy.has_label(new_data[0]):
-                persistent.event_list[index] = new_data
-
-            else:
-                persistent.event_list.pop(index)
+    $ MASEventList.clean()
 
     #Now we undo actions for evs which need them undone
     $ MASUndoActionRule.check_persistent_rules()
@@ -2085,6 +2103,22 @@ label ch30_reset:
 
     # build background filter data and update the current filter progression
     $ store.mas_background.buildupdate()
+
+    # Handle cleanup for the bath greeting
+    $ bath_cleanup_ev = mas_getEV("mas_after_bath_cleanup")
+    if (
+        bath_cleanup_ev is not None
+        and bath_cleanup_ev.start_date is not None
+    ):
+        # Moni was alone for at least 10 minutes
+        # And it is the time to run the cleanup event
+        if (
+            mas_dockstat.retmoni_status is None
+            and mas_getAbsenceLength() >= datetime.timedelta(minutes=10)
+            and bath_cleanup_ev.start_date > datetime.datetime.now()
+        ):
+            call mas_after_bath_cleanup_change_outfit
+            $ mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
     #set MAS window global
     $ mas_windowutils._setMASWindow()
