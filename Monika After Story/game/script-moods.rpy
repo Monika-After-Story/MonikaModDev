@@ -953,6 +953,7 @@ init 5 python:
     )
 
 label mas_mood_annoyed:
+    #looking at the dialogue today, i personally do not like the dialogue here. but i still think an "annoyed" mood might be interesting. let's ping pong ideas here!
     m 1wkd "Oh no!"
     m 1wkc "What is annoying you, [player]?"
     m 7ekd "Is it... someone?"
