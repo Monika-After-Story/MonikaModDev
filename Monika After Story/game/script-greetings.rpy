@@ -4379,7 +4379,7 @@ label greeting_lovepoem1:
     m 1ekbsa "I missed you so much!"
 
     if "gre_1" not in persistent._mas_poems_seen:
-        $ persistent._mas_poems_seen["gre_1"] = 0
+        $ persistent._mas_poems_seen["gre_1"] = 1
 
     return
 
