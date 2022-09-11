@@ -318,7 +318,7 @@
 # Highlight Split JSON
 #   Highlight split objects are only for MASSPlitAccessory (Split ACS).
 #   Keys should be the same as values used in the corresponding pose_map.
-#   Values should be {Highlight objects}
+#   Values should be {Highlight objects}, using the HighlightSplit keys.
 #
 # Highlight JSON
 #   Intended values vary wildly based on object. See below the JSON for
