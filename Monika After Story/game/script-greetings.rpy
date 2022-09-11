@@ -4378,10 +4378,9 @@ label greeting_poem_shadows_in_garden:
     m 5eublb "I came up with this one while you were gone."
     show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 1eka "That's right, you're like the sun of my world!"
-    m 2hublb "I hope you like it!"
-    m 7hksdlb "Anyway, welcome back, [mas_get_player_nickname()]!"
+    m 3hubsu "Anyway, welcome back, [mas_get_player_nickname()]! I hope you liked that poem."
     #TODO: Potential I missed you too?
-    m 1ekbsa "I missed you so much!"
+    m 1ekbsb "I missed you so much!"
 
     if "gre_1" not in persistent._mas_poems_seen:
         $ persistent._mas_poems_seen["gre_1"] = 1
