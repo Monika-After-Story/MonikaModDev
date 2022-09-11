@@ -16480,7 +16480,8 @@ label monika_look_into_eyes:
     m 5hubfb "..."
     m 5tubfa "Thank you so much, [player]~"
     m 5kubfu "Because you're here with me now, I'm so at peace."
-    show monika 5eubfu# BUG: figure out why we get double wink w/o this show
+    # BUG: figure out why we get double wink w/o this show
+    show monika 5eubfu
 
     $ mas_moni_idle_disp.force_by_code("5eublu", duration=5, skip_dissolve=True)
     return "no_unlock"
