@@ -17848,18 +17848,18 @@ init 5 python:
     )
 
 label monika_pizza:
-    m 1eub "Pizza? Yeah, I enjoy it once in a while!"
+    m 1eub "Pizza? {w=0.2}Yeah, I enjoy it once in a while!"
     m 1hua "It's not always the healthiest choice, but it can be a nice treat and a filling meal."
-    m 1eub "And the toppings can be versatile enough to please most people--{w=0.2}there are even pizzas without cheese for vegan or lactose-intolerant people."
+    m 1eub "The toppings can be versatile enough to please most people...{w=0.3}there are even pizzas without cheese for vegan or lactose-intolerant people."
     m 1duc "If I were to choose a favorite topping, hmm...{w=0.3}{nw}"
-    extend 3eub "spinach is surprisingly good. It adds a nice textural element to each bite."
-    m 3hublb "I'm happy to try most veggie toppings though. {w=0.2}And of course, you can't go wrong with plain cheese either."
+    extend 3hub "mushrooms are good, or anything veggie--{w=0.2}actually believe it or not, spinach can be surprisingly good!"
+    m 3eua "...And of course, you can never go wrong with plain cheese."
     m 3luc "Hmm..."
-    m 3eud "I have a feeling there's another question on your mind--{w=0.2}{nw}"
+    m 3eud "I have a feeling there's another question on your mind...{w=0.2}{nw}"
     extend 1hksdla "but you might be a little disappointed, [player]."
     m 1hksdlb "Even though it's a pretty controversial topic online, I've never had the chance to try pineapple on pizza."
     m 1lksdlb "So I can't weigh in on that particular debate. Sorry, [player]!"
-    m 1huu "But I guess that means you'll get to see my first impression someday."
+    m 3huu "But I guess that means you'll get to see my first impression someday."
     return
 
 init 5 python:
@@ -17932,4 +17932,5 @@ label monika_overton:
     m 1eub "From Acceptable, virtual love passes into Reasonable!"
     m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
+    m 1huu "Thanks for listening~"
     return
