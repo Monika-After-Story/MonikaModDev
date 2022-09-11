@@ -1,0 +1,78 @@
+{
+    "__author": [
+        "multimokia",
+        "eroneko"
+    ],
+    "ex_props": {
+        "compat-downtiedstrand": true,
+        "date": true,
+        "dark bracelet": true,
+        "formal": true
+    },
+    "giftname": "wineasymmetricalpullover",
+    "img_sit": "multimokia_wine_asymmetrical_pullover",
+    "name": "multimokia_wine_asymmetrical_pullover",
+    "pose_arms": {
+        "crossed": {
+            "layers": "5^10",
+            "tag": "crossed"
+        },
+        "def|left-def": {
+            "layers": "10",
+            "tag": "def"
+        },
+        "def|right-def": {
+            "layers": "5^10",
+            "tag": "def"
+        },
+        "left-down": {
+            "layers": "0",
+            "tag": "down"
+        },
+        "left-rest": {
+            "layers": "10",
+            "tag": "rest"
+        },
+        "right-down": {
+            "layers": "0",
+            "tag": "down"
+        },
+        "right-point": {
+            "layers": "0",
+            "tag": "point"
+        },
+        "right-restpoint": {
+            "layers": "10",
+            "tag": "restpoint"
+        },
+        "steepling": {
+            "layers": "10",
+            "tag": "steepling"
+        }
+    },
+    "pose_map": {
+        "default": false,
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true,
+        "use_reg_for_l": true
+    },
+    "select_info": {
+        "display_name": "Pullover (Wine Asymmetrical)",
+        "group": "clothes",
+        "select_dlg": [
+            "How do I look, [player]?",
+            "Pretty cute, right?",
+            "Great choice, [player]! This is so comfortable~"
+        ],
+        "thumb": "multimokia_wine_asymmetrical_pullover"
+    },
+    "stay_on_start": true,
+    "type": 2,
+    "version": 3
+}

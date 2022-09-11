@@ -1,0 +1,25 @@
+{
+    "__author": "briaryoung",
+    "version": 3,
+    "type": 0,
+    "name": "briaryoung_mini_ribbon_gray",
+    "img_sit": "briaryoung_mini_ribbon_gray",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "mini-ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "gray ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Gray, mini)",
+        "thumb": "briaryoung_mini_ribbon_gray",
+        "group": "ribbon",
+        "select_dlg": [
+            "There's always something classy about gray!"
+        ]
+    },
+    "giftname": "minigrayribbon"
+}

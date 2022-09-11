@@ -305,22 +305,23 @@ label mas_wrs_twitter:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
     return "love" if ily_quips_map[quip] else None
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_monikatwitter",
-            category=['twitter', 'lilmonix3'],
-            rules={
-                "notif-group": "Window Reactions",
-                "skip alert": None,
-                "keep_idle_exp": None,
-                "skip_pause": None
-            },
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
+# This is removed until later, maybe it could work with other quips
+# init 5 python:
+#     addEvent(
+#         Event(
+#             persistent._mas_windowreacts_database,
+#             eventlabel="mas_wrs_monikatwitter",
+#             category=['twitter', 'lilmonix3'],
+#             rules={
+#                 "notif-group": "Window Reactions",
+#                 "skip alert": None,
+#                 "keep_idle_exp": None,
+#                 "skip_pause": None
+#             },
+#             show_in_idle=True
+#         ),
+#         code="WRS"
+#     )
 
 label mas_wrs_monikatwitter:
     $ wrs_success = mas_display_notif(

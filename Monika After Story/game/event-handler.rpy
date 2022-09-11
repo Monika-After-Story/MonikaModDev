@@ -3,6 +3,9 @@
 #   persistent.event_list
 #   persistent.current_monikatopic
 
+# current event list item data
+default persistent._mas_curr_eli_data = None
+
 # keep track of number of pool unlocks
 default persistent._mas_pool_unlocks = 0
 
@@ -34,6 +37,97 @@ init -999 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
+    import renpy
+
+
+    def _strict_can_pickle(val):
+        """
+        Checks if this value can be pickled safely into persistent.
+
+        This is VERY strict. we only allow types, not isinstance checks.
+        no ducks here
+
+        This will check structures recursively and will catch recursion errors.
+
+        IN:
+            val - value to check
+
+        RETURNS: tuple of the following format:
+            [0] - True if the value can be safely pickled, False if recursion
+                error or not picklable.
+            [1] - True if recursion error, False otherwise
+        """
+        try:
+            return __strict_can_pickle(val), False
+        except RuntimeError as re:
+            # yes, this how to check for recursion in python < 3.5
+            # NOTE: this also handles renpy's recursion error
+            #   (tom includes more text)
+            if "maximum recursion depth exceeded" not in re.args[0]:
+                raise
+            return False, True
+
+
+    def __strict_can_pickle(val):
+        """
+        Recursive strict pickle check. See _strict_can_pickle for more info.
+
+        Will raise recursion error if appropriate.
+
+        IN:
+            val - value to check
+
+        RETURNS: True if value can be safely pickled, False otherwise.
+        """
+        if val is None:
+            return True
+
+        # non-structure types
+        val_type = type(val)
+        if val_type in (
+                str,
+                unicode,
+                bool,
+                int,
+                float,
+                long,
+                complex,
+                datetime.timedelta,
+                datetime.date,
+        ):
+            return True
+
+        # time-based needs to have tzinfo none
+        if val_type in (datetime.datetime, datetime.time):
+            return val.tzinfo is None
+
+        # list types
+        if val_type in (
+                __builtin__.list,
+                renpy.python.RevertableList,
+                __builtin__.set,
+                __builtin__.frozenset,
+                renpy.python.RevertableSet,
+                tuple,
+        ):
+            for sub_val in val:
+                if not __strict_can_pickle(sub_val):
+                    return False
+            return True
+
+        # dict types
+        if val_type in (__builtin__.dict, renpy.python.RevertableDict):
+            for sub_key in val:
+                if (
+                        not __strict_can_pickle(sub_key)
+                        or not __strict_can_pickle(val[sub_key])
+                ):
+                    return False
+            return True
+
+        # anything else probably bad
+        return False
+
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -99,6 +193,10 @@ init -999 python in mas_ev_data_ver:
             return allow_none
 
         return isinstance(val, __builtin__.list) or isinstance(val, tuple)
+
+
+    def _verify_tuli_nn(val):
+        return _verify_tuli(val, False)
 
 
     def _verify_tuli_aff(val, allow_none=True):
@@ -192,7 +290,7 @@ init -998 python in mas_ev_data_ver:
         valid_times = True
     except:
         valid_times = False
-        store.mas_utils.writelog("[EARLY] [ERROR]: Failed to verify mtimes\n")
+        store.mas_utils.mas_log.error("[EARLY]: Failed to verify mtimes")
 
 init -950 python in mas_ev_data_ver:
     import store
@@ -261,8 +359,8 @@ init -950 python in mas_ev_data_ver:
 
             if not _verify_data_line(ev_line):
                 # verification failed! pop this element
-                store.mas_utils.writelog(
-                    "bad data found in {0}\n".format(ev_label)
+                store.mas_utils.mas_log.error(
+                    "bad data found in {0}".format(ev_label)
                 )
                 per_db.pop(ev_label)
 
@@ -1018,9 +1116,7 @@ init -880 python:
             a eval check.
             NOTE: we do not check callable for correctness
         """
-        import store.mas_utils as m_util
-
-        ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
+        ERR_COND = "delayed action has bad conditional '{0}' | {1}"
 
 
         def __init__(self,
@@ -1059,7 +1155,7 @@ init -880 python:
                 try:
                     eval(conditional)
                 except Exception as e:
-                    self.m_util.writelog(self.ERR_COND.format(
+                    store.mas_utils.mas_log.error(self.ERR_COND.format(
                         conditional,
                         str(e)
                     ))
@@ -1116,7 +1212,7 @@ init -880 python:
                         self.executed = self.action(ev=self.ev)
 
             except Exception as e:
-                self.m_util.writelog(self.ERR_COND.format(
+                store.mas_utils.mas_log.error(self.ERR_COND.format(
                     self.conditional,
                     str(e)
                 ))
@@ -1329,21 +1425,21 @@ init -875 python in mas_delact:
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
         # NOTE: commented IDs have been retired
-#        1: _greeting_ourreality_unlock,
-        2: _mas_monika_islands_unlock,
-#        3: _mas_bday_postbday_notimespent_reset,
-#        4: _mas_bday_pool_happy_bday_reset,
-#        5: _mas_bday_surprise_party_cleanup_reset,
-#        6: _mas_bday_surprise_party_hint_reset,
-#        7: _mas_bday_spent_time_with_reset,
-#        8: _mas_d25_holiday_intro_upset_reset,
-#        9: _mas_d25_monika_carolling_reset,
-#        10: _mas_d25_monika_mistletoe_reset,
-#        11: _mas_pf14_monika_lovey_dovey_reset,
-#        12: _mas_f14_monika_vday_colors_reset,
-#        13: _mas_f14_monika_vday_cliches_reset,
-#        14: _mas_f14_monika_vday_chocolates_reset,
-#        15: _mas_f14_monika_vday_origins_reset,
+        # 1: _greeting_ourreality_unlock,
+        # 2: _mas_monika_islands_unlock,
+        # 3: _mas_bday_postbday_notimespent_reset,
+        # 4: _mas_bday_pool_happy_bday_reset,
+        # 5: _mas_bday_surprise_party_cleanup_reset,
+        # 6: _mas_bday_surprise_party_hint_reset,
+        # 7: _mas_bday_spent_time_with_reset,
+        # 8: _mas_d25_holiday_intro_upset_reset,
+        # 9: _mas_d25_monika_carolling_reset,
+        # 10: _mas_d25_monika_mistletoe_reset,
+        # 11: _mas_pf14_monika_lovey_dovey_reset,
+        # 12: _mas_f14_monika_vday_colors_reset,
+        # 13: _mas_f14_monika_vday_cliches_reset,
+        # 14: _mas_f14_monika_vday_chocolates_reset,
+        # 15: _mas_f14_monika_vday_origins_reset,
         16: _mas_birthdate_bad_year_fix,
     }
 
@@ -1382,7 +1478,6 @@ default persistent._mas_ev_yearset_blacklist = {}
 # key: label of the ev to reset yeras
 # value: datetime that this blacklist expires
 
-# special store to contain scrollable menu constants
 init -1 python in evhand:
     import store
     import re
@@ -1460,6 +1555,121 @@ init -1 python in evhand:
             value=r"(?P<duration>\d+)"
         )
     )
+
+
+    class EventListItem(object):
+        """
+        Representation of an EventListItem (ELI)
+        """
+        # default values for each main param
+        # make sure this matches push/queue
+        DEFAULT_VALUES = (
+            False, # notify
+            None, # context
+        )
+
+        ITEM_LEN = len(DEFAULT_VALUES) + 1 # defaults + event label
+
+        IDX_EVENT_LABEL = 0
+        IDX_NOTIFY = 1
+        IDX_CONTEXT = 2
+
+        def __init__(self, data):
+            """
+            Constructor
+
+            IN:
+                data - the data directly from event list
+            """
+            self._eli = data
+
+        def __repr__(self):
+            return "<{}: (data: {})>".format(
+                type(self).__name__,
+                self._eli
+            )
+
+        @staticmethod
+        def build(evl, *args):
+            """
+            Builds an ELI.
+
+            IN:
+                evl - event label
+                *args - the other args for an EventListItem.
+
+            RETURNS: EventListItem object
+            """
+            return EventListItem(EventListItem._build_raw(evl, *args))
+
+        @staticmethod
+        def _build_raw(evl, *args):
+            """
+            Builds raw data for an ELI.
+
+            args are same as EventListItem.build
+
+            RETURNS: raw data
+            """
+            data = list(
+                (evl, ) + args + EventListItem.DEFAULT_VALUES[len(args):]
+            )
+
+            # adjust context to be persistntable
+            ctx = data[EventListItem.IDX_CONTEXT]
+            if isinstance(ctx, store.MASEventContext):
+                data[EventListItem.IDX_CONTEXT] = ctx._to_dict()
+
+            return tuple(data)
+
+        def _raw(self):
+            """
+            Gets the data for this EventListItem that is ready for
+            the actual event list.
+
+            RETURNS: raw event list data
+            """
+            return self._eli
+
+        @property
+        def event_label(self):
+            """
+            Gets the event label from this EventListItem
+
+            Aliases: ev_label, evl
+
+            RETURNS: event label
+            """
+            return self._eli[self.IDX_EVENT_LABEL]
+
+        # aliases
+        eventlabel = event_label # because Event
+        ev_label = event_label
+        evl = event_label
+
+        @property
+        def notify(self):
+            """
+            Gets the notify value from this EventListItem
+
+            RETURNS: notify
+            """
+            return self._eli[self.IDX_NOTIFY]
+
+        @property
+        def context(self):
+            """
+            Gets the context from this EventListItem
+
+            Aliases: ctx
+
+            RETURNS: context (MASEventContext object)
+            """
+            return store.MASEventContext(self._eli[self.IDX_CONTEXT])
+
+        # aliases
+        ctx = context
+
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -1710,6 +1920,421 @@ init -1 python in evhand:
 init python:
     import store.evhand as evhand
     import datetime
+
+
+    class MASEventContext(mas_utils.IsolatedFlexProp):
+        """
+        Context for events. Supports flexible attributes (like persistent).
+
+        However, only picklable primitive datatypes are allowed.
+        See mas_ev_data_ver._strict_can_pickle for more info.
+        In general, DO NOT USE OBJECTS - they will be denied entry.
+
+        To get the current event context, call MASEventContext.get.
+        """
+        _this_ev_ctx = None # no one mess with this please i swear
+
+        ## string constants
+        __CTX_CTX = "current event: {0}"
+        __ERR_NON_PICKLE = (
+            "object of type '{0}' cannot be added to context | {1}"
+        )
+        __ERR_RECUR = (
+            "recursion error hit while adding object of type '{0}' to context "
+            "| {1}"
+        )
+
+        def __init__(self, ctx_data=None):
+            """
+            Constructor
+
+            IN:
+                ctx_data - context data directly from event list. Optional.
+                    (Default: None)
+            """
+            super(MASEventContext, self).__init__()
+            if ctx_data is not None:
+                self._from_dict(ctx_data)
+
+        def __setattr__(self, name, value):
+            """
+            We don't allow types that cannot be saved to persistent
+            """
+            if MASEventContext.is_allowed_data(value):
+                super(MASEventContext, self).__setattr__(name, value)
+
+        @classmethod
+        def is_allowed_data(cls, thing):
+            """
+            Checks if the given thing is allowed to be used in context.
+
+            IN:
+                thing - thing to check
+
+            RETURNS: True if the thing can be used, False otherwise
+            """
+            can_pickle, recur_error = store.mas_ev_data_ver._strict_can_pickle(thing)
+            if can_pickle:
+                return True
+
+            # otherwise - we are going to log this as an error but no crash.
+            # we'll give the current ev in the message as ctx if it exists.
+            if store.mas_globals.this_ev is None:
+                context = ""
+            else:
+                context = cls.__CTX_CTX.format(
+                    store.mas_globals.this_ev.eventlabel
+                )
+
+            if recur_error:
+                # log recursion error
+                store.mas_utils.mas_log.error(cls.__ERR_RECUR.format(
+                    type(thing).__name__,
+                    context
+                ))
+
+            else:
+                # log disallowed object
+                store.mas_utils.mas_log.error(cls.__ERR_NON_PICKLE.format(
+                    type(thing).__name__,
+                    context
+                ))
+
+        @classmethod
+        def get(cls):
+            """
+            Gets current event context.
+            """
+            if cls._this_ev_ctx is None:
+                cls._this_ev_ctx = cls()
+
+            return cls._this_ev_ctx
+
+        @classmethod
+        def _set(cls, eli):
+            """
+            Sets current event context - only for internal use.
+
+            IN:
+                eli - EventListItem object. Use None to clear.
+            """
+            if eli is None:
+                cls._this_ev_ctx = None
+            else:
+                cls._this_ev_ctx = eli.ctx
+
+
+    class MASEventList(object):
+        """
+        representation of persistent.event_list*
+
+        *not literally, this should be considered an abstraction layer with
+        unified naming.
+        """
+
+        # current event functions
+
+        @staticmethod
+        def clear_current():
+            """
+            Clears the current event aka persistent eli data.
+            """
+            MASEventList._set_current(None)
+
+        @staticmethod
+        def load_current():
+            """
+            Loads the current event as an EventListItem, which is stored in
+            persistent eli data.
+
+            RETURNS: EventListItem of the current event, or None if no current
+                event.
+            """
+            if persistent._mas_curr_eli_data is None:
+                return None
+
+            return evhand.EventListItem.build(*persistent._mas_curr_eli_data)
+
+        @staticmethod
+        def _set_current(eli):
+            """
+            Sets the current event aka persistent eli data using the given
+            EventListItem object.
+
+            Also sets persistent.current_monikatopic.
+
+            IN:
+                eli - the EventListItem object to set as the current one.
+                    pass None to clear the current event data.
+            """
+            if eli is None:
+                new_eli_data = None
+                new_curr_moni_topic = None
+            else:
+                new_eli_data = eli._raw()
+                new_curr_moni_topic = eli.evl
+
+            persistent._mas_curr_eli_data = new_eli_data
+            persistent.current_monikatopic = new_curr_moni_topic
+
+        @staticmethod
+        def sync_current():
+            """
+            Syncs the current event persistent vars, aka:
+                - current_monikatopic
+                - _mas_curr_eli_data
+            """
+            curr_eli = MASEventList.load_current()
+
+            if curr_eli is None:
+
+                if renpy.has_label(str(persistent.current_monikatopic)):
+                    # to handle unexpected uses, we'll build an eli for this
+                    # if this var is set but no eli data was found.
+                    MASEventList._set_current(evhand.EventListItem.build(
+                        str(persistent.current_monikatopic)
+                    ))
+
+                else:
+                    MASEventList.clear_current()
+
+            else:
+                MASEventList._set_current(curr_eli)
+
+        # event list functions
+
+        @staticmethod
+        def clean():
+            """
+            Cleans the event list and makes sure all events are of the
+            appropriate length and have a valid label.
+            """
+            for index in MASEventList.rev_idx_iter():
+                item_raw = persistent.event_list[index]
+
+                # type check
+                if not isinstance(item_raw, tuple):
+                    # 1st-gen event list (only event labels)
+                    new_item = evhand.EventListItem.build(item_raw)
+
+                elif len(item_raw) < evhand.EventListItem.ITEM_LEN:
+                    # 2gen+ event list (not enough items)
+                    new_item = evhand.EventListItem.build(*item_raw)
+
+                else:
+                    # current
+                    new_item = evhand.EventListItem(item_raw)
+
+                # label check
+                if renpy.has_label(new_item.evl):
+                    persistent.event_list[index] = new_item._raw()
+
+                else:
+                    persistent.event_list.pop(index)
+
+        @staticmethod
+        def iter():
+            """
+            an iterable over event list that yields EventListITem objects
+
+            ASSUMES event list data is valid
+
+            RETURNS: generator/iterable over persistent.event_list
+            """
+            for data in persistent.event_list:
+                yield evhand.EventListItem(data)
+
+        @staticmethod
+        def is_paused():
+            """
+            Checks if events are paused - also updates the event pause dt vars.
+
+            RETURNS: True if events are paused, False otherwise.
+            """
+            if mas_globals.event_unpause_dt is None:
+                return False
+
+            if datetime.datetime.utcnow() < mas_globals.event_unpause_dt:
+                return True
+
+            mas_globals.event_unpause_dt = None
+            return False
+
+        @staticmethod
+        def _next():
+            """
+            Gets the next event's data and its location in the event_list.
+            This takes event restrictions into account, aka pausing and idle.
+
+            RETURNS: tuple of the following format:
+                [0] - EventListItem of the next event, or None if no next event
+                [1] - the index of the event, or -1 if no next event
+            """
+            if len(persistent.event_list) < 1:
+                return None, -1
+
+            is_paused = MASEventList.is_paused()
+
+            for index, item in MASEventList.rev_enum_iter():
+                ev = mas_getEV(item.evl)
+
+                if (
+                        not is_paused
+                        or ev is None # allows non-event labels
+                        or "skip_pause" in ev.rules
+                ):
+
+                    if mas_globals.in_idle_mode:
+                        # only allow idle events in idle mode
+
+                        if (
+                                (ev is not None and ev.show_in_idle)
+                                or item.evl in evhand.IDLE_WHITELIST
+                        ):
+                            return item, index
+
+                    else:
+                        return item, index
+
+            # no valid event available
+            return None, -1
+
+        @staticmethod
+        def peek():
+            """
+            Gets the EventListItem for the next event on the event list, but
+            does NOT remove it.
+
+            This will respect pausing and other next event restrictions.
+
+            Does NOT set additional vars that pop does - please use pop
+            when actually planning to execute an event.
+
+            RETURNS: EventListItem object for the next event, or None if no
+            next event.
+            """
+            return MASEventList._next()[0]
+
+        @staticmethod
+        def pop():
+            """
+            Gets the EventListItem for the next event on the event list and
+            removes the event from the event list.
+
+            This will respect pausing and other next event restrictions.
+
+            Also sets:
+                persistent.current_monikatopic
+                persistent._mas_eli_data
+
+            RETURNS: EventListItem object for the next event
+            """
+            item, loc = MASEventList._next()
+
+            if item is None:
+                return None
+
+            if 0 <= loc < len(persistent.event_list): # just in case
+                persistent.event_list.pop(loc)
+
+            MASEventList._set_current(item)
+
+            return item
+
+        @staticmethod
+        def push(event_label, skipeval=False, notify=False, context=None):
+            """
+            Pushes an event to the list - this will make the event trigger
+            next unless something else is pushed.
+
+            IN:
+                @event_label - a renpy label for the event to be called
+                skipmidloopeval - do we want to skip the mid loop eval to
+                    prevent other rogue events from interrupting.
+                    (Defaults: False)
+                notify - True will trigger a notification if appropriate. False
+                    will not
+                    (Default: False)
+                context - set to a MASEventContext object to supply extra
+                    context to the event
+                    (accessible via MASEventContext.get())
+                    (Default: None)
+            """
+            MASEventList._push_eli(evhand.EventListItem.build(
+                event_label,
+                notify,
+                context
+            ))
+
+            if skipeval:
+                mas_idle_mailbox.send_skipmidloopeval()
+
+        @staticmethod
+        def _push_eli(eli):
+            """
+            Pushes an EventListItem directly. only for internal use.
+
+            IN:
+                eli - EventListItem to push
+            """
+            persistent.event_list.append(eli._raw())
+
+        @staticmethod
+        def queue(event_label, notify=False, context=None):
+            """
+            Queues an event to the list - this will make the event trigger,
+            but not right away unless the list is empty.
+
+            IN:
+                @event_label - a renpy label for the event to be called
+                notify - True will trigger a notification if appropriate, False
+                    will not
+                    (Default: False)
+                context - set to a MASEventContext object to supply extra
+                    context to the event
+                    (accessible via MASEventContext.get())
+                    (Default: None)
+            """
+            MASEventList._queue_eli(evhand.EventListItem.build(
+                event_label,
+                notify,
+                context
+            ))
+
+        @staticmethod
+        def _queue_eli(eli):
+            """
+            Queues an EventListItem directly, only for internal use.
+
+            IN:
+                eli - EventListItem to queue
+            """
+            persistent.event_list.insert(0, eli._raw())
+
+        @classmethod
+        def rev_enum_iter(cls):
+            """
+            Reverse enumerated iterable for event list.
+
+            ASSUMES persistent.event_list is valid
+
+            RETURNS: reverse enumerated iterable:
+                [0] - index
+                [1] - EventListItem
+            """
+            for index in cls.rev_idx_iter():
+                yield (index, evhand.EventListItem(persistent.event_list[index]))
+
+        @staticmethod
+        def rev_idx_iter():
+            """
+            Reverse index iterable. If you want index iterable, please use
+            enumerate with iter.
+
+            RETURNS: reverse index iterable for event list
+            """
+            return range(len(persistent.event_list)-1, -1, -1)
+
 
     def addEvent(
         event,
@@ -2002,6 +2627,7 @@ init python:
         evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
+    @store.mas_utils.deprecated("MASEventList.push")
     def pushEvent(event_label, skipeval=False, notify=False):
         """
         This pushes high priority or time sensitive events onto the top of
@@ -2009,37 +2635,37 @@ init python:
 
         IN:
             @event_label - a renpy label for the event to be called
-            skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
-            from interrupting. (Defaults: False)
+            skipmidloopeval - do we want to skip the mid loop eval to
+                prevent other rogue events from interrupting.
+                (Defaults: False)
             notify - True will trigger a notification if appropriate. False
                 will not
+                (Default: False)
 
         ASSUMES:
             persistent.event_list
         """
+        MASEventList.push(event_label, skipeval, notify)
 
-        persistent.event_list.append((event_label, notify))
 
-        if skipeval:
-            mas_idle_mailbox.send_skipmidloopeval()
-        return
-
+    @store.mas_utils.deprecated("MASEventList.queue")
     def queueEvent(event_label, notify=False):
         """
         This adds low priority or order-sensitive events onto the bottom of
-        the event list. This is slow, but rarely called and list should be small.
+        the event list. This is slow, but rarely called and list should be
+        small.
 
         IN:
             @event_label - a renpy label for the event to be called
             notify - True will trigger a notification if appropriate, False
                 will not
+                (Default: False)
 
         ASSUMES:
             persistent.event_list
         """
+        MASEventList.queue(event_label, notify)
 
-        persistent.event_list.insert(0, (event_label, notify))
-        return
 
     @store.mas_utils.deprecated("mas_unlockEvent", should_raise=True)
     def unlockEvent(ev):
@@ -2135,68 +2761,25 @@ init python:
         return evhand._isPresent(ev)
 
 
+    @store.mas_utils.deprecated("MASEventList.pop", should_raise=True)
     def popEvent(remove=True):
         """
-        This returns the event name for the next event and makes it the
-        current_monikatopic
+        DO NOT USE.
 
-        IN:
-            remove = If False, then just return the name of the event but don't
-            remove it
-
-        ASSUMES:
-            persistent.event_list
-            persistent.current_monikatopic
-
-        RETURNS: tuple of the folloiwng format:
-            [0] - event lable of the next event
-            [1] - whether or not we need to notify
+        Use MASEventList.pop instead (not exactly the same)
         """
-        if len(persistent.event_list) == 0:
-            return None, None
+        pass
 
-        now_dt = datetime.datetime.utcnow()
-        is_paused = False
-
-        if mas_globals.event_unpause_dt is not None:
-            if mas_globals.event_unpause_dt > now_dt:
-                is_paused = True
-
-            # We can reset the dt here
-            else:
-                mas_globals.event_unpause_dt = None
-
-        for id in range(len(persistent.event_list)-1, -1, -1):
-            ev_data = persistent.event_list[id]
-            ev = mas_getEV(ev_data[0])
-
-            if (
-                not is_paused
-                or ev is None# This is to allow triggering non-event labels
-                or "skip_pause" in ev.rules
-            ):
-                if mas_globals.in_idle_mode:
-                    if (
-                        (ev is not None and ev.show_in_idle)
-                        or ev_data[0] in evhand.IDLE_WHITELIST
-                    ):
-                        if remove:
-                            persistent.event_list.pop(id)
-
-                        persistent.current_monikatopic = ev_data[0]
-                        return ev_data
-
-                else:
-                    if remove:
-                        persistent.event_list.pop(id)
-                        persistent.current_monikatopic = ev_data[0]
-
-                    return ev_data
-
-        # We did not find an appropriate event
-        return None, None
 
     def seen_event(event_label):
+        """
+        Please use mas_seenEvent, this function hasn't been deprecated
+        only because it's used a lot in event conditionals
+        and I don't want to update them all
+        """
+        return mas_seenEvent(event_label)
+
+    def mas_seenEvent(event_label):
         """
         This checks if an event has either been seen or is already in the
         event list.
@@ -2207,10 +2790,7 @@ init python:
         ASSUMES:
             persistent.event_list
         """
-        if renpy.seen_label(event_label) or mas_inEVL(event_label):
-            return True
-        else:
-            return False
+        return renpy.seen_label(event_label) or mas_inEVL(event_label)
 
 
     def mas_findEVL(event_label):
@@ -2222,8 +2802,8 @@ init python:
 
         RETURNS: index of the event in teh even tlist, -1 if not found
         """
-        for index in range(len(persistent.event_list)):
-            if persistent.event_list[index][0] == event_label:
+        for index, item in enumerate(MASEventList.iter()):
+            if item.evl == event_label:
                 return index
 
         return -1
@@ -2238,11 +2818,7 @@ init python:
 
         RETURNS: True if in event list, False if not
         """
-        for ev_data in persistent.event_list:
-            if ev_data[0] == event_label:
-                return True
-
-        return False
+        return mas_findEVL(event_label) > -1
 
 
     def mas_rmEVL(event_label):
@@ -2275,12 +2851,17 @@ init python:
         This checks if there is a persistent topic, and if there was push it
         back on the stack with a little comment.
         """
-        if not mas_isRstBlk(persistent.current_monikatopic):
-            #don't push greetings back on the stack
-            pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event',skipeval=True)
-            persistent.current_monikatopic = 0
-        return
+        curr_eli = MASEventList.load_current()
+
+        if curr_eli is None:
+            return
+
+        # don't push greetings back on the stack
+        if not mas_isRstBlk(curr_eli.evl):
+            MASEventList._push_eli(curr_eli)
+            MASEventList.push('continue_event', skipeval=True)
+
+        MASEventList.clear_current()
 
 
     def mas_isRstBlk(topic_label):
@@ -2316,9 +2897,9 @@ init python:
         """
         Iterates through the event list and removes items which shouldn't be restarted
         """
-        for index in range(len(persistent.event_list)-1,-1,-1):
-            if mas_isRstBlk(persistent.event_list[index][0]):
-                mas_rmEVL(persistent.event_list[index][0])
+        for index, item in MASEventList.rev_enum_iter():
+            if mas_isRstBlk(item.evl):
+                mas_rmEVL(item.evl)
 
     def mas_cleanJustSeen(eventlist, db):
         """
@@ -2499,10 +3080,13 @@ init 1 python in evhand:
 #
 label call_next_event:
     python:
-        event_label, notify = popEvent()
-        renpy.save_persistent()# Save persistent here in case of a crash
+        _ev_list_item = MASEventList.pop()
 
-    if event_label and renpy.has_label(event_label):
+        # Save persistent here in case of a crash
+        # to recover data - see restartEvent()
+        renpy.save_persistent()
+
+    if _ev_list_item and renpy.has_label(_ev_list_item.evl):
         # TODO: we should have a way to keep track of how many topics/hr
         #   users tend to end up with. without this data we cant really do
         #   too many things based on topic freqeuency.
@@ -2512,10 +3096,10 @@ label call_next_event:
 
         $ mas_RaiseShield_dlg()
 
-        $ ev = mas_getEV(event_label)
+        $ ev = mas_getEV(_ev_list_item.evl)
 
         if (
-            notify
+            _ev_list_item.notify
             and (ev is None or ("skip alert" not in ev.rules))
         ):
             #Create a new notif
@@ -2528,27 +3112,34 @@ label call_next_event:
         if ev is not None and "keep_idle_exp" not in ev.rules:
             $ mas_moni_idle_disp.unforce_all(skip_dissolve=True)
 
+        # pre-event setup
         $ mas_globals.this_ev = ev
-        call expression event_label from _call_expression
-        $ persistent.current_monikatopic = 0
+        $ MASEventContext._set(_ev_list_item)
+
+        call expression _ev_list_item.evl from _call_expression
+
+        # post-event cleanup
+        $ MASEventList.clear_current()
+        $ MASEventContext._set(None)
         $ mas_globals.this_ev = None
+
         # Handle idle exp
         $ mas_moni_idle_disp.do_after_topic_logic()
 
-        #if this is a random topic, make sure it's unlocked for prompts
-        $ ev = evhand.event_database.get(event_label, None)
+        # refetch just in case
+        $ ev = mas_getEV(_ev_list_item.evl)
+
         if ev is not None:
-            if ev.random and not ev.unlocked:
+
+            # if this is a random topic, make sure it's unlocked for prompts
+            if (
+                    ev.eventlabel in evhand.event_database
+                    and ev.random and not ev.unlocked
+            ):
                 python:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
-        else:
-            # othrewise, pull an ev from the all event database
-            # so we can log some data
-            $ ev = mas_getEV(event_label)
-
-        if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
@@ -2572,9 +3163,7 @@ label call_next_event:
                 $ mas_rebuildEventLists()
 
             if "idle" in ret_items:
-                $ store.mas_globals.in_idle_mode = True
-                $ persistent._mas_in_idle_mode = True
-                $ renpy.save_persistent()
+                $ mas_setupIdleMode(brb_label=ev.eventlabel)
 
             if "love" in ret_items:
                 $ mas_ILY()
@@ -2654,20 +3243,28 @@ label prompt_menu:
         #   This also prevents the end-of-idle label from being saved and
         #   restored on a relaunch, which would make no sense lol.
 
-        # only call label if it exists
-        if cb_label is not None:
+        # Only call the label if it exists
+        if cb_label is not None and renpy.has_label(cb_label):
             call expression cb_label
 
+        # Otherwise reset rv
+        else:
+            $ _return = None
+
+        # If we want to resume idle mode, we don't reset
+        if _return != "idle":
+            $ mas_resetIdleMode()
+            # NOTE: Clear this here because closing during idle
+            # or idle callback could launch a specific greeting
+            $ persistent._mas_greeting_type = None
+
+        # Otherwise we have to send the callback label again
+        elif cb_label is not None:
+            $ mas_idle_mailbox.send_idle_cb(cb_label)
+
         #Show idle exp here so we dissolve like other topics
-        show monika idle with dissolve_monika
-
-        # clean up idle stuff
-        $ persistent._mas_greeting_type = None
-        $ store.mas_globals.in_idle_mode = False
-
-        # this event will cleanup the remaining idle vars
-        $ pushEvent("mas_idle_mode_greeting_cleanup")
-        $ mas_idle_mailbox.send_skipmidloopeval()
+        if not renpy.showing("monika idle"):
+            show monika idle at t11 zorder MAS_MONIKA_Z with dissolve_monika
 
         # NOTE: we only need to enable music hotkey since we are in dlg mode
         #$ mas_DropShield_idle()
@@ -2773,9 +3370,11 @@ label prompt_menu:
         jump prompt_menu
 
 label prompt_menu_end:
-
     show monika at t11
-    $ mas_DropShield_dlg()
+    if store.mas_globals.in_idle_mode:
+        $ mas_dlgToIdleShield()
+    else:
+        $ mas_DropShield_dlg()
     jump ch30_visual_skip
 
 label show_prompt_list(sorted_event_labels):
