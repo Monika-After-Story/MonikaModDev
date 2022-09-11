@@ -16460,7 +16460,7 @@ label monika_look_into_eyes:
     pause 2.0
     show monika 1eubsa with dissolve_monika
     pause 2.0
-    show monika 3tubsa with dissolve_monika
+    show monika 1tubsa with dissolve_monika
     pause 2.0
     show monika 5subsa with dissolve_monika
     pause 2.0
