@@ -16451,23 +16451,25 @@ init 5 python:
     )
 
 label monika_look_into_eyes:
-    m 6eub "Hey [player], look into my eyes for a second..."
+    m 3eub "Hey [player], look into my eyes for a second..."
 
     window hide
     show monika 1eua with dissolve_monika
     pause 5.0
     show monika 1etu with dissolve_monika
-    pause 2.0
-    show monika 1eubsa with dissolve_monika
-    pause 2.0
-    show monika 1tubsa with dissolve_monika
-    pause 2.0
+    pause 3.0
+    show monika 1eubsu with dissolve_monika
+    pause 4.0
+    show monika 1fubsa with dissolve_monika
+    pause 1.0
+    show monika 5tubsa with dissolve_monika
+    pause 3.0
     show monika 5subsa with dissolve_monika
-    pause 2.0
+    pause 1.0
     window auto
-    show monika 3hua with dissolve_monika
+    show monika 3hubla with dissolve_monika
 
-    m 3hua "Ehehe~"
+    m 3hubla "Ehehe~"
     m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
 
     #A tuple for eye color means the player has heterochromia
