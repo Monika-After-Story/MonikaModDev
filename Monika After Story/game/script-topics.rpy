@@ -16443,14 +16443,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_staring",
+            eventlabel="monika_look_into_eyes",
             conditional="persistent._mas_pm_eye_color is not None",
             action=EV_ACT_RANDOM,
             aff_range=(mas_aff.ENAMORED, None),
         )
     )
 
-label monika_staring:
+label monika_look_into_eyes:
     m 6eub "Hey [player], look into my eyes for a second..."
 
     window hide
@@ -16458,13 +16458,14 @@ label monika_staring:
     pause 5.0
     show monika 1etu with dissolve_monika
     pause 2.0
-    show monika 1tubsa with dissolve_monika
+    show monika 1eubsa with dissolve_monika
     pause 2.0
-    show monika 3hua with dissolve_monika
+    show monika 3tubsa with dissolve_monika
     pause 2.0
     show monika 5subsa with dissolve_monika
     pause 2.0
     window auto
+    show monika 3hua with dissolve_monika
 
     m 3hua "Ehehe~"
     m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
@@ -16477,6 +16478,8 @@ label monika_staring:
     m 5hubfb "..."
     m 5tubfa "Thank you so much, [player]~"
     m 5kubfu "Because you're here with me now, I'm so at peace."
+
+    $ mas_moni_idle_disp.force_by_code("5fublu", duration=5, skip_dissolve=True)
     return "no_unlock"
 
 #Player's social personality
