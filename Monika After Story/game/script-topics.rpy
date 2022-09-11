@@ -17964,7 +17964,7 @@ init 5 python:
         )
     )
 
-label monika_overton:
+label monika_mercury:
     m 3eud "Apparently, for a long while the astronomers believed that the planet Mercury is always facing the Sun with the same side."
     m 3euc "In truth, it completes one and a half rotations in one orbital period...{w=0.1}{nw}"
     extend 2eud "which makes the daylight cycle two orbital periods long."
