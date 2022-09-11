@@ -1038,6 +1038,66 @@ label mas_story_mindthegap:
     m 1dkblu "I'll always treasure you, [player]."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_knock",
+            prompt="Knock",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_knock:
+    call mas_story_begin
+    m 1euc "The last man on Earth sat alone in a room."
+    m 3rud "...There was a knock on the door."
+    m 3duc "Some may say this is where the story ends.{w=0.2} {nw}"
+    extend 1dud "But that's not actually true."
+    m 3etc "Who knocked at the door?{w=0.2} {nw}"
+    extend 3esa "The answer wasn't that horrible, really."
+    m 3eua "The last man on Earth was Walter Phelan. His only company were a species called the Zan."
+    m 3eud "The human race had been destroyed by them, except for him, and, somewhere...{w=0.3}{nw}"
+    extend 3wud "a woman--{w=0.1}one woman."
+    m 3euc "Both Walter and this woman were picked as specimens for the zoo organized by the Zan."
+    m 2esc "There were two of every species, much like in the tale of Noah's Ark."
+    m 2euc "Anyway, when he opened the door, Walter wasn't surprised to see one of the Zan."
+    m 2etd "The odd little alien, after greeting the human in the best way an alien could do, asked for Walter's help."
+    m 2euc "'Something we do not understand happened', he said,{w=0.1} {nw}"
+    extend 2ekd "'Two of the other animals sleep and do not wake. They are cold.'"
+    m 7euc "It was obvious to Walter that the two animals--a snake and a duck--had died."
+    m 3esc "However, the Zan didn't know that."
+    m 1dsc "The human quickly set a strategy in his mind.{w=0.2} He told the Zan the animals would never wake again.{w=0.2} That the Old Grim Reaper was on the loose, killing everyone on sight."
+    m 1euc "...But he could help. On one condition: The last woman on Earth had to help too."
+    m 1eua "The Zan allowed him to go see the animals, and a meeting was arranged."
+    m 1dsc "Walter thought he would never see the last woman on Earth...{w=0.3}{nw}"
+    extend 1wub "but meeting with her was an amazing turn of events!"
+    m 1esa "Grace Evans, the last woman on Earth was surprised to know what Walter had found out: that the Zan couldn't die of natural causes."
+    m 3ttu "...But perhaps they could be killed."
+    m 1eud "The man had all of the pieces to test that theory, and after saying his goodbyes to Grace, he put his plan in action."
+    m 3esc "He asked the Zan to see the last duck--since the other one had died--and told the alien what he should do."
+    m 4eud "'Give it affection by petting it, or else, it too will die. Of loneliness.'"
+    m 3rsc "Now, the aliens had no knowledge of how affection 'worked', so they just watched while Walter petted the duck lovingly."
+    m 1esc "'You must do the same with the remanining snake', he said."
+    m 1euc "...And so the Zan did."
+    m 3wud "But bear in mind, [player], it was no ordinary snake.{w=0.2} {nw}"
+    extend 3tfu "But a venomous one."
+    m 1euc "So, the Zan assigned to pet the remaining snake was inflicted by its deadly venom."
+    m 1wud "Another Zan entered Walter's room in despair the next day. "
+    extend 4wko "'One of us died!', he cried."
+    m 2dud "'Well, there's nothing to do then.{w=0.2} {nw}"
+    extend 2esc "The curse has spread, and you must flee.', the man stated."
+    m 7euc "The Zan had a council meeting, and let the two humans know that they were indeed leaving."
+    m 1ekd "The risk was too high, they couldn't lose more of their own race."
+    m 3eud "They left all the 'cursed' animals, including Walter and Grace, and blasted off on their ship."
+    m 1dua "The last man and woman on Earth were together at last."
+    extend 1rkbla " Now what would they do with their eternity alone?"
+    m 3gsbsu "That's left for us to imagine..."
+    m 1hubsa "I hope you liked this story, [player]."
+    return
+
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
