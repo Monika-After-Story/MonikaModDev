@@ -107,6 +107,7 @@ init -1 python in mas_farewells:
             store.MASSelectiveRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+            and store.MASTimedeltaRepeatRule.evaluate_rule(ev)
         ):
             return False
 
@@ -904,6 +905,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_enjoyyourafternoon",
             unlocked=True,
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)",
             rules=rules
         ),
         code="BYE"
@@ -939,6 +941,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_goodevening",
             unlocked=True,
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)",
             rules=rules
         ),
         code="BYE"

@@ -374,10 +374,181 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.9.1
+label v0_12_9_1(version="v0_12_9_1"):
+    python hide:
+        pass
+    return
+
+# 0.12.8.6
+label v0_12_8_6(version="v0_12_8_6"):
+    python hide:
+        # chess actions fix
+        if not isinstance(persistent._mas_chess_dlg_actions, defaultdict):
+            replacement = defaultdict(int)
+            replacement.update(persistent._mas_chess_dlg_actions)
+            persistent._mas_chess_dlg_actions = replacement
+
+    return
+
+# 0.12.8.3
+label v0_12_8_3(version="v0_12_8_3"):
+    python hide:
+        if seen_event("monika_otaku"):
+            mas_protectedShowEVL("monika_conventions", "EVE", _random=True)
+    return
+
+# 0.12.8.1
+label v0_12_8_1(version="v0_12_8_1"):
+    python hide:
+        mas_setEVLPropValues(
+            "mas_bday_spent_time_with",
+            action=EV_ACT_PUSH,
+            conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')"
+        )
+
+        mas_setEVLPropValues(
+            "mas_bday_pool_happy_bday",
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        )
+
+        mas_setEVLPropValues(
+            "mas_bday_postbday_notimespent",
+            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        )
+
+        # transfer history vars
+        # only overwrite if not set.
+        if persistent._mas_nye_accomplished_resolutions is None:
+            persistent._mas_nye_accomplished_resolutions = persistent._mas_pm_accomplished_resolutions
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.did_new_years_resolutions"),
+                "nye.actions.did_new_years_resolutions"
+            )
+            safeDel("_mas_pm_accomplished_resolutions")
+
+        if persistent._mas_nye_has_new_years_res is None:
+            persistent._mas_nye_has_new_years_res = persistent._mas_pm_has_new_years_res
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.made_new_years_resolutions"),
+                "nye.actions.made_new_years_resolutions"
+            )
+            safeDel("_mas_pm_has_new_years_res")
+
+        # Label names of these events were inconsistent
+        mas_transferTopicData("monika_idle_brb", "monika_brb_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_brb_idle_callback", "monika_idle_brb_callback")
+        mas_transferTopicData("monika_idle_writing", "monika_writing_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_writing_idle_callback", "monika_idle_writing_callback")
+    return
+
+# 0.12.8
+label v0_12_8(version="v0_12_8"):
+    python hide:
+        sundress_white_data = store.mas_utils.pdget(
+            "sundress_white",
+            persistent._mas_selspr_clothes_db,
+            validator=store.mas_ev_data_ver._verify_tuli_nn,
+            defval=(False, )
+        )
+        if len(sundress_white_data) > 0 and sundress_white_data[0]:
+            persistent._mas_selspr_acs_db["musicnote_necklace_gold"] = (True, True)
+
+    return
+
+# 0.12.7
+label v0_12_7(version="v0_12_7"):
+    python hide:
+
+        ##### PUT YOUR UPDATE SCRIPT CODE AFTER THIS 0.11.1 BLOCK
+        # We need to MAKE SURE this shit runs.
+
+        # sets an updated conditional for the credits song
+        # NOTE: because the topic does not unlock, it is a 1-time only
+        #   topic and therefore should NOT be reset if already seen
+        credits_song_ev = mas_getEV('monika_credits_song')
+        if (
+                credits_song_ev
+                and credits_song_ev.action
+                and credits_song_ev.shown_count == 0 # NEW
+        ):
+            credits_song_ev.conditional = (
+                "store.mas_anni.pastOneMonth() "
+                "and seen_event('mas_unlock_piano')"
+            )
+
+        # enable twintails if users have it installed.
+        # NOTE: I don't think there's any harm in running this again.
+        #   lmk if you disagree
+        if "orcaramelo_twintails" in persistent._mas_selspr_hair_db:
+            persistent._mas_selspr_hair_db["orcaramelo_twintails"] = (True, True)
+
+        # grandfathers Monika nicknames that became awkard in 0.11.1.
+        # NOTE: since we obvi don't want to overwrite people's grandfathered
+        #   nickname, we only do this if we didn't set the grandfathered
+        #   nickname before.
+        if (
+                persistent._mas_grandfathered_nickname is None # NEW
+                and persistent._mas_monika_nickname != "Monika"
+                and mas_awk_name_comp.search(persistent._mas_monika_nickname)
+        ):
+            persistent._mas_grandfathered_nickname = persistent._mas_monika_nickname
+
+        # convert bad name to a pm var
+        # NOTE: again, don't want to overwrite, so only setting if the old
+        #   var is still set (which means it wasn't deleted)
+        if persistent._mas_called_moni_a_bad_name is not None: # NEW
+            persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+            safeDel("_mas_called_moni_a_bad_name")
+
+        # penname should default to none
+        # NOTE: no changes made here, resetting to None if the bool value is
+        #   False is fine to do in current. penname will be set to either
+        #   a string or None now.
+        if not persistent._mas_penname:
+            persistent._mas_penname = None
+
+        ##### END 0.11.1 BLOCK
+        # PUT YOUR UPDATE SCRIPT CODE FOR 0.12.7 VERSION BELOW HERE
+
+        if store.seen_event("monika_hamlet") and persistent.monika_kill:
+            mas_showEVL("monika_tragic_hero", "EVE", _random=True)
+
+    return
+
 # 0.12.5
 label v0_12_5(version="v0_12_5"):
     python hide:
-        pass
+        # unlock islands for people who may have them permalocked due to faulty bg entry PP check
+        if store.seen_event("greeting_ourreality") and persistent._mas_current_background == store.mas_background.MBG_DEF:
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+        mas_setEVLPropValues(
+            "bye_enjoyyourafternoon",
+            conditional="mas_getSessionLength() <= datetime.timedelta(minutes=30)"
+        )
+        mas_setEVLPropValues(
+            "bye_goodevening",
+            conditional="mas_getSessionLength() >= datetime.timedelta(minutes=30)"
+        )
+        if seen_event("monika_affection_nickname"):
+            mas_setEVLPropValues(
+                "monika_affection_nickname",
+                prompt="Can I call you a different nickname?"
+            )
+
+        if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
+            persistent._mas_nye_spent_nye = False
+            mas_history._store(True, "nye.actions.spent_nye", 2020)
+
+            date_count = persistent._mas_nye_nye_date_count
+            persistent._mas_nye_nye_date_count = 0
+            old_date_count = mas_HistLookup("nye.actions.went_out_nye", 2020)[1]
+            if old_date_count is not None:
+                date_count += old_date_count
+
+            mas_history._store(date_count, "nye.actions.went_out_nye", 2020)
+
     return
 
 # 0.12.4
@@ -502,6 +673,7 @@ label v0_12_2_2(version="v0_12_2_2"):
     python:
         if seen_event("monika_nihilism"):
             mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
+
     return
 
 # 0.12.2
@@ -1098,14 +1270,15 @@ label v0_11_1(version="v0_11_1"):
                 chess_unlock_ev.shown_count = 1
 
         # add missing xp for new users
-        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)):
+        session_count = mas_getTotalSessions()
+        if mas_isFirstSeshPast(datetime.date(2020, 4, 4)) and session_count > 0:
             # only care about users who basically started with 0.11.0 + week
-            # ago
+            # ago and have actual session data (aka people who started 0.6.0)
 
             # calc avg hr per session
             ahs = (
                 store.mas_utils.td2hr(mas_getTotalPlaytime())
-                / float(mas_getTotalSessions())
+                / float(session_count)
             )
 
             # only care about users with under 2 hour session time avg

@@ -2066,7 +2066,7 @@ label mas_song_on_the_front_porch:
     m 5hubsb "{i}~From the wicker swing, while the night birds sing~{/i}"
     m 5dubsu "{i}~We'll watch the fireflies sparkin', do some sparkin' too~{/i}"
     m 5dkbsb "{i}~How the hours fly, as the moon drifts by~{/i}"
-    m 5ekbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5ekbsu "{i}~How sweet the air as we stare at the sky~{/i}"
     m 5ekbstpu "{i}~Oh how I'd love to linger here like this~{/i}"
     m 5dkbstpu "{i}~Hold your hand and steal a kiss {/i}{w=0.2}{nw}"
     extend 5gkbstub "{i}or two {/i}{w=0.2}{nw}"
@@ -2108,7 +2108,6 @@ label mas_monika_plays_yr(skip_leadin=False):
             m 3eua "Sure, let me just get the piano.{w=0.5}.{w=0.5}.{nw}"
 
     window hide
-    call mas_timed_text_events_prep
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     show monika at rs32
@@ -2123,6 +2122,9 @@ label mas_monika_plays_yr(skip_leadin=False):
         $ enable_esc()
         m 6hua "Don't forget about your in-game volume, [player]!"
         $ disable_esc()
+
+    window hide
+    call mas_timed_text_events_prep
 
     pause 2.0
     $ play_song(store.songs.FP_YOURE_REAL,loop=False)

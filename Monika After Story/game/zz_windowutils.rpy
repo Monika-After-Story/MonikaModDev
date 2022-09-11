@@ -299,7 +299,7 @@ init python in mas_windowutils:
             active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
 
             if active_winname_prop is not None:
-                active_winname = unicode(active_winname_prop.value)
+                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
                 return active_winname.replace("\n", "")
 
             else:
@@ -454,25 +454,30 @@ init python in mas_windowutils:
 
         left, top, right, bottom = pos_tuple
 
-        curr_x, curr_y = getMousePos()
+        mouse_x, mouse_y = getMousePos()
         # NOTE: This is so we get correct pos in fullscreen
-        if curr_x == 0:
-            curr_x = 1
-        if curr_y == 0:
-            curr_y = 1
+        if mouse_x == 0:
+            mouse_x = 1
+        if mouse_y == 0:
+            mouse_y = 1
 
-        half_mas_window_x = (right - left)/2
-        half_mas_window_y = (bottom - top)/2
+        half_mas_window_width = (right - left)/2
+        half_mas_window_height = (bottom - top)/2
 
-        mid_mas_window_x = left + half_mas_window_x
-        mid_mas_window_y = top + half_mas_window_y
+        # Sanity check since we'll divide by these,
+        # Can be zeros in some rare cases: #9088
+        if half_mas_window_width == 0 or half_mas_window_height == 0:
+            return (0, 0)
 
-        mas_window_to_cursor_x_comp = curr_x - mid_mas_window_x
-        mas_window_to_cursor_y_comp = curr_y - mid_mas_window_y
+        mid_mas_window_x = left + half_mas_window_width
+        mid_mas_window_y = top + half_mas_window_height
+
+        mas_window_to_cursor_x_comp = mouse_x - mid_mas_window_x
+        mas_window_to_cursor_y_comp = mouse_y - mid_mas_window_y
 
         #Divide to handle the middle case
-        mas_window_to_cursor_x_comp = int(float(mas_window_to_cursor_x_comp)/half_mas_window_x)
-        mas_window_to_cursor_y_comp = -int(float(mas_window_to_cursor_y_comp)/half_mas_window_y)
+        mas_window_to_cursor_x_comp = int(float(mas_window_to_cursor_x_comp)/half_mas_window_width)
+        mas_window_to_cursor_y_comp = -int(float(mas_window_to_cursor_y_comp)/half_mas_window_height)
 
         #Now return the unit vector direction
         return (
