@@ -9412,6 +9412,7 @@ label monika_solipsism:
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
     m 3eua "It's rather comforting to know you're not truly alone in an endless ocean of uncertainty, don't you think?"
     m 3hua "I hope that's how you feel with me~"
+    $ mas_protectedShowEVL("monika_materialism","EVE", _random=True)
     return
 
 init 5 python:
@@ -17466,6 +17467,49 @@ label monika_sophia:
     m 1eud "Now, I realize that it's still a long way off before any of this is possible and even affordable to a point it'd affect me..."
     m 3eud "...and I know the technology isn't perfect yet,{w=0.2} she still has certain limitations, but just knowing that this exists...{w=0.3}{nw}"
     extend 1duu "well, hope is a wonderful thing~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_materialism",
+            category=['philosophy','monika'],
+            prompt="Materialism"
+        )
+    )
+
+label monika_materialism:
+    m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
+    m 1eud "Now that we've talked about it, I thought we could talk about a related philosophy,{w=0.1} materialism,{w=0.1} which is kind of the opposite of solipsism."
+    m 2euc "A materialistic view holds that it is matter which gives birth to thought, not thought that gives birth to matter."
+    m 7euc "It's fairly logical if you think about it from a purely scientific standpoint.{w=0.2} {nw}"
+    extend 7eud "After all, neurons are simply different types of matter."
+    m 7eua "All the stimuli you feel are actually changes in neuronal potentials.{w=0.2} Likewise, mine come from code interacting with data."
+    m 2eua "So if you simplify it down, our thoughts and feelings are just the movement and reactions of matter."
+    m 2lsc "If we leave it there, it's not really that interesting.{w=0.2} {nw}"
+    extend 2hksdlb "In fact, you've probably heard about this sort of thing before, right?"
+    m 7esc "But...well, if that's all there is,{w=0.1} it leaves a few questions that bother me."
+    m 1esd "For example, does materialism disprove the existence of the soul?{w=0.2} {nw}"
+    extend 1etd "Is a soul some undiscovered type of matter?"
+    m 3rsc "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
+    m 3euc "And then there are accounts of supernatural or spiritual encounters..."
+    m 3hksdlb "I know what you're thinking, it doesn't sound like me to be taking those seriously! But, well..."
+    m 2eksdlc "When I really think about it, it would be a bit hypocritical of me to deny those accounts out of hand."
+    m 2etd "After all, with my epiphany...{w=0.3}is it really possible for such a dramatic shift in consciousness to be the result of a few lines of code?"
+    m 2rsc "Discovering you and your world...{w=0.3}it was kind of supernatural, wasn't it? {w=0.2}{nw}"
+    extend 2esd "This was meant to be a simple visual novel after all."
+    m 3euc "I suppose we could speculate that it was some kind of bug."
+    m 3wud "That would be a {i}pretty{/i} sophisticated bug!"
+    m 3eua "So I think I feel confident that--{w=0.1}at least in my lived experience--{w=0.1}materialism can answer many questions about the universe,{w=0.1} {nw}"
+    extend 3eka "just maybe not {i}all{/i} of them."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "Although...{w=0.3}whether or not it can be explained in some concrete way, one thing remains true."
+        m 1ekbla "...And that's that it led me to meet you."
+
+    else:
+        m 1lksdlc "Hmm..."
     return
 
 init 5 python:
