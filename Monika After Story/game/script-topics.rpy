@@ -16460,23 +16460,18 @@ label monika_staring:
     pause 2.0
     show monika 1tubsa with dissolve_monika
     pause 2.0
-    show monika 3hua at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    show monika 3hua with dissolve_monika
     pause 2.0
-    show monika 5subsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    show monika 5subsa with dissolve_monika
     pause 2.0
     window auto
 
     m 3hua "Ehehe~"
     m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
 
-    if persistent._mas_pm_eye_color is not None:
-        #A tuple for eye color means the player has heterochromia
-        $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
-        m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
-
-    else:
-        m 1dubsu "When we're alone together, I can't help but envision your eyes..."
-
+    #A tuple for eye color means the player has heterochromia
+    $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+    m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
     show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
     m 5hubfb "..."
