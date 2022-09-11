@@ -245,6 +245,7 @@ init 3 python:
         "bully",
         "bung",
         "butt(?!er|on)",
+        "bloodsucker",
         "cheater",
         "cock",
         "conceited",
@@ -263,6 +264,7 @@ init 3 python:
         "demon",
         "dick",
         "dilf",
+        "dimwit",
         "dirt",
         "disgusting",
         "douche",
@@ -278,8 +280,7 @@ init 3 python:
         "foul",
         "fuck",
         "garbage",
-        "gay",
-        "gey",
+        "(?<!ser)g[ea]y",# #8938
         "gilf",
         "gross",
         "gruesome",
@@ -312,6 +313,7 @@ init 3 python:
         "maniac",
         "masochist",
         "milf",
+        "mistake",
         "monster",
         "moron",
         "murder",
@@ -337,6 +339,7 @@ init 3 python:
         "repulsive",
         "retard",
         "rogue",
+        "rubbish",
         "rump",
         "sadist",
         "selfish",
@@ -361,6 +364,7 @@ init 3 python:
         "tool",
         "torment",
         "torture",
+        "toxic",
         "toy",
         "trap",
         "trash",
@@ -419,7 +423,7 @@ init 3 python:
 
     #awkward names which Moni wouldn't be comfortable calling the player or being called by the player
     mas_awkward_nickname_list = [
-        r"\b(step[-\s]*)?bro(ther|thah?)?",
+        r"\b(step[-\s]*)?bro(ther|thah?)?(?!ok)",
         r"\b(step[-\s]*)?sis(ter|tah?)?",
         r"\bdad\b",
         r"\bloli\b",
@@ -2136,7 +2140,7 @@ label mas_notification_windowreact:
             m 3eub "...So if I have something to talk about while I'm in the background, I can let you know!"
             m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
             m 3eua "So I'll only look at what you're doing if you're okay with it."
-            m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+            m 2eua "If you enable 'Window Detect' in the settings menu, that'll tell me you're fine with me looking around."
 
             if mas_isMoniNormal(higher=True):
                 m 1tuu "It's not like you have anything to hide from your girlfriend..."
@@ -2618,3 +2622,67 @@ label mas_islands_reset:
             m 3hua "If you're fine with how they are right now, then I am too.{w=0.2} I'll see what I can do with them as they are~"
 
     return "no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_gift_hint_noudeck",
+            conditional="store.mas_xp.level() >= 8 and not mas_seenEvent('mas_reaction_gift_noudeck')",
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            show_in_idle=True,
+            rules={
+                "skip alert": None,
+                "keep_idle_exp": None,
+                "skip_pause": None
+            }
+        )
+    )
+
+label mas_gift_hint_noudeck:
+    # If you somehow gifted while getting this event, abort this
+    if mas_seenEvent("mas_reaction_gift_noudeck"):
+        return
+    # The idea is next time the player visits the folder, they will find a new note and probably read it
+    # This is NOT to guarantee anything, but rather "best effort" to give this hint
+    python hide:
+        def write_and_hide():
+            import time
+
+            note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
+            note_text = renpy.substitute("""\
+Hi [player]!
+
+I see you're making Monika really happy and I want to help any way I can!
+I added a new deck of cards that you can give to Monika. I'm sure you two can figure out how to play the game.
+
+To give it to her, create a new file 'noudeck.gift' in the 'characters' folder.
+
+Keep up being a good [boy] and good luck with Monika!
+
+P.S: Don't tell her about me!\
+""")
+
+            mas_utils.trywrite(note_path, note_text, log=True)
+            time.sleep(20)
+            renpy.hide("chibika 3")
+
+        renpy.invoke_in_thread(write_and_hide)
+    # We can show chibi to give another hint something is happening
+    show chibika 3:
+        subpixel True
+        rotate_pad True
+        zoom 0.5
+        anchor (0.5, 0.5)
+        pos (0.4, 1.15)
+        around (0.475, 0.9)
+
+        parallel:
+            linear 15.0 pos (1.15, 0.55) clockwise circles 0
+        parallel:
+            rotate 0
+            linear 5.0 rotate 360
+            repeat
+
+    return "pause: 30"
