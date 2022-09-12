@@ -5717,6 +5717,7 @@ label monika_cupcake:
     m 1esa "How about you, [mas_get_player_nickname()]?"
 
     m 1eua "Do you know how to bake?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you know how to bake?{fast}"
 
