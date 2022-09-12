@@ -11405,7 +11405,7 @@ label monika_grad_speech_call:
                         m 2eua "Thanks, [player]!"
                         m 4hub "I'm glad you enjoyed it!"
 
-                    "That {i}was{/i} long":
+                    "That {i}was{/i} long.":
                         hide screen mas_background_timed_jump
                         $ mas_loseAffection()
                         $ persistent._mas_pm_liked_grad_speech = False
