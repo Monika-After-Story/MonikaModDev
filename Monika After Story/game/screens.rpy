@@ -219,7 +219,7 @@ init -800 python in mas_layout:
         def loop(self):
             """
             If you use this, only call it once in your screen code.
-            Expect this to be called multiple times by renpy as apart of 
+            Expect this to be called multiple times by renpy as apart of
             screen execution.
 
             This should be used to avoid screen code clutter.
@@ -3186,11 +3186,11 @@ screen mas_apikeys():
                     textbutton _("Update Certificate"):
                         style "mas_button_simple"
                         action Function(store.mas_api_keys.screen_update_cert)
-                
+
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:
                         spacing 20
-                        
+
                         label feature_data[0]: # name
                             xalign 0
                             xmaximum 400
@@ -3203,7 +3203,7 @@ screen mas_apikeys():
                             xfill True
                             ysize 43
                             ymaximum 43
-                            yalign 0.5
+                            yalign 0.0
                             background Solid(store.mas_ui.TEXT_FIELD_BG)
 
                             hbox:
@@ -3228,5 +3228,3 @@ screen mas_apikeys():
                                     layout "nobreak"
                                     color mas_globals.button_text_insensitive_color
                                     font mas_ui.MONO_FONT
-
-
