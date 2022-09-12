@@ -1,4 +1,4 @@
-# NOTE: we do not store keys in persistent. 
+# NOTE: we do not store keys in persistent.
 #   this is for safety reasons since persistents may be shared online for
 #   troubleshooting purposes.
 
@@ -131,7 +131,7 @@ init -750 python in mas_api_keys:
 
         def start(self):
             """
-            Call this before showing the update cert screen. This will 
+            Call this before showing the update cert screen. This will
             run initializations and stuff.
             """
             self._set_state_checking_update()
@@ -200,11 +200,11 @@ init -750 python in mas_api_keys:
 
         def _set_state_error(self):
             """
-            Sets text and button flags for when update failed 
+            Sets text and button flags for when update failed
             """
             if mas_can_import.certifi():
                 import certifi
-                
+
                 if self._rv_value == certifi.RV_ERR_CERT_WRITE:
                     self._main_text = (
                         "ERROR: failed to write cert to disk. Try again later "
@@ -336,7 +336,7 @@ init -980 python in mas_api_keys:
     ERR_ON_CHG_CRASH_MSG = "on-change crash  - see logs"
     ERR_ON_CHG_TYPE = "invalid return value from on_change for feature {0} - {1}"
     ERR_ON_CHG_TYPE_MSG = "invalid value from on-change - see logs"
-    ERR_ON_CHG_TYPE_NOT_TUPLE = "expected tuple, got '{0}'"
+    ERR_ON_CHG_TYPE_NOT_TUPLE = "expected tuple, got {0}"
     ERR_ON_CHG_TYPE_BAD_TUP_SIZE = "expected tuple of at least size 2, got one of size {0}"
     ERR_ON_CHG_TYPE_BAD_ERR_MSG = "invalid type for value at index 1 in return value: expected str, got {0}"
 
@@ -439,14 +439,14 @@ init -980 python in mas_api_keys:
             # type check
             try:
                 if not isinstance(rv, tuple):
-                    raise TypeError(ERR_ON_CHG_TYPE_NOT_TUPLE.format(rv))
+                    raise TypeError(ERR_ON_CHG_TYPE_NOT_TUPLE.format(type(rv)))
 
                 if len(rv) < 2:
                     raise TypeError(ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
 
                 # only check error message if on_change is returning false
-                if not rv[0] and not isinstance(rv[1], (str, unicode)):
-                    raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(rv[1]))
+                if not rv[0] and not isinstance(rv[1], basestring):
+                    raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(type(rv[1])))
 
                 return rv
 
@@ -487,7 +487,7 @@ init -980 python in mas_api_keys:
         if not feature_registered(feature):
             return
 
-        # grab key 
+        # grab key
         new_key = pygame.scrap.get(pygame.SCRAP_TEXT).strip()
         if not new_key:
             # null key is not counted
@@ -581,5 +581,3 @@ init -980 python in mas_api_keys:
 
     # load keys on start
     load_keys()
-
-
