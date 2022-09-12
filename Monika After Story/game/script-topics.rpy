@@ -16440,6 +16440,53 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_look_into_eyes",
+            conditional="persistent._mas_pm_eye_color is not None",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+        )
+    )
+
+label monika_look_into_eyes:
+    m 3eub "Hey [player], look into my eyes for a second..."
+
+    window hide
+    show monika 1eua with dissolve_monika
+    pause 5.0
+    show monika 1etu with dissolve_monika
+    pause 3.0
+    show monika 1eubsu with dissolve_monika
+    pause 4.0
+    show monika 1fubsa with dissolve_monika
+    pause 1.0
+    show monika 5tubsa with dissolve_monika
+    pause 3.0
+    show monika 5subsa with dissolve_monika
+    pause 1.0
+    window auto
+    show monika 3hubla with dissolve_monika
+
+    m 3hubla "Ehehe~"
+    m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
+
+    #A tuple for eye color means the player has heterochromia
+    $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+    m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
+    show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
+    m 5hubfb "..."
+    m 5tubfa "Thank you so much, [player]~"
+    m 5kubfu "Because you're here with me now, I'm so at peace."
+    # BUG: figure out why we get double wink w/o this show
+    show monika 5eubfu
+
+    $ mas_moni_idle_disp.force_by_code("5eublu", duration=5, skip_dissolve=True)
+    return "no_unlock"
+
 #Player's social personality
 default persistent._mas_pm_social_personality = None
 
