@@ -4133,7 +4133,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_affection = collections.defaultdict(float)
         renpy.game.persistent._mas_affection_data = store.mas_affection.get_default_data()
         renpy.game.persistent._mas_affection_should_apologise = False
-        renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=60)
+        renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=50)
 
 
     def initialSessionData():
@@ -7959,7 +7959,7 @@ default persistent._mas_affection = collections.defaultdict(float)
 default persistent._mas_affection_version = 2
 default persistent._mas_affection_data = mas_affection.get_default_data()
 default persistent._mas_affection_should_apologise = False
-default persistent._mas_affection_backups = collections.deque(maxlen=90)
+default persistent._mas_affection_backups = collections.deque(maxlen=50)
 default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False

@@ -333,7 +333,11 @@ init -900 python in mas_affection:
         __is_dirty = False
 
         if not isinstance(value, (basestring, bytes)):
-            log.info("NEW DATA HAS INVALID TYPE, SKIPPING")
+            log.info(
+                "NEW DATA HAS INVALID TYPE ({}), SKIPPING".format(
+                    type(value).__name__
+                )
+            )
             return
 
         if not __verify_data():
@@ -811,12 +815,16 @@ init -900 python in mas_affection:
             freeze_ts = time.mktime(freeze_date.timetuple())
         new_data.append(freeze_ts)
         new_data.append(time.time())
+        new_data.append(7.0)
 
         new_data = __encode_data(*new_data)
 
         __is_dirty = True
         __set_pers_data(new_data)
-        # persistent._mas_affection = collections.defaultdict(float)
+
+        persistent._mas_affection_should_apologise = old_data.get("apologyflag", False)
+
+        persistent._mas_affection = collections.defaultdict(float)
         persistent._mas_affection_version += 1
 
     def __set_aff(amount, reason="SET"):
