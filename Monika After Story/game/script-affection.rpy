@@ -552,6 +552,11 @@ init -900 python in mas_affection:
         """
         global __is_dirty
 
+        # Sanity checks
+        amount = float(amount)
+        if amount <= 0.0:
+            raise ValueError("Invalid value for affection: {}".format(amount))
+
         data = __get_data()
         if not data:
             return
@@ -567,11 +572,6 @@ init -900 python in mas_affection:
             data[4] = now_
 
         frozen = data[2] >= 7.0
-
-        # Sanity checks
-        amount = float(amount)
-        if amount <= 0.0:
-            raise ValueError("Invalid value for affection: {}".format(amount))
 
         og_amount = amount
         # TODO: Store the attempt to grant big amount of aff
@@ -634,14 +634,14 @@ init -900 python in mas_affection:
         """
         global __is_dirty
 
+        amount = float(amount)
+        if amount <= 0.0:
+            raise ValueError("Invalid value for affection: {}".format(amount))
+
         data = __get_data()
         if not data:
             return
         data = list(data)
-
-        amount = float(amount)
-        if amount <= 0.0:
-            raise ValueError("Invalid value for affection: {}".format(amount))
 
         og_amount = amount
         # Sanity check amount for min value
@@ -772,7 +772,7 @@ init -900 python in mas_affection:
         new_data = list()
 
         aff = old_data.get("affection", 0.0)
-        if aff > 100000:
+        if aff >= 1000000:
             aff = 0.0
         new_data.append(aff)
         new_data.append(0.0)
@@ -2427,6 +2427,12 @@ init python:
             amount = _get_current_aff_gain()
         change = amount*modifier
 
+        if change <= 0.0:
+            store.mas_utils.mas_log.error(
+                "mas_gainAffection was called with invalid amount of affection: {}".format(change)
+            )
+            return
+
         mas_affection._grant_aff(change, bypass, reason=current_evlabel)
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
@@ -2482,6 +2488,12 @@ init python:
             amount = _get_current_aff_lose()
         change = amount*modifier
 
+        if change <= 0.0:
+            store.mas_utils.mas_log.error(
+                "mas_loseAffection was called with invalid amount of affection: {}".format(change)
+            )
+            return
+
         #set apology flag
         mas_setApologyReason(
             reason=reason,
@@ -2528,7 +2540,17 @@ init python:
             min_amount = _get_current_aff_lose()
 
         if fraction < 0.0 or min_amount < 0.0 or modifier < 0.0:
-            raise ValueError("Invalid value for affection")
+            store.mas_utils.mas_log.error(
+                (
+                    "mas_loseAffectionFraction was called with one or more parameters "
+                    "being invalid: fraction: {} min_amount: {} modifier: {}"
+                ).format(
+                    fraction,
+                    min_amount,
+                    modifier
+                )
+            )
+            # raise ValueError("Invalid value for affection")
 
         curr_aff = _mas_getAffection()
         change = (curr_aff + 100.0)*fraction
