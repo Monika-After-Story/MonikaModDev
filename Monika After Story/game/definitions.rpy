@@ -4130,7 +4130,7 @@ init -1 python in _mas_root:
         }
 
         # affection
-        renpy.game.persistent._mas_affection = None
+        renpy.game.persistent._mas_affection = collections.defaultdict(float)
         renpy.game.persistent._mas_affection_data = store.mas_affection.get_default_data()
         renpy.game.persistent._mas_affection_should_apologise = False
         renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=60)

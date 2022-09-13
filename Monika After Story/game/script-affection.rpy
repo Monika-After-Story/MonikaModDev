@@ -310,6 +310,7 @@ init -900 python in mas_affection:
 
         elif __runtime_backup != persistent._mas_affection_data:
             # bad bad bad
+            __runtime_backup = __BACKUP_SENTRY
             log.info("DATA CORRUPTION")
             success = _restore_backup()
             if success:
@@ -325,14 +326,17 @@ init -900 python in mas_affection:
         global __is_dirty, __runtime_backup
 
         if not __is_dirty:
+            log.info("UNEXPECTED DATA CHANGE, SKIPPING")
             return
 
         __is_dirty = False
 
-        if not isinstance(value, (str, unicode, bytes)):
+        if not isinstance(value, (basestring, bytes)):
+            log.info("NEW DATA HAS INVALID TYPE, SKIPPING")
             return
 
         if not __verify_data():
+            log.info("VERIFICATION FAILED, SKIPPING")
             return
 
         __runtime_backup = persistent._mas_affection_data = value
@@ -491,7 +495,7 @@ init -900 python in mas_affection:
         ALWAYS use this accessor
 
         OUT:
-            - tuple with the data
+            - list with the data
             - None if an error happened
         """
         data = __get_pers_data()
@@ -504,7 +508,7 @@ init -900 python in mas_affection:
             mas_utils.mas_log.critical("Failed to decode aff data")
             return None
 
-        return data
+        return list(data)
 
     def _get_aff():
         """
@@ -580,7 +584,6 @@ init -900 python in mas_affection:
         data = __get_data()
         if not data:
             return
-        data = list(data)
 
         now_ = time.time()
         data[4] = __validate_timestamp(data[4], now_)
@@ -661,7 +664,6 @@ init -900 python in mas_affection:
         data = __get_data()
         if not data:
             return
-        data = list(data)
 
         og_amount = amount
         # Sanity check amount for min value
@@ -705,7 +707,6 @@ init -900 python in mas_affection:
         data = __get_data()
         if not data:
             return
-        data = list(data)
 
         if not data[1]:
             return
@@ -746,7 +747,6 @@ init -900 python in mas_affection:
         data = __get_data()
         if not data:
             return
-        data = list(data)
 
         if not data[1]:
             return
@@ -830,7 +830,7 @@ init -900 python in mas_affection:
         curr_data = __get_data()
         if not curr_data:
             return
-        curr_data = list(curr_data)
+
         amount = float(amount)
         og_amount = amount
         amount = max(min(amount, 1000000), -1000000)
