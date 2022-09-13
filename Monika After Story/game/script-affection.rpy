@@ -163,14 +163,14 @@ init -900 python in mas_affection:
         LOVE: 60.0
     }
     DEF_AFF_FRACTION_LOSE_MAP = {
-        BROKEN: 20.0,
-        DISTRESSED: 15.0,
-        UPSET: 10.0,
-        NORMAL: 5.0,
-        HAPPY: 5.0,
-        AFFECTIONATE: 10.0,
-        ENAMORED: 15.0,
-        LOVE: 10.0
+        BROKEN: 0.2,
+        DISTRESSED: 0.15,
+        UPSET: 0.1,
+        NORMAL: 0.05,
+        HAPPY: 0.05,
+        AFFECTIONATE: 0.1,
+        ENAMORED: 0.15,
+        LOVE: 0.1
     }
 
     __STRUCT = struct.Struct(__STRUCT_FMT)
@@ -2411,13 +2411,13 @@ init python:
     def _get_current_aff_lose():
         return mas_affection.DEF_AFF_LOSE_MAP.get(
             mas_curr_affection,
-            1.0
+            5.0
         )
 
     def _get_current_aff_fraction_lose():
         return mas_affection.DEF_AFF_FRACTION_LOSE_MAP.get(
             mas_curr_affection,
-            10.0
+            0.1
         )
 
     def mas_gainAffection(
