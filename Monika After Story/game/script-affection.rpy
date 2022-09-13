@@ -2559,7 +2559,7 @@ init python:
         if min_amount is None:
             min_amount = _get_current_aff_lose()
 
-        if fraction < 0.0 or min_amount < 0.0 or modifier < 0.0:
+        if fraction <= 0.0 or min_amount <= 0.0 or modifier <= 0.0:
             store.mas_utils.mas_log.error(
                 (
                     "mas_loseAffectionFraction was called with one or more parameters "
@@ -2571,7 +2571,6 @@ init python:
                 )
             )
             return
-            # raise ValueError("Invalid value for affection")
 
         curr_aff = _mas_getAffection()
         change = (curr_aff + 100.0)*fraction
@@ -2603,7 +2602,7 @@ init python:
             return
 
         change = curr_aff - prev_aff
-        if change < 0.0:
+        if change <= 0.0:
             return
 
         mas_loseAffection(change)
