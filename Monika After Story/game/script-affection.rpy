@@ -2550,6 +2550,7 @@ init python:
                     modifier
                 )
             )
+            return
             # raise ValueError("Invalid value for affection")
 
         curr_aff = _mas_getAffection()
