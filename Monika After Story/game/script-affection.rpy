@@ -106,7 +106,8 @@ init -900 python in mas_affection:
         LOVE: ENAMORED
     }
 
-    __runtime_backup = None
+    __BACKUP_SENTRY = object()
+    __runtime_backup = __BACKUP_SENTRY
 
     # numerical constants of affection groups
     G_SAD = -1
@@ -303,7 +304,7 @@ init -900 python in mas_affection:
     def __verify_data():
         global __runtime_backup
 
-        if __runtime_backup is None:
+        if __runtime_backup is __BACKUP_SENTRY:
             __runtime_backup = persistent._mas_affection_data
 
         elif __runtime_backup != persistent._mas_affection_data:
@@ -474,7 +475,7 @@ init -900 python in mas_affection:
         """
         return __encode_data(*__STRUCT_DEF_VALUES)
 
-    def _reset_pers_data():
+    def __reset_pers_data():
         """
         Resets pers data to the default value
         Dangerous, think twice before using
@@ -909,7 +910,7 @@ init -900 python in mas_affection:
 
             else:
                 # Bad bad bad bad
-                _reset_pers_data()
+                __reset_pers_data()
                 txt_audit("LOAD", "DATA HAS BEEN RESET")
 
             aff = _get_aff()
