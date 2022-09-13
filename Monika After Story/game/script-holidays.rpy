@@ -4334,7 +4334,7 @@ label mas_nye_monika_nyd_fresh_start:
             $ persistent._mas_aff_before_fresh_start = _mas_getAffection()
 
             # reset affection and save it
-            $ _mas_resetAffection()
+            $ _mas_doFreshStart()
             $ _mas_AffSave()
             $ renpy.save_persistent()
 

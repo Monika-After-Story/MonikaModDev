@@ -2616,7 +2616,7 @@ init python:
 
         mas_loseAffection(curr_aff+101.0)
 
-    def _mas_resetAffection():
+    def _mas_doFreshStart():
         """
         Resets affection
         """
