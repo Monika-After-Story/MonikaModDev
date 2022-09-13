@@ -52,6 +52,7 @@ init python:
 
 init -900 python in mas_affection:
     import binascii
+    import base64
     import collections
     import datetime
     import struct
@@ -389,6 +390,18 @@ init -900 python in mas_affection:
         """
         return value
 
+    def __intob64(bytes_):
+        """
+        Encodes a string using b64
+        """
+        return base64.b64encode(bytes_)
+
+    def __fromb64(bytes_):
+        """
+        Decodes an encoded string using b64
+        """
+        return base64.b64decode(bytes_)
+
     def __decode_data(data):
         """
         Returns decoded data
@@ -401,7 +414,11 @@ init -900 python in mas_affection:
         """
         try:
             data = __from_struct(
-                __unhexlify(data)
+                __unhexlify(
+                    __fromb64(
+                        data
+                    )
+                )
             )
 
         except (binascii.Incomplete, binascii.Error) as e:
@@ -414,7 +431,6 @@ init -900 python in mas_affection:
             mas_utils.mas_log.error("Failed to decode data: {}".format(e))
 
         else:
-            # Everything is correct, return
             return data
 
         return None
@@ -429,8 +445,10 @@ init -900 python in mas_affection:
             - None if an error happened
         """
         try:
-            encoded_data = __hexlify(
-                __to_struct(*data)
+            encoded_data = __intob64(
+                __hexlify(
+                    __to_struct(*data)
+                )
             )
 
         except (binascii.Incomplete, binascii.Error) as e:
