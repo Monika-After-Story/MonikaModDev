@@ -765,12 +765,12 @@ init -900 python in mas_affection:
             data[1] -= change
             __set_pers_data(__encode_data(*data))
 
-    def _reset_aff():
+    def _reset_aff(reason="RESET"):
         """
         Resets aff value (and only it)
         This is a dangerous func, use with care
         """
-        __set_aff(0.0, "RESET")
+        __set_aff(0.0, reason)
 
     def _transfer_aff_2nd_gen():
         """
@@ -2625,7 +2625,7 @@ init python:
             or not persistent._mas_pm_got_a_fresh_start
         ):
             return
-        mas_affection._reset_aff()
+        mas_affection._reset_aff("FRESH START")
 
     @store.mas_utils.deprecated()
     def mas_setAffection(*args, **kwargs):
