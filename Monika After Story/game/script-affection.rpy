@@ -52,6 +52,7 @@ init python:
 
 init -900 python in mas_affection:
     import binascii
+    import random
     import base64
     import collections
     import datetime
@@ -139,7 +140,7 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
-    __STRUCT_FMT = "!d d d d d d"
+    __STRUCT_FMT = "!d d d d d d d"
     __STRUCT_DEF_VALUES = tuple([0.0] * __STRUCT_FMT.count("d"))
 
     DEF_AFF_GAIN_MAP = {
@@ -557,7 +558,7 @@ init -900 python in mas_affection:
         timezone_hop = hour_t * 30
 
         if delta_t > timezone_hop:# 30h for timezone changes
-            log.info("INVALID TIME, FREEZING TIME")
+            log.info("INVALID TIME, POSSIBLE CORRUPTION")
             penalty = max(min(delta_t, day_t*30), day_t)
             ts = now_ts + penalty
 
@@ -593,12 +594,16 @@ init -900 python in mas_affection:
             data[2] = 0.0
             data[3] = 0.0
             data[4] = now_
+            data[6] = random.triangular(5.0, 8.0)
 
-        frozen = data[2] >= 7.0
+        frozen = data[2] >= data[6]
 
         og_amount = amount
         # TODO: Store the attempt to grant big amount of aff
         amount = min(amount, 50.0)
+        # usually using max/min wouldn't be correct with gauss,
+        # but we don't expect such low values to be used, it's more of a sanity check
+        amount = max(0.01, random.gauss(amount, 0.25))
 
         # Sanity check amount for max value
         max_gain = max(1000000-data[0], 0.0)
@@ -666,13 +671,14 @@ init -900 python in mas_affection:
             return
 
         og_amount = amount
+        amount = max(0.01, random.gauss(amount, 0.25))
         # Sanity check amount for min value
         max_lose = data[0] + 1000000
         amount = min(amount, max_lose)
 
         base_change = 0.0
         bank_change = 0.0
-        multi = 0.3# This is how much would be removed right away
+        multi = 0.3# This is how much will be removed right away
 
         if data[1] > 0.0:
             base_change = amount * multi
@@ -1025,7 +1031,7 @@ init -900 python in mas_affection:
     AFF_BROKEN_MIN = -100
     AFF_DISTRESSED_MIN = -75
     AFF_UPSET_MIN = -30
-    AFF_HAPPY_MIN = 30
+    AFF_HAPPY_MIN = 50
     AFF_AFFECTIONATE_MIN = 100
     AFF_ENAMORED_MIN = 400
     AFF_LOVE_MIN = 1000
