@@ -139,6 +139,9 @@ init -900 python in mas_affection:
         LOVE: "monika 1hua_static",
     }
 
+    __STRUCT_FMT = "!d d d d d d"
+    __STRUCT_DEF_VALUES = tuple([0.0] * __STRUCT_FMT.count("d"))
+
     DEF_AFF_GAIN_MAP = {
         BROKEN: 0.25,
         DISTRESSED: 0.5,
@@ -170,8 +173,6 @@ init -900 python in mas_affection:
         LOVE: 10.0
     }
 
-    __STRUCT_FMT = "!d d d d d d"
-    __STRUCT_DEF_VALUES = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     __STRUCT = struct.Struct(__STRUCT_FMT)
 
     # compare functions for affection / group
