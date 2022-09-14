@@ -1,0 +1,25 @@
+{
+    "__author": "retroadamshow",
+    "version": 3,
+    "type": 0,
+    "name": "retro_ribbon_sgb_green",
+    "img_sit": "retro_ribbon_sgb_green",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "giftname": "supergameboygreenribbon",
+    "dlg_desc": "Super Game Boy-style green ribbon",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Ribbon (Super Game Boy Green)",
+        "thumb": "retro_ribbon_sgb_green",
+        "group": "ribbon",
+        "select_dlg": [
+            "Super nostalgic!"
+        ]
+    }
+}

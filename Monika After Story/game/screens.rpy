@@ -219,7 +219,8 @@ style edited is default:
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
 
 style edited_dark is default:
     font "gui/font/VerilySerifMono.otf"
@@ -229,14 +230,18 @@ style edited_dark is default:
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
 
 style normal is default:
     pos (gui.text_xpos, gui.text_ypos)
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
+    justify False
+    adjust_spacing False
 
 style input:
     color gui.accent_color
@@ -495,7 +500,10 @@ style say_dialogue is default:
     xsize gui.text_width
     ypos gui.text_ypos
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
+    justify False
+    adjust_spacing False
 
 style say_thought is say_dialogue
 
@@ -1466,7 +1474,7 @@ screen preferences():
 #                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
                     if store.mas_windowreacts.can_do_windowreacts:
-                        textbutton _("Window Reacts"):
+                        textbutton _("Window Detect"):
                             action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
                             hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
 
