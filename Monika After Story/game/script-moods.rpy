@@ -621,17 +621,17 @@ label mas_mood_bored:
                 m 1eka "But, if you're bored, we should find something to do then..."
 
             "Well...":
-                $ mas_loseAffection()
+                $ mas_loseAffectionFraction(min_amount=15)
                 m 2ekc "Oh...{w=1} I see."
                 m 2dkc "I didn't realize I was boring you..."
                 m 2eka "I'm sure we can find something to do..."
 
     elif mas_isMoniDis(higher=True):
-        $ mas_loseAffection()
+        $ mas_loseAffectionFraction(min_amount=15)
         m 2lksdlc "I'm sorry that I'm boring you, [player]."
 
     else:
-        $ mas_loseAffection()
+        $ mas_loseAffectionFraction(min_amount=15)
         m 6ckc "You know [player], if I make you so miserable all of the time..."
         m "Maybe you should just go find something else to do."
         return "quit"
@@ -907,7 +907,7 @@ label mas_mood_grateful:
 
         "For you.":
             if not renpy.seen_label("mas_mood_grateful_gratefulforyou"):
-                $ mas_gainAffection(3,bypass=True)
+                $ mas_gainAffection(5, bypass=True)
             call mas_mood_grateful_gratefulforyou
 
         "For someone.":
