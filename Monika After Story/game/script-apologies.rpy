@@ -235,7 +235,7 @@ label mas_apology_generic:
     else:
         #Since this 'reason' technically varies, we don't really have a choice as we therefore can't add 0 to the db
         #So recover a tiny bit of affection
-        $ mas_gainAffection(modifier=0.1)
+        # $ mas_gainAffection(modifier=0.1)
         m 2tkd "What you did wasn't funny, [player]."
         m 2dkd "Please be more considerate about my feelings in the future."
 
@@ -244,12 +244,12 @@ label mas_apology_generic:
         #Update the apology_reason count db (if not none)
         $ persistent._mas_apology_reason_use_db[mas_apology_reason] = persistent._mas_apology_reason_use_db.get(mas_apology_reason,0) + 1
 
-        if persistent._mas_apology_reason_use_db[mas_apology_reason] == 1:
-            #Restore a little bit of affection
-            $ mas_gainAffection(modifier=0.2)
-        elif persistent._mas_apology_reason_use_db[mas_apology_reason] == 2:
-            #Restore a little less affection
-            $ mas_gainAffection(modifier=0.1)
+        # if persistent._mas_apology_reason_use_db[mas_apology_reason] == 1:
+        #     #Restore a little bit of affection
+        #     $ mas_gainAffection(modifier=0.2)
+        # elif persistent._mas_apology_reason_use_db[mas_apology_reason] == 2:
+        #     #Restore a little less affection
+        #     $ mas_gainAffection(modifier=0.1)
 
         #Otherwise we recover no affection.
 
@@ -271,14 +271,12 @@ init 5 python:
 label mas_apology_bad_nickname:
     $ ev = mas_getEV('mas_apology_bad_nickname')
     if ev.shown_count == 0:
-        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
         m 1eka "Thank you for apologizing for the name you tried to give me."
         m 2ekd "That really hurt, [player]..."
         m 2dsc "I accept your apology, but please don't do that again. Okay?"
         $ mas_unlockEVL("monika_affection_nickname", "EVE")
 
     elif ev.shown_count == 1:
-        $ mas_gainAffection(modifier=0.1) # recover less affection
         m 2dsc "I can't believe you did that {i}again{/i}."
         m 2dkd "Even after I gave you a second chance."
         m 2tkc "I'm disappointed in you, [player]."
