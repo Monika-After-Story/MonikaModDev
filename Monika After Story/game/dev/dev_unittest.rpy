@@ -2814,9 +2814,9 @@ label dev_unit_test_encoded_struct_pickle:
                 return False
             return True
 
-        s = struct.Struct("!d d d")
+        s = struct.Struct("!d d d d d d")
         # test_file = io.BytesIO()
-        raw_data = (-947207.15943, 0.1, 1439304)
+        raw_data = (-947207.15943, -492, 0.0, 0.32591, 10.0, 1439304)
         packaged_data = s.pack(*raw_data)
         he_packaged_data = binascii.hexlify(packaged_data)
         b64_he_packaged_data = base64.b64encode(he_packaged_data)
@@ -2824,7 +2824,7 @@ label dev_unit_test_encoded_struct_pickle:
 
         pack_tester.prepareTest("check is_ascii works")
         pack_tester.assertEqual(is_ascii("hello world"), True)
-        pack_tester.assertEqual(is_ascii("Hej världen"), False)
+        pack_tester.assertEqual(is_ascii("hej världen"), False)
         pack_tester.assertEqual(is_ascii("привет мир"), False)
         pack_tester.assertEqual(is_ascii("こんにちは世界"), False)
 
@@ -2855,6 +2855,10 @@ label dev_unit_test_encoded_struct_pickle:
 
         pack_tester.assertEqual(result, True)
         pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
         test_file.close()
         del result, unpickled_data, test_file
 
@@ -2878,6 +2882,10 @@ label dev_unit_test_encoded_struct_pickle:
 
         pack_tester.assertEqual(result, True)
         pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
         del result
 
 
