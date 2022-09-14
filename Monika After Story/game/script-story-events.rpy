@@ -797,7 +797,7 @@ label birthdate_set:
                 m 4eka "I hope you have a good day."
         else:
             if mas_isMoniNormal(higher=True):
-                $ mas_gainAffection(5,bypass=True)
+                $ mas_gainAffection(5, bypass=True)
                 $ persistent._mas_player_bday_in_player_bday_mode = True
                 $ mas_unlockEVL("bye_player_bday", "BYE")
                 m 1wuo "Oh...{w=1}Oh!"
@@ -839,7 +839,7 @@ label birthdate_set:
         m 3sub "That's {i}so{/i} cool, [player]!"
         m 1tsu "I guess we really are meant to be together, ehehe..."
         if mas_isMonikaBirthday() and mas_isMoniNormal(higher=True):
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             $ persistent._mas_player_bday_in_player_bday_mode = True
             m 3hua "That just makes today that much more special~"
             m 1eub "Sing with me, [player]!"
@@ -1264,7 +1264,7 @@ label mas_crashed_long_qs:
         "Yes.":
             hide screen mas_background_timed_jump
             # light affection boost for not joking around
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(modifier=0.2, bypass=True)
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
@@ -1280,6 +1280,7 @@ label mas_crashed_long_uthere:
     m "I know you're there!"
 
 label .dontjoke:
+    $ mas_loseAffection()# call here so it worse if we fall thru, too
     m "Don't joke around like that!"
     m "Anyway..."
 
@@ -1293,7 +1294,7 @@ label .afterdontjoke:
         "Turn on the light.":
             hide screen mas_background_timed_jump
             # light affection boost for being like a hero
-            $ mas_gainAffection(modifier=0.5, bypass=True)
+            $ mas_gainAffection(modifier=0.2, bypass=True)
 
         "...":
             pause 5.0
@@ -1394,7 +1395,7 @@ label mas_crashed_long_whq:
         m "Do you think you can stop that from happening?{fast}"
         "I'll try.":
             # light affection boost because you will try do something for her
-            $ mas_gainAffection(modifier=0.1)
+            $ mas_gainAffection(modifier=0.2, bypass=True)
             $ persistent._mas_crashed_trynot = True
             m 1hua "Thanks, [player]!"
             m 1eua "I'm counting on you."
