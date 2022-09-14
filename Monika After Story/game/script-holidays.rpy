@@ -3745,7 +3745,7 @@ label mas_d25_postd25_notimespent:
 
 
     if mas_isMoniAff(higher=True):
-        $ mas_loseAffection(15, reason=6)
+        $ mas_loseAffectionFraction(min_amount=20, reason=6)
         m 1dkc "...I'm just glad you're finally here..."
         m 2ekd "I was starting to get worried that something happened to you..."
         m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
@@ -3760,7 +3760,7 @@ label mas_d25_postd25_notimespent:
         $ mas_ILY()
 
     elif mas_isMoniNormal(higher=True):
-        $ mas_loseAffection(5, reason=6)
+        $ mas_loseAffectionFraction(min_amount=15, reason=6)
         m 2ekc "Hey, [player]..."
         m 2tkc "I have to say I'm pretty disappointed you didn't visit me at all on Christmas..."
         m 4tkc "You knew all I wanted was to spend time with you. Is that too much to ask?"
@@ -3771,7 +3771,7 @@ label mas_d25_postd25_notimespent:
         m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
 
     elif mas_isMoniUpset():
-        $ mas_loseAffection(reason=6)
+        $ mas_loseAffectionFraction(min_amount=10, reason=6)
         m 2efc "[player]!"
         m "I can't believe you didn't even bother to visit me on Christmas!"
         m 2tfc "Actually...{w=1}yes, I can."
@@ -3779,13 +3779,13 @@ label mas_d25_postd25_notimespent:
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed...{w=1} Again."
 
     elif mas_isMoniDis():
-        $ mas_loseAffection(10, reason=6)
+        $ mas_loseAffectionFraction(min_amount=10, reason=6)
         m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
         m "You probably didn't even think of me, huh?"
 
     else:
-        $ mas_loseAffection(150)
+        $ mas_loseAffectionFraction(1.0, min_amount=150)
         m 6ckc "..."
 
     $ mas_d25ReactToGifts()
@@ -5439,7 +5439,7 @@ label mas_player_bday_cake:
 
     # fall thru
 label mas_player_bday_card:
-    $ mas_gainAffection(5,bypass=True)
+    $ mas_gainAffection(5, bypass=True)
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
 
@@ -5770,7 +5770,7 @@ label greeting_returned_home_player_bday:
         if not ret_diff_year:
             $ mas_pbdayCapGainAff(5)
         elif ret_diff_year and add_points:
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 5
         m 1eka "That was a fun date while it lasted, [player]..."
         m 3hua "Thanks for making some time for me on your special day."
@@ -5779,7 +5779,7 @@ label greeting_returned_home_player_bday:
         if not ret_diff_year:
             $ mas_pbdayCapGainAff(10)
         elif ret_diff_year and add_points:
-            $ mas_gainAffection(10,bypass=True)
+            $ mas_gainAffection(10, bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 10
         m 1eua "That was a fun date, [player]..."
         m 3hua "Thanks for taking me with you!"
@@ -5790,7 +5790,7 @@ label greeting_returned_home_player_bday:
         if not ret_diff_year:
             $ mas_pbdayCapGainAff(15)
         elif ret_diff_year and add_points:
-            $ mas_gainAffection(15,bypass=True)
+            $ mas_gainAffection(15, bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 15
         m 1hua "And we're home!"
         m 3hub "That was really fun, [player]!"
@@ -6517,7 +6517,7 @@ init 5 python:
 
 label mas_f14_happy_vday:
     $ persistent._mas_f14_spent_f14 = True
-    $ mas_gainAffection(5,bypass=True)
+    $ mas_gainAffection(5, bypass=True)
     if mas_isMoniNormal(higher=True):
         m 1hublb "Ehehe~ Thank you, [player]!"
         show monika 5hkbla at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -6664,7 +6664,7 @@ label mas_f14_no_time_spent:
 
     if mas_ret_long_absence:
         #Was away on a long absence
-        $ mas_loseAffection(ev_label="mas_apology_missed_vday")
+        $ mas_loseAffectionFraction(0.05, min_amount=15, ev_label="mas_apology_missed_vday")
 
         m 1rksdlc "Hey, [player]..."
         m 2eksdld "I know you told me you were going to be away...but I really missed you on Valentines Day."
@@ -6673,7 +6673,7 @@ label mas_f14_no_time_spent:
         m 1eka "I'd really appreciate if you could do that for me, [player]."
 
     elif mas_isMoniAff(higher=True):
-        $ mas_loseAffection(15, ev_label="mas_apology_missed_vday")
+        $ mas_loseAffectionFraction(min_amount=20, ev_label="mas_apology_missed_vday")
         m 1rkc "[player]?"
         m "Where were you on Valentine's Day?"
         m 1ekc "It's a really special day for me..."
@@ -6685,7 +6685,7 @@ label mas_f14_no_time_spent:
         m 2ekc "Please don't let it happen again, okay [player]?"
 
     elif mas_isMoniNormal(higher=True):
-        $ mas_loseAffection(5, ev_label="mas_apology_missed_vday")
+        $ mas_loseAffectionFraction(min_amount=15, ev_label="mas_apology_missed_vday")
         m 2ekc "Hey, [player]..."
         m 2tkc "I'm pretty disappointed..."
         m 2tkd "You didn't visit me at all on Valentine's Day."
@@ -6694,7 +6694,7 @@ label mas_f14_no_time_spent:
         m 4eksdla "Please...{w=1}make sure you visit me next Valentine's Day, okay?"
 
     elif mas_isMoniUpset():
-        $ mas_loseAffection(ev_label="mas_apology_missed_vday")
+        $ mas_loseAffectionFraction(min_amount=10, ev_label="mas_apology_missed_vday")
         m 2efc "[player]!"
         m "I can't believe you didn't even visit on Valentine's Day!"
         m 2rfc "Do you have any idea what it's like to be left alone on a day like that?"
@@ -6703,13 +6703,13 @@ label mas_f14_no_time_spent:
         m 2tfc "Don't let it happen again, [player]."
 
     elif mas_isMoniDis():
-        $ mas_loseAffection(10, ev_label="mas_apology_missed_vday")
+        $ mas_loseAffectionFraction(min_amount=10, ev_label="mas_apology_missed_vday")
         m 6ekc "Oh [player]..."
         m "How was Valentine's Day?"
         m 6dkc "Not having a valentine is pretty lonely..."
 
     else:
-        $ mas_loseAffection(150)
+        $ mas_loseAffectionFraction(1.0, min_amount=150)
         m 6ckc "..."
     return
 
@@ -6957,7 +6957,7 @@ label mas_gone_over_f14_check:
     return
 
 label greeting_gone_over_f14:
-    $ mas_gainAffection(5,bypass=True)
+    $ mas_gainAffection(5, bypass=True)
     m 1hua "And we're finally home!"
     m 3wud "Wow [player], we were gone so long we missed Valentine's Day!"
     if mas_isMoniNormal(higher=True):
@@ -6969,7 +6969,7 @@ label greeting_gone_over_f14:
     return
 
 label greeting_gone_over_f14_normal_plus:
-    $ mas_gainAffection(10,bypass=True)
+    $ mas_gainAffection(10, bypass=True)
     m 1ekbsa "I would've loved to have spent the day with you here, but no matter where we were, just knowing we were together to celebrate our love..."
     m 1dubsu "Well it means everything to me."
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -7356,7 +7356,7 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_bday:
-    $ mas_gainAffection(5,bypass=True)
+    $ mas_gainAffection(5, bypass=True)
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
 
@@ -7410,7 +7410,7 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_belated_bday:
-    $ mas_gainAffection(5,bypass=True)
+    $ mas_gainAffection(5, bypass=True)
 
     #We've essentially said happy birthday, let's flag this
     $ persistent._mas_bday_said_happybday = True
@@ -7571,7 +7571,7 @@ label mas_bday_surprise_party_reaction_end:
         m 6ektpa "Thank you, [player]. It really means a lot that you did this for me."
     $ persistent._mas_bday_sbp_reacted = True
     #+25 aff for following through and getting the party
-    $ mas_gainAffection(25, bypass=True)
+    $ mas_gainAffection(15, bypass=True)
 
     #We set these flags here
     $ persistent._mas_bday_in_bday_mode = True
@@ -7740,7 +7740,7 @@ label mas_bday_postbday_notimespent:
 
     if mas_ret_long_absence:
         #Was away on a long absence
-        $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+        $ mas_loseAffectionFraction(0.05, min_amount=15, ev_label="mas_apology_missed_bday")
 
         m 1rksdlc "Hey, [player]..."
         m 2eksdld "I know you told me you were going to be away...but I really missed you on my birthday."
@@ -7751,7 +7751,7 @@ label mas_bday_postbday_notimespent:
     elif persistent._mas_bday_opened_game:
         #Opened game but didn't do any bday things
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
+            $ mas_loseAffectionFraction(min_amount=15, ev_label="mas_apology_forgot_bday")
             m 2rksdla "Hey, [player]..."
             m 2rksdlb "I know we had fun the other day, like we always do but..."
             m 2ekp "I can't help it, I was hoping you would have...{w=1}done a little something for my birthday."
@@ -7761,7 +7761,7 @@ label mas_bday_postbday_notimespent:
             m 3hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
-            $ mas_loseAffection(5, ev_label="mas_apology_forgot_bday")
+            $ mas_loseAffectionFraction(min_amount=15, ev_label="mas_apology_forgot_bday")
             m 2rksdld "Hey, [player]..."
             m 2rksdlb "I hate to fuss, but you know..."
             m 2ekp "You can't forget about your girlfriend's birthday!"
@@ -7769,13 +7769,13 @@ label mas_bday_postbday_notimespent:
             m 3hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(ev_label="mas_apology_forgot_bday")
+            $ mas_loseAffectionFraction(min_amount=10, ev_label="mas_apology_forgot_bday")
             m 1ekc "It was...{w=0.5}good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "You know what? {w=0.5}Nevermind."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(10, ev_label="mas_apology_forgot_bday")
+            $ mas_loseAffectionFraction(min_amount=10, ev_label="mas_apology_forgot_bday")
             m 2dsc "..."
             m 2rkc "...[player], I don't want to bother you. {w=1}I'm already scared of pushing you away."
             m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
@@ -7785,13 +7785,13 @@ label mas_bday_postbday_notimespent:
 
         else:
             # broken
-            $ mas_loseAffection(150)
+            $ mas_loseAffectionFraction(1.0, min_amount=150)
             m 6ckc "..."
 
     else:
         #Didn't spend any time with Monika
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
+            $ mas_loseAffectionFraction(min_amount=15, modifier=2.0, ev_label="mas_apology_missed_bday")
             m 1euc "Hey, [player]..."
             m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
             m 2tfd "And her {i}birthday{/i} is one of them!"
@@ -7803,9 +7803,9 @@ label mas_bday_postbday_notimespent:
 
             # same dialogue, different affection loss
             if mas_isMoniHappy():
-                $ mas_loseAffection(20, ev_label="mas_apology_missed_bday")
+                $ mas_loseAffectionFraction(min_amount=10, modifier=2.0, ev_label="mas_apology_missed_bday")
             else:
-                $ mas_loseAffection(10, ev_label="mas_apology_missed_bday")
+                $ mas_loseAffectionFraction(min_amount=15, ev_label="mas_apology_missed_bday")
 
             m 1ekc "Hey, [player]..."
             m 1ekd "You know, you really should have dropped in on the 22nd."
@@ -7835,13 +7835,13 @@ label mas_bday_postbday_notimespent:
             m 1eka "You know I love to scare you a little~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+            $ mas_loseAffectionFraction(min_amount=7.5, modifier=2.0, ev_label="mas_apology_missed_bday")
             m 2dsc "..."
             m 2rsc "[player], don't you think you should check in on me a little more often?"
             m 2rktpc "You might miss something important..."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
+            $ mas_loseAffectionFraction(min_amount=7.5, modifier=2.0, ev_label="mas_apology_missed_bday")
             m 6ekd "...Hey, how was your day on the 22nd?"
             m 6ekc "I'm just...curious if you thought of me at all that day."
             m 6ektpc "But you probably didn't, huh?"
@@ -7849,7 +7849,7 @@ label mas_bday_postbday_notimespent:
 
         else:
             # broken
-            $ mas_loseAffection(200)
+            $ mas_loseAffectionFraction(1.0, min_amount=200)
             m 6eftsc "..."
             m 6dftdx "..."
     return
@@ -8160,7 +8160,7 @@ label mas_monika_cake_on_player_bday:
     call monika_zoom_transition_reset(1.0)
 
     python:
-        mas_gainAffection(25, bypass=True)
+        mas_gainAffection(15, bypass=True)
         renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
         persistent._mas_bday_sbp_reacted = True
         time_out = store.mas_dockstat.diffCheckTimes()
