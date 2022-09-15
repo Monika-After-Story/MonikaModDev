@@ -2926,7 +2926,7 @@ label monika_affection_nickname:
 
                     else:
                         #Remove the apology reason from this as we're handling the apology differently now.
-                        $ mas_loseAffection(ev_label="mas_apology_bad_nickname")
+                        $ mas_loseAffectionFraction(min_amount=25, modifier=2.0, ev_label="mas_apology_bad_nickname")
                         if lowername in ["yuri", "sayori", "natsuki"]:
                             m 1wud "...!"
                             m 2wfw "I..."
@@ -3466,7 +3466,7 @@ label mas_affection_yesapology:
     jump ch30_preloop
 
 label mas_affection_apologydeleted:
-    $ mas_loseAffection(modifier=3)
+    $ mas_loseAffection(modifier=3.0)
     m 1wud "..."
     m 2efd "[player], did you delete the apology note I wanted to keep?"
     m "Why would you do that? Are you not {i}really{/i} sorry?"
