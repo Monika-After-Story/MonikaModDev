@@ -374,6 +374,12 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.13.0 aka RenPy8/Python3
+label v0_13_0(version="v0_13_0"):
+    python hide:
+        pass
+    return
+
 # 0.12.9.1
 label v0_12_9_1(version="v0_12_9_1"):
     python hide:
