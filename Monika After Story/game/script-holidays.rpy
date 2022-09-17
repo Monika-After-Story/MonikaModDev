@@ -5739,17 +5739,17 @@ label greeting_returned_home_player_bday:
         else:
             # point totals split here between player and monika bdays, since this date was for both
             if time_out < mas_one_hour:
-                $ mas_mbdayCapGainAff(7.5)
+                $ mas_mbdayCapGainAff(6.0)
                 if persistent._mas_player_bday_left_on_bday:
-                    $ mas_pbdayCapGainAff(7.5)
+                    $ mas_pbdayCapGainAff(6.0)
             elif time_out < mas_three_hour:
-                $ mas_mbdayCapGainAff(12.5)
+                $ mas_mbdayCapGainAff(10.0)
                 if persistent._mas_player_bday_left_on_bday:
-                    $ mas_pbdayCapGainAff(12.5)
+                    $ mas_pbdayCapGainAff(10.0)
             else:
-                $ mas_mbdayCapGainAff(17.5)
+                $ mas_mbdayCapGainAff(14.0)
                 if persistent._mas_player_bday_left_on_bday:
-                    $ mas_pbdayCapGainAff(17.5)
+                    $ mas_pbdayCapGainAff(14.0)
 
             m 6hub "That was a fun date, [player]..."
             m 6eua "Thanks for--"
@@ -8007,9 +8007,9 @@ label greeting_returned_home_bday:
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
         if mas_one_hour < time_out <= mas_three_hour:
-            $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+            $ mas_mbdayCapGainAff(20 if persistent._mas_player_bday_in_player_bday_mode else 15)
         elif time_out > mas_three_hour:
-            $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+            $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
 
         if mas_isplayer_bday() and persistent._mas_player_bday_decor and persistent._mas_bday_date_count == 1:
             jump mas_monika_cake_on_player_bday
@@ -8044,7 +8044,7 @@ label greeting_returned_home_bday:
 
     elif time_out <= mas_three_hour:
         # 1 hr < time out <= 3 hrs
-        $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        $ mas_mbdayCapGainAff(20 if persistent._mas_player_bday_in_player_bday_mode else 15)
 
         m 1hua "Ehehe~"
         m 3eub "We sure spent a lot of time together today, [player]."
@@ -8057,7 +8057,7 @@ label greeting_returned_home_bday:
 
     else:
         # +3 hrs
-        $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+        $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
 
         m 1sua "Wow, [player]..."
         if mas_player_bday_curr == mas_monika_birthday:
@@ -8170,10 +8170,10 @@ label mas_monika_cake_on_player_bday:
             mas_mbdayCapGainAff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
 
         elif time_out <= mas_three_hour:
-            mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+            mas_mbdayCapGainAff(20 if persistent._mas_player_bday_in_player_bday_mode else 15)
         else:
             # +3 hrs
-            mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+            mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
 
     m 6eua "That was--"
     m 6wuo "Oh! You made {i}me{/i} a cake!"
