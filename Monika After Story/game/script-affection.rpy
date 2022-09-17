@@ -607,7 +607,7 @@ init -900 python in mas_affection:
         amount = min(amount, 50.0)
         # usually using max/min wouldn't be correct with gauss,
         # but we don't expect such low values to be used, it's more of a sanity check
-        amount = max(0.01, random.gauss(amount, 0.25))
+        amount = max(0.0, random.gauss(amount, 0.25))
 
         # Sanity check amount for max value
         max_gain = max(1000000-data[0], 0.0)
@@ -617,13 +617,13 @@ init -900 python in mas_affection:
 
         if bypass:
             # Can only bypass so much
-            bypass_limit = 100.0 if store.mas_isSpecialDay() else 10.0
+            bypass_limit = 50.0 if store.mas_isSpecialDay() else 10.0
             bypass_available = max(bypass_limit - data[3], 0.0)# This should always be > 0, but just in case
             temp_amount = amount - bypass_available
             # Is the bypass too big?
             if temp_amount > 0.0:
                 # Store part of it
-                bank_available = max(100.0-data[1], 0.0)
+                bank_available = max(50.0-data[1], 0.0)
                 bank_amount = min(temp_amount, bank_available)
                 # Grant the rest
                 # NOTE: Subtract temp_amount, NOT bank_amount to prevent gain over the bypass limit
@@ -682,15 +682,19 @@ init -900 python in mas_affection:
 
         base_change = 0.0
         bank_change = 0.0
-        multi = 0.3# This is how much will be removed right away
+        split_multi = 0.4# Removed right away
+        bank_lose_multi = 1.25# Extra penalty
 
         if data[1] > 0.0:
-            base_change = amount * multi
+            base_change = amount * split_multi
             bank_change = amount - base_change
 
             if data[1] < bank_change:
                 bank_change = data[1]
                 base_change = amount - bank_change
+
+            else:
+                bank_change = min(bank_change*bank_lose_multi, data[1])
 
         else:
             base_change = amount
@@ -715,10 +719,7 @@ init -900 python in mas_affection:
         global __is_dirty
 
         data = __get_data()
-        if not data:
-            return
-
-        if not data[1]:
+        if not data or not data[1]:
             return
 
         now_ = time.time()
@@ -730,13 +731,8 @@ init -900 python in mas_affection:
 
         data[5] = now_
 
-        if data[1] <= 1.0:
-            change = data[1]
+        og_change = change = max(min(data[1], 5.0), 0.0)
 
-        else:
-            change = min(data[1] * 0.1, 5.0)
-
-        og_change = change = max(change, 0.0)# just in case
         # Sanity check amount for max value
         max_change = max(1000000-data[0], 0.0)
         change = min(change, max_change)
@@ -762,12 +758,12 @@ init -900 python in mas_affection:
             return
 
         seconds = persistent._mas_absence_time.total_seconds()
-        if seconds > 86400*3:# Give 3 days of grace period
+        if seconds > 86400*3:# Grace period
             if data[1] <= 1.0:
                 change = data[1]
 
             else:
-                rate = 0.05 if not persistent._mas_long_absence else 0.025
+                rate = 0.1 if not persistent._mas_long_absence else 0.025
                 # Now rate * days
                 change = data[1] * min(rate*seconds/86400, 1.0)
 
