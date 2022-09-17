@@ -905,7 +905,7 @@ init python:
         if amount is None:
             amount = store._mas_getGoodExp()
 
-        mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 15 if mas_isSpecialDay() else 3)
+        mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 9 if mas_isSpecialDay() else 3)
 
     def mas_getGiftedDates(giftlabel):
         """

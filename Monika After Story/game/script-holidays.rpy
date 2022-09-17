@@ -7198,7 +7198,7 @@ init -1 python:
         return False
 
     def mas_mbdayCapGainAff(amount):
-        mas_capGainAff(amount, "_mas_bday_date_affection_gained", 50, 75)
+        mas_capGainAff(amount, "_mas_bday_date_affection_gained", 30, 40)
 
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
