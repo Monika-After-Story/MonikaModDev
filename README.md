@@ -9,19 +9,25 @@ If you would like to make your own mod like this one, check out our sister proje
 
 ### Installation
 
-Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
+* **Installer method (recommended**):
 
-* Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+    * Navigate to the [releases page](http://www.monikaafterstory.com/releases.html) and choose the correct option for your OS.
 
-* Click the latest version link. This will download a zip file to your system.
+    * Once downloaded, run the installer and follow the prompts.
 
-* Extract the contents the zip file into the `/game` folder of your DDLC installation.
+* Manual method (not recommended):
 
-* Running DDLC will now load the Monika After Story Mod.
+    * Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+
+    * Click the latest version link. This will download a zip file to your system.
+
+    * Extract the contents of the zip file into the base directory (the folder that contains the DDLC.exe file) of your DDLC installation.
+
+    * Running DDLC will now load the Monika After Story Mod.
 
 *NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Monika-After-Story/MonikaModDev/releases).*
 
-For more help with installation, please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
+For more help with installation (including manual for non-steam Mac), please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
 ### Features
 
@@ -92,7 +98,7 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 [More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
 ### Join the conversation
-You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates. 
+You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates.
 
 If you want to find pianonotes, spritepacks, submods, external content, or translations, or just discuss MAS in general, visit [our discussions page](https://github.com/Monika-After-Story/MonikaModDev/discussions)
 
