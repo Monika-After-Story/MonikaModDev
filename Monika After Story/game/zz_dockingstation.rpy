@@ -1180,9 +1180,12 @@ init -11 python in mas_dockstat:
 init python in mas_dockstat:
     import store
     import cPickle
+    import math
 
     # previous vars dict
     previous_vars = dict()
+
+    MONI_SIZE_FACTOR = 12.288
 
     def setMoniSize(tdelta):
         """
@@ -1192,26 +1195,10 @@ init python in mas_dockstat:
             tdelta - timedelta to use
         """
         # get hours
-        days = tdelta.days
-        secs = tdelta.seconds
-        hours = (days * 24) + (secs / 3600.0)
-
-        # our rates
-        first100 = 0.54
-        post100 = 0.06
-
-        # megabytes
-        mbs = 0
-
-        if hours > 100:
-            mbs = 100 * first100
-            hours -= 100
-            mbs += hours * post100
-
-        else:
-            mbs = hours * first100
-
-        # now we can set the final size (in MiB)
+        hours = (tdelta.days * 24) + (tdelta.seconds / 3600.0)
+        # mebibytes
+        mbs = math.sqrt(hours*MONI_SIZE_FACTOR)
+        # now we can set the final size (in bytes)
         store.persistent._mas_dockstat_moni_size = int(mbs * (1024**2))
 
 

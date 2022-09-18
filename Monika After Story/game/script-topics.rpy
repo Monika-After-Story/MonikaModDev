@@ -118,7 +118,7 @@ init -1 python:
                     # event not blocked from random selection
                     and not sel_ev.anyflags(EV_FLAG_HFRS)
             ):
-                pushEvent(sel_ev.eventlabel, notify=True)
+                MASEventList.push(sel_ev.eventlabel, notify=True)
                 return
 
 
@@ -368,7 +368,7 @@ init python:
 
             if mas_findEVL(push_label) < 0:
                 persistent.flagged_monikatopic = ev_label
-                pushEvent(push_label, skipeval=True)
+                MASEventList.push(push_label, skipeval=True)
                 renpy.notify(derand_flag_add_text)
 
             else:
@@ -13425,7 +13425,7 @@ label monika_load_custom_music:
                 m "Okay, make sure you did it correctly."
 
             "No.":
-                $ pushEvent("monika_add_custom_music",True)
+                $ MASEventList.push("monika_add_custom_music",True)
     return
 
 init 5 python:
@@ -16445,6 +16445,53 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_look_into_eyes",
+            conditional="persistent._mas_pm_eye_color is not None",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+        )
+    )
+
+label monika_look_into_eyes:
+    m 3eub "Hey [player], look into my eyes for a second..."
+
+    window hide
+    show monika 1eua with dissolve_monika
+    pause 5.0
+    show monika 1etu with dissolve_monika
+    pause 3.0
+    show monika 1eubsu with dissolve_monika
+    pause 4.0
+    show monika 1fubsa with dissolve_monika
+    pause 1.0
+    show monika 5tubsa with dissolve_monika
+    pause 3.0
+    show monika 5subsa with dissolve_monika
+    pause 1.0
+    window auto
+    show monika 3hubla with dissolve_monika
+
+    m 3hubla "Ehehe~"
+    m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
+
+    #A tuple for eye color means the player has heterochromia
+    $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+    m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
+    show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
+    m 5hubfb "..."
+    m 5tubfa "Thank you so much, [player]~"
+    m 5kubfu "Because you're here with me now, I'm so at peace."
+    # BUG: figure out why we get double wink w/o this show
+    show monika 5eubfu
+
+    $ mas_moni_idle_disp.force_by_code("5eublu", duration=5, skip_dissolve=True)
+    return "no_unlock"
+
 #Player's social personality
 default persistent._mas_pm_social_personality = None
 
@@ -17889,6 +17936,32 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_pizza",
+            category=['monika'],
+            prompt="Do you like pizza?",
+            pool=True
+        )
+    )
+
+label monika_pizza:
+    m 1eub "Pizza? {w=0.2}Yeah, I enjoy it once in a while!"
+    m 1hua "It's not always the healthiest choice, but it can be a nice treat and a filling meal."
+    m 1eub "The toppings can be versatile enough to please most people...{w=0.3}there are even pizzas without cheese for vegan or lactose-intolerant people."
+    m 1duc "If I were to choose a favorite topping, hmm...{w=0.3}{nw}"
+    extend 3hub "mushrooms are good, or anything veggie--{w=0.2}actually believe it or not, spinach can be surprisingly good!"
+    m 3eua "...And of course, you can never go wrong with plain cheese."
+    m 3luc "Hmm..."
+    m 3eud "I have a feeling there's another question on your mind...{w=0.2}{nw}"
+    extend 1hksdla "but you might be a little disappointed, [player]."
+    m 1hksdlb "Even though it's a pretty controversial topic online, I've never had the chance to try pineapple on pizza."
+    m 1lksdlb "So I can't weigh in on that particular debate. Sorry, [player]!"
+    m 3huu "But I guess that means you'll get to see my first impression someday."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_esports",
             category=['media', 'life'],
             prompt="What do you think of esports?",
@@ -17955,5 +18028,5 @@ label monika_overton:
     m 1eub "From Acceptable, virtual love passes into Reasonable!"
     m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
-    m 1huu "Thank you for listening~"
+    m 1huu "Thanks for listening~"
     return

@@ -208,10 +208,10 @@ label mas_wrs_r34m:
         choice = random.randint(1,10)
 
         if choice == 1 and mas_isMoniNormal(higher=True):
-            queueEvent('monika_nsfw')
+            MASEventList.queue('monika_nsfw')
 
         elif choice == 2 and mas_isMoniAff(higher=True):
-            queueEvent('monika_pleasure')
+            MASEventList.queue('monika_pleasure')
 
         else:
             if mas_isMoniEnamored(higher=True):
@@ -606,7 +606,7 @@ init 5 python:
     )
 
 label mas_wrs_word_processor:
-    $ wrs_success = display_notif(
+    $ wrs_success = mas_display_notif(
         m_name,
         [
             "Writing a story?",
