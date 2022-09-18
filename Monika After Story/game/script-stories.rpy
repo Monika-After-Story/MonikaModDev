@@ -699,7 +699,7 @@ label mas_story_genie_end:
     m 1ekd "But he grew cold as years went by and he watched each one of his loved ones pass on."
     m 1rksdlc "There were still a select few people whom he held dear, despite knowing that he would have to watch them die as well."
     m 3rksdld "He never told his friends that he wasn't human, as he still wanted to be treated as one."
-    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them one wish."
+    m 1euc "One day, as he was traveling with one of his friends, they came across a genie who would grant each of them one wish."
     m 1dsc "This made him think about everything he had been through;{w=0.5} from back to when he granted wishes to when he gave it up for a simple life."
     m 1dsd "...Everything that had led up to this moment, where he could make his own wish for the first time in a long while."
     m 1dsc "..."
@@ -1038,6 +1038,66 @@ label mas_story_mindthegap:
     m 1dkblu "I'll always treasure you, [player]."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_story_knock",
+            prompt="Knock",
+            category=[mas_stories.TYPE_NORMAL],
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_story_knock:
+    call mas_story_begin
+    m 1euc "The last man on Earth sat alone in a room."
+    m 3rud "...There was a knock on the door."
+    m 3duc "Some may say this is where the story ends.{w=0.2} {nw}"
+    extend 1dud "But that's not actually true."
+    m 3etc "Who knocked at the door?{w=0.2} {nw}"
+    extend 3esa "The answer wasn't that horrible, really."
+    m 3eua "The last man on Earth was Walter Phelan. {w=0.2}His only company was a species called the Zan."
+    m 3eud "The human race had been destroyed by them, except for him, and, somewhere...{w=0.3}{nw}"
+    extend 3wud "a woman--{w=0.1}one woman."
+    m 3euc "Both Walter and this woman were picked as specimens for the zoo organized by the Zan."
+    m 2esc "There were two of every species, much like in the tale of Noah's Ark."
+    m 2euc "Anyway, when he opened the door, Walter wasn't surprised to see one of the Zan."
+    m 2etd "The odd little alien, after greeting the human in the best way an alien could do, asked for Walter's help."
+    m 2euc "'Something we do not understand happened,' he said,{w=0.1} {nw}"
+    extend 2ekd "'two of the other animals sleep and do not wake. They are cold.'"
+    m 7euc "It was obvious to Walter that the two animals--a snake and a duck--had died."
+    m 3esc "However, the Zan didn't know that."
+    m 1dsc "The human quickly set a strategy in his mind.{w=0.2} He told the Zan the animals would never wake again.{w=0.2} That the Old Grim Reaper was on the loose, killing everyone on sight."
+    m 1euc "...But he could help. {w=0.2}On one condition: {w=0.2}The last woman on Earth had to help too."
+    m 1eua "The Zan allowed him to go see the animals, and a meeting was arranged."
+    m 1dsc "Walter thought he would never see the last woman on Earth...{w=0.3}{nw}"
+    extend 1wub "but meeting with her was an amazing turn of events!"
+    m 1esa "Grace Evans, the last woman on Earth, was surprised to know what Walter had found out: {w=0.2}that the Zan couldn't die of natural causes."
+    m 3ttu "...But perhaps they could be killed."
+    m 1eud "The man had all of the pieces to test that theory, and after saying his goodbyes to Grace, he put his plan into action."
+    m 3esc "He asked the Zan to see the last duck--since the other one had died--and told the alien what he should do."
+    m 4eud "'Give it affection by petting it, or else, it too will die...{w=0.2}of loneliness.'"
+    m 3rsc "Now, the aliens had no knowledge of how affection worked, so they just watched while Walter petted the duck lovingly."
+    m 1esc "'You must do the same with the remaining snake,' he said."
+    m 1euc "...And so the Zan did."
+    m 3wud "But bear in mind, [player], it was no ordinary snake...{w=0.3}{nw}"
+    extend 3tfu "but a venomous one."
+    m 1euc "So, the Zan assigned to pet the remaining snake was inflicted by its deadly venom."
+    m 1wud "Another Zan entered Walter's room in despair the next day. {w=0.2}{nw}"
+    extend 4wko "'One of us died!' he cried."
+    m 2dud "'Well, there's nothing to do then.{w=0.2} {nw}"
+    extend 2esc "The curse has spread, and you must flee,' the man stated."
+    m 7euc "The Zan had a council meeting, and let the two humans know that they were indeed leaving."
+    m 1ekd "The risk was too high, they couldn't lose more of their own race."
+    m 3eud "They left all the 'cursed' animals, including Walter and Grace, and blasted off on their ship."
+    m 1dua "The last man and woman on Earth were together at last.{w=0.2}{nw}"
+    extend 1rkbla " Now what would they do with their eternity alone?"
+    m 3gsbsu "That's left for us to imagine..."
+    m 1hubsa "I hope you liked this story, [player]."
+    return
+
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
@@ -1186,7 +1246,7 @@ label mas_scary_story_mujina:
     m 4wuw "No eyes, mouth, or nose. Just an empty visage that stared back at him!"
     m "The merchant ran away as fast as he could, panicking from the haunting figure."
     m 1efc "He continued to run until he saw the light of a lantern and ran towards it."
-    m 3euc "The lantern belonged to a travelling salesman that was walking along."
+    m 3euc "The lantern belonged to a traveling salesman that was walking along."
     m 1esc "The old man stopped in front of him, doubled over to catch his breath."
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
@@ -1231,7 +1291,7 @@ label mas_scary_story_ubume:
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
     m 3eud "The next day, he went to the temple and told the monk there what he saw."
-    m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly died on the street."
+    m 1dsd "The priest told the confectioner that a young woman that was traveling through the village recently had suddenly died on the street."
     m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy."
     m 1esc "He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
     m 4eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying from beneath the ground."
@@ -1268,7 +1328,7 @@ label mas_scary_story_womaninblack:
     m 3eud "When he came to, the woman was gone. The colonel questioned some of the other passengers, but none of them had seen her."
     m 3ekd "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
     m 1esc "When he exited the train, a railway official that overheard him talked to the colonel about the woman he was asking about."
-    m "According to the official, a woman and her husband were travelling on a train together."
+    m "According to the official, a woman and her husband were traveling on a train together."
     m 1dsd "The husband had his head too far out in one of the windows and was decapitated by a wire."
     m "His body then fell onto her lap, lifeless."
     m 3wud "When the train arrived at its stop, she was found holding the corpse and singing a lullaby to it."
@@ -1526,7 +1586,7 @@ label mas_scary_story_yuki_onna:
     m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him and instantly freezing him."
     m 4wud "As she turned to the son, she paused. The woman said to him that she would spare him of the same fate, for he was young and very handsome."
     m 4ekc "If he ever spoke a word of it to anyone, she would come back to kill him."
-    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful travelling woman."
+    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful traveling woman."
     m 2eua "It was starting to snow, and the man offered the woman shelter from the storm, and she quickly accepted."
     m 2eua "The two quickly fell in love and ended up marrying each other."
     m 2hua "They lived happily for years and had several kids as time went by."

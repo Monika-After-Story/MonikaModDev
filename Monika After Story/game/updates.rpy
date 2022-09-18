@@ -374,6 +374,13 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.9.1
+label v0_12_9_1(version="v0_12_9_1"):
+    python hide:
+        if mas_seenLabels(['monika_solipsism']):
+            mas_protectedShowEVL("monika_materialism","EVE", _random=True)
+    return
+
 # 0.12.8.6
 label v0_12_8_6(version="v0_12_8_6"):
     python hide:

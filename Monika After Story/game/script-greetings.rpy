@@ -4332,6 +4332,64 @@ label greeting_back_from_hangout:
 
 init 5 python:
     ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 5duc"))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_poem_shadows_in_garden",
+            unlocked=True,
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            rules=ev_rules,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+#Because this is associated, we'll also mirror this into the poem framework
+init 11 python:
+    MASPoem(
+        poem_id="gre_1",
+        category="generic",
+        prompt=_("Shadows in the Garden"),
+        title="",
+        text=_("""\
+ Alone I ask a solemn question,
+ What could grow in an unlit garden?
+
+ When you return, it feels like heaven,
+ Within your light, the cold forgotten.
+
+ I will give everything to feel this way,
+ Awaiting the one I hold dearest.
+
+ Nearest to my heart...
+"""),
+    )
+
+label greeting_poem_shadows_in_garden:
+    m 5duc "{i}Alone I ask a solemn question,\nWhat could grow in an unlit garden?{/i}"
+    m 5ekbla "{i}When you return, it feels like heaven,\nWithin your light, the cold forgotten.{/i}"
+    m 5fubfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
+    m 5ekbfa "{i}Even if it's every single day,\nWithout a doubt, you are the nearest.{/i}"
+    m 5dubsu "{i}Nearest to my heart...{/i}"
+    m 5eublb "I came up with this one while you were gone."
+    show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eka "That's right, you're like the sun of my world!"
+    m 3hubsu "Anyway, welcome back, [mas_get_player_nickname()]! I hope you liked that poem."
+    #TODO: Potential I missed you too?
+    m 1ekbsb "I missed you so much!"
+
+    if "gre_1" not in persistent._mas_poems_seen:
+        $ persistent._mas_poems_seen["gre_1"] = 1
+
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
+    return
+
+init 5 python:
+    ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
             random_chance=3,
