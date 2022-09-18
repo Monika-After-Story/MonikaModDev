@@ -439,14 +439,14 @@ init -980 python in mas_api_keys:
             # type check
             try:
                 if not isinstance(rv, tuple):
-                    raise TypeError(ERR_ON_CHG_TYPE_NOT_TUPLE.format(type(rv)))
+                    raise TypeError(ERR_ON_CHG_TYPE_NOT_TUPLE.format(type(rv).__name__))
 
                 if len(rv) < 2:
                     raise TypeError(ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
 
                 # only check error message if on_change is returning false
-                if not rv[0] and not isinstance(rv[1], basestring):
-                    raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(type(rv[1])))
+                if not rv[0] and not isinstance(rv[1], (str, unicode)):
+                    raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(type(rv[1]).__name__))
 
                 return rv
 
