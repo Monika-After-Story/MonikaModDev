@@ -1005,7 +1005,7 @@ init 5 python:
             eventlabel="mas_story_mindthegap",
             prompt="Mind the Gap",
             category=[mas_stories.TYPE_NORMAL],
-            unlocked=True
+            unlocked=False
         ),
         code="STY"
     )
