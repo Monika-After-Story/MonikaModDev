@@ -9,23 +9,29 @@ If you would like to make your own mod like this one, check out our sister proje
 
 ### Installation
 
-* **Installer method (recommended**):
+1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
 
-    * Navigate to the [releases page](http://www.monikaafterstory.com/releases.html) and choose the correct option for your OS.
+2. Click the installer link for your OS.
 
-    * Once downloaded, run the installer and follow the prompts.
+3. Once downloaded, run the installer and follow the prompts.
 
-* Manual method (not recommended):
+4. Running DDLC will now load the Monika After Story Mod.
 
-    * Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+* If the installer doesn't work on your system, see the manual install steps below.
 
-    * Click the latest version link. This will download a zip file to your system.
+### Manual Install
 
-    * Extract the contents of the zip file into the base directory (the folder that contains the DDLC.exe file) of your DDLC installation.
+**Only follow these steps if the installer doesn't run on your system**
 
-    * Running DDLC will now load the Monika After Story Mod.
+1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
 
-*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Monika-After-Story/MonikaModDev/releases).*
+2. Click the manual link (TODO). This will download a zip file to your system.
+
+3. Extract the contents of the zip file into the base directory (the folder that contains the DDLC.exe file) of your DDLC installation.
+
+4. Running DDLC will now load the Monika After Story Mod.
+
+*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](http://www.monikaafterstory.com/releases.html).*
 
 For more help with installation (including manual for non-steam Mac), please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
