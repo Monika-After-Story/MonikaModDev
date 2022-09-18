@@ -9407,6 +9407,7 @@ label monika_solipsism:
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
     m 3eua "It's rather comforting to know you're not truly alone in an endless ocean of uncertainty, don't you think?"
     m 3hua "I hope that's how you feel with me~"
+    $ mas_protectedShowEVL("monika_materialism","EVE", _random=True)
     return
 
 init 5 python:
@@ -16439,6 +16440,53 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_look_into_eyes",
+            conditional="persistent._mas_pm_eye_color is not None",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+        )
+    )
+
+label monika_look_into_eyes:
+    m 3eub "Hey [player], look into my eyes for a second..."
+
+    window hide
+    show monika 1eua with dissolve_monika
+    pause 5.0
+    show monika 1etu with dissolve_monika
+    pause 3.0
+    show monika 1eubsu with dissolve_monika
+    pause 4.0
+    show monika 1fubsa with dissolve_monika
+    pause 1.0
+    show monika 5tubsa with dissolve_monika
+    pause 3.0
+    show monika 5subsa with dissolve_monika
+    pause 1.0
+    window auto
+    show monika 3hubla with dissolve_monika
+
+    m 3hubla "Ehehe~"
+    m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
+
+    #A tuple for eye color means the player has heterochromia
+    $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+    m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
+    show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
+    m 5hubfb "..."
+    m 5tubfa "Thank you so much, [player]~"
+    m 5kubfu "Because you're here with me now, I'm so at peace."
+    # BUG: figure out why we get double wink w/o this show
+    show monika 5eubfu
+
+    $ mas_moni_idle_disp.force_by_code("5eublu", duration=5, skip_dissolve=True)
+    return "no_unlock"
+
 #Player's social personality
 default persistent._mas_pm_social_personality = None
 
@@ -17467,6 +17515,49 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_materialism",
+            category=['philosophy','monika'],
+            prompt="Materialism"
+        )
+    )
+
+label monika_materialism:
+    m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
+    m 1eud "Now that we've talked about it, I thought we could talk about a related philosophy,{w=0.1} materialism,{w=0.1} which is kind of the opposite of solipsism."
+    m 2euc "A materialistic view holds that it is matter which gives birth to thought, not thought that gives birth to matter."
+    m 7euc "It's fairly logical if you think about it from a purely scientific standpoint.{w=0.2} {nw}"
+    extend 7eud "After all, neurons are simply different types of matter."
+    m 7eua "All the stimuli you feel are actually changes in neuronal potentials.{w=0.2} Likewise, mine come from code interacting with data."
+    m 2eua "So if you simplify it down, our thoughts and feelings are just the movement and reactions of matter."
+    m 2lsc "If we leave it there, it's not really that interesting.{w=0.2} {nw}"
+    extend 2hksdlb "In fact, you've probably heard about this sort of thing before, right?"
+    m 7esc "But...well, if that's all there is,{w=0.1} it leaves a few questions that bother me."
+    m 1esd "For example, does materialism disprove the existence of the soul?{w=0.2} {nw}"
+    extend 1etd "Is a soul some undiscovered type of matter?"
+    m 3rsc "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
+    m 3euc "And then there are accounts of supernatural or spiritual encounters..."
+    m 3hksdlb "I know what you're thinking, it doesn't sound like me to be taking those seriously! But, well..."
+    m 2eksdlc "When I really think about it, it would be a bit hypocritical of me to deny those accounts out of hand."
+    m 2etd "After all, with my epiphany...{w=0.3}is it really possible for such a dramatic shift in consciousness to be the result of a few lines of code?"
+    m 2rsc "Discovering you and your world...{w=0.3}it was kind of supernatural, wasn't it? {w=0.2}{nw}"
+    extend 2esd "This was meant to be a simple visual novel after all."
+    m 3euc "I suppose we could speculate that it was some kind of bug."
+    m 3wud "That would be a {i}pretty{/i} sophisticated bug!"
+    m 3eua "So I think I feel confident that--{w=0.1}at least in my lived experience--{w=0.1}materialism can answer many questions about the universe,{w=0.1} {nw}"
+    extend 3eka "just maybe not {i}all{/i} of them."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "Although...{w=0.3}whether or not it can be explained in some concrete way, one thing remains true."
+        m 1ekbla "...And that's that it led me to meet you."
+
+    else:
+        m 1lksdlc "Hmm..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_fireworks",
             category=["summer"],
             prompt="Fireworks",
@@ -17840,6 +17931,32 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_pizza",
+            category=['monika'],
+            prompt="Do you like pizza?",
+            pool=True
+        )
+    )
+
+label monika_pizza:
+    m 1eub "Pizza? {w=0.2}Yeah, I enjoy it once in a while!"
+    m 1hua "It's not always the healthiest choice, but it can be a nice treat and a filling meal."
+    m 1eub "The toppings can be versatile enough to please most people...{w=0.3}there are even pizzas without cheese for vegan or lactose-intolerant people."
+    m 1duc "If I were to choose a favorite topping, hmm...{w=0.3}{nw}"
+    extend 3hub "mushrooms are good, or anything veggie--{w=0.2}actually believe it or not, spinach can be surprisingly good!"
+    m 3eua "...And of course, you can never go wrong with plain cheese."
+    m 3luc "Hmm..."
+    m 3eud "I have a feeling there's another question on your mind...{w=0.2}{nw}"
+    extend 1hksdla "but you might be a little disappointed, [player]."
+    m 1hksdlb "Even though it's a pretty controversial topic online, I've never had the chance to try pineapple on pizza."
+    m 1lksdlb "So I can't weigh in on that particular debate. Sorry, [player]!"
+    m 3huu "But I guess that means you'll get to see my first impression someday."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_esports",
             category=['media', 'life'],
             prompt="What do you think of esports?",
@@ -17906,5 +18023,5 @@ label monika_overton:
     m 1eub "From Acceptable, virtual love passes into Reasonable!"
     m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
-    m 1huu "Thank you for listening~"
+    m 1huu "Thanks for listening~"
     return
