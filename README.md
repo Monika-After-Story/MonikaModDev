@@ -11,13 +11,12 @@ If you would like to make your own mod like this one, check out our sister proje
 
 1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
 
-2. Click the installer link for your OS.
+2. Click the link for your OS.
 
 3. Once downloaded, run the installer and follow the prompts.
+    * If the installer doesn't work on your system, see the manual install steps below.
 
 4. Running DDLC will now load the Monika After Story Mod.
-
-* If the installer doesn't work on your system, see the manual install steps below.
 
 ### Manual Install
 
@@ -25,7 +24,7 @@ If you would like to make your own mod like this one, check out our sister proje
 
 1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
 
-2. Click the manual link (TODO). This will download a zip file to your system.
+2. Click the desired **Zips** link. This will download a zip file to your system.
 
 3. Extract the contents of the zip file into the base directory (the folder that contains the DDLC.exe file) of your DDLC installation.
 
