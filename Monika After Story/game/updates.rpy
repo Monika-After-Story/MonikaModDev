@@ -386,8 +386,6 @@ label v0_12_9_1(version="v0_12_9_1"):
                 action=EV_ACT_RANDOM
             )
 
-        mas_hideEVL("monika_lastpoem", "EVE", derandom=True)
-
         if mas_seenLabels(['monika_solipsism']):
             mas_protectedShowEVL("monika_materialism","EVE", _random=True)
 
