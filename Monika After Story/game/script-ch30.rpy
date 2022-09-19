@@ -1556,7 +1556,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ store.mas_surpriseBdayHideVisuals(cake=True)
 
     if datetime.date.today() == persistent._date_last_given_roses and not mas_isO31():
-        $ monika_chr.wear_acs_pst(mas_acs_roses)
+        $ monika_chr.wear_acs(mas_acs_roses)
 
     # dissolving everything means dissolve last
     if dissolve_all and not hide_mask:
@@ -1926,15 +1926,15 @@ label ch30_post_exp_check:
             store.mas_per_check.is_per_corrupt()
             and not renpy.seen_label("mas_corrupted_persistent")
     ):
-        $ pushEvent("mas_corrupted_persistent")
+        $ MASEventList.push("mas_corrupted_persistent")
 
     # push greeting if we have one
     if selected_greeting:
         # before greeting, we should push idle clean if in idle mode
         if persistent._mas_in_idle_mode:
-            $ pushEvent("mas_idle_mode_greeting_cleanup")
+            $ MASEventList.push("mas_idle_mode_greeting_cleanup")
 
-        $ pushEvent(selected_greeting)
+        $ MASEventList.push(selected_greeting)
 
     #Now we check if we should drink
     $ MASConsumable._checkConsumables(startup=not mas_globals.returned_home_this_sesh)
@@ -2182,7 +2182,7 @@ label mas_ch30_select_unseen:
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate, otherwise stay slient
             if mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(weeks=2)):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
 
             jump post_pick_random_topic
 
@@ -2211,7 +2211,7 @@ label mas_ch30_select_seen:
                 len(mas_rev_mostseen) == 0
                 and mas_timePastSince(mas_getEVL_last_seen("mas_random_limit_reached"), datetime.timedelta(days=1))
             ):
-                $ pushEvent("mas_random_limit_reached")
+                $ MASEventList.push("mas_random_limit_reached")
                 jump post_pick_random_topic
 
             # if still no events, just jump to idle loop

@@ -571,7 +571,7 @@ init 5 python:
             #If this isn't a prepable type and we don't have a current consumable of this type, we should push the ev
             elif not self.prepable() and not MASConsumable.__getCurrentConsumable(self.consumable_type):
                 persistent._mas_current_consumable[self.consumable_type]["id"] = self.consumable_id
-                queueEvent(self.get_cons_evl)
+                MASEventList.queue(self.get_cons_evl)
 
             #Increment cup count
             self.increment()
@@ -978,7 +978,7 @@ init 5 python:
 
                 #We should warn if there's something to warn about
                 if MASConsumable._getLowConsNotWarned():
-                    store.queueEvent("mas_consumables_generic_running_out_absentuse")
+                    store.MASEventList.queue("mas_consumables_generic_running_out_absentuse")
 
         @staticmethod
         def _absentUse():
@@ -1517,7 +1517,7 @@ label mas_consumables_generic_finish_having(consumable):
             and len(MASConsumable._getLowCons()) > 0
         ):
             $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts")
-            $ queueEvent("mas_consumables_generic_queued_running_out")
+            $ MASEventList.queue("mas_consumables_generic_queued_running_out")
 
     #Only have one left
     elif not get_more and consumable.isCriticalLow() and consumable.should_restock_warn:
@@ -1812,7 +1812,7 @@ label mas_consumables_candycane_finish_having:
                 and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
                 and len(MASConsumable._getLowCons()) > 0
             ):
-                $ queueEvent("mas_consumables_generic_queued_running_out")
+                $ MASEventList.queue("mas_consumables_generic_queued_running_out")
 
         else:
             m 1eua "Okay, what else should we do today?"
