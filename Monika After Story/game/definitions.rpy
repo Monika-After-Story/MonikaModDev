@@ -4560,7 +4560,7 @@ init -995 python in mas_utils:
 
     def is_file_present(filename):
         """
-        Checks if a file is present
+        Checks if a file is present (exists)
         """
         if not filename.startswith("/"):
             filename = "/" + filename
