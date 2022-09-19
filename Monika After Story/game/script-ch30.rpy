@@ -839,11 +839,10 @@ init 995 python in mas_reset:
             func - function to register
             priority - priority to run function
                 Default: 9999
-                PLEASE DO NOT USE PRIORITIES BELOW 1 - the start function should
-                be first.
-                NOTE: please be mindful of where you plugin your reset code.
-                Take a look at the reset functions below for the correct
-                placement.
+                PLEASE USE PRIORITIES AT 9999 or above. If you need to slip
+                something between existing reset code, be mindful of where you
+                plugin your reset code. Take a look at the reset functions
+                below for the correct placement.
         """
         return mas_submod_utils.functionplugin("ch30_reset", priority=priority) 
 
