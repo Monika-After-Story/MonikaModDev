@@ -617,13 +617,13 @@ init -900 python in mas_affection:
 
         if bypass:
             # Can only bypass so much
-            bypass_limit = 50.0 if store.mas_isSpecialDay() else 10.0
+            bypass_limit = 30.0 if store.mas_isSpecialDay() else 10.0
             bypass_available = max(bypass_limit - data[3], 0.0)# This should always be > 0, but just in case
             temp_amount = amount - bypass_available
             # Is the bypass too big?
             if temp_amount > 0.0:
                 # Store part of it
-                bank_available = max(50.0-data[1], 0.0)
+                bank_available = max(70.0-data[1], 0.0)
                 bank_amount = min(temp_amount, bank_available)
                 # Grant the rest
                 # NOTE: Subtract temp_amount, NOT bank_amount to prevent gain over the bypass limit
