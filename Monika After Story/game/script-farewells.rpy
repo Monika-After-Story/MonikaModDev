@@ -823,7 +823,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                             m 6hubfb "Sleep tight!"
 
                         "No.":
-                            $ mas_loseAffection()
+                            $ mas_loseAffection(1.5)
                             m 1lkc "..."
                             m 7dkd "Fine..."
                             m 2lsc "Goodnight [player]..."

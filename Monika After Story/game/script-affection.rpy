@@ -3462,7 +3462,7 @@ label mas_affection_yesapology:
     jump ch30_preloop
 
 label mas_affection_apologydeleted:
-    $ mas_loseAffection(modifier=3.0)
+    $ mas_loseAffection(modifier=1.5)
     m 1wud "..."
     m 2efd "[player], did you delete the apology note I wanted to keep?"
     m "Why would you do that? Are you not {i}really{/i} sorry?"
