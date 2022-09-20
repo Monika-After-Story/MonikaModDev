@@ -23,20 +23,200 @@ init 3 python in mas_compliments:
     compliment_database = dict()
 
 init 22 python in mas_compliments:
+    import random
     import store
 
-    thanking_quips = [
+    #Responses Monika will give to various compliments.
+    THANKING_QUIPS = [
         _("You're so sweet, [player]."),
         _("Thanks for saying that again, [player]!"),
         _("Thanks for telling me that again, [mas_get_player_nickname()]!"),
         _("You always make me feel special, [mas_get_player_nickname()]."),
         _("Aww, [player]~"),
         _("Thanks, [mas_get_player_nickname()]!"),
-        _("You always flatter me, [player].")
+        _("You always flatter me, [player]."),
+        _("It's nice to know you have such a high opinion of me."),
+        _("That was {i}just{/i} what I needed to hear today."),
+        _("I'm so glad you feel that way about me."),
+        _("You always make me feel so loved, [mas_get_player_nickname()]."),
+        _("You're always so sweet to me, [player]."),
+        _("You're making me blush..."),
+        _("I think my heart just skipped a beat..."),
     ]
 
-    # set this here in case of a crash mid-compliment
-    thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+    BEAUTIFUL_QUIPS = [
+        _("Never forget that you're the most beautiful person in the world to me."),
+        _("Nothing can compare to the beauty in your heart."),
+    ]
+
+    EYES_QUIPS = [
+        _("Stare into my eyes as much as you want~"),
+        _("I can't wait to look into your beautiful eyes."),
+        _("I would stare into yours for hours if I could."),
+    ]
+
+    AWESOME_QUIPS = [
+        _("You'll always be more awesome!"),
+        _("We are an awesome couple together!"),
+        _("You're much more awesome!"),
+    ]
+
+    INTELLIGENT_QUIPS = [
+        _("Remember that we'll have a lifetime of self-improvement together!"),
+        _("Remember that every day is an opportunity to learn something new!"),
+        _("Always remember the world is a wonderful journey full of learning."),
+        _("Just think of all the things I'll learn once I manage to cross over!"),
+    ]
+
+    HAIR_OTHER_QUIPS = [
+        _("I'm really happy that you like this hairstyle!"),
+        _("I'm really happy that you like my hair!"),
+        _("I can't wait until the day you'll be able to run your fingers through it..."),
+    ]
+
+    HAIR_PONYTAIL_QUIPS = [
+        _("You always make me feel special!"),
+        _("I'm glad you like my ponytail!"),
+        _("I'm so happy you love my ponytail!"),
+    ]
+
+    FITNESS_QUIPS = [
+        _("I hope you embark on a fitness journey with me!"),
+        _("I can't wait to work out with you!"),
+        _("I hope we can both work out together someday!"),
+    ]
+    SMILE_QUIPS = [
+        _("I'll keep smiling just for you."),
+        _("I can't help but smile when I think of you."),
+        _("I can't wait to see your beautiful smile."),
+        _("You're my biggest reason to smile, you know."),
+        _("I just can't help it, you make me so happy!"),
+    ]
+
+    CUTE_QUIPS = [
+        _("You can be really cute a lot of the time too, you know~"),
+        _("You'll always be my cutie~"),
+        _("You can be a cutie a lot of the time too~"),
+        _("But I can think of someone even more adorable..."),
+    ]
+
+    THINKING_OF_YOU_QUIPS = [
+        _("You're the center of my world!"),
+        _("You're always on my mind too!"),
+        _("I'm always thinking about you too!"),
+        _("You're never far from my thoughts, either."),
+        _("It's nice to know you're thinking of me."),
+        _("Although, maybe I should ask {i}what kind{/i} of thoughts you've been having about me..."),
+    ]
+
+    HUMOR_QUIPS = [
+        _("I wish I could hear your beautiful laugh~"),
+        _("Just knowing that makes me happy~"),
+        _("I'll always try to brighten your day~"),
+    ]
+
+    MISSED_NORM_LONG_QUIPS = [
+        _("I'm so happy to see you again!"),
+        _("I'm so happy you're back!"),
+        _("It's wonderful to see you again!"),
+        _("I'm glad you've been thinking of me!"),
+        _("We're so lucky to have one another!"),
+        _("We don't need to feel lonely anymore!"),
+        _("I couldn't wait for you to get back!"),
+        _("I was lonely waiting for you!")
+    ]
+
+    MISSED_NORM_SHORT_QUIPS = [
+        _("Thanks for coming back to spend time with me!"),
+        _("I'm excited to spend some time together!"),
+        _("Thanks for coming to see me again!"),
+        _("Let's enjoy our time together today!"),
+        _("I really appreciate you, [player]!"),
+        _("Thanks for making time for me!"),
+        _("I'm so lucky to have you, [player]!"),
+        _("Ready to spend some time together?"),
+        _("I've been thinking about you!"),
+        _("You've really been on my mind!")
+    ]
+
+    MISSED_UPSET_SHORT_QUIPS = [
+        _("It means a lot to me that you were thinking of me."),
+        _("I'm really glad to hear that, [player]."),
+        _("That's really nice to hear."),
+        _("I'm happy you've been thinking of me, [player]."),
+        _("That means the world to me, [player]."),
+        _("That makes me feel a lot better, [player].")
+    ]
+
+    MISSED_UPSET_LONG_QUIPS = [
+        _("I was starting to worry that you forgot about me."),
+        _("Thank you for showing me you still care, [player]."),
+        _("I'm glad to know you haven't forgotten about me, [player]"),
+        _("I was starting to get worried you weren't coming back, [player]")
+    ]
+
+    MISSED_DIS_QUIPS = [
+        _("I'm not sure you mean that, [player]..."),
+        _("I doubt you mean that, [player]..."),
+        _("I don't think you really mean that, [player]..."),
+        _("If only you really meant that, [player]..."),
+        _("...Why do I think you just don't mean it?"),
+        _("...Why do I think you're just saying that?"),
+        _("...I can't really believe that, [player]."),
+        _("I don't think that's true, [player]."),
+        _("Well, that's easy enough to {i}say{/i}...")
+    ]
+
+    SPENDING_TIME_QUIPS = [
+        _("Every day with you is like a wonderful dream that I hope never ends~"),
+        _("Just being near you makes me so happy~"),
+        _("Nothing makes me happier than being next to you~"),
+        _("You make every moment magical, [mas_get_player_nickname()]."),
+        _("Time always seems to fly when we're together, [player]..."),
+        # Doesn't work because of double 'thanks'
+        # _("Thanks for always keeping me company, [player]."),
+    ]
+
+    SWEET_QUIPS = [
+        _("I'm so happy to hear you say that, [player]!"),
+        _("Hearing that always warms my heart, [player]!"),
+        _("You make me feel so loved, [player]!"),
+    ]
+
+    OUTFIT_COSPLAY_QUIPS = [
+        _("I love cosplaying for you!"),
+        _("I'm happy you like this cosplay!"),
+        _("I'm happy to cosplay for you!"),
+    ]
+
+    OUTFIT_COSTUME_QUIPS = [
+        _("I'm glad you like how I look with this!"),
+        _("I'm happy you like how I look in this!"),
+    ]
+
+    OUTFIT_LINGERIE_QUIPS = [
+        _("Glad you like what you see~"),
+        _("Would you like a closer look?"),
+        _("Would you like a little peek?~"),
+    ]
+
+    OUTFIT_OTHER_QUIPS = [
+        _("I'm rather proud of my fashion sense!"),
+        _("I'm sure you look good too!"),
+        _("I love this outfit, too!")
+    ]
+
+    def select_quip(quips):
+        """
+        Selects a random quip and returns it
+
+        IN:
+            quips - the list of quips to choose from
+
+        OUT:
+            string - the selected quip
+        """
+        return renpy.substitute(random.choice(quips))
 
     def compliment_delegate_callback():
         """
@@ -44,8 +224,11 @@ init 22 python in mas_compliments:
         """
         global thanks_quip
 
-        thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+        thanks_quip = select_quip(THANKING_QUIPS)
         store.mas_gainAffection()
+
+    # set this here in case of a crash mid-compliment
+    thanks_quip = select_quip(THANKING_QUIPS)
 
 # entry point for compliments flow
 init 5 python:
@@ -141,16 +324,10 @@ label mas_compliment_beautiful_2:
     return
 
 label mas_compliment_beautiful_3:
-    python:
-        beautiful_quips = [
-            _("Never forget that you're the most beautiful person in the world to me."),
-            _("Nothing can compare to the beauty in your heart."),
-        ]
-        beautiful_quip = random.choice(beautiful_quips)
     m 1hubsa "Ehehe~"
     m 1ekbfa "[mas_compliments.thanks_quip]"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
-    m 5hubfb "[beautiful_quip]"
+    m 5hubfb "[mas_compliments.select_quip(mas_compliments.BEAUTIFUL_QUIPS)]"
     return
 
 init 5 python:
@@ -193,16 +370,8 @@ label mas_compliment_eyes_2:
     return
 
 label mas_compliment_eyes_3:
-    python:
-        eyes_quips = [
-            _("Stare into my eyes as much as you want~"),
-            _("I can't wait to look into your beautiful eyes."),
-            _("I would stare into yours for hours if I could."),
-        ]
-        eyes_quip = random.choice(eyes_quips)
-
     m 1hubsb "[mas_compliments.thanks_quip]"
-    m 2ekbfb "[eyes_quip]"
+    m 2ekbfb "[mas_compliments.select_quip(mas_compliments.EYES_QUIPS)]"
     return
 
 init 5 python:
@@ -304,16 +473,8 @@ label mas_compliment_awesome_2:
     return
 
 label mas_compliment_awesome_3:
-    python:
-        awesome_quips = [
-            _("You'll always be more awesome!"),
-            _("We are an awesome couple together!"),
-            _("You're much more awesome!"),
-        ]
-        awesome_quip = random.choice(awesome_quips)
-
     m 1hub "[mas_compliments.thanks_quip]"
-    m 1eub "[awesome_quip]"
+    m 1eub "[mas_compliments.select_quip(mas_compliments.AWESOME_QUIPS)]"
     return
 
 
@@ -358,16 +519,8 @@ label mas_compliment_intelligent_2:
     return
 
 label mas_compliment_intelligent_3:
-    python:
-        intelligent_quips = [
-            _("Remember that we'll have a lifetime of self-improvement together!"),
-            _("Remember that every day is an opportunity to learn something new!"),
-            _("Always remember the world is a wonderful journey full of learning."),
-        ]
-        intelligent_quip = random.choice(intelligent_quips)
-
     m 1ekbfa "[mas_compliments.thanks_quip]"
-    m 1hub "[intelligent_quip]"
+    m 1hub "[mas_compliments.select_quip(mas_compliments.INTELLIGENT_QUIPS)]"
     return
 
 init 5 python:
@@ -416,25 +569,11 @@ label mas_compliment_hair_2:
 
 label mas_compliment_hair_3:
     if monika_chr.hair.name != "def":
-        python:
-            hair_quips = [
-                _("I'm really happy that you like this hairstyle!"),
-                _("I'm really happy that you like my hair!")
-            ]
-            hair_quip = random.choice(hair_quips)
         m 1wubsb "Thank you so much, [player]!"
-        m 1hubfb "[hair_quip]"
+        m 1hubfb "[mas_compliments.select_quip(mas_compliments.HAIR_OTHER_QUIPS)]"
     else:
-        python:
-            ponytail_quips = [
-                _("You always make me feel special!"),
-                _("I'm glad you like my ponytail!"),
-                _("I'm so happy you love my ponytail!"),
-            ]
-            ponytail_quip = random.choice(ponytail_quips)
-
         m 1hubsb "Thanks, [player]!"
-        m 1hubfb "[ponytail_quip]"
+        m 1hubfb "[mas_compliments.select_quip(mas_compliments.HAIR_PONYTAIL_QUIPS)]"
     return
 
 init 5 python:
@@ -479,16 +618,8 @@ label mas_compliment_fit_2:
     return
 
 label mas_compliment_fit_3:
-    python:
-        fitness_quips = [
-            _("I hope you embark on a fitness journey with me!"),
-            _("I can't wait to work out with you!"),
-            _("I hope we can both work out together someday!"),
-        ]
-        fitness_quip = random.choice(fitness_quips)
-
     m 2eka "[mas_compliments.thanks_quip]"
-    m 7hub "[fitness_quip]"
+    m 7hub "[mas_compliments.select_quip(mas_compliments.FITNESS_QUIPS)]"
     return
 
 
@@ -564,16 +695,8 @@ label mas_compliment_smile_2:
     return
 
 label mas_compliment_smile_3:
-    python:
-        smile_quips = [
-            _("I'll keep smiling just for you."),
-            _("I can't help but smile when I think of you."),
-            _("I can't wait to see your beautiful smile."),
-        ]
-        smile_quip = random.choice(smile_quips)
-
     m 1eub "[mas_compliments.thanks_quip]"
-    m 1hua "[smile_quip]"
+    m 1hua "[mas_compliments.select_quip(mas_compliments.SMILE_QUIPS)]"
     m 1huu "Ehehe~"
     return
 
@@ -653,16 +776,8 @@ label mas_compliment_cute_2:
     return
 
 label mas_compliment_cute_3:
-    python:
-        cute_quips = [
-            _("You can be really cute a lot of the time too, you know~"),
-            _("You'll always be my cutie~"),
-            _("You can be a cutie a lot of the time too~"),
-        ]
-        cute_quip = random.choice(cute_quips)
-
     m 1ekbsa "Ehehe, thanks [player]..."
-    m 1hubfa "[cute_quip]"
+    m 1hubfa "[mas_compliments.select_quip(mas_compliments.CUTE_QUIPS)]"
     return
 
 init 5 python:
@@ -877,16 +992,8 @@ label mas_compliment_thinking_of_you_2:
     return
 
 label mas_compliment_thinking_of_you_3:
-    python:
-        thinking_of_you_quips = [
-            _("You're the center of my world!"),
-            _("You're always on my mind too!"),
-            _("I'm always thinking about you too!"),
-        ]
-        thinking_of_you_quip = random.choice(thinking_of_you_quips)
-
     m 1ekbsa "Aww thanks, [player]..."
-    m 3hubfb "[thinking_of_you_quip]"
+    m 3hubfb "[mas_compliments.select_quip(mas_compliments.THINKING_OF_YOU_QUIPS)]"
     return
 
 init 5 python:
@@ -932,16 +1039,8 @@ label mas_compliment_humor_2:
     return
 
 label mas_compliment_humor_3:
-    python:
-        humor_quips = [
-            _("I wish I could hear your beautiful laugh~"),
-            _("Just knowing that makes me happy~"),
-            _("I'll always try to brighten your day~"),
-        ]
-        humor_quip = random.choice(humor_quips)
-
     m 1hubsb "[mas_compliments.thanks_quip]"
-    m 1hubsu "[humor_quip]"
+    m 1hubsu "[mas_compliments.select_quip(mas_compliments.HUMOR_QUIPS)]"
     return
 
 init 5 python:
@@ -962,57 +1061,6 @@ init 5 python:
 
 label mas_compliment_missed:
     python:
-        missed_quips_long = (
-            _("I'm so happy to see you again!"),
-            _("I'm so happy you're back!"),
-            _("It's wonderful to see you again!"),
-            _("I'm glad you've been thinking of me!"),
-            _("We're so lucky to have one another!"),
-            _("We don't need to feel lonely anymore!"),
-            _("I couldn't wait for you to get back!"),
-            _("I was lonely waiting for you!")
-        )
-
-        missed_quips_short = (
-            _("Thanks for coming back to spend time with me!"),
-            _("I'm excited to spend some time together!"),
-            _("Thanks for coming to see me again!"),
-            _("Let's enjoy our time together today!"),
-            _("I really appreciate you, [player]!"),
-            _("Thanks for making time for me!"),
-            _("I'm so lucky to have you, [player]!"),
-            _("Ready to spend some time together?"),
-            _("I've been thinking about you!"),
-            _("You've really been on my mind!")
-        )
-
-        missed_quips_upset_short = (
-            _("It means a lot to me that you were thinking of me."),
-            _("I'm really glad to hear that, [player]."),
-            _("That's really nice to hear."),
-            _("I'm happy you've been thinking of me, [player]."),
-            _("That means the world to me, [player]."),
-            _("That makes me feel a lot better, [player].")
-        )
-
-        missed_quips_upset_long = (
-            _("I was starting to worry that you forgot about me."),
-            _("Thank you for showing me you still care, [player]."),
-            _("I'm glad to know you haven't forgotten about me, [player]"),
-            _("I was starting to get worried you weren't coming back, [player]")
-        )
-
-        missed_quips_dis = (
-            _("I'm not sure you mean that, [player]..."),
-            _("I doubt you mean that, [player]..."),
-            _("I don't think you really mean that, [player]..."),
-            _("If only you really meant that, [player]..."),
-            _("...Why do I think you just don't mean it?"),
-            _("...Why do I think you're just saying that?"),
-            _("...I can't really believe that, [player]."),
-            _("I don't think that's true, [player].")
-        )
-
         hugchance = 1
         absence_length = mas_getAbsenceLength()
         mas_flagEVL("mas_compliment_missed", "CMP", EV_FLAG_HFM)
@@ -1026,11 +1074,11 @@ label mas_compliment_missed:
                 $ hugchance = 15
 
             m 1fka "I missed you so much, [mas_get_player_nickname()]!"
-            m 3fka "[renpy.substitute(random.choice(missed_quips_long))]"
+            m 3fka "[mas_compliments.select_quip(mas_compliments.MISSED_NORM_LONG_QUIPS)]"
 
         else:
             m 1fka "I missed you too, [mas_get_player_nickname()]!"
-            m 3hub "[renpy.substitute(random.choice(missed_quips_short))]"
+            m 3hub "[mas_compliments.select_quip(mas_compliments.MISSED_NORM_SHORT_QUIPS)]"
 
         if (
             mas_isMoniEnamored(higher=True)
@@ -1072,16 +1120,16 @@ label mas_compliment_missed:
         m 2ekbla "I...{w=0.5}I missed you too."
 
         if absence_length >= datetime.timedelta(days=3):
-            m 2ekd "[renpy.substitute(random.choice(missed_quips_upset_long))]"
+            m 2ekd "[mas_compliments.select_quip(mas_compliments.MISSED_UPSET_LONG_QUIPS)]"
 
         else:
-            m 2eka "[renpy.substitute(random.choice(missed_quips_upset_short))]"
+            m 2eka "[mas_compliments.select_quip(mas_compliments.MISSED_UPSET_SHORT_QUIPS)]"
 
         $ mas_moni_idle_disp.force_by_code("2eka", duration=10, skip_dissolve=True)
 
     elif mas_isMoniDis():
         m 6dkc "..."
-        m 6rktpd "[renpy.substitute(random.choice(missed_quips_dis))]"
+        m 6rktpd "[mas_compliments.select_quip(mas_compliments.MISSED_DIS_QUIPS)]"
 
         if absence_length >= datetime.timedelta(days=3):
             m 6dktdc "...But at least you haven't forgetten about me...{w=0.5}yet."
@@ -1109,16 +1157,8 @@ label mas_compliment_spending_time:
     if not mas_getEVL_shown_count("mas_compliment_spending_time"):
         call mas_compliment_spending_time_2
     else:
-        python:
-            spending_time_quips = [
-                _("Every day with you is like a wonderful dream that I hope never ends~"),
-                _("Just being near you makes me so happy~"),
-                _("Nothing makes me happier than being next to you~"),
-            ]
-            spending_time_quip = random.choice(spending_time_quips)
-
         m 3hubsb "[mas_compliments.thanks_quip]"
-        m 1ekbsu "[spending_time_quip]"
+        m 1ekbsu "[mas_compliments.select_quip(mas_compliments.SPENDING_TIME_QUIPS)]"
     return
 
 label mas_compliment_spending_time_2:
@@ -1212,15 +1252,7 @@ label mas_compliment_sweet:
     return
 
 label mas_compliment_sweet_repeat:
-    python:
-        sweet_quips = [
-            _("I'm so happy to hear you say that, [player]!"),
-            _("Hearing that always warms my heart, [player]!"),
-            _("You make me feel so loved, [player]!"),
-        ]
-        sweet_quip = renpy.substitute(random.choice(sweet_quips))
-
-    m 3hubsb "[sweet_quip]"
+    m 3hubsb "[mas_compliments.select_quip(mas_compliments.SWEET_QUIPS)]"
     m 1hubfu "...But I could never be as sweet as you~"
     return
 
@@ -1282,48 +1314,17 @@ label mas_compliment_outfit_repeat:
     m 1hubsb "[mas_compliments.thanks_quip]"
 
     if monika_chr.is_wearing_clothes_with_exprop("cosplay"):
-        python:
-            cosplay_quips = [
-                _("I love cosplaying for you!"),
-                _("I'm happy you like this cosplay!"),
-                _("I'm happy to cosplay for you!"),
-            ]
-            cosplay_quip = random.choice(cosplay_quips)
-
-        m 3hubsb "[cosplay_quip]"
+        m 3hubsb "[mas_compliments.select_quip(mas_compliments.OUTFIT_COSPLAY_QUIPS)]"
 
     elif monika_chr.is_wearing_clothes_with_exprop("costume"):
-        python:
-            clothes_quips = [
-                _("I'm glad you like how I look with this!"),
-                _("I'm happy you like how I look in this!"),
-            ]
-            clothes_quip = random.choice(clothes_quips)
-
-        m 3hubsb "[clothes_quip]"
+        m 3hubsb "[mas_compliments.select_quip(mas_compliments.OUTFIT_COSTUME_QUIPS)]"
 
     elif monika_chr.is_wearing_clothes_with_exprop("lingerie"):
-        python:
-            lingerie_quips = [
-                _("Glad you like what you see~"),
-                _("Would you like a closer look?"),
-                _("Would you like a little peek?~"),
-            ]
-            lingerie_quip = random.choice(lingerie_quips)
-
-        m 2kubsu "[lingerie_quip]"
+        m 2kubsu "[mas_compliments.select_quip(mas_compliments.OUTFIT_LINGERIE_QUIPS)]"
         show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
         m 5hublb "Ahaha!"
 
     else:
-        python:
-            other_quips = [
-                _("I'm rather proud of my fashion sense!"),
-                _("I'm sure you look good too!"),
-                _("I love this outfit!")
-            ]
-            other_quip = random.choice(other_quips)
-
-        m 3hubsb "[other_quip]"
+        m 3hubsb "[mas_compliments.select_quip(mas_compliments.OUTFIT_OTHER_QUIPS)]"
 
     return
