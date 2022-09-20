@@ -4563,7 +4563,7 @@ init -995 python in mas_utils:
 
     def is_file_present(filename):
         """
-        Checks if a file is present
+        Checks if a file is present (exists)
         """
         if not filename.startswith("/"):
             filename = "/" + filename
@@ -6222,10 +6222,10 @@ init 2 python:
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+                monika_chr.wear_acs(mas_acs_quetzalplushie_santahat)
 
             else:
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+                monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         else:
             # run the plushie exit PP if plushie is not selected

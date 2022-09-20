@@ -10,7 +10,11 @@ default 10 persistent._mas_game_nou_house_rules = store.mas_nou.get_default_hous
 
 
 init 500 python in mas_nou:
+    # Load sfx assets from disk
     NOU._load_sfx()
+    # Update persistent if needed
+    update_house_rules()
+
 
 # NOU CLASS DEF
 init 5 python in mas_nou:
@@ -33,7 +37,8 @@ init 5 python in mas_nou:
         "points_to_win": 200,
         "starting_cards": 7,
         "stackable_d2": False,
-        "unrestricted_wd4": False
+        "unrestricted_wd4": False,
+        "reflect_chaos": False
     }
 
 
@@ -1158,17 +1163,34 @@ init 5 python in mas_nou:
                 return (
                     (
                         self.discardpile[-1].label == "Wild Draw Four"
-                        and card.label == "Draw Two"
-                        and self.discardpile[-1].color == card.color
+                        and (
+                            (
+                                card.label == "Draw Two"
+                                and self.discardpile[-1].color == card.color
+                            )
+                            or (
+                                get_house_rule("reflect_chaos")
+                                and card.label == "Wild Draw Four"
+                            )
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Draw Two"
-                        and card.label == "Draw Two"
+                        and (
+                            card.label == "Draw Two"
+                            or (
+                                get_house_rule("reflect_chaos")
+                                and card.label == "Wild Draw Four"
+                            )
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Skip"
                         and card.label == "Skip"
-                        and self.discardpile[-1].color == card.color
+                        and (
+                            self.discardpile[-1].color == card.color
+                            or get_house_rule("reflect_chaos")
+                        )
                     )
                     or (
                         self.discardpile[-1].label == "Reverse"
@@ -1224,6 +1246,10 @@ init 5 python in mas_nou:
 
                 elif self.discardpile[-1].label == "Wild Draw Four":
                     next_player.should_draw_cards = 4
+
+                    if get_house_rule("reflect_chaos") and get_house_rule("stackable_d2"):
+                        next_player.should_draw_cards += current_player.should_draw_cards
+
                     current_player.should_draw_cards = 0
 
             # if this player should say 'NOU', we'll set the timeout
@@ -1948,16 +1974,31 @@ init 5 python in mas_nou:
                     dlg_line_list.append(".")
 
                     if not player.drew_card:
-                        if card.type == "action":
-                            card_for_reflect = card.label
-                            if card.label == "Skip":
-                                color_for_reflect = card.color
+                        if not get_house_rule("reflect_chaos"):
+                            if card.type == "action":
+                                card_for_reflect = card.label
+                                if card.label == "Skip":
+                                    color_for_reflect = card.color
+                                else:
+                                    color_for_reflect = ""
+
                             else:
-                                color_for_reflect = ""
+                                card_for_reflect = "Draw Two"
+                                color_for_reflect = card.color
 
                         else:
-                            card_for_reflect = "Draw Two"
-                            color_for_reflect = card.color
+                            if card.type == "action":
+                                if card.label == "Draw Two":
+                                    card_for_reflect = "Draw Two{/i} or {i}Draw Four"
+
+                                else:
+                                    card_for_reflect = card.label
+
+                                color_for_reflect = ""
+
+                            else:
+                                card_for_reflect = "Draw Two{/i} or {i}Draw Four"
+                                color_for_reflect = card.color
 
                         dlg_line_list.append(
                             " If you have a {}{}{{i}}{}{{/i}}, you could {{i}}try{{/i}} to reflect {} card.".format(
@@ -2972,18 +3013,23 @@ init 5 python in mas_nou:
                     color = sorted_cards_data[i][0].replace("num_", "")
                     action_cards_ids += cards_data["act_" + color]["ids"]
 
+                # If we can reflect using wd4, add them to the pool
+                if get_house_rule("reflect_chaos"):
+                    action_cards_ids += cards_data["wd4"]["ids"]
+
                 # now try to play actions from our sorted list
                 for id in action_cards_ids:
                     card = self.hand[id]
 
                     if self.game._is_matching_card(self, card):
-                        # NOTE: Since this is the reflect flow, you can't play a wild card here
-                        # the only way to reflect other special cards is to play an appropriate ACTION card (not WILD card)
-                        # if (
-                        #     should_choose_color
-                        #     and card.type == "wild"
-                        # ):
-                        #     card.color = self.choose_color(ignored_card=card)
+                        # NOTE: Usually the only way to reflect other special cards is to play
+                        # an appropriate ACTION card (not WILD card), but with the reflect_chaos
+                        # rule you can reflect using WD4
+                        if (
+                            should_choose_color
+                            and card.type == "wild"
+                        ):
+                            self.chosen_color = self.choose_color(ignored_card=card)
 
                         return card
 
@@ -3661,6 +3707,12 @@ init 5 python in mas_nou:
                             or monika_reminded_yell_nou
                         )
                     )
+                    or (
+                        reaction.type in (self.game.MONIKA_REFLECTED_WDF, self.game.MONIKA_REFLECTED_ACT)
+                        and get_house_rule("reflect_chaos")
+                        and reaction.monika_card
+                        and reaction.monika_card.type == "wild"
+                    )
                 )
                 and len(self.hand) > 1# Don't announce the colour if you won
             ):
@@ -3672,6 +3724,8 @@ init 5 python in mas_nou:
 # UTIL FUNCTIONS
 init 5 python in mas_nou:
     import datetime
+
+    __SENTRY = object()
 
     def get_default_house_rules():
         """
@@ -3691,11 +3745,28 @@ init 5 python in mas_nou:
             force - bool, do we want to rewrite existing keys?
         """
         if persistent._mas_game_nou_house_rules is None:
-            persistent._mas_game_nou_house_rules = {}
+            persistent._mas_game_nou_house_rules = get_default_house_rules()
+            return
 
         for k, v in DEF_RULES_VALUES.items():
             if k not in persistent._mas_game_nou_house_rules or force:
                 persistent._mas_game_nou_house_rules[k] = v
+
+    def are_default_house_rules():
+        """
+        Checks if the current settings are default
+
+        OUT:
+            bool
+        """
+        if persistent._mas_game_nou_house_rules is None:
+            return False
+
+        for k, def_v in DEF_RULES_VALUES.items():
+            if def_v != persistent._mas_game_nou_house_rules.get(k, __SENTRY):
+                return False
+
+        return True
 
     def get_house_rule(name):
         """
@@ -3927,59 +3998,74 @@ label monika_change_nou_house_rules:
     else:
         m 1eub "Of course."
 
+    # Since renpain is junk and doesn't allow us
+    # jump with args, we have to use this crutch
+    label .pre_menu(has_changed_rules=False, from_game=False):
+        pass
+
     label .menu_loop:
         python:
             menu_items = [
                 (
-                    _("I'd like to change the number of points required to win."),
+                    _("I'd like to change the number of points required to win"),
                     "points_to_win",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to change the number of cards we start each round with."),
+                    _("I'd like to change the number of cards we start each round with"),
                     "starting_cards",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to play with stackable Draw 2's.") if not mas_nou.get_house_rule("stackable_d2") else _("I'd like to play with non-stackable Draw 2's."),
+                    _("I'd like to play with stackable Draw 2's") if not mas_nou.get_house_rule("stackable_d2") else _("I'd like to play with non-stackable Draw 2's"),
                     "stackable_d2",
                     False,
                     False
                 ),
                 (
-                    _("I'd like to play with unrestricted Wild Draw 4's.") if not mas_nou.get_house_rule("unrestricted_wd4") else _("I'd like to play with restricted Wild Draw 4's."),
+                    _("I'd like to play with unrestricted Wild Draw 4's") if not mas_nou.get_house_rule("unrestricted_wd4") else _("I'd like to play with restricted Wild Draw 4's"),
                     "unrestricted_wd4",
+                    False,
+                    False
+                ),
+                (
+                    _("I'd like to play Reflect Chaos") if not mas_nou.get_house_rule("reflect_chaos") else _("I'd like to play with classic reflects"),
+                    "reflect_chaos",
                     False,
                     False
                 )
             ]
 
-            if not (
-                mas_nou.get_house_rule("points_to_win") == 200
-                and mas_nou.get_house_rule("starting_cards") == 7
-                and mas_nou.get_house_rule("stackable_d2") == False
-                and mas_nou.get_house_rule("unrestricted_wd4") == False
-            ):
+            if not mas_nou.are_default_house_rules():
                 menu_items.append((_("I'd like to go back to the classic rules."), "restore", False, False))
 
             final_items = (
                 (_("Can you explain these house rules?"), "explain", False, False, 20),
-                (_("Nevermind"), False, False, False, 0)
+                (_("Done" if has_changed_rules else "Nevermind"), False, False, False, 0)
             )
 
         show monika 1eua at t21 zorder MAS_MONIKA_Z
 
-        $ renpy.say(m, _("What kind of rule would you like to change?"), interact=False)
+        if has_changed_rules:
+            m "Would you like to change anything else?" nointeract
+
+        else:
+            m "What kind of rule would you like to change?" nointeract
 
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
 
         show monika 1eua at t11 zorder MAS_MONIKA_Z
 
         if not _return:
-            m 1eua "Oh, alright."
+
+            call monika_change_nou_house_rules.no_change
             $ del menu_items, final_items
+
+            if _return:
+                jump mas_nou_game_define
+
             return
 
         elif _return == "points_to_win":
@@ -4002,7 +4088,6 @@ label monika_change_nou_house_rules:
 
         elif _return == "unrestricted_wd4":
             if not mas_nou.get_house_rule("unrestricted_wd4"):
-                # m "Oh, you better be ready for this one, [player]~"
                 m 1eua "That sounds fun."
 
             else:
@@ -4010,17 +4095,21 @@ label monika_change_nou_house_rules:
 
             $ mas_nou.reverse_house_rule("unrestricted_wd4")
 
+        elif _return == "reflect_chaos":
+            if not mas_nou.get_house_rule("reflect_chaos"):
+                m 1kuu "Oh, you better be ready for this one, [player]~"
+
+            else:
+                m 1ttu "Was it too chaotic?~"
+
+            $ mas_nou.reverse_house_rule("reflect_chaos")
+
         elif _return == "restore":
             m 3eub "Okay! Then settled!"
 
             python:
-                mas_nou.set_house_rule("points_to_win", 200)
-                mas_nou.set_house_rule("starting_cards", 7)
-                mas_nou.set_house_rule("stackable_d2", False)
-                mas_nou.set_house_rule("unrestricted_wd4", False)
-
+                mas_nou.update_house_rules(force=True)
                 store.mas_nou.reset_points()
-
                 del menu_items, final_items
 
             return
@@ -4031,48 +4120,55 @@ label monika_change_nou_house_rules:
             m 3eud "If you want to play without points, just choose '0'."
             m 1eua "We can also start each round with a different number of cards in our hands."
             m 3esa "For example, if you want longer games, we can start with 10 cards."
-            m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a Draw 2, the cards {i}stack{/i}...{w=0.3}{nw}"
+            m 1eua "{i}Stackable Draw 2's{/i} means that every time someone mirrors a {i}Draw Two{/i}, the cards {i}stack{/i}...{w=0.3}{nw}"
             extend 4tsb "and the last unlucky person will have to draw all those cards."
-            m 1eua "That also applies to Wild Draw 4's, since you use Draw 2's to reflect them."
+            m 1eua "That also applies to {i}Wild Draw Four{/i}'s, since you use {i}Draw Two{/i}'s to reflect them."
             m 1ttu "Sounds fun, huh~"
-            m 3eud "There's also a rule in the official set that allows you to play a Draw 4 only if you have no cards of the current color."
+            m 3eud "There's also a rule in the official set that allows you to play a {i}Wild Draw Four{/i} only if you have no cards of the current color."
             m 1rtu "That...{w=0.3}sounds kinda boring, {w=0.2}{nw}"
             extend 3eua "so we can just ignore that rule if you want."
+            m 1eud "The Reflect Chaos rule makes the game more {w=0.2}{nw}"
+            extend 1tsu "{i}chaotic{/i}...{w=0.3}{nw}"
+            extend 1hub "as you could guess, ahaha~"
+            m 3eub "It allows to reflect {i}Wild Draw Four{/i}'s and {i}Draw Two{/i}'s using a {i}Wild Draw Four{/i}."
+            m 3eua "As well as reflect {i}Skip{/i}s with any other {i}Skip{/i}."
             m 1eua "And that's it!"
 
             jump monika_change_nou_house_rules.menu_loop
 
     $ store.mas_nou.reset_points()
+    $ has_changed_rules = True
+    jump monika_change_nou_house_rules.menu_loop
 
-    m 3eua "Is there anything else you'd like to change?{nw}"
+
+label .no_change:
+    
+    if from_game:
+        return False
+
+    if not has_changed_rules:
+        m 1eua "Oh, alright."
+        return False
+
+    if not mas_nou.does_want_suggest_play():
+        m 2eub "Let's play together soon~"
+        return False
+
+    m "Maybe we could play now?{nw}"
     $ _history_list.pop()
     menu:
-        m "Is there anything else you'd like to change?{fast}"
+        m "Maybe we could play now?{fast}"
 
-        "Yes.":
-            jump monika_change_nou_house_rules.menu_loop
+        "Sure.":
+            show monika 1hua zorder MAS_MONIKA_Z
+            $ mas_nou.visit_game_ev()
+            return True
 
-        "No.":
-            if mas_nou.does_want_suggest_play():
-                m "Then maybe we could play now?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "Then maybe we could play now?{fast}"
+        "Maybe later.":
+            m 2eub "Alright, let's play together soon~"
 
-                    "Sure.":
-                        show monika 1hua zorder MAS_MONIKA_Z
-                        $ mas_nou.visit_game_ev()
-                        jump mas_nou_game_define
+    return False
 
-                    "Maybe later.":
-                        m 2eub "Alright, let's play together soon~"
-
-            else:
-                m 2eub "Then let's play together soon~"
-
-    $ del menu_items, final_items
-
-    return
 
 label .change_points_to_win_loop:
     $ ready = False
@@ -4257,7 +4353,7 @@ label monika_explain_nou_rules:
     m 1eua "When you play any {i}Wild{/i} card, you should choose what color you want to set for it."
     m "As powerful as {i}Wild{/i} and {i}Action{/i} cards may look, you can still save yourself from them."
     m 1eub "For example you can mirror a {i}Wild Draw Four{/i} by playing a {i}Draw Two{/i} with the new color."
-    m 3eua "...Or you can play any Draw Two to mirror another Draw Two back to your opponent. The color won't matter in that case."
+    m 3eua "...Or you can play any {i}Draw Two{/i} to mirror another {i}Draw Two{/i} back to your opponent. The color won't matter in that case."
     m 1ekb "I hope all that will give you a better understanding of the game."
     m 1eku "But I don't think it's really about winning anyway."
     show monika 5hubla at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -4357,7 +4453,7 @@ label mas_nou_game_end:
             store.mas_nou.winner != "Surrendered"
             and not seen_event("monika_introduce_nou_house_rules")
         ):
-            pushEvent("monika_introduce_nou_house_rules")
+            MASEventList.push("monika_introduce_nou_house_rules")
 
     if store.mas_nou.winner == "Player":
         call mas_nou_reaction_player_wins_round
@@ -4392,11 +4488,13 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
+                "I'd like to change some house rules.":
+                    jump mas_nou_game_end_change_rules_and_continue
+
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            $ del dlg_choice, _round, store.mas_nou.game
-            return
+            jump mas_nou_game_end_end
 
     elif store.mas_nou.winner == "Monika":
         call mas_nou_reaction_monika_wins_round
@@ -4430,11 +4528,13 @@ label mas_nou_game_end:
 
                     jump mas_nou_game_loop
 
+                "I'd like to change some house rules.":
+                    jump mas_nou_game_end_change_rules_and_continue
+
                 "Not right now.":
                     m 1hua "Okay, just let me know when you want to play again~"
 
-            $ del dlg_choice, _round, store.mas_nou.game
-            return
+            jump mas_nou_game_end_end
 
     else:
         # firstly deal with vars
@@ -4449,8 +4549,7 @@ label mas_nou_game_end:
         call mas_nou_reaction_player_surrenders
 
         # we don't suggest to play again if the player does't want to play
-        $ del dlg_choice, _round, store.mas_nou.game
-        return
+        jump mas_nou_game_end_end
 
     m 3eua "Would you like to play another [_round!t]?{nw}"
     $ _history_list.pop()
@@ -4465,12 +4564,45 @@ label mas_nou_game_end:
 
             jump mas_nou_game_loop
 
+        "I'd like to change some house rules." if not mas_nou.get_house_rule("points_to_win"):
+            jump mas_nou_game_end_change_rules_and_continue
+
         "Not right now.":
             m 1hua "Alright, let's play again soon~"
+
+
+label mas_nou_game_end_end:
 
     $ del dlg_choice, _round, store.mas_nou.game
 
     return
+
+
+label mas_nou_game_end_change_rules_and_continue:
+    call monika_change_nou_house_rules.pre_menu(from_game=True)
+
+    m 3hub "Ready to continue?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Ready to continue?{fast}"
+
+        "Yep.":
+            show monika 1hua zorder MAS_MONIKA_Z
+            python:
+                store.mas_nou.game.reset_game()
+                mas_nou.visit_game_ev()
+
+            jump mas_nou_game_loop
+
+        "Let's play later.":
+            if (mas_nou.player_wins_this_sesh + mas_nou.monika_wins_this_sesh) < 4:
+                m 1ekc "Aww, alright."
+
+            else:
+                m 1eka "Oh, alright."
+
+    jump mas_nou_game_end_end
+
 
 # All end game reactions labels go here
 label mas_nou_reaction_player_wins_round:
@@ -4923,6 +5055,7 @@ label mas_nou_reaction_player_surrenders:
         m 3ekb "Don't give up so easily next time."
     return
 
+
 # SL and stuff
 
 # Points screen
@@ -5188,8 +5321,9 @@ transform nou_pen_rotate_right:
 # NOTE: This can be used in other games in the future
 image bg cardgames desk = mas_cardgames.DeskSpriteSwitch()
 
-init 10 python in mas_cardgames:
-    # All bgs should be defined, get the desk sprites for them
+init 500 python in mas_cardgames:
+    # All bgs should be defined at init 1, but we give some more time
+    # just in case
     __scanDeskSprites()
 
 init -10 python in mas_cardgames:
@@ -5206,6 +5340,7 @@ init -10 python in mas_cardgames:
     # Format: {background_id: MASFilterSwitch}
     # NOTE: we fill the map automatically at init 10,
     # but you can always add an img for your background yourself (we don't override)
+    # TODO - remember this when adding table selector
     DESK_SPRITES_MAP = dict()
 
     def __scanDeskSprites():
@@ -5253,7 +5388,14 @@ init -10 python in mas_cardgames:
             ASSUMES:
                 store.mas_current_background
             """
-            desk_render = renpy.render(DESK_SPRITES_MAP[store.mas_current_background.background_id], width, height, st, at)
+            try:
+                sprite = DESK_SPRITES_MAP[store.mas_current_background.background_id]
+            except KeyError:
+                # This should never happen, but in case a bg has been
+                # defined incorrectly, use the fallback
+                sprite = DESK_SPRITES_MAP[store.mas_background.MBG_DEF]
+
+            desk_render = renpy.render(sprite, width, height, st, at)
             main_render = renpy.Render(desk_render.width, desk_render.height)
             main_render.blit(desk_render, DeskSpriteSwitch.BLIT_COORDS)
 

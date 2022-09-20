@@ -1,5 +1,5 @@
 
-init -750 python in mas_threading:
+init -2000 python in mas_threading:
     # threading related vars
     import threading
 
@@ -142,6 +142,7 @@ init -750 python in mas_threading:
             self._th_result = None
             self.ready = False
             self._th_thread = threading.Thread(target=self._th_start)
+            self._th_thread.daemon = True
             self._th_thread.start()
 
 

@@ -1106,7 +1106,7 @@ init -25 python in mas_island_event:
             # Hasn't visited the islands for a few days
             and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=3))
         ):
-            store.pushEvent("mas_monika_islands_progress")
+            store.MASEventList.push("mas_monika_islands_progress")
 
         # Now set new level
         persistent._mas_islands_progress = min(max(new_progress, curr_progress), MAX_PROGRESS_LOVE)

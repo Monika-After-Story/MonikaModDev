@@ -745,7 +745,7 @@ init python:
 
         if len(reacts) > 0:
             for _react in reacts:
-                queueEvent(_react)
+                MASEventList.queue(_react)
             persistent._mas_filereacts_just_reacted = True
 
 
