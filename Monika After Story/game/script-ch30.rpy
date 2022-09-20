@@ -831,15 +831,15 @@ init 995 python in mas_reset:
 
     import store.mas_submod_utils as mas_submod_utils
 
-    def ch30_reset(priority=9999):
+    def ch30_reset(priority=0):
         """
         decorator that marks function to run as part of ch30_reset.
 
         IN:
             func - function to register
             priority - priority to run function
-                Default: 9999
-                PLEASE USE PRIORITIES AT 9999 or above. If you need to slip
+                Default: 0
+                PLEASE USE POSITIVE PRIORITIES. If you need to slip
                 something between existing reset code, be mindful of where you
                 plugin your reset code. Take a look at the reset functions
                 below for the correct placement.
@@ -873,7 +873,7 @@ init 999 python in mas_reset:
     #Simple persist handling for cleanliness
     from store import persistent
 
-    @ch30_reset(1)
+    @ch30_reset(-980)
     def start():
         """
         Reset code that should always be first
@@ -883,7 +883,7 @@ init 999 python in mas_reset:
         store.MASEventList.sync_current()
 
 
-    @ch30_reset(100)
+    @ch30_reset(-960)
     def xp():
         """
         Runs reset code specific for xp stuff
@@ -906,7 +906,7 @@ init 999 python in mas_reset:
         mas_xp.prev_grant = store.mas_getCurrSeshStart()
 
 
-    @ch30_reset(200)
+    @ch30_reset(-940)
     def name_eggs():
         """
         Runs reset code specific for name eggs
@@ -916,7 +916,7 @@ init 999 python in mas_reset:
             mas_globals.show_sayori_lightning = True
 
 
-    @ch30_reset(300)
+    @ch30_reset(-920)
     def topic_lists():
         """
         Runs reset code specific for topic lists
@@ -933,7 +933,7 @@ init 999 python in mas_reset:
             store.random_seen_limit = 1000
 
 
-    @ch30_reset(400)
+    @ch30_reset(-900)
     def rpy_file_check():
         """
         Runs reset code specific for the rpy file check
@@ -949,7 +949,7 @@ init 999 python in mas_reset:
                 store.mas_rmallEVL("monika_rpy_files")
 
 
-    @ch30_reset(500)
+    @ch30_reset(-880)
     def games():
         """
         Runs reset code specific for games
@@ -969,7 +969,7 @@ init 999 python in mas_reset:
                 store.mas_unlockGame(game_name)
 
 
-    @ch30_reset(600)
+    @ch30_reset(-860)
     def sprites():
         """
         Runs reset code for sprites
@@ -1070,7 +1070,7 @@ init 999 python in mas_reset:
         mas_selspr.startup_prompt_check()
 
 
-    @ch30_reset(700)
+    @ch30_reset(-840)
     def random_chatter():
         """
         Runs reset code for random chatter
@@ -1079,7 +1079,7 @@ init 999 python in mas_reset:
         mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
 
-    @ch30_reset(800)
+    @ch30_reset(-820)
     def returned_home():
         """
         Runs reset code for returned home
@@ -1091,7 +1091,7 @@ init 999 python in mas_reset:
                 persistent._mas_monika_returned_home = None
 
 
-    @ch30_reset(900)
+    @ch30_reset(-800)
     def playtime():
         """
         Runs reset code for playtime
@@ -1126,7 +1126,7 @@ init 999 python in mas_reset:
                 )
 
 
-    @ch30_reset(1000)
+    @ch30_reset(-780)
     def affection():
         """
         Runs reset code for affection
@@ -1142,7 +1142,7 @@ init 999 python in mas_reset:
                 persistent._mas_affection["freeze_date"] = today
 
 
-    @ch30_reset(1100)
+    @ch30_reset(-760)
     def deco():
         """
         Runs reset code for deco
@@ -1213,7 +1213,7 @@ init 999 python in mas_reset:
             store.mas_o31HideVisuals()
 
 
-    @ch30_reset(1200)
+    @ch30_reset(-740)
     def farewells():
         """
         Runs reset code for farewells
@@ -1225,7 +1225,7 @@ init 999 python in mas_reset:
             persistent.mas_late_farewell = False
 
 
-    @ch30_reset(1300)
+    @ch30_reset(-720)
     def file_reactions():
         """
         Runs reset code for file reactions
@@ -1256,7 +1256,7 @@ init 999 python in mas_reset:
             persistent._mas_filereacts_last_aff_gained_reset_date = today
 
 
-    @ch30_reset(1400)
+    @ch30_reset(-700)
     def events():
         """
         Runs reset code for general events + events list stuff
@@ -1295,7 +1295,7 @@ init 999 python in mas_reset:
             store.mas_unlockEVL("monika_changename","EVE")
 
 
-    @ch30_reset(1500)
+    @ch30_reset(-680)
     def songs():
         """
         Runs reset code for songs
@@ -1307,7 +1307,7 @@ init 999 python in mas_reset:
         mas_songs.checkSongAnalysisDelegate()
 
 
-    @ch30_reset(1600)
+    @ch30_reset(-660)
     def holidays():
         """
         Runs reset code for holidays that do not fall under the other
@@ -1326,7 +1326,7 @@ init 999 python in mas_reset:
             store.mas_d25SilentReactToGifts()
 
 
-    @ch30_reset(1700)
+    @ch30_reset(-640)
     def backgrounds():
         """
         Runs reset code for backgrounds
@@ -1345,7 +1345,7 @@ init 999 python in mas_reset:
         mas_background.buildupdate()
 
 
-    @ch30_reset(1800)
+    @ch30_reset(-620)
     def window_reactions():
         """
         Runs reset code for window reactions
@@ -1354,7 +1354,7 @@ init 999 python in mas_reset:
         mas_windowutils._setMASWindow()
 
 
-    @ch30_reset(1900)
+    @ch30_reset(-600)
     def islands():
         """
         Runs reset code for islands
@@ -1363,7 +1363,7 @@ init 999 python in mas_reset:
         mas_island_event.advanceProgression()
 
 
-    @ch30_reset(2000)
+    @ch30_reset(-580)
     def bath_cleanup():
         """
         Cleanup code for bath stuff
