@@ -2730,6 +2730,7 @@ init python:
         # persistents and only apply after 1 week
         if (
             not config.developer
+            and not store.mas_globals.returned_home_this_sesh
             and time_difference >= datetime.timedelta(weeks=1)
         ):
             curr_aff = _mas_getAffection()
