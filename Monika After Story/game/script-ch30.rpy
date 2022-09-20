@@ -966,7 +966,7 @@ init 999 python in mas_reset:
         if renpy.seen_label("mas_reaction_gift_noudeck"):
             mas_unlockGame("nou")
         else:
-            mas_lockGame(game_name)
+            mas_lockGame("nou")
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
