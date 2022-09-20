@@ -2190,6 +2190,7 @@ label mas_dockstat_empty_desk:
         #Make sure O31 effects show
         if persistent._mas_o31_in_o31_mode:
             mas_o31ShowVisuals()
+            mas_o31ShowSpriteObjects()
             #If weather isn't thunder, we need to make it so (done so we don't have needless sets)
             if mas_current_weather != mas_weather_thunder:
                 mas_changeWeather(mas_weather_thunder, True)
@@ -2363,6 +2364,7 @@ label mas_dockstat_found_monika:
 
     if persistent._mas_o31_in_o31_mode:
         $ mas_o31ShowVisuals()
+        $ mas_o31ShowSpriteObjects()
         #Force progressive to disabled for o31
         $ mas_changeWeather(mas_weather_thunder, True)
 

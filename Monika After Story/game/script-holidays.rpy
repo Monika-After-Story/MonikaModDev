@@ -386,8 +386,6 @@ init -10 python:
         for _tag in MAS_O31_DECO_TAGS:
             mas_showDecoTag(_tag)
 
-        monika_chr.wear_acs(mas_acs_desk_lantern)
-        monika_chr.wear_acs(mas_acs_desk_candy_jack)
 
     def mas_o31HideVisuals():
         """
@@ -396,6 +394,19 @@ init -10 python:
         for _tag in MAS_O31_DECO_TAGS:
             mas_hideDecoTag(_tag, hide_now=True)
 
+
+    def mas_o31ShowSpriteObjects():
+        """
+        Shows o31 specific sprite objects
+        """
+        monika_chr.wear_acs(mas_acs_desk_lantern)
+        monika_chr.wear_acs(mas_acs_desk_candy_jack)
+
+
+    def mas_o31HideSpriteObjects():
+        """
+        Hides o31 specific sprite objects
+        """
         #unlock hairdown greet if we don't have hairdown unlocked
         hair = store.mas_selspr.get_sel_hair(store.mas_hair_down)
         if hair is not None and not hair.unlocked:
@@ -407,6 +418,7 @@ init -10 python:
         # get back into reasonable clothing, so we queue a change to def
         if store.monika_chr.is_wearing_clothes_with_exprop("costume"):
             store.MASEventList.queue('mas_change_to_def')
+
 
     def mas_hasO31DeskAcs():
         """
@@ -599,6 +611,7 @@ init -10 python:
 
         #Hide visuals
         mas_o31HideVisuals()
+        mas_o31HideSpriteObjects()
 
         #o31 is now over. Reset the o31 mode flag
         store.persistent._mas_o31_in_o31_mode = False
@@ -716,12 +729,14 @@ label mas_o31_autoload_check:
 
                 # O31 decor
                 mas_o31ShowVisuals()
+                mas_o31ShowSpriteObjects()
 
                 #Set by-user to True because we don't want progressive
                 mas_changeWeather(mas_weather_thunder, True)
 
             elif (persistent._mas_o31_in_o31_mode and not mas_isFirstSeshDay()):
                 mas_o31ShowVisuals()
+                mas_o31ShowSpriteObjects()
                 mas_changeWeather(mas_weather_thunder, True)
 
         #It's not O31 anymore or we hit dis. It's time to reset
@@ -732,6 +747,7 @@ label mas_o31_autoload_check:
         #If we drop to upset during O31, we should keep decor until we hit dis
         elif persistent._mas_o31_in_o31_mode and mas_isMoniUpset():
             mas_o31ShowVisuals()
+            mas_o31ShowSpriteObjects()
             mas_changeWeather(mas_weather_thunder, True)
 
     #Run pbday checks
@@ -5824,6 +5840,7 @@ label return_home_post_player_bday:
             #If we returned from a date post pbday but have O31 deco
             if not mas_isO31() and persistent._mas_o31_in_o31_mode:
                 $ mas_o31HideVisuals()
+                $ mas_o31HideSpriteObjects()
                 # Make sure no o31 mode
                 $ store.persistent._mas_o31_in_o31_mode = False
 
@@ -7164,7 +7181,7 @@ init -1 python:
         Checks if the player has confirmed the party
         """
         #Must be within a week of the party (including party day)
-        if (mas_monika_birthday - datetime.timedelta(days=7)) <= today <= mas_monika_birthday:
+        if (mas_monika_birthday - datetime.timedelta(days=7)) <= datetime.date.today() <= mas_monika_birthday:
             #If this is confirmed already, then we just return true, since confirmed
             if persistent._mas_bday_confirmed_party:
                 #We should also handle if the player confirmed the party pre-note

@@ -4578,43 +4578,12 @@ label greeting_after_bath:
 init 5 python:
     addEvent(Event(persistent.event_database, eventlabel="mas_after_bath_cleanup", show_in_idle=True, rules={"skip alert": None}))
 
-label mas_after_bath_cleanup:
-    # Sanity check (checking for towel should be enough)
-    if (
-        not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
-        and not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
-    ):
-        return
+    def mas_after_bath_cleanup_change_outfit():
+        """
+        After bath cleanup change outfit code
+        """
+        # TODO: Rng outfit selection wen
 
-    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
-
-    else:
-        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
-        extend 3eua "I'm going to get dressed."
-
-    window hide
-    call mas_transition_to_emptydesk
-
-    $ renpy.pause(1.0, hard=True)
-    call mas_after_bath_cleanup_change_outfit
-    $ renpy.pause(random.randint(10, 15), hard=True)
-
-    call mas_transition_from_emptydesk("monika 3hub")
-    window auto
-
-    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
-        m 3hub "All done!{w=1}{nw}"
-
-    else:
-        m 3hub "Alright, I'm back!~"
-        m 1eua "So what would you like to do today, [player]?"
-
-    return
-
-label mas_after_bath_cleanup_change_outfit:
-    # TODO: Rng outfit selection wen
-    python hide:
         force_hair_change = False# If we changed the outfit, we always change hair
 
         if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
@@ -4656,4 +4625,41 @@ label mas_after_bath_cleanup_change_outfit:
                     new_hair,
                     by_user=False
                 )
+
+label mas_after_bath_cleanup:
+    # Sanity check (checking for towel should be enough)
+    if (
+        not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
+        and not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+    ):
+        return
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    else:
+        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        extend 3eua "I'm going to get dressed."
+
+    window hide
+    call mas_transition_to_emptydesk
+
+    $ renpy.pause(1.0, hard=True)
+    call mas_after_bath_cleanup_change_outfit
+    $ renpy.pause(random.randint(10, 15), hard=True)
+
+    call mas_transition_from_emptydesk("monika 3hub")
+    window auto
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 3hub "All done!{w=1}{nw}"
+
+    else:
+        m 3hub "Alright, I'm back!~"
+        m 1eua "So what would you like to do today, [player]?"
+
+    return
+
+label mas_after_bath_cleanup_change_outfit:
+    $ mas_after_bath_cleanup_change_outfit()
     return

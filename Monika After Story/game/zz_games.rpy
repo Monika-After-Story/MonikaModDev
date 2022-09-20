@@ -17,10 +17,6 @@ init -10 python in mas_games:
             return platform.system() == 'Windows'
 
 init 1 python in mas_games:
-    #Constant for hangman name
-    #NOTE: This is adjusted in the mas_pick_a_game label
-    HANGMAN_NAME = _("Hangman")
-
     def _total_games_played(exclude_list=[]):
         """
         Returns the total number of games played by adding up the shown_count of each game
@@ -150,10 +146,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_hangman",
-            prompt="[mas_games.HANGMAN_NAME]",
-            rules={
-                "display_name": "hangman",
-            }
+            prompt="Hangman"
         ),
         code="GME",
         restartBlacklist=True
@@ -187,10 +180,7 @@ init 5 python:
             persistent._mas_game_database,
             eventlabel="mas_nou",
             prompt="NOU",
-            aff_range=(mas_aff.NORMAL, None),
-            rules={
-                "display_name": "NOU",
-            }
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="GME",
         restartBlacklist=True
@@ -205,9 +195,6 @@ label mas_pick_a_game:
     $ mas_RaiseShield_dlg()
 
     python:
-        #Adjust for this name
-        mas_games.HANGMAN_NAME = _("Hangman")
-
         #Decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
 
