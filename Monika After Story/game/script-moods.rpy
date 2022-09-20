@@ -647,8 +647,8 @@ label mas_mood_bored:
     python:
         # build mapping from game label to display name for game
         unlocked_games = {
-            # use display name, or lowercase prompt as backup
-            ev_label: game_ev.rules.get("display_name", game_ev.prompt.lower())
+            # use display name, or prompt as backup
+            ev_label: game_ev.rules.get("display_name", game_ev.prompt)
 
             for ev_label, game_ev in mas_games.game_db.iteritems()
             if mas_isGameUnlocked(game_ev.prompt)
