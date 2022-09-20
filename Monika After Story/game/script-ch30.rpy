@@ -844,7 +844,7 @@ init 995 python in mas_reset:
                 plugin your reset code. Take a look at the reset functions
                 below for the correct placement.
         """
-        return mas_submod_utils.functionplugin("ch30_reset", priority=priority) 
+        return mas_submod_utils.functionplugin("ch30_reset", priority=priority)
 
 
 init 999 python in mas_reset:
@@ -958,10 +958,13 @@ init 999 python in mas_reset:
         game_unlock_db = {
             "chess": "mas_unlock_chess",
             "hangman": "mas_unlock_hangman",
-            "piano": "mas_unlock_piano",
-            "nou": "mas_reaction_gift_noudeck",
+            "piano": "mas_unlock_piano"
         }
-        store.mas_unlockGame("pong") # always unlock pong
+        # always unlock pong
+        mas_unlockGame("pong")
+        # nou via the react
+        if renpy.seen_label("mas_reaction_gift_noudeck"):
+            mas_unlockGame("nou")
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
