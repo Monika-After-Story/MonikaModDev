@@ -961,7 +961,7 @@ init 999 python in mas_reset:
             "piano": "mas_unlock_piano"
         }
         # always unlock pong
-        mas_unlockGame("pong")
+        store.mas_unlockGame("pong")
         # nou via the react
         if renpy.seen_label("mas_reaction_gift_noudeck"):
             store.mas_unlockGame("nou")
