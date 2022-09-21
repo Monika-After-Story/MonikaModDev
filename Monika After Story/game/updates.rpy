@@ -389,6 +389,12 @@ label v0_12_9_1(version="v0_12_9_1"):
         if mas_seenLabels(['monika_solipsism']):
             mas_protectedShowEVL("monika_materialism","EVE", _random=True)
 
+        persistent._mas_affection_version = 1
+
+        mas_affection._transfer_aff_2nd_gen()
+        mas_affection._remove_backups()
+        mas_affection._make_backup()
+
         # reset mind the game to be not unlocked unless already seen
         if mas_getEVL_shown_count("mas_story_mindthegap") < 1:
             mas_lockEVL("mas_story_mindthegap", "STY")

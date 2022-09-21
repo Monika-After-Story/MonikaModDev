@@ -167,7 +167,7 @@ init 5 python in mas_nou:
                 _("This is a little embarrassing~"),
                 _("Ah?{w=0.2} What are you trying to do?~")
             ]
-            if persistent._mas_affection["affection"] >= 400:
+            if store._mas_getAffection() >= 400:# TODO: move to aff PP
                 QUIPS_PLAYER_CLICKS_MONIKA_CARDS.append(
                     _("With you I wouldn't mind doing that for real, [player]~")
                 )

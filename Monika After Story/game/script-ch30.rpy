@@ -961,15 +961,20 @@ init 999 python in mas_reset:
             "piano": "mas_unlock_piano"
         }
         # always unlock pong
-        mas_unlockGame("pong")
+        store.mas_unlockGame("pong")
         # nou via the react
         if renpy.seen_label("mas_reaction_gift_noudeck"):
-            mas_unlockGame("nou")
+            store.mas_unlockGame("nou")
+        else:
+            store.mas_lockGame("nou")
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
             if store.mas_getEVL_shown_count(game_startlabel) > 0:
                 store.mas_unlockGame(game_name)
+
+            else:
+                store.mas_lockGame(game_name)
 
 
     @ch30_reset(-860)
@@ -997,7 +1002,7 @@ init 999 python in mas_reset:
         # reset hair / clothes
         # the default options should always be available.
         mas_selspr.unlock_hair(store.mas_hair_def)
-    #    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
+        # store.mas_selspr.unlock_hair(mas_hair_ponytail)
         mas_selspr.unlock_clothes(store.mas_clothes_def)
 
         # def ribbon always unlocked
@@ -1090,7 +1095,7 @@ init 999 python in mas_reset:
         ## monika returned home reset
         if persistent._mas_monika_returned_home is not None:
             _rh = persistent._mas_monika_returned_home.date()
-            if datetime.datetime.today() > _rh:
+            if datetime.date.today() > _rh:
                 persistent._mas_monika_returned_home = None
 
 
@@ -1134,15 +1139,8 @@ init 999 python in mas_reset:
         """
         Runs reset code for affection
         """
-        # reset freeze date to today if it is in the future
-        if persistent._mas_affection is not None:
-            freeze_date = persistent._mas_affection.get(
-                "freeze_date",
-                None
-            )
-            today = datetime.date.today()
-            if freeze_date is not None and freeze_date > today:
-                persistent._mas_affection["freeze_date"] = today
+        # Give the bonus
+        store.mas_affection._withdraw_aff()
 
 
     @ch30_reset(-760)
@@ -1804,26 +1802,26 @@ label mas_ch30_post_holiday_check:
     # post holiday checks
 
     # TODO should the apology check be only for when she's not affectionate?
-    if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+    if _mas_getAffection() <= -50 and seen_event("mas_affection_apology"):
         # no dissolves here since we want the player to be instantly aware
         # that something is wrong.
 
         #If the conditions are met and Monika expects an apology, jump to this label.
-        if persistent._mas_affection["apologyflag"] and not is_apology_present():
+        if persistent._mas_affection_should_apologise and not is_apology_present():
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_noapology
 
         #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
-        elif persistent._mas_affection["apologyflag"] and is_apology_present():
-            $ persistent._mas_affection["apologyflag"] = False
+        elif persistent._mas_affection_should_apologise and is_apology_present():
+            $ persistent._mas_affection_should_apologise = False
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_yesapology
 
         #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
-        elif not persistent._mas_affection["apologyflag"] and not is_apology_present():
-            $ persistent._mas_affection["apologyflag"] = True
+        elif not persistent._mas_affection_should_apologise and not is_apology_present():
+            $ persistent._mas_affection_should_apologise = True
             $ mas_RaiseShield_core()
             call spaceroom(scene_change=True)
             jump mas_affection_apologydeleted
@@ -1926,13 +1924,11 @@ label ch30_post_restartevent_check:
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
-            away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
-
-            #Reset the idlexp total if monika has had at least 6 hours of rest
+            away_experience_time = datetime.datetime.now()-persistent.sessions['last_session_end']
+            # Only give bonuses if no crash
             if away_experience_time.total_seconds() >= times.REST_TIME:
-
-                #Grant good exp for closing the game correctly.
-                mas_gainAffection()
+                # Grant aff for closing the game correctly
+                mas_gainAffection(current_evlabel="[rested]")
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -2004,6 +2000,8 @@ label ch30_preloop:
         set_keymaps()
 
         persistent.closed_self = False
+        # TODO: this var is always True,
+        # even when there was no crash, the name is misleading
         persistent._mas_game_crashed = True
         startup_check = False
         mas_checked_update = False
@@ -2401,6 +2399,9 @@ label ch30_day:
 
         # Once per day Monika does stuff on the islands
         store.mas_island_event.advanceProgression()
+
+        # Give the bonus
+        mas_affection._withdraw_aff()
 
         # do cert updates if certifi enabled
         if store.mas_can_import.certifi():

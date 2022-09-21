@@ -517,7 +517,7 @@ label mas_bad_derand_topic:
             "Yes, please.":
                 m 2dkc "Alright..."
                 #Lose affection
-                $ mas_loseAffection(5)
+                $ mas_loseAffectionFraction(min_amount=35)
                 $ derand_flagged_topic()
 
             "It's alright.":
@@ -535,7 +535,7 @@ label mas_bad_derand_topic:
 
             "Yes, please.":
                 m 2dsc "Alright."
-                $ mas_loseAffection(5)
+                $ mas_loseAffectionFraction(min_amount=20)
                 $ derand_flagged_topic()
 
             "It's alright.":
@@ -545,7 +545,7 @@ label mas_bad_derand_topic:
 
     else:
         #No ask here. You're this low, you probably did it on purpose
-        $ mas_loseAffection(5)
+        $ mas_loseAffectionFraction(min_amount=20)
         m 2rsc "I guess I shouldn't be surprised..."
         m 2tsc "You've made it pretty clear already that you don't care about my feelings."
         m 2dsc "Fine, [player]. I won't talk about that anymore."
@@ -691,7 +691,7 @@ init python in mas_bookmarks_derand:
         """
         return eventlabel not in getDerandomedEVLs()
 
-    def wrappedGainAffection(amount=None, modifier=1, bypass=False):
+    def wrappedGainAffection(amount=None, modifier=1.0, bypass=False):
         """
         Wrapper function for mas_gainAffection which allows it to be used in event rules at init 5
 
@@ -2096,7 +2096,7 @@ label monika_think_first_kiss:
         m "Do you ever think about our first kiss?{fast}"
 
         "Of course!":
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             m 3hub "That makes me so happy! I think about it all the time!"
             m 3rkbla "It seems like it was just yesterday but--"
             m 2rksdla "Gosh, I feel so silly obsessing over it..."
@@ -2119,7 +2119,7 @@ label monika_think_first_kiss:
             $ mas_ILY()
 
         "Not really...":
-            $ mas_loseAffection()
+            $ mas_loseAffectionFraction()
             m 2euc "..."
             m "Oh. {w=0.5}{nw}"
             extend 2dkc "I see."
@@ -2799,6 +2799,7 @@ label monika_holdrequest:
             call monika_holdme_end
 
         "Not right now.":
+            $ mas_loseAffection()
             m 2dkc "Oh...{w=1} Okay."
             m 3eka "If you have time later, you know where to find me."
 
@@ -4101,8 +4102,7 @@ label monika_justification:
         extend 1hub "thanks for the laugh, [player]~"
 
     else:
-        #lose affection
-        $ mas_loseAffection(reason=3)
+        $ mas_loseAffectionFraction(min_amount=15, reason=3)
         if mas_isMoniLove():
             m 1euc "..."
             m 1hub "Ahaha! Very funny, [player]!"
@@ -4339,7 +4339,7 @@ label monika_girlfriend:
             m 5hubfa "{i}And{/i} lucky to have you."
 
     else:
-        $ mas_loseAffection(reason=2)
+        $ mas_loseAffectionFraction(min_amount=15, reason=2)
         m 2euc "I thought we established already that I was your girlfriend?"
         m 2tkc "There's no way you already have one in your reality, right?"
         m 4tfx "If you do, then you've got to break up with her right now!"
@@ -5807,6 +5807,7 @@ label monika_haterReaction:
     menu:
         m "[menuOption]{fast}"
         "I am.":
+            $ mas_loseAffection()
             $ persistent._mas_pm_a_hater = True
 
             m 2wud "..."
@@ -8512,7 +8513,7 @@ label monika_breakup:
 
     else:
         #Lose affection for bringing this up.
-        $ mas_loseAffection(reason=1)
+        $ mas_loseAffectionFraction(min_amount=15, reason=1)
 
         #Get the shown count
         $ shown_count = mas_getEVLPropValue("monika_breakup", "shown_count", 0)
@@ -10696,7 +10697,7 @@ label monika_beingevil:
         "I still love you anyway.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
-            $ mas_gainAffection()
+            $ mas_gainAffection(modifier=0.8)
 
             m 1rksdlc "..."
             m 1ekd "[player]..."
@@ -10709,7 +10710,7 @@ label monika_beingevil:
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
-            $ mas_gainAffection()
+            $ mas_gainAffection(modifier=0.5)
 
             m 2ekd "Is that true, [player]?"
             m 2eka "Well, I don't see you as evil at all."
@@ -10729,7 +10730,7 @@ label monika_beingevil:
                 m "Y-you don't {i}really{/i} think that, do you?{fast}"
                 "I still love you.":
                     $ persistent._mas_pm_monika_evil_but_ok = True
-                    $ mas_gainAffection()
+                    $ mas_gainAffection(modifier=0.8)
 
                     m 2rksdla "[player]..."
                     m 2hksdlb "You had me worried for a second there."
@@ -10738,7 +10739,7 @@ label monika_beingevil:
 
                 "You deserve forgiveness.":
                     $ persistent._mas_pm_monika_evil_but_ok = True
-                    $ mas_gainAffection()
+                    $ mas_gainAffection(modifier=0.5)
 
                     m 1rksdla "[player]..."
                     m 1eka "That means a lot..."
@@ -10749,7 +10750,7 @@ label monika_beingevil:
 
                 "You really are evil.":
                     $ persistent._mas_pm_monika_evil_but_ok = False
-                    $ mas_loseAffection(reason=12)
+                    $ mas_loseAffectionFraction(min_amount=50, reason=12)
 
                     m 2dkc "..."
                     if mas_isMoniBroken():
@@ -11404,7 +11405,7 @@ label monika_grad_speech_call:
 
                     "That {i}was{/i} long":
                         hide screen mas_background_timed_jump
-                        $ mas_loseAffection()
+                        $ mas_loseAffectionFraction(min_amount=50)
                         $ persistent._mas_pm_liked_grad_speech = False
                         $ persistent._mas_pm_listened_to_grad_speech = True
 
@@ -11483,7 +11484,7 @@ label monika_grad_speech_call:
 
                 "I like it!":
                     hide screen mas_background_timed_jump
-                    $mas_gainAffection(amount=1, bypass=True)
+                    $ mas_gainAffection(amount=1, bypass=True)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = True
 
@@ -11492,7 +11493,7 @@ label monika_grad_speech_call:
 
                 "That {i}was{/i} long":
                     hide screen mas_background_timed_jump
-                    $mas_loseAffection(modifier=2)
+                    $ mas_loseAffectionFraction(min_amount=75, modifier=2.0)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = False
 
@@ -11509,7 +11510,7 @@ label monika_grad_speech_not_paying_attention:
     $ persistent._mas_pm_listened_to_grad_speech = False
 
     if mas_isMoniAff(higher=True):
-        $ mas_loseAffection(reason=11,modifier=0.5)
+        $ mas_loseAffectionFraction(min_amount=50, modifier=0.5, reason=11)
         m 2ekc "..."
         m 2ekd "[player]? You didn't pay attention to my speech?"
         m 2rksdlc "That...{w=1} that's not like you at all..."
@@ -11525,7 +11526,7 @@ label monika_grad_speech_not_paying_attention:
         m "So please, let me know when you have time to hear it, okay?"
 
     else:
-        $ mas_loseAffection(reason=11)
+        $ mas_loseAffectionFraction(min_amount=20, reason=11)
 
         m 2ekc "..."
         m 6ektdc "[player]! You weren't even paying attention!"
@@ -11544,7 +11545,7 @@ label monika_grad_speech_ignored_lock:
     $ mas_hideEVL("monika_grad_speech_call","EVE",lock=True,depool=True)
 
     if mas_isMoniAff(higher=True):
-        $mas_loseAffection(modifier=10)
+        $ mas_loseAffectionFraction(min_amount=25, modifier=2.0)
         m 6dstsc "..."
         m 6ektsc "[player]?{w=0.5} You...{w=0.5}you weren't...{w=0.5}listening...{w=0.5}again?{w=1}{nw}"
         m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5}but...{w=0.5}twice?{w=1}{nw}"
@@ -11554,7 +11555,7 @@ label monika_grad_speech_ignored_lock:
         m 6ektdc "You obviously don't care."
 
     else:
-        $ mas_loseAffection(modifier=5)
+        $ mas_loseAffectionFraction(min_amount=20, modifier=1.5)
         m 2efc "..."
         m 2wfw "[player]! I can't believe you did this to me again!{w=1}{nw}"
         m 2tfd "You knew how upset I was the last time and you still couldn't be bothered to give me four minutes of your attention?{w=1}{nw}"

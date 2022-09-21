@@ -13,7 +13,8 @@ init -1 python in mas_dev_unit_tests:
         ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
         ("strict_can_pickle", "dev_unit_test_strict_can_pickle", False, False),
         ("mas_set_pronouns", "dev_unit_test_mas_set_pronouns", False, False),
-        ("Jump with args", "dev_unit_test_jump_with_args", False, False)
+        ("encoded struct pickling", "dev_unit_test_encoded_struct_pickle", False, False),
+        ("Jump with args", "dev_unit_test_jump_with_args", False, False),
     ]
 
     class MASUnitTest(object):
@@ -2794,6 +2795,106 @@ label dev_unit_test_mas_set_pronouns:
 
     return
 
+
+label dev_unit_test_encoded_struct_pickle:
+    m "Running tests..."
+
+    $ pack_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+    python hide:
+        import io
+        import struct
+        import pickle
+        import base64
+        import binascii
+
+        def is_ascii(string):
+            try:
+                string.encode("ascii")
+            except UnicodeEncodeError:
+                return False
+            return True
+
+        s = struct.Struct("!d d d d d d")
+        # test_file = io.BytesIO()
+        raw_data = (-947207.15943, -492, 0.0, 0.32591, 10.0, 1439304)
+        packaged_data = s.pack(*raw_data)
+        he_packaged_data = binascii.hexlify(packaged_data)
+        b64_he_packaged_data = base64.b64encode(he_packaged_data)
+
+
+        pack_tester.prepareTest("check is_ascii works")
+        pack_tester.assertEqual(is_ascii("hello world"), True)
+        pack_tester.assertEqual(is_ascii("hej världen"), False)
+        pack_tester.assertEqual(is_ascii("привет мир"), False)
+        pack_tester.assertEqual(is_ascii("こんにちは世界"), False)
+
+
+        pack_tester.prepareTest("check contains pure ascii")
+        pack_tester.assertEqual(is_ascii(he_packaged_data), True)
+        pack_tester.assertEqual(is_ascii(b64_he_packaged_data), True)
+
+
+        pack_tester.prepareTest("check can pickle dump")
+        test_file = io.BytesIO()
+        try:
+            pickle.dump(b64_he_packaged_data, test_file)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        test_file.seek(0)# going to read now
+        del result
+
+        pack_tester.prepareTest("check can unpickle load")
+        try:
+            unpickled_data = pickle.load(test_file)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
+        test_file.close()
+        del result, unpickled_data, test_file
+
+
+        pack_tester.prepareTest("check can pickle dumps")
+        try:
+            pickled_data = pickle.dumps(b64_he_packaged_data)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        del result
+
+        pack_tester.prepareTest("check can unpickle loads")
+        try:
+            unpickled_data = pickle.loads(pickled_data)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
+        del result
+
+
+    call dev_unit_tests_finish_test(pack_tester)
+
+    $ del pack_tester
+
+    return
 
 label dev_unit_test_jump_with_args:
     m "Running tests..."

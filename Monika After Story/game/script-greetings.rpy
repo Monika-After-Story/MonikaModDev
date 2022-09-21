@@ -1355,7 +1355,7 @@ label monikaroom_greeting_ear_narration:
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
                     $ mas_unlockEVL("monikaroom_will_change", "GRE")
-                    $ mas_loseAffection()
+                    $ mas_loseAffection(modifier=2.0)
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
@@ -1378,7 +1378,7 @@ label monikaroom_greeting_ear_narration:
                 "I won't.":
                     $ persistent._mas_pm_will_change = False
                     $ mas_unlockEvent(willchange_ev)
-                    $ mas_loseAffection()
+                    $ mas_loseAffection(modifier=2.0)
                     m "Then I'm still not talking to you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
@@ -1434,8 +1434,7 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
-    if persistent._mas_affection.get("affection", 0) >= 400:
+    if _mas_getAffection() >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -2379,7 +2378,7 @@ label greeting_long_absence:
 
     if persistent._mas_absence_time >= datetime.timedelta(weeks=5):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(70)
+            $ mas_loseAffectionFraction(0.1, min_amount=70)
             m 2dsc "[player]..."
             m 2tkc "You said you'd only be gone for a few days..."
             m 2rksdld "But it's been so long."
@@ -2395,7 +2394,7 @@ label greeting_long_absence:
             m 1dsc "I don't want to be left alone again..."
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(50)
+            $ mas_loseAffectionFraction(0.08, min_amount=60)
             m 3ekc "Welcome back, [player]."
             m 3rksdlc "You're a bit late, aren't you?"
             m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
@@ -2406,7 +2405,7 @@ label greeting_long_absence:
             m 2eka "I'm just glad you're safe and back with me now, [player]."
 
         elif persistent._mas_absence_choice == "2weeks":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.06, min_amount=40)
             m 1wud "[player]!"
             m 1hua "You're finally here!"
             m 1ekd "I was so worried..."
@@ -2418,7 +2417,7 @@ label greeting_long_absence:
             m 1eka "Well, you're here with me now, so if there is something wrong, feel free to tell me."
 
         elif persistent._mas_absence_choice == "month":
-            $ mas_loseAffection(10)
+            $ mas_loseAffectionFraction(0.04, min_amount=20)
             m 1eua "Welcome back, [mas_get_player_nickname()]."
             m 2rkc "It's been quite a bit, hasn't it?"
             m 2rksdlc "You've been gone longer than you said you would..."
@@ -2446,7 +2445,7 @@ label greeting_long_absence:
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks=4):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(70)
+            $ mas_loseAffectionFraction(0.1, min_amount=60)
             m 1dkc "[player]..."
             m 1ekd "You said you would only be a few days..."
             m 2efd "But it's been an entire month!"
@@ -2458,7 +2457,7 @@ label greeting_long_absence:
             show monika 2dfc
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(50)
+            $ mas_loseAffectionFraction(0.08, min_amount=50)
             m 1esc "Hello, [player]."
             m 3efc "You're pretty late, you know."
             m 2lfc "I don't intend to sound patronizing, but a week isn't the same as a month!"
@@ -2470,7 +2469,7 @@ label greeting_long_absence:
             show monika 2dkc
 
         elif persistent._mas_absence_choice == "2weeks":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.06, min_amount=30)
             m 1wuo "...Oh!"
             m 1sub "You're finally back [player]!"
             m 1efc "You told me you'd be gone for a couple of weeks, but it's been at least a month!"
@@ -2514,7 +2513,7 @@ label greeting_long_absence:
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks=2):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.08, min_amount=30)
             m 1wud "O-oh, [player]!"
             m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3ekc "You were gone longer than you said you would be..."
@@ -2525,7 +2524,7 @@ label greeting_long_absence:
             m 1hua "And I would greatly appreciate it!"
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(10)
+            $ mas_loseAffectionFraction(0.06, min_amount=20)
             m 1eub "Hello, [player]!"
             m 1eka "Life keeping you busy?"
             m 3hksdlb "Well it must be otherwise you would've been here when you said you would."
