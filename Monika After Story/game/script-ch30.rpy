@@ -1926,16 +1926,13 @@ label ch30_post_restartevent_check:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
             away_experience_time = datetime.datetime.now()-persistent.sessions['last_session_end']
             # Only give bonuses if no crash
-            if not persistent._mas_game_crashed:
-                #Reset the idlexp total if monika has had at least 6 hours of rest
-                if away_experience_time.total_seconds() >= times.REST_TIME:
+            if away_experience_time.total_seconds() >= times.REST_TIME:
+                # Grant aff for closing the game correctly
+                mas_gainAffection(current_evlabel="[rested]")
 
-                    #Grant good exp for closing the game correctly.
-                    mas_gainAffection(current_evlabel="[rested]")
-
-                # unlock extra pool topics if we can
-                while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
-                    persistent._mas_pool_unlocks -= 1
+            # unlock extra pool topics if we can
+            while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
+                persistent._mas_pool_unlocks -= 1
 
         else:
             # Grant bad exp for closing the game incorrectly.
@@ -2003,6 +2000,8 @@ label ch30_preloop:
         set_keymaps()
 
         persistent.closed_self = False
+        # TODO: this var is always True,
+        # even when there was no crash, the name is misleading
         persistent._mas_game_crashed = True
         startup_check = False
         mas_checked_update = False
