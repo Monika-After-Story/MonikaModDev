@@ -134,7 +134,7 @@ label mas_mood_hungry:
     m 3hub "That doesn't just mean getting enough veggies, of course. {w=0.2}All sorts of foods are necessary to keep yourself nourished."
     m 3eka "So I want you to make sure you're not depriving yourself of important vitamins, okay?"
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
-    m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
+    m 2lksdla "I don't want you to feel like I'm nagging when I say these kinds of things, [player]."
     m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4eub "After all, the healthier you are, the better the chances you'll live a long life!"
     m 1hua "Which means more time for us to spend together!~"
