@@ -281,7 +281,7 @@ label monika_sing_song_pool_menu:
             jump monika_sing_song_pool_menu
 
         else:
-            $ pushEvent(sel_song, skipeval=True)
+            $ MASEventList.push(sel_song, skipeval=True)
             show monika at t11
             m 3hub "Alright!"
 
@@ -324,7 +324,7 @@ label monika_sing_song_analysis:
     $ sel_analysis = _return
 
     if sel_analysis:
-        $ pushEvent(sel_analysis, skipeval=True)
+        $ MASEventList.push(sel_analysis, skipeval=True)
         show monika at t11
         m 3hub "Alright!"
 
@@ -414,7 +414,7 @@ label monika_sing_song_random:
             mas_unlockEVL("monika_sing_song_pool", "EVE")
 
             #Now push the random song and unlock it
-            pushEvent(rand_song, skipeval=True, notify=True)
+            MASEventList.push(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
             #Unlock the long version of the song

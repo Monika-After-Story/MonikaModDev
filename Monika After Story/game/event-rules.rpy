@@ -680,7 +680,7 @@ init -1 python:
 
             # store affection for easy checking
             if not affection:
-                affection = persistent._mas_affection["affection"]
+                affection = _mas_getAffection()
 
             # unpack the rule for easy access
             min, max = rule
