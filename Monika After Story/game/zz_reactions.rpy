@@ -95,7 +95,10 @@ init -11 python in mas_filereacts:
     th_foundreact_map = dict()
 
     # good gifts list
-    good_gifts = list()
+    good_gifts = [
+        # Custom sprite jsons should be considered good
+        "mas_reaction_gift_generic_sprite_json"
+    ]
 
     # bad gifts list
     bad_gifts = list()
