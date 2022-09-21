@@ -964,9 +964,9 @@ init 999 python in mas_reset:
         mas_unlockGame("pong")
         # nou via the react
         if renpy.seen_label("mas_reaction_gift_noudeck"):
-            mas_unlockGame("nou")
+            store.mas_unlockGame("nou")
         else:
-            mas_lockGame("nou")
+            store.mas_lockGame("nou")
 
         for game_name, game_startlabel in game_unlock_db.iteritems():
             # unlock if we've seen the label
@@ -974,7 +974,7 @@ init 999 python in mas_reset:
                 store.mas_unlockGame(game_name)
 
             else:
-                mas_lockGame(game_name)
+                store.mas_lockGame(game_name)
 
 
     @ch30_reset(-860)
@@ -1002,7 +1002,7 @@ init 999 python in mas_reset:
         # reset hair / clothes
         # the default options should always be available.
         mas_selspr.unlock_hair(store.mas_hair_def)
-    #    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
+        # store.mas_selspr.unlock_hair(mas_hair_ponytail)
         mas_selspr.unlock_clothes(store.mas_clothes_def)
 
         # def ribbon always unlocked
@@ -1140,7 +1140,7 @@ init 999 python in mas_reset:
         Runs reset code for affection
         """
         # Give the bonus
-        mas_affection._withdraw_aff()
+        store.mas_affection._withdraw_aff()
 
 
     @ch30_reset(-760)
