@@ -15374,7 +15374,7 @@ label monika_toxin_puzzle:
 
         "Yes.":
             m 3etu "Really? Okay then, let's see about that..."
-            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
+            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{w=0.2}{nw}"
             extend 3hub "ahaha! Just kidding."
             m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
 
