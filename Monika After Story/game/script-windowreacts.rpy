@@ -593,7 +593,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_word_processor",
-            category=['Google Docs|LibreOffice Writer|Microsoft Word'],
+            category=['Google Docs|LibreOffice Writer|Microsoft Word|OpenOffice Writer'],
             rules={
                 "notif-group": "Window Reactions",
                 "skip alert": None,
