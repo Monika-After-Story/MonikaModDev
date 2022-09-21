@@ -180,8 +180,13 @@ init python in mas_windowutils:
         NET_CLIENT_LIST_ATOM = __display.intern_atom('_NET_CLIENT_LIST', False)
 
         try:
-            winid_list = __root.get_full_property(NET_CLIENT_LIST_ATOM, 0).value
+            prop = __root.get_full_property(NET_CLIENT_LIST_ATOM, 0)
+            # Apparently x-window can return None here, the reason is unknown to me,
+            # but we can just sanity check it, per #9421
+            if prop is None:
+                return
 
+            winid_list = prop.value
             for winid in winid_list:
                 win = __display.create_resource_object("window", winid)
                 transient_for = win.get_wm_transient_for()

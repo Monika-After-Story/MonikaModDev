@@ -418,7 +418,7 @@ label mas_compliment_hair_2:
     else:
         m 1hubfb "Thank you so much, [player]!"
     m 2hub "I've always put so much effort into my hair."
-    m 2lksdlb "In fact, It took forever for it to get this long.."
+    m 2lksdlb "In fact, it took forever for it to get this long..."
     menu:
         "It really shows. It looks so healthy.":
             $ mas_gainAffection(3, bypass=True)
