@@ -77,7 +77,7 @@ init -1505 python in mas_can_import:
 
             return True
 
-        def import_except(self):
+        def import_except(self, err):
             # kill the update thread and mark unavailble cert
             # updater thread probably failed so we just wont bother with it.
             self.__th_set_cert_avail(False)
@@ -299,6 +299,7 @@ init -1505 python in mas_can_import:
 
 init -1510 python in mas_can_import:
     import store.mas_logging as mas_logging
+    import store.mas_utils as mas_utils
 
     # new data pattern
     import store.mas_can_import_data as Data
@@ -391,7 +392,7 @@ init -1510 python in mas_can_import:
             """
             raise NotImplementedError
 
-        def import_except(self):
+        def import_except(self, err):
             """
             Runs if an ImportError is encountered. The import will always
             be disabled and an import error is logged after this runs.
@@ -400,6 +401,9 @@ init -1510 python in mas_can_import:
             failed import, override this function.
 
             For more info, see `load`.
+
+            IN:
+                err - the exception that was raised
             """
             pass
 
@@ -411,8 +415,8 @@ init -1510 python in mas_can_import:
             This will call `import_try` and mark the this import as enabled if
             appropriate.
 
-            If an ImportError is triggered, disable this import, log an 
-            import error, and call `import_except.
+            If an ImportError/AttributeError/NameError is triggered,
+            disable this import, log an import error, and call `import_except.
 
             If any other errors occur, the import will be disabled and
             an import error will be logged, but the error will percolate up.
@@ -422,10 +426,10 @@ init -1510 python in mas_can_import:
             try:
                 self.__enabled = self.import_try()
 
-            except ImportError as e:
+            except (ImportError, AttributeError, NameError) as e:
                 self.__enabled = False
                 self.log_import_error(e)
-                self.import_except()
+                self.import_except(e)
 
             except Exception as e:
                 self.__enabled = False
