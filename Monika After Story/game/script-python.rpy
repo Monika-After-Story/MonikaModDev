@@ -138,7 +138,7 @@ label monika_ptod_tip000:
     # enable tip 1
     $ tip_label = "monika_ptod_tip001"
     $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
-    $ pushEvent(tip_label,skipeval=True)
+    $ MASEventList.push(tip_label,skipeval=True)
     return
 
 ###############################################################################
@@ -889,7 +889,7 @@ label monika_ptod_tip010:
 # NOTE: base the solids off of hangman. That should help us out
 
 image cn_frame = "mod_assets/console/cn_frame.png"
-define mas_ptod.font = "mod_assets/font/mplus-1mn-medium.ttf"
+define mas_ptod.font = mas_ui.MONO_FONT
 
 # NOTE: Console text:
 # style console_text (for regular console text)
