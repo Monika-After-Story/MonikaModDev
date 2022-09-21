@@ -374,8 +374,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.9.1
-label v0_12_9_1(version="v0_12_9_1"):
+# 0.12.10
+label v0_12_10(version="v0_12_10"):
     python hide:
         mas_hideEVL("monika_lastpoem", "EVE", derandom=True)
 
