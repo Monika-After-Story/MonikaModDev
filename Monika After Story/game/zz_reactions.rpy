@@ -1001,13 +1001,15 @@ label mas_reaction_gift_starter_generic:
 label mas_reaction_gift_starter_bday:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=0.5}This is..."
+    # TODO: fix this so we can actually get this path since rn gifts
+    # are added to this before we even get there
     if not persistent._mas_filereacts_historic.get(mas_monika_birthday):
         m "A gift? For me?"
         m 1hka "I..."
         m 1hua "I've often thought about getting presents from you on my birthday..."
         m "But actually getting one is like a dream come true..."
     else:
-        m "Another gift?{w=0.5} For me?"
+        m "A gift?{w=0.5} For me?"
         m 1eka "This really is a dream come true, [player]."
 
     m 1sua "Now, what's inside?"
