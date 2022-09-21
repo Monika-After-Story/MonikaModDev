@@ -745,7 +745,7 @@ init python:
 
         if len(reacts) > 0:
             for _react in reacts:
-                queueEvent(_react)
+                MASEventList.queue(_react)
             persistent._mas_filereacts_just_reacted = True
 
 
@@ -905,7 +905,7 @@ init python:
         if amount is None:
             amount = store._mas_getGoodExp()
 
-        mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 15 if mas_isSpecialDay() else 3)
+        mas_capGainAff(amount * modifier, "_mas_filereacts_gift_aff_gained", 9 if mas_isSpecialDay() else 3)
 
     def mas_getGiftedDates(giftlabel):
         """
@@ -1665,7 +1665,7 @@ label mas_reaction_candy:
         m 2lksdlb "If I eat anymore I'm going to get sick, ahaha!"
         m 1eka "And you wouldn't want that, right?"
     elif times_candy_given == 4:
-        $ mas_loseAffection(5)
+        $ mas_loseAffection(modifier=1.5)
         m 2wfd "[player]!"
         m 2tfd "Are you not listening to me?"
         m 2tfc "I told you I don't want anymore candy today!"
@@ -1673,7 +1673,7 @@ label mas_reaction_candy:
         m 2rkc "It was really nice of you to get me all of this candy on Halloween, but enough is enough..."
         m 2ekc "I can't eat all of this."
     else:
-        $ mas_loseAffection(10)
+        $ mas_loseAffection(modifier=2.0)
         m 2tfc "..."
         python:
             store.mas_ptod.rst_cn()
@@ -1719,7 +1719,7 @@ label mas_reaction_candycorn:
         m 4eka "I do appreciate you trying to give me candy on Halloween, though."
         m 1hua "And if you could find a way to get some other candy for me, it'd make me really happy, [player]!"
     elif times_candy_given == 1:
-        $ mas_loseAffection(5)
+        $ mas_loseAffection()
         m 2esc "Oh."
         m 2esc "More candy corn, [player]?"
         m 4esc "I already told you I don't really like candy corn."
@@ -1728,14 +1728,14 @@ label mas_reaction_candycorn:
         m 1ekbfa "Well...{w=1}besides you, [player]..."
         m 1hubfa "Ehehe~"
     elif times_candy_given == 2:
-        $ mas_loseAffection(10)
+        $ mas_loseAffection(modifier=1.5)
         m 2wfw "[player]!"
         m 2tfc "I really tried not to be rude about this, but..."
         m 2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyway."
         m 2rfc "It's starting to feel like you're just trying to mess with me at this point."
         m 2tkc "So please, either find me some other kind of candy or just stop."
     else:
-        $ mas_loseAffection(15) # should have seen it coming
+        $ mas_loseAffection(modifier=2) # should have seen it coming
         m 2tfc "..."
         python:
             store.mas_ptod.rst_cn()
