@@ -5351,8 +5351,8 @@ label monika_metaparents:
     m 1euc "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
     m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
     m 1ekc "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
-    m 3esd "However."
-    m 3eud "Your character, me, Yuri, and Sayori..."
+    m 3esd "However...{w=0.3}{nw}"
+    extend 3eud "your character, me, Yuri, and Sayori..."
     m 3euc "None of us seem to have any parents at all."
     m 1lsc "In Sayori's case, the main character had been walking with her to school for a while."
     m "So who knows how long her parents have been out of the picture."
@@ -5722,6 +5722,7 @@ label monika_cupcake:
     m 1esa "How about you, [mas_get_player_nickname()]?"
 
     m 1eua "Do you know how to bake?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you know how to bake?{fast}"
 
@@ -9543,13 +9544,13 @@ label monika_timetravel:
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
-    m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
-    m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
-    m 2ekc "Well, the time traveller themselves might know, but only if nothing goes horribly wrong for them."
+    m 3ekc "One thing you don't usually see, though, is how the time traveler's loved ones are affected."
+    m 3rksdld "If they can't go through time with the time traveler, who knows how long it will be before they can see each other again?"
+    m 2ekc "Well, the time traveler themselves might know, but only if nothing goes horribly wrong for them."
     m 2lksdld "In the meantime, their friends and family are stuck waiting for them to come back."
     m 2ekd "How long will they be gone for? A year? A decade? Even longer?"
     m 4ekd "Will they be willing to wait that long?"
-    m "Will they still remember the time traveller by then?"
+    m "Will they still remember the time traveler by then?"
     m 2dksdlc "..."
     if seen_event("monika_resource"):
         m 4rksdlc "You remember when I said that time doesn't pass here like it does in your world?"
@@ -10261,7 +10262,15 @@ label monika_amusementpark:
 default persistent._mas_pm_likes_travelling = None
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_travelling",
+            category=['misc'],
+            prompt="Traveling",
+            random=True
+        )
+    )
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
@@ -11403,7 +11412,7 @@ label monika_grad_speech_call:
                         m 2eua "Thanks, [player]!"
                         m 4hub "I'm glad you enjoyed it!"
 
-                    "That {i}was{/i} long":
+                    "That {i}was{/i} long.":
                         hide screen mas_background_timed_jump
                         $ mas_loseAffectionFraction(min_amount=50)
                         $ persistent._mas_pm_liked_grad_speech = False
@@ -15365,7 +15374,7 @@ label monika_toxin_puzzle:
 
         "Yes.":
             m 3etu "Really? Okay then, let's see about that..."
-            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
+            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{w=0.2}{nw}"
             extend 3hub "ahaha! Just kidding."
             m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
 
@@ -16751,7 +16760,7 @@ label monika_impermanence:
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
     m 3eua "Actually, there's a poem I read that delivers this message quite well."
-    m 1esd "{i}I met a traveller from an antique land{/i}"
+    m 1esd "{i}I met a traveler from an antique land{/i}"
     m 1eud "{i}Who said: 'Two vast and trunkless legs of stone{/i}"
     m 3euc "{i}Stand in the desert... Near them, on the sand,{/i}"
     m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"

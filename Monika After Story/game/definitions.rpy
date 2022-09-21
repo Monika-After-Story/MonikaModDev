@@ -3861,15 +3861,22 @@ init 25 python:
         def start(self):
             """
             Starts this displayable
+
+            OUT:
+                bool - the result of interaction:
+                    True if the user clicked
+                    False if the dispalyable was stopped
             """
             self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
-            ui.interact()
+            return ui.interact()
 
         def stop(self):
             """
             Stops this disp's interaction, aborts its event
+            This will cause the displayable to return False
+                in the event method
             """
             ui.remove(self)
             self.__abort_events = True

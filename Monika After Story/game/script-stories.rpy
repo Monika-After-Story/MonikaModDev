@@ -465,11 +465,11 @@ init 5 python:
 label mas_story_wind_sun:
     call mas_story_begin
     m 1dsc "The Wind and the Sun were disputing which was the strongest."
-    m 1euc "Suddenly they saw a traveller coming down the road, and the Sun said: 'I see a way to decide our dispute.'"
-    m 3efd "'Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.'"
-    m 3euc "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
-    m 1ekc "But the harder he blew the more closely did the traveller wrap his cloak around him, till at last the Wind had to give up in despair."
-    m 1euc "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
+    m 1euc "Suddenly they saw a traveler coming down the road, and the Sun said: 'I see a way to decide our dispute.'"
+    m 3efd "'Whichever of us can cause that traveler to take off his cloak shall be regarded as the strongest. You begin.'"
+    m 3euc "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveler."
+    m 1ekc "But the harder he blew the more closely did the traveler wrap his cloak around him, till at last the Wind had to give up in despair."
+    m 1euc "Then the Sun came out and shone in all his glory upon the traveler, who soon found it too hot to walk with his cloak on."
     m 3hua "The moral of this story is, gentleness and kind persuasion win where force and bluster fail."
     m 1hub "Hope you had fun, [player]."
     return
@@ -590,7 +590,7 @@ init 5 python:
 
 label mas_story_genie_simple:
     call mas_story_begin
-    m 1eua "There was once a genie who travelled across different worlds to escape the chaos of his own."
+    m 1eua "There was once a genie who traveled across different worlds to escape the chaos of his own."
     m 3euc "During his journeys, he met a woman that challenged the way he saw the world."
     m 3eua "She was smart and talented, but held back by the hardships she faced and how little she had."
     m 3eub "The genie saw this and felt generous, offering tools to speed up her work and make her life easier."
@@ -879,7 +879,7 @@ label mas_story_o_tei:
     m "He soon married another girl, but his heart stayed somewhere else."
     m 2esd "And as everything does in life, his family too had been taken by time and he was left all alone again."
     m 4eud "It was then that he decided to abandon his home and take a long journey to forget his troubles."
-    m 1esc "He travelled all around the country, searching for a cure to his malaise."
+    m 1esc "He traveled all around the country, searching for a cure to his malaise."
     m 1euc "And then on one evening, he came across an inn and stopped there to rest."
     m "As he settled down in his room, a nakai opened the door to greet him."
     m 3euc "His heart leapt..."
@@ -1231,7 +1231,7 @@ init 5 python:
 label mas_scary_story_mujina:
     call mas_scary_story_setup
     m 1esc "One night at a late hour, an old merchant was walking down a road heading home after a long day of selling his wares."
-    m 3esc "The road he travelled on led to a large hill that was very dark and secluded at night so many travelers tended to avoid the area."
+    m 3esc "The road he traveled on led to a large hill that was very dark and secluded at night so many travelers tended to avoid the area."
     m "The man was tired, however, and decided to take the road anyway since it would get him home quicker."
     m "On the one side of the hill was an old moat that was quite deep."
     m 3eud "As he went along, he noticed a woman crouching by the moat, all alone and weeping bitterly."
