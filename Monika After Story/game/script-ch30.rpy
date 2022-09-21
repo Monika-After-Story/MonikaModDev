@@ -1095,7 +1095,7 @@ init 999 python in mas_reset:
         ## monika returned home reset
         if persistent._mas_monika_returned_home is not None:
             _rh = persistent._mas_monika_returned_home.date()
-            if datetime.datetime.today() > _rh:
+            if datetime.date.today() > _rh:
                 persistent._mas_monika_returned_home = None
 
 
