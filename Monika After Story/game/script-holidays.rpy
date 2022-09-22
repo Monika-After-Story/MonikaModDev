@@ -7264,7 +7264,12 @@ image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 label mas_bday_surprise_party_hint:
     #Set up letters
     python:
-        persistent._mas_bday_hint_filename = "For " + player + ".txt"
+        player_sane = player
+        if renpy.windows:
+            for c in '<>:"/\\|?*':
+                player_sane = player_sane.replace(c, "")
+
+        persistent._mas_bday_hint_filename = "For " + player_sane + ".txt"
         if mas_isMoniNormal(higher=True):
             message = """\
 [player],
