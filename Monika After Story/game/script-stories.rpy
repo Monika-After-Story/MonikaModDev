@@ -1869,3 +1869,62 @@ label mas_scary_story_flowered_lantern_3:
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_clever_girl",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="Clever girl",
+            unlocked=False
+        ),
+    code="STY"
+    )
+
+label mas_scary_story_clever_girl:
+    call mas_scary_story_setup
+    m 1eua "A 15-year old girl named Donna lived with her father in a small house in the suburbs."
+    m 1eka "Ever since her mother died, Donna had depended on her father for everything. They had a wonderful relationship and loved each other very much."
+    m 2euc "One morning, Donna's father was leaving on a business trip. As they ate breakfast together, he told her that he would be home very late that night."
+    extend m 2esa "With that, he kissed her on the forehead, grabbed his briefcase and walked out the front door."
+    m 1esa "Later that day, when Donna came home from school, she did some homework and watched some TV. By midnight, her father had still not returned so she decided to go to bed."
+    m 3esc "That night she had a dream. She found herself standing at the edge of a busy highway. Cars and trucks whizzed by at an alarming rate. She looked across the highway and saw a familiar figure standing on the other side. "
+    m 3euc "It was her father. His hands were cupped around his mouth and he seemed to be shouting something to her, but she couldn't make out what he was saying."
+    m 4eua "As the traffic whizzed by, she strained to hear. Her father's eyes were sad. He seemed to be desperately trying to communicate something to her. She could barely make out the words:"
+    m 3wuw "'Don't...{w=0.5} Open...{w=0.5} Door...'"
+    m 4esd "Suddenly, Donna was awoken from the dream by a strange tapping noise."
+    m 4esc "Tap{w=0.3} Tap{w=0.3} Tap{w=0.3}."
+    m 4wsc "Then somebody began to ring the doorbell downstairs."
+    m "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 2esc "She scrambled out of bed and put on her slippers. Then, dressed only in her nightgown, she ran downstairs and went to the front door."
+    m "Looking through the peephole, she saw her father's face outside. He was staring right at her. The doorbell kept ringing insistently."
+    m 3eud "'OK, hold on! I'm coming!', she shouted."
+    m 3esc "She pulled back the deadbolt and was about to unlatch the door when she stopped."
+    m 2esc "She looked through the peephole at her father again."
+    extend m 3etc "Something about his expression didn't look quite right. His eyes were wide open. He looked terrified."
+    m 2esc "She slid the deadbolt back into place."
+    m 2wsd "'Dad!'"
+    extend m 4eua ", she yelled through the door. "
+    extend m 2wkd "'Did you forget your keys?'"
+    m 2esc "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 2wksdld "'Dad, answer me!'"
+    m 2esc "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 2wktdd "'Dad, please! I need you to answer me!'"
+    m 2esc "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 3wktdd "'Is there someone else out there with you?'"
+    m 2esc "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 3wktud "'Why won't you answer me?'"
+    m 2esc "Ring{w=0.3} Ring{w=0.3} Ring{w=0.3}."
+    m 3wftso "'I'm not opening the door until you say something!'"
+    m 2ekc "The doorbell kept ringing and ringing, but for some reason, her father refused to answer her desperate cries."
+    m 3esc "For the rest of the night, the frightened girl cowered in a corner of the hallway, helplessly listening to the ceaseless ringing of the doorbell. It seemed to go on for hours. Eventually, she fell into an uneasy sleep."
+    m "At dawn, she woke up and realized that everything was quiet. She crept over to the door and looked through the peephole again. Her father was still there, staring at her."
+    m "She cautiously opened the door and was confronted with a sight "
+    extend m 3wuc "that filled her with unimaginable horror."
+    m 3cuo "Her father's severed head was hanging from a nail above the door. "
+    m 3euc "There was a note attached to the doorbell. In crude, scrawled handwriting, it read: "
+    m 3tfb "'Clever Girl'"
+    call mas_scary_story_cleanup
+    return
+    
