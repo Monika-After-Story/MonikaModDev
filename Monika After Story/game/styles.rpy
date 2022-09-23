@@ -16,6 +16,7 @@ init -1 python in mas_globals:
     button_text_hover_color = None
     button_text_idle_color = None
 
+
 init -201 python in mas_ui:
 
     dark_suffix = "_dark"
@@ -39,6 +40,12 @@ init -200 python in mas_ui:
     light_button_text_idle_color = "#000"
     light_button_text_hover_color = "#fa9"
     light_button_text_insensitive_color = "#8C8C8C"
+
+    TEXT_FIELD_BG = "#ffaa99aa"
+
+    MODAL_BG = "#000000B2"
+
+    MONO_FONT = "mod_assets/font/mplus-1mn-medium.ttf"
 
     # ---- files ----
 
@@ -293,6 +300,23 @@ style generic_button_text_dark is generic_button_text_base:
     idle_color mas_ui.dark_button_text_idle_color
     hover_color mas_ui.dark_button_text_hover_color
     insensitive_color mas_ui.dark_button_text_insensitive_color
+
+# mas-specific
+style mas_button_simple is generic_button_light:
+    padding (10, 3)
+
+style mas_button_simple_dark is generic_button_dark:
+    padding (10, 3)
+
+style mas_button_simple_text is generic_button_text_light
+style mas_button_simple_text_dark is generic_button_text_dark
+
+# mas-specific that supports prefix
+# TODO- put all mas_dlg_menu stuff in one place
+style mas_dlg_menu_button is mas_button_simple
+style mas_dlg_menu_button_dark is mas_button_simple_dark
+style mas_dlg_menu_button_text is mas_button_simple_text
+style mas_dlg_menu_button_text_dark is mas_button_simple_text_dark
 
 image generic_fancy_check_button_fg = Image("mod_assets/buttons/checkbox/fancy_check.png", yoffset=4)
 image generic_fancy_check_button_fg_insensitive = Image("mod_assets/buttons/checkbox/insensitive_fancy_check.png", yoffset=4)

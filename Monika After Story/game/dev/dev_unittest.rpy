@@ -12,7 +12,9 @@ init -1 python in mas_dev_unit_tests:
         ("UTC APIs", "dev_unit_test_utc_api", False, False),
         ("WRS REGEXP Tests", "dev_unit_test_wrs_regexpchecks", False, False),
         ("strict_can_pickle", "dev_unit_test_strict_can_pickle", False, False),
-        ("mas_set_pronouns", "dev_unit_test_mas_set_pronouns", False, False)
+        ("mas_set_pronouns", "dev_unit_test_mas_set_pronouns", False, False),
+        ("encoded struct pickling", "dev_unit_test_encoded_struct_pickle", False, False),
+        ("Jump with args", "dev_unit_test_jump_with_args", False, False),
     ]
 
     class MASUnitTest(object):
@@ -2791,4 +2793,212 @@ label dev_unit_test_mas_set_pronouns:
     call dev_unit_tests_finish_test(pronouns_tester)
     $ del pronouns_tester
 
+    return
+
+
+label dev_unit_test_encoded_struct_pickle:
+    m "Running tests..."
+
+    $ pack_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+    python hide:
+        import io
+        import struct
+        import pickle
+        import base64
+        import binascii
+
+        def is_ascii(string):
+            try:
+                string.encode("ascii")
+            except UnicodeEncodeError:
+                return False
+            return True
+
+        s = struct.Struct("!d d d d d d")
+        # test_file = io.BytesIO()
+        raw_data = (-947207.15943, -492, 0.0, 0.32591, 10.0, 1439304)
+        packaged_data = s.pack(*raw_data)
+        he_packaged_data = binascii.hexlify(packaged_data)
+        b64_he_packaged_data = base64.b64encode(he_packaged_data)
+
+
+        pack_tester.prepareTest("check is_ascii works")
+        pack_tester.assertEqual(is_ascii("hello world"), True)
+        pack_tester.assertEqual(is_ascii("hej världen"), False)
+        pack_tester.assertEqual(is_ascii("привет мир"), False)
+        pack_tester.assertEqual(is_ascii("こんにちは世界"), False)
+
+
+        pack_tester.prepareTest("check contains pure ascii")
+        pack_tester.assertEqual(is_ascii(he_packaged_data), True)
+        pack_tester.assertEqual(is_ascii(b64_he_packaged_data), True)
+
+
+        pack_tester.prepareTest("check can pickle dump")
+        test_file = io.BytesIO()
+        try:
+            pickle.dump(b64_he_packaged_data, test_file)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        test_file.seek(0)# going to read now
+        del result
+
+        pack_tester.prepareTest("check can unpickle load")
+        try:
+            unpickled_data = pickle.load(test_file)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
+        test_file.close()
+        del result, unpickled_data, test_file
+
+
+        pack_tester.prepareTest("check can pickle dumps")
+        try:
+            pickled_data = pickle.dumps(b64_he_packaged_data)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        del result
+
+        pack_tester.prepareTest("check can unpickle loads")
+        try:
+            unpickled_data = pickle.loads(pickled_data)
+            result = True
+        except pickle.PickleError:
+            result = False
+
+        pack_tester.assertEqual(result, True)
+        pack_tester.assertEqual(unpickled_data, b64_he_packaged_data)
+        pack_tester.assertEqual(
+            s.unpack(binascii.unhexlify(base64.b64decode(unpickled_data))),
+            raw_data
+        )
+        del result
+
+
+    call dev_unit_tests_finish_test(pack_tester)
+
+    $ del pack_tester
+
+    return
+
+label dev_unit_test_jump_with_args:
+    m "Running tests..."
+
+    $ jump_tester = store.mas_dev_unit_tests.MASUnitTester()
+    $ TEST_VARS = ("foo", "bar")
+
+    $ jump_tester.prepareTest("Expecting a crash if jumped and gave args to a label without args")
+    # This is janky...
+    $ e = None
+    python:
+        try:
+            mas_jump_with_args("dev_unit_test_jump_with_args_crash_no_args", "crash", "aboom")
+        except Exception as e:
+            pass
+    $ jump_tester.assertIsNotNone(e)
+
+    call dev_unit_test_jump_with_args_no_test_vars_in_store
+
+    $ jump_tester.prepareTest("Validate no test vars in store after jumping without args")
+    call dev_unit_test_jump_with_args_redirector("dev_unit_test_jump_with_args_no_args")
+
+    $ jump_tester.prepareTest("Validate 'foo' is in store after jumping with args")
+    call dev_unit_test_jump_with_args_redirector("dev_unit_test_jump_with_args_foo", "foo_value")
+
+    $ jump_tester.prepareTest("Validate 'foo' is in store and 'bar' kept default value")
+    call dev_unit_test_jump_with_args_redirector("dev_unit_test_jump_with_args_foo_bar", "another_foo_value")
+
+    call dev_unit_test_jump_with_args_no_test_vars_in_store
+
+    $ jump_tester.prepareTest("Validate nested calls/jumps work as intended")
+    call dev_unit_test_jump_with_args_redirector("dev_unit_test_jump_with_args_depth_0", foo="foo_value", bar="bar_value")
+
+    call dev_unit_test_jump_with_args_no_test_vars_in_store
+
+    call dev_unit_tests_finish_test(jump_tester)
+    $ del jump_tester, TEST_VARS, e
+
+    return
+
+label dev_unit_test_jump_with_args_redirector(label, *args, **kwargs):
+    $ mas_jump_with_args(label, *args, **kwargs)
+    return
+
+label dev_unit_test_jump_with_args_no_test_vars_in_store:
+    $ jump_tester.prepareTest("Validate no test vars in store")
+    python:
+        for i in TEST_VARS:
+            jump_tester.prepareTest("Validating '{}' is not in store".format(i))
+            jump_tester.assertFalse(hasattr(store, i))
+    return
+
+label dev_unit_test_jump_with_args_crash_no_args:
+    # We should crash before reaching this
+    $ raise Exception("YOU SHOULDN'T GET HERE")
+    return
+
+label dev_unit_test_jump_with_args_no_args():
+    call dev_unit_test_jump_with_args_no_test_vars_in_store
+    return
+
+label dev_unit_test_jump_with_args_foo(foo):
+    python:
+        jump_tester.prepareTest("Validating 'foo' is in store")
+        jump_tester.assertEqual(getattr(store, "foo", None), "foo_value")
+
+        jump_tester.prepareTest("Validating 'bar' is not in store")
+        jump_tester.assertFalse(hasattr(store, "bar"))
+    return
+
+label dev_unit_test_jump_with_args_foo_bar(foo, bar="bar_default"):
+    python:
+        jump_tester.prepareTest("Validating 'foo' is in store")
+        jump_tester.assertEqual(getattr(store, "foo", None), "another_foo_value")
+
+        jump_tester.prepareTest("Validating 'bar' is in store by default")
+        jump_tester.assertEqual(getattr(store, "bar", None), "bar_default")
+    return
+
+label dev_unit_test_jump_with_args_depth_0(foo, bar):
+    python:
+        for name in TEST_VARS:
+            jump_tester.prepareTest("Validating '{}' is in store".format(name))
+            jump_tester.assertEqual(getattr(store, name, None), "{}_value".format(name))
+
+    call dev_unit_test_jump_with_args_depth_1("wow a egg")
+
+    jarg expression "dev_unit_test_jump_with_args_depth_2" pass ("brand_new_foo_value", "brand_new_bar_value")
+
+    return
+
+label dev_unit_test_jump_with_args_depth_1(egg):
+    python:
+        for name in TEST_VARS:
+            jump_tester.prepareTest("Validating '{}' is still in store".format(name))
+            jump_tester.assertEqual(getattr(store, name, None), "{}_value".format(name))
+    return
+
+label dev_unit_test_jump_with_args_depth_2(foo, bar):
+    python:
+        for name in TEST_VARS:
+            jump_tester.prepareTest("Validating '{}' got a new value".format(name))
+            jump_tester.assertEqual(getattr(store, name, None), "brand_new_{}_value".format(name))
+
+        jump_tester.prepareTest("Validating 'egg' is not in store")
+        jump_tester.assertFalse(hasattr(store, "egg"))
     return

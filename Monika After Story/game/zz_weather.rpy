@@ -400,7 +400,7 @@ init -20 python in mas_weather:
             and not store.persistent.event_list
             and not store.mas_getEVL_shown_count("monika_auroras")
         ):
-            store.queueEvent("monika_auroras", notify=True)
+            store.MASEventList.queue("monika_auroras", notify=True)
 
 
     def _weather_snow_exit(_new):
@@ -1195,7 +1195,7 @@ label monika_change_weather:
     # NOTE: here is where youc an react to a weather change
     if sel_weather == mas_weather_rain or sel_weather == mas_weather_thunder:
         if not renpy.seen_label("monika_rain"):
-            $ pushEvent("monika_rain")
+            $ MASEventList.push("monika_rain")
             $ skip_outro = True
 
         elif persistent._mas_pm_likes_rain is False:
