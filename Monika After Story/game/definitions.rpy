@@ -4659,7 +4659,6 @@ init -100 python in mas_utils:
         """
         return [bullet + " " + str(item) for item in _list]
 
-    
     def nested_defaultdict(final_factory=None, levels=1):
         """
         Generates a nested defaultdict. Basically good for creating an n-level
@@ -5365,6 +5364,13 @@ init -100 python in mas_utils:
             num *= -1
             cleanival *= -1
         return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
+
+
+    def sanitize_filename(s):
+        sane = s
+        for c in '<>:"/\\|?*':
+            sane = sane.replace(c, "")
+        return sane
 
 
 init -985 python:
