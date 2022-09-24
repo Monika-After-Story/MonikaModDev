@@ -3440,7 +3440,17 @@ label prompts_categories(pool=True):
         # tuplelize the main the category list
         # NOTE: we use a 2nd list here to do displaying, keeping track of the
         # older cat list for checking if a category was picked
-        dis_cat_list = [(x.capitalize() + "...",x) for x in main_cat_list]
+        dis_cat_list = []
+        for x in main_cat_list:
+            if x.lower() == "ddlc":
+                capitalized_string = x.upper() + "..."
+            elif x.lower () == "literature club":
+                capitalized_string = "Literature Club..."
+            else:
+                capitalized_string = x.capitalize() + "..."
+
+            dis_cat_list.append((capitalized_string, x))
+
 
         # tupelize the event list
 #        no_cat_list = evhand.tuplizeEventLabelList(no_cat_list, unlocked_events)
