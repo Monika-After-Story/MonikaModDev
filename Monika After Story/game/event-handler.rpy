@@ -3441,11 +3441,13 @@ label prompts_categories(pool=True):
         # NOTE: we use a 2nd list here to do displaying, keeping track of the
         # older cat list for checking if a category was picked
         dis_cat_list = []
+        capitalization_exceptions = {
+            "ddlc": "DDLC",
+            "literature club": "Literature Club"
+        }
         for x in main_cat_list:
-            if x.lower() == "ddlc":
-                capitalized_string = x.upper() + "..."
-            elif x.lower () == "literature club":
-                capitalized_string = "Literature Club..."
+            if x.lower() in capitalization_exceptions:
+                capitalized_string = capitalization_exceptions[x] + "..."
             else:
                 capitalized_string = x.capitalize() + "..."
 
