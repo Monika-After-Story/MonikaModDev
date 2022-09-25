@@ -1590,6 +1590,9 @@ init 189 python in mas_sprites_json:
                 ):
                     return False
 
+        # TODO - set based on prop
+        save_obj["legacy_fp"] = True
+
         return True
 
 
@@ -1727,6 +1730,10 @@ init 189 python in mas_sprites_json:
                     store.MASHair.hl_keys_c()
             ):
                 return False
+
+        # TODO - set this based on json prop
+        save_obj["legacy_fp"] = True
+        save_obj["numeric_layer_ids"] = False
 
 #        # validate split
 #        if "split" not in obj_based:

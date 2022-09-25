@@ -5847,7 +5847,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=True
+                legacy_fp=False
             ):
             """
             MASAccessory constructor
@@ -5909,7 +5909,7 @@ init -3 python:
                     (Default: None)
                 legacy_fp - determines if sprites are organized using old-style
                     (non-folder-based) structure
-                    (Default: True)
+                    (Default: False)
             """
             super(MASAccessoryBase, self).__init__(
                 name,
@@ -6038,7 +6038,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=True,
+                legacy_fp=False,
         ):
             """
             Constructor.
@@ -6099,7 +6099,7 @@ init -3 python:
                     (Default: None)
                 legacy_fp - determines if sprites are organized using old-style
                     (non-folder-based) structure
-                    (Default: True)
+                    (Default: False)
             """
             super(MASAccessory, self).__init__(
                 self.ASO_REG,
@@ -6286,7 +6286,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=True
+                legacy_fp=False
             ):
             """
             MASSplitAccessory constructor
@@ -6352,7 +6352,7 @@ init -3 python:
                     (Default: None)
                 legacy_fp - determines if sprites are organized using old-style
                     (non-folder-based) structure
-                    (Default: True)
+                    (Default: False)
             """
             super(MASSplitAccessory, self).__init__(
                 self.ASO_SPLIT,
@@ -6867,8 +6867,8 @@ init -3 python:
                 ex_props=None,
                 hl_data=None,
                 mpm_mid=None,
-                legacy_fp=True,
-                numeric_layer_ids=False
+                legacy_fp=False,
+                numeric_layer_ids=True
             ):
             """
             MASHair constructor
@@ -6915,9 +6915,10 @@ init -3 python:
                     (Default: None)
                 legacy_fp - determines if sprites are organized using old-style
                     (non-folder-based) structure
-                    (Default: True)
+                    (Default: False)
                 numeric_layer_ids - determines if sprites should use numeric
                     layer ids for layers (back=0, mid=5, front=10)
+                    (Default: True)
             """
             super(MASHair, self).__init__(
                 name,
