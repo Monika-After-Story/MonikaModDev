@@ -1139,8 +1139,15 @@ init 999 python in mas_reset:
         """
         Runs reset code for affection
         """
-        # Give the bonus
         store.mas_affection._withdraw_aff()
+        if store.mas_globals.tt_detected:
+            # this will tell the player they fooked up persistent
+            # and hopefully they will revert
+            store.mas_loseAffectionFraction(
+                0.99,
+                min_amount=50,
+                current_evlabel="[tt detected, possible data corruption]"
+            )
 
 
     @ch30_reset(-760)
