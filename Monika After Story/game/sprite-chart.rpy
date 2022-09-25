@@ -6037,7 +6037,8 @@ init -3 python:
                 ex_props=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_data=None
+                hl_data=None,
+                legacy_fp=True,
         ):
             """
             Constructor.
@@ -6096,6 +6097,9 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, then no highlights at all
                     (Default: None)
+                legacy_fp - determines if sprites are organized using old-style
+                    (non-folder-based) structure
+                    (Default: True)
             """
             super(MASAccessory, self).__init__(
                 self.ASO_REG,
@@ -6113,7 +6117,8 @@ init -3 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                hl_data
+                hl_data,
+                legacy_fp
             )
 
         def __repr__(self):
@@ -6280,7 +6285,8 @@ init -3 python:
                 arm_split=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_data=None
+                hl_data=None,
+                legacy_fp=True
             ):
             """
             MASSplitAccessory constructor
@@ -6344,6 +6350,9 @@ init -3 python:
                         None means no highlight for this pose
                     if None, then no highlights at all
                     (Default: None)
+                legacy_fp - determines if sprites are organized using old-style
+                    (non-folder-based) structure
+                    (Default: True)
             """
             super(MASSplitAccessory, self).__init__(
                 self.ASO_SPLIT,
@@ -6361,7 +6370,8 @@ init -3 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                MASSplitAccessory._prepare_hl_data(hl_data)
+                MASSplitAccessory._prepare_hl_data(hl_data),
+                legacy_fp
             )
 
             self.arm_split = arm_split
