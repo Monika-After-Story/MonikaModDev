@@ -6,6 +6,10 @@
 #
 # Shared JSON props:
 # {
+#   "version": integer version of sprite json format
+#       - REQUIRED
+#       - integer
+#       - for old style sprites, 3. For new style sprites, see SP_JSON_VER
 #   "type": integer type of sprite object this is,
 #       - REQUIRED
 #       - integer
@@ -121,6 +125,18 @@
 #   "mid_hair_map": {Pose Map object}
 #       - optional
 #       - denotes which poses support the mid hair layer
+#   "use_numeric_layer_ids": True means the sprites use number suffix codes for
+#       each layer instead of strings.
+#       - optional
+#       - if True, then the sprites need to use numeric ids instead of string.
+#           For example, `hair-down-0.png` instead of `hair-down-back.png`.
+#           The mapping between the numeric ids and strings are as follows:
+#           - back = 0
+#           - mid = 5
+#           - front = 10
+#       - if False, then the sprites need to use the string suffixes:
+#           (back, mid, front)
+#       - Default: False
 # }
 #
 # CLOTHES only props:
@@ -402,9 +418,12 @@ init -21 python in mas_sprites_json:
     from collections import defaultdict
     import logging
 
-    SP_JSON_VER = 3
-    VERSION_TXT = "version"
     # CURRENT SPRITE VERSION. Change if fundamental sprite format chagnes.
+    SP_JSON_VER = 4
+    VERSION_TXT = "version"
+
+    # file-name based format version (aka use_folders = False)
+    FILENAME_FMT_VER = 3
 
     # these imports are for the classes
     from store.mas_ev_data_ver import _verify_bool, _verify_str, \
@@ -540,6 +559,7 @@ init -21 python in mas_sprites_json:
     SP_SUCCESS_DRY = "{0} sprite object '{1}' loaded successfully! DRY RUN"
     VER_NOT_FOUND = "version not found"
     VER_BAD = "version mismatch. expected '{0}', found '{1}'"
+    FILENAME_FMT = "using filename-based structure - consider updating to folder-based structure"
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
     EXTRA_PROP = "extra property '{0}' found"
@@ -736,6 +756,9 @@ init -21 python in mas_sprites_json:
         "giftname": (str, _verify_str),
     }
 
+    OPT_HA_SHARED_PARAM_NAMES = {
+    }
+
     OPT_ACS_PARAM_NAMES = {
         # this is handled differently
 #        "rec_layer": None,
@@ -748,6 +771,7 @@ init -21 python in mas_sprites_json:
         "keep_on_desk": (bool, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
+    OPT_ACS_PARAM_NAMES.update(OPT_HA_SHARED_PARAM_NAMES)
 
     OPT_HC_SHARED_PARAM_NAMES = {
 #        "fallback": (bool, _verify_bool),
@@ -757,7 +781,9 @@ init -21 python in mas_sprites_json:
         # object-based verification is different
 #        "split": None,
         "unlock": (bool, _verify_bool),
+        "use_numeric_layer_ids": (bool, _verify_bool),
     }
+    OPT_HAIR_PARAM_NAMES.update(OPT_HA_SHARED_PARAM_NAMES)
 
     OPT_CLOTH_PARAM_NAMES = {
         # object-based verificaiton is different
@@ -1663,6 +1689,7 @@ init 189 python in mas_sprites_json:
 
         Props validated:
             - unlock
+            - use_numeric_layer_ids
             - highlight
 
         IN:
@@ -1686,6 +1713,10 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # default some params if not available
+        if "use_numeric_layer_ids" not in save_obj:
+            save_obj["use_numeric_layer_ids"] = False
 
         # mid hair map
         if "mid_hair_map" in obj_based:
@@ -2281,7 +2312,12 @@ init 189 python in mas_sprites_json:
             return
 
         # check version match
-        if version != SP_JSON_VER:
+        if version == FILENAME_FMT_VER:
+            # old style sprite version
+            sp_obj_params["use_folders"] = False 
+            log.warning(FILENAME_FMT)
+
+        elif version != SP_JSON_VER:
             log.error(VER_BAD.format(SP_JSON_VER, version))
             return
 
@@ -2303,6 +2339,10 @@ init 189 python in mas_sprites_json:
         sp_type = _validate_type(jobj, msg_log, indent_lvl)
         if parsewritelogs(msg_log):
             return
+
+        # pop use_folders for objects that dont use it
+        if sp_type not in (SP_ACS, SP_HAIR):
+            sp_obj_params.pop("use_folders", None) 
 
         # check name and img_sit
         msg_log = []
