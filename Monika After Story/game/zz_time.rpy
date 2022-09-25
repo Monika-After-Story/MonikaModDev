@@ -30,7 +30,7 @@ python early:
             IN:
                 dt - datetime to generate new datetime with
 
-            RETURNS: new datetime object with same time as previous but 
+            RETURNS: new datetime object with same time as previous but
                 tzinfo set to an instance of this MASLocalTz
             """
             mas_tz = MASLocalTz.create()
@@ -85,3 +85,140 @@ python early:
             """
             cls._tz_cache = None
             return MASLocalTz.create()
+
+
+python early in mas_tt_guard:
+    import time
+    import threading
+    import random
+
+    import store
+
+    class MASUptimeSyncValidator(object):
+        """
+        Validates uptime using clock
+        """
+        def __init__(self, on_desync=None, log=None):
+            """
+            Constructor:
+
+            IN:
+                on_desync - a function to call on desync
+                    NOTE: will be called from another thread
+                        make sure it's thread-safe
+                log - the log object to use for logging purposes
+            """
+            self.__on_desync = on_desync
+            self.__log_obj = log
+            self.__last_os_ts = 0.0
+            self.__quit = False
+            self.__desyncs = []
+            self.__th = None
+
+        def __log(self, kind, *args, **kwargs):
+            """
+            Logs a message of severity kind
+
+            IN:
+                kind - the message kind
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            if self.__log_obj:
+                fn = getattr(self.__log_obj, kind, None)
+                if fn:
+                    fn(*args, **kwargs)
+
+        def __log_warning(self, *args, **kwargs):
+            """
+            Logs a warning
+
+            IN:
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            self.__log("warning", *args, **kwargs)
+
+        def __log_error(self, *args, **kwargs):
+            """
+            Logs an error
+
+            IN:
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            self.__log("error", *args, **kwargs)
+
+        def __run_desync_cb(self):
+            """
+            Tries to run the callback, logs any errors
+            """
+            if self.__on_desync:
+                try:
+                    self.__on_desync()
+                except Exception as e:
+                    self.__log_error("Failed to run desync callback: {}".format(e), exc_info=True)
+
+        def _start(self):
+            """
+            Starts the validator loop
+            """
+            LIMIT = 3600.0 * 30.0
+            while not self.__quit:
+                wait_time = float(random.randint(3, 7))
+                self.__last_os_ts = time.time()
+
+                time.sleep(wait_time)
+
+                change = time.time() - self.__last_os_ts
+                diff = change - wait_time
+                abs_diff = abs(diff)
+
+                if abs_diff > 1.0:
+                    if abs_diff > LIMIT:
+                        self.__desyncs.append(diff)
+                        self.__log_warning("Major uptime desync, possible corruption: {}".format(diff))
+                        self.__run_desync_cb()
+
+                    else:
+                        self.__log_warning("Minor uptime desync, skipping: {}".format(diff))
+
+        def get_desyncs(self):
+            """
+            Returns a list of all desync gaps
+
+            OUT:
+                list[float]
+            """
+            return list(self.__desyncs)
+
+        def is_in_desync(self):
+            """
+            Returns a boolean indicating if there was a desync
+
+            OUT:
+                bool
+            """
+            return bool(self.__desyncs)
+
+        def start(self):
+            """
+            Starts the validator by invoking its logic in a thread
+            """
+            self.__th = th = threading.Thread(target=self._start)
+            th.daemon = True
+            th.start()
+
+        def stop(self):
+            """
+            Stop the validator on its next loop
+            """
+            self.__quit = True
+
+        def kill(self):
+            """
+            Kills the validator by joined its thread
+            """
+            self.stop()
+            if self.__th:
+                self.__th.join()
