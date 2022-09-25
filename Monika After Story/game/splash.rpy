@@ -175,11 +175,14 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
-        validator = MASUptimeSyncValidator(
-            on_desync=lambda: setattr(store.mas_globals, "tt_detected", True),
+        guard = mas_tt_guard.MASUptimeSyncValidator(
+            on_desync=lambda: (
+                setattr(store.mas_globals, "tt_detected", True)
+                store.MASEventList.push("mas_broke_spacetime_fabric")
+            ),
             log=mas_utils.mas_log
         )
-        validator.start()
+        guard.start()
 
     if store.mas_per_check.should_show_chibika_persistent():
         # we have a corrupted per w/ no backups or incompatible per
