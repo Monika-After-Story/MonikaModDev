@@ -222,3 +222,32 @@ python early in mas_tt_guard:
             self.stop()
             if self.__th:
                 self.__th.join()
+
+
+    def enable_tt_ff_mode():
+        """
+        Shatters affection due to tt, hopefully to force people to not ever do this
+        """
+        MSG = "[tt detected, possible data corruption]
+        store._mas_shatterAffection(current_evlabel=MSG)
+        store.mas_loseAffection(25, current_evlabel=MSG)
+
+    def has_broken_spacetime_fabric():
+        """
+        Check if the player has fooked up with time
+        """
+        return (
+            store.mas_seenEvent("mas_broke_spacetime_fabric")
+            or store.mas_getEVL_shown_count("mas_broke_spacetime_fabric")
+        )
+
+    def generate_poem(line_len_range=(4, 31), lines_number_range=(17, 26)):
+        """
+        Generates a psedo random poem for tt ff
+        """
+        lines = [
+            store.glitchtext(random.randint(*line_len_range))
+            for i in range(random.randint(*lines_number_range))
+        ]
+        lines.append("\n ???\n")
+        return "\n ".join(lines)
