@@ -7089,7 +7089,7 @@ init -3 python:
                 loadstrs.append(mid_img + [store.mas_sprites.FILE_EXT])
 
             # get hl keys to use
-            back_hl, mid_hl, front_hl = self._get_hl_key_sfxs()
+            back_hl, mid_hl, front_hl = self._get_hair_keys()
 
             # highlights
             loadstrs.extend(self.__build_loadstrs_hl(
@@ -7123,11 +7123,11 @@ init -3 python:
                 store.mas_sprites.FHAIR_SUFFIX,
             )
 
-        def _get_hl_key_sfxs(self):
+        def _get_hair_keys(self):
             """
-            Get tuple of hl key suffixes to use in back-to-front order
+            Get tuple of hair keys, in back to front order
 
-            RETURNS: tuple of hl key suffixes to use
+            RETURNS: tuple of hair keys to use
             """
             if self.numeric_layer_ids:
                 return (self.LAYER_BACK, self.LAYER_MID, self.LAYER_FRONT)
