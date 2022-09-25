@@ -5811,8 +5811,8 @@ init -3 python:
                 leaves, False if not
             hl_map - MASHighlightMap object where keys are defined by the given
                 posemap. Value determined by extending classes.
-            use_folders - True if the sprites are organized using the old-style
-                (non-folder-based) structure
+            use_folders - True if the sprites are organized using the new-style
+                (folder-based) structure
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5847,7 +5847,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                use_folders=False
+                use_folders=True
             ):
             """
             MASAccessory constructor
@@ -5907,9 +5907,9 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, no highlights at all
                     (Default: None)
-                use_folders - determines if sprites are organized using old-style
-                    (non-folder-based) structure
-                    (Default: False)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASAccessoryBase, self).__init__(
                 name,
@@ -6038,7 +6038,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                use_folders=False,
+                use_folders=True,
         ):
             """
             Constructor.
@@ -6097,9 +6097,9 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, then no highlights at all
                     (Default: None)
-                use_folders - determines if sprites are organized using old-style
-                    (non-folder-based) structure
-                    (Default: False)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASAccessory, self).__init__(
                 self.ASO_REG,
@@ -6286,7 +6286,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                use_folders=False
+                use_folders=True
             ):
             """
             MASSplitAccessory constructor
@@ -6350,9 +6350,9 @@ init -3 python:
                         None means no highlight for this pose
                     if None, then no highlights at all
                     (Default: None)
-                use_folders - determines if sprites are organized using old-style
-                    (non-folder-based) structure
-                    (Default: False)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASSplitAccessory, self).__init__(
                 self.ASO_SPLIT,
@@ -6834,8 +6834,8 @@ init -3 python:
             mpm_mid - MASPoseMap for mid hair layer.
                 Determines if the mid layer should be used for a pose.
                 This is the enable/disable type
-            use_folders - True if the sprites are organized using the old-style
-                (non-folder-based) structure
+            use_folders - True if the sprites are organized using the new-style
+                (folder-based) structure
             use_numeric_layer_ids - True if the sprites should use numeric ids for
                 layers (back=0, mid=5, front=10)
 
@@ -6867,7 +6867,7 @@ init -3 python:
                 ex_props=None,
                 hl_data=None,
                 mpm_mid=None,
-                use_folders=False,
+                use_folders=True,
                 use_numeric_layer_ids=True
             ):
             """
@@ -6913,9 +6913,9 @@ init -3 python:
                     Determines if a mid layer should be used for a pose.
                     Should be enable/disable type or else we crash
                     (Default: None)
-                use_folders - determines if sprites are organized using old-style
-                    (non-folder-based) structure
-                    (Default: False)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
                 use_numeric_layer_ids - determines if sprites should use numeric
                     layer ids for layers (back=0, mid=5, front=10)
                     (Default: True)
@@ -7072,12 +7072,16 @@ init -3 python:
                 if not self.use_folders:
                     new_img.append(store.mas_sprites.PREFIX_HAIR)
 
-            if not self.use_folders:
+            if self.use_folders:
+                # pull hair suffixes, no dash
+                back_sfx, mid_sfx, front_sfx = self._get_hair_keys()
+
+            else:
                 # add the tag
                 new_img.append(self.img_sit)
 
-            # pull hair suffixes
-            back_sfx, mid_sfx, front_sfx = self._get_sfxs()
+                # pull hair suffixes
+                back_sfx, mid_sfx, front_sfx = self._get_sfxs()
 
             # genreate back and front images
             back_img = new_img + [back_sfx]
@@ -7126,7 +7130,11 @@ init -3 python:
             RETURNS: tuple of suffixes to use
             """
             if self.use_numeric_layer_ids:
-                return (self.LAYER_BACK, self.LAYER_MID, self.LAYER_FRONT)
+                return (
+                    ART_DLM + self.LAYER_BACK,
+                    ART_DLM + self.LAYER_MID,
+                    ART_DLM + self.LAYER_FRONT,
+                )
 
             return (
                 store.mas_sprites.BHAIR_SUFFIX,

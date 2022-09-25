@@ -789,9 +789,9 @@ init -21 python in mas_sprites_json:
         # object-based verification is different
 #        "split": None,
         "unlock": (bool, _verify_bool),
-        "use_number_ids": (bool, _verify_bool),
+        "use_numeric_layer_ids": (bool, _verify_bool),
     }
-    OPT_HAIR_PARAM_NAMEs.update(OPT_HA_SHARED_PARAM_NAMES)
+    OPT_HAIR_PARAM_NAMES.update(OPT_HA_SHARED_PARAM_NAMES)
 
     OPT_CLOTH_PARAM_NAMES = {
         # object-based verificaiton is different
@@ -1428,6 +1428,7 @@ init 189 python in mas_sprites_json:
             - acs_type
             - dlg_desc
             - dlg_plural
+            - use_folders
             - mux_type
             - pose_map
             - giftname
@@ -1461,6 +1462,10 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # default some params if not available
+        if "use_folders" not in save_obj:
+            save_obj["use_folders"] = False
 
         # combine dlg_desc and dlg_plur
         if "dlg_desc" in save_obj:
@@ -1722,6 +1727,12 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # default some params if not available
+        if "use_folders" not in save_obj:
+            save_obj["use_folders"] = False
+        if "use_numeric_layer_ids" not in save_obj:
+            save_obj["use_numeric_layer_ids"] = False
 
         # mid hair map
         if "mid_hair_map" in obj_based:
