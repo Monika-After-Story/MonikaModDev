@@ -1749,7 +1749,11 @@ label ch30_autoload:
 
         elif _mas_getAffection() <= -115:
             persistent._mas_load_in_finalfarewell_mode = True
-            persistent._mas_finalfarewell_poem_id = "ff_affection"
+            if mas_tt_guard.has_broken_spacetime_fabric():
+                persistent._mas_finalfarewell_poem_id = "ff_broke_spacetime_fabric"
+                play_song(songs.FP_KAZOO_COVER, fadein=10.0, set_per=True)
+            else:
+                persistent._mas_finalfarewell_poem_id = "ff_affection"
 
 
     #If we should go into FF mode, we do.
