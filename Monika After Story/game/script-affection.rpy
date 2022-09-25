@@ -3721,3 +3721,12 @@ Monika
  Monika
 """)
     )
+
+    MASPoem(
+        poem_id="ff_broke_spacetime_fabric",
+        category="ff",
+        prompt="",
+        title=_("???"),
+        text=store.mas_tt_guard.generate_poem(),
+        author="???"
+    )

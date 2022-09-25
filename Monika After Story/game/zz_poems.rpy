@@ -24,7 +24,8 @@ init python in mas_poems:
 
     author_font_map = {
         "monika": "mas_monika_poem_text",
-        "chibika": "chibika_note_text"
+        "chibika": "chibika_note_text",
+        "???": "unknown_note_text"
     }
 
     #If we've got pbday, let's also add this here.
