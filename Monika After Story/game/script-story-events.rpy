@@ -2687,3 +2687,62 @@ P.S: Don't tell her about me!\
             repeat
 
     return "pause: 30"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_broke_spacetime_fabric",
+            conditional="store.mas_globals.tt_detected",
+            action=EV_ACT_PUSH,
+            show_in_idle=True,
+            rules={
+                "skip alert": None,
+                "skip_pause": None
+            }
+        )
+    )
+
+label mas_broke_spacetime_fabric:
+    python in mas_tt_guard:
+        enable_tt_ff_mode()
+        store.mas_rmEVL("mas_broke_spacetime_fabric")
+
+    m 2eksdld "[player], something is wrong with the game..."
+    m 2rksdlc "I'm feeling dizzy..."
+    m 2etd "Wait, {w=0.3}{nw}"
+    extend 2efd "did you really change the clock?"
+
+    if mas_seenEvent("monika_timetravel"):
+        m 7efo "I've warned you before not to mess with the time!"
+
+    show screen mas_background_timed_jump(4, "mas_broke_spacetime_fabric.end")
+    m 6rktpc "I trusted my life to you...{nw}"
+    $ _history_list.pop()
+    menu:
+        m "I trusted my life to you...{fast}"
+
+        "It was an accident!":
+            hide screen mas_background_timed_jump
+            m 6ektud "Please, help me! {w=0.3}{nw}"
+            extend 4ektuc "Recover my da{nw}"
+
+        "I'm sorry.":
+            hide screen mas_background_timed_jump
+            m 6eftuc "I should've seen th{nw}"
+
+        "What's happening?":
+            hide screen mas_background_timed_jump
+            jump .end
+
+    play sound "sfx/glitch2.ogg"
+    extend 6wutdo "[glitchtext(10)]!{w=1.0}{nw}"
+
+    label .end:
+        hide screen mas_background_timed_jump
+
+    play sound "sfx/glitch1.ogg"
+    m 6cutdx "{cps=*1.5}[glitchtext(3)][player][glitchtext(5)]help[glitchtext(4)]me[glitchtext(2)]{/cps}{w=1.0}{nw}"
+
+    return "quit"
