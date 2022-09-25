@@ -5811,7 +5811,7 @@ init -3 python:
                 leaves, False if not
             hl_map - MASHighlightMap object where keys are defined by the given
                 posemap. Value determined by extending classes.
-            legacy_fp - True if the sprites are organized using the old-style
+            use_folders - True if the sprites are organized using the old-style
                 (non-folder-based) structure
 
         SEE MASSpriteBase for inherited properties
@@ -5847,7 +5847,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=False
+                use_folders=False
             ):
             """
             MASAccessory constructor
@@ -5907,7 +5907,7 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, no highlights at all
                     (Default: None)
-                legacy_fp - determines if sprites are organized using old-style
+                use_folders - determines if sprites are organized using old-style
                     (non-folder-based) structure
                     (Default: False)
             """
@@ -5929,7 +5929,7 @@ init -3 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.keep_on_desk = keep_on_desk
-            self.legacy_fp = legacy_fp
+            self.use_folders = use_folders
 
             if dlg_data is not None and len(dlg_data) == 2:
                 self.dlg_desc, self.dlg_plur = dlg_data
@@ -6038,7 +6038,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=False,
+                use_folders=False,
         ):
             """
             Constructor.
@@ -6097,7 +6097,7 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, then no highlights at all
                     (Default: None)
-                legacy_fp - determines if sprites are organized using old-style
+                use_folders - determines if sprites are organized using old-style
                     (non-folder-based) structure
                     (Default: False)
             """
@@ -6118,7 +6118,7 @@ init -3 python:
                 dlg_data,
                 keep_on_desk,
                 hl_data,
-                legacy_fp
+                use_folders
             )
 
         def __repr__(self):
@@ -6162,16 +6162,16 @@ init -3 python:
 
             RETURNS: img string prefix to use
             """
-            if self.legacy_fp:
+            if self.use_folders:
                 return prefix + [
-                    store.mas_sprites.PREFIX_ACS,
                     self.img_sit,
-                    store.mas_sprites.ART_DLM,
+                    "/",
                 ]
 
             return prefix + [
+                store.mas_sprites.PREFIX_ACS,
                 self.img_sit,
-                "/",
+                store.mas_sprites.ART_DLM,
             ]
 
         def build_loadstrs(self, prefix):
@@ -6286,7 +6286,7 @@ init -3 python:
                 dlg_data=None,
                 keep_on_desk=False,
                 hl_data=None,
-                legacy_fp=False
+                use_folders=False
             ):
             """
             MASSplitAccessory constructor
@@ -6350,7 +6350,7 @@ init -3 python:
                         None means no highlight for this pose
                     if None, then no highlights at all
                     (Default: None)
-                legacy_fp - determines if sprites are organized using old-style
+                use_folders - determines if sprites are organized using old-style
                     (non-folder-based) structure
                     (Default: False)
             """
@@ -6371,7 +6371,7 @@ init -3 python:
                 dlg_data,
                 keep_on_desk,
                 MASSplitAccessory._prepare_hl_data(hl_data),
-                legacy_fp
+                use_folders
             )
 
             self.arm_split = arm_split
@@ -6834,9 +6834,9 @@ init -3 python:
             mpm_mid - MASPoseMap for mid hair layer.
                 Determines if the mid layer should be used for a pose.
                 This is the enable/disable type
-            legacy_fp - True if the sprites are organized using the old-style
+            use_folders - True if the sprites are organized using the old-style
                 (non-folder-based) structure
-            numeric_layer_ids - True if the sprites should use numeric ids for
+            use_numeric_layer_ids - True if the sprites should use numeric ids for
                 layers (back=0, mid=5, front=10)
 
         SEE MASSpriteFallbackBase for inherited properties
@@ -6867,8 +6867,8 @@ init -3 python:
                 ex_props=None,
                 hl_data=None,
                 mpm_mid=None,
-                legacy_fp=False,
-                numeric_layer_ids=True
+                use_folders=False,
+                use_numeric_layer_ids=True
             ):
             """
             MASHair constructor
@@ -6913,10 +6913,10 @@ init -3 python:
                     Determines if a mid layer should be used for a pose.
                     Should be enable/disable type or else we crash
                     (Default: None)
-                legacy_fp - determines if sprites are organized using old-style
+                use_folders - determines if sprites are organized using old-style
                     (non-folder-based) structure
                     (Default: False)
-                numeric_layer_ids - determines if sprites should use numeric
+                use_numeric_layer_ids - determines if sprites should use numeric
                     layer ids for layers (back=0, mid=5, front=10)
                     (Default: True)
             """
@@ -6946,8 +6946,8 @@ init -3 python:
 
             self.split = split
             self.mpm_mid = mpm_mid
-            self.legacy_fp = legacy_fp
-            self.numeric_layer_ids = numeric_layer_ids
+            self.use_folders = use_folders
+            self.use_numeric_layer_ids = use_numeric_layer_ids
 
         def __repr__(self):
             return "<Hair: {0}>".format(self.name)
@@ -7014,7 +7014,7 @@ init -3 python:
             all_split = self.split is None
 
             # use folder prefix if new style
-            if not self.legacy_fp:
+            if self.use_folders:
                 prefix = prefix + [
                     self.img_sit,
                     "/"
@@ -7059,7 +7059,7 @@ init -3 python:
                 lean = leanpose.partition("|")[0]
                 hl_key = lean + "|{0}"
 
-                if self.legacy_fp:
+                if not self.use_folders:
                     new_img.append(store.mas_sprites.PREFIX_HAIR_LEAN)
 
                 new_img.extend((
@@ -7069,10 +7069,10 @@ init -3 python:
             else:
                 hl_key = "{0}"
 
-                if self.legacy_fp:
+                if not self.use_folders:
                     new_img.append(store.mas_sprites.PREFIX_HAIR)
 
-            if self.legacy_fp:
+            if not self.use_folders:
                 # add the tag
                 new_img.append(self.img_sit)
 
@@ -7125,7 +7125,7 @@ init -3 python:
 
             RETURNS: tuple of suffixes to use
             """
-            if self.numeric_layer_ids:
+            if self.use_numeric_layer_ids:
                 return (self.LAYER_BACK, self.LAYER_MID, self.LAYER_FRONT)
 
             return (
@@ -7140,7 +7140,7 @@ init -3 python:
 
             RETURNS: tuple of hair keys to use
             """
-            if self.numeric_layer_ids:
+            if self.use_numeric_layer_ids:
                 return (self.LAYER_BACK, self.LAYER_MID, self.LAYER_FRONT)
 
             return (
@@ -7195,7 +7195,11 @@ init -3 python:
 
             RETURNS: keys used for all MASHighlightMaps for MASHair objects
             """
-            return self.__MHM_KEYS_NUM if self.numeric_layer_ids else self.__MHM_KEYS
+            return (
+                self.__MHM_KEYS_NUM
+                if self.use_numeric_layer_ids 
+                else self.__MHM_KEYS
+            )
 
         @classmethod
         def hl_keys_c(cls, use_nli=False):

@@ -1640,12 +1640,12 @@ init -4 python in mas_sprites:
             return
 
         # structure modifiers
-        if acs.legacy_fp:
-            pfx = PREFIX_ACS
-            dlm = ART_DLM
-        else:
+        if acs.use_folders:
             pfx = ""
             dlm = "/"
+        else:
+            pfx = PREFIX_ACS
+            dlm = ART_DLM
 
         # build img list minus file extensions
         img_list = [
@@ -2335,7 +2335,18 @@ init -4 python in mas_sprites:
         # build img str
         if lean:
             
-            if hair.legacy_fp:
+            if hair.use_folders:
+                img_list = (
+                    H_MAIN,
+                    hair.img_sit,
+                    "/",
+                    lean,
+                    ART_DLM,
+                    hair_key,
+                    FILE_EXT,
+                )
+
+            else:
                 img_list = (
                     H_MAIN,
                     PREFIX_HAIR_LEAN,
@@ -2347,25 +2358,14 @@ init -4 python in mas_sprites:
                     FILE_EXT,
                 )
 
-            else:
-                img_list = (
-                    H_MAIN,
-                    hair.img_sit,
-                    "/",
-                    lean,
-                    ART_DLM,
-                    hair_key,
-                    FILE_EXT,
-                )
-
         else:
 
-            if hair.legacy_fp:
-                pfx = PREFIX_HAIR
-                dlm = ART_DLM
-            else:
+            if hair.use_folders:
                 pfx = ""
                 dlm = "/"
+            else:
+                pfx = PREFIX_HAIR
+                dlm = ART_DLM
 
             img_list = (
                 H_MAIN,
