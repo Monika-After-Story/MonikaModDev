@@ -2325,6 +2325,13 @@ init -4 python in mas_sprites:
                 rk_list.append((img_key, CID_HAIR, None, None))
             return
 
+        # check if mid and no need to render
+        if hair_key in (MHAIR, store.MASHair.LAYER_MID):
+            if hair.mpm_mid is None or not hair.mpm_mid.get(leanpose, False):
+                # mid not in this hair for this pose
+                cache_hair[img_key] = None
+                return
+
         # build img str
         if lean:
             
@@ -2371,13 +2378,6 @@ init -4 python in mas_sprites:
 
         # genreate string for key check
         img_str = "".join(img_list)
-
-        # check if mid and no need to render
-        if hair_key == MHAIR:
-            if hair.mpm_mid is None or not hair.mpm_mid.get(leanpose, False):
-                # mid not in this hair for this pose
-                cache_hair[img_key] = None
-                return
 
         # otherwise need to build ImageBase
         rk_list.append((
