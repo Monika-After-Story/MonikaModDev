@@ -4510,9 +4510,13 @@ label greeting_after_bath:
         mas_startupWeather()
         # Save current outfit
         persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+        # Available clothes for this
+        clothes_pool = [
+            mas_clothes_bath_towel_white
+        ]
         # Now let Moni get a towel
         monika_chr.change_clothes(
-            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
+            random.choice(clothes_pool),
             by_user=False,
             outfit_mode=True
         )
@@ -4583,6 +4587,7 @@ init 5 python:
         After bath cleanup change outfit code
         """
         # TODO: Rng outfit selection wen
+        # TODO: reconsider locking the selectors again when we get rng outfits in
 
         force_hair_change = False# If we changed the outfit, we always change hair
 
@@ -4645,7 +4650,7 @@ label mas_after_bath_cleanup:
     call mas_transition_to_emptydesk
 
     $ renpy.pause(1.0, hard=True)
-    call mas_after_bath_cleanup_change_outfit
+    $ mas_after_bath_cleanup_change_outfit()
     $ renpy.pause(random.randint(10, 15), hard=True)
 
     call mas_transition_from_emptydesk("monika 3hub")
