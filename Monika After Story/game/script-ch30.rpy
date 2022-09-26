@@ -1391,7 +1391,10 @@ init 999 python in mas_reset:
         """
         if (
             store.mas_globals.tt_detected
-            or mas_tt_guard.has_broken_spacetime_fabric()
+            or (
+                store.mas_tt_guard.has_broken_spacetime_fabric()
+                and store._mas_getAffection() > 0.0
+            )
         ):
             # this will tell the player their data is gone
             # and hopefully they will revert
@@ -1756,11 +1759,12 @@ label ch30_autoload:
 
         elif _mas_getAffection() <= -115:
             persistent._mas_load_in_finalfarewell_mode = True
-            if mas_tt_guard.has_broken_spacetime_fabric():
-                persistent._mas_finalfarewell_poem_id = "ff_broke_spacetime_fabric"
-                play_song(songs.FP_KAZOO_COVER, fadein=10.0, set_per=True)
-            else:
-                persistent._mas_finalfarewell_poem_id = "ff_affection"
+            persistent._mas_finalfarewell_poem_id = "ff_affection"
+
+        elif mas_tt_guard.has_broken_spacetime_fabric():
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_broke_spacetime_fabric"
+            play_song(songs.FP_KAZOO_COVER, fadein=10.0, set_per=True)
 
 
     #If we should go into FF mode, we do.
