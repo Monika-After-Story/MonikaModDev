@@ -177,7 +177,7 @@ label splashscreen:
 
         guard = mas_tt_guard.MASUptimeSyncValidator(
             on_desync=lambda: (
-                setattr(store.mas_globals, "tt_detected", True)
+                setattr(store.mas_globals, "tt_detected", True),
                 store.MASEventList.push("mas_broke_spacetime_fabric")
             ),
             log=mas_utils.mas_log

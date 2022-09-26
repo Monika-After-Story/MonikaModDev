@@ -228,7 +228,7 @@ python early in mas_tt_guard:
         """
         Shatters affection due to tt, hopefully to force people to not ever do this
         """
-        MSG = "[tt detected, possible data corruption]
+        MSG = "[tt detected, possible data corruption]"
         store._mas_shatterAffection(current_evlabel=MSG)
         store.mas_loseAffection(25, current_evlabel=MSG)
 
