@@ -17,6 +17,8 @@ default persistent._mas_incompat_per_rpy_files_found = False
 # only set if the user entered the incompat flow at all
 default persistent._mas_incompat_per_entered = False
 
+default persisten._mas_is_backup = False
+
 python early in mas_per_check:
     import __main__
     import cPickle
@@ -661,7 +663,15 @@ init -900 python:
         try:
             p_savedir = os.path.normcase(renpy.config.savedir + "/")
 
-            numnum, numnum_del = __mas__backupAndDelete(p_savedir, "persistent")
+            try:
+                persisten._mas_is_backup = True
+                renpy.save_persistent()
+                numnum, numnum_del = __mas__backupAndDelete(p_savedir, "persistent")
+
+            finally:
+                persisten._mas_is_backup = False
+                renpy.save_persistent()
+
             __mas__backupAndDelete(p_savedir, "db.mcal", numnum=numnum)
 
         except Exception as e:
