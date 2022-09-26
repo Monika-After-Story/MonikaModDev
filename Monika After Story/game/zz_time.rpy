@@ -226,8 +226,9 @@ python early in mas_tt_guard:
 
     def enable_tt_ff_mode():
         """
-        Shatters affection due to tt, hopefully to force people to not ever do this
+        Enables tt ff mode, hopefully to force people to never ever change clock
         """
+        store.persistent._mas_pm_has_went_back_in_time = True
         store._mas_shatterAffection(current_evlabel="[invalid time, possible data corruption]")
 
     def has_broken_spacetime_fabric():
