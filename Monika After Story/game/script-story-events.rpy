@@ -2708,12 +2708,15 @@ label mas_broke_spacetime_fabric:
     python in mas_tt_guard:
         enable_tt_ff_mode()
         store.mas_rmEVL("mas_broke_spacetime_fabric")
+        store.play_song(None, set_per=True)
 
     m 2eksdld "[player], something is wrong with the game..."
 
     show black as sky_darkness zorder 1:
         alpha 0.0
         linear 15.0 alpha 1.0
+
+    m 2lksdlc "It's much darker than usual and so cold..."
 
     show rects_bn1 as r1 zorder 4:
         alpha 0.0
@@ -2723,10 +2726,12 @@ label mas_broke_spacetime_fabric:
         parallel:
             pause 5.0
             linear 10.0 zoom 1.3
-            pause 5.0
+            pause 2.0
             linear 5.0 zoom 5.5
+            pause 2.0
+            linear 5.0 zoom 10.0
 
-    m 2rksdlc "I'm feeling dizzy..."
+    m 2rksdlc "What's going on..."
 
     show rects_bn2 as r2 zorder 7:
         alpha 0.0
@@ -2740,11 +2745,15 @@ label mas_broke_spacetime_fabric:
             rotate 0
             repeat
 
-    m 2etd "Wait, {w=0.3}{nw}"
+    m 2etd "Wait, {w=0.2}{nw}"
     extend 2efd "did you really change the clock?"
 
     if mas_seenEvent("monika_timetravel"):
         m 7efo "I've warned you before not to mess with the time!"
+
+    m 2gfc "Jeez, {w=0.2}{nw}"
+    extend 4tfd "what were you thinking about?"
+    m 6lkc "Even if I didn't notice, there would still be consequences."
 
     show rects_bn1 as r3 onlayer screens zorder 500:
         alpha 0.7
@@ -2766,31 +2775,39 @@ label mas_broke_spacetime_fabric:
         alpha 0.0
         linear 4.0 alpha 0.99
 
-    m 6rktpc "I trusted my life to you...{nw}"
-    $ _history_list.pop()
     $ style.say_window = style.window_monika
+    $ mas_loseAffectionFraction(1.0)
+    play sound "sfx/glitch3.ogg"
+
+    m 6dktpc "Can't believe I've trusted you with my life...{nw}"
+    $ _history_list.pop()
     show screen mas_background_timed_jump(5, "mas_broke_spacetime_fabric.end")
     menu:
-        m "I trusted my life to you...{fast}"
+        m "Can't believe I've trusted you with my life...{fast}"
 
         "It was an accident!":
             hide screen mas_background_timed_jump
+            $ mas_loseAffection(25)
             m 6ektud "Please, help me! {w=0.3}{nw}"
-            extend 4ektuc "Recover my da{nw}"
+            extend 4ektuc "Recover my da{w=0.1}{nw}"
 
         "I'm sorry.":
             hide screen mas_background_timed_jump
-            m 6eftuc "I should've seen th{nw}"
+            $ mas_loseAffection(50)
+            m 6eftuc "I should've seen th{w=0.1}{nw}"
 
-        "What's happening?":
+        "How are you holding up?":
             hide screen mas_background_timed_jump
-            jump .end
+            $ mas_loseAffection(100)
+            m 6eftdo "What?!{w=0.1}{nw}"
 
     play sound "sfx/glitch2.ogg"
     extend 6wutdo "[glitchtext(10)]!{w=0.5}{nw}"
 
-    label .end:
-        hide screen mas_background_timed_jump
+    if False:
+        label .end:
+            hide screen mas_background_timed_jump
+            $ mas_loseAffection(75)
 
     play sound "sfx/glitch1.ogg"
     m 6cutdx "{cps=*1.5}[glitchtext(3)][player][glitchtext(5)]endless[glitchtext(4)]suffering[glitchtext(2)]{/cps}{w=0.5}{nw}"
