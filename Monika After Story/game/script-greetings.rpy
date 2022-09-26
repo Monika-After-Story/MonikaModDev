@@ -4663,3 +4663,95 @@ label mas_after_bath_cleanup:
 label mas_after_bath_cleanup_change_outfit:
     $ mas_after_bath_cleanup_change_outfit()
     return
+
+
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=10,
+            override_type=True
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_found_nou_shirt",
+            conditional=(
+                "mas_getAbsenceLength() >= datetime.timedelta(hours=3) "
+                "and mas_nou.get_wins_for('Player') > {0} "
+                "and mas_nou.get_total_games() > {1} "
+                "and not mas_isSpecialDay() "
+                "and not mas_SELisUnlocked(mas_clothes_nou_shirt)"
+            ).format(random.randint(45, 65), random.randint(95, 115)),
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+label greeting_found_nou_shirt:
+    $ monika_chr.change_clothes(mas_clothes_nou_shirt, by_user=False, outfit_mode=True)
+
+    call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
+    pause 2.5
+
+    m "There you are! {w=0.2}I was waiting for you~"
+    m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
+    $ glitch_option_text = glitchtext(7)
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(4, "greeting_found_nou_shirt.menu_choice_skip")
+    menu:
+        m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{fast}"
+
+        "It's a secret.":
+            hide screen mas_background_timed_jump
+            if mas_isMoniEnamored(higher=True):
+                call mas_transition_from_emptydesk("monika 2tublu")
+                m "{cps=*1.2}You don't peek there {i}often{/i}, do you?~{/cps}{nw}"
+                $ _history_list.pop()
+                m 2lusdla "Anyway... {w=0.3}{nw}"
+
+            else:
+                m "Hmm, anyway... {w=0.3}{nw}"
+
+            extend 4sub "I really love this new outfit!"
+            jump .menu_choice_secret
+
+        "It was [glitch_option_text]!":
+            hide screen mas_background_timed_jump
+            show noise zorder 500 onlayer overlay:
+                alpha 0.0
+                easein_elastic 0.5 alpha 0.1
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.5
+            hide noise onlayer overlay
+
+    label .menu_choice_skip:
+        hide screen mas_background_timed_jump
+
+    call mas_transition_from_emptydesk("monika 4sub")
+    m "But I love it~"
+
+    label .menu_choice_secret:
+        pass
+
+    m 1ekbla "Thanks, [player]."
+    m 1tfu "Don't think I'd go any easier on you, though~"
+
+    if mas_nou.get_wins_for('Player') >= mas_nou.get_wins_for('Monika'):
+        m 1rtsdlb "In fact, {w=0.1}maybe I should try harder, ahaha..."
+
+    m 3ttb "Are you up for a game now, [mas_get_player_nickname()]?"
+
+    python:
+        mas_selspr.unlock_clothes(mas_clothes_nou_shirt)
+        mas_selspr.save_selectables()
+        mas_lockEVL("greeting_found_nou_shirt", "GRE")
+        renpy.save_persistent()
+    return
