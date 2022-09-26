@@ -2871,6 +2871,49 @@ init -1 python:
     )
     store.mas_sprites.init_clothes(mas_clothes_bath_towel_white)
 
+    ### NOU SHIRT
+    ## nou_shirt
+    # NOU-themed shirt
+    # Thanks Eroneko (Finikyu's commission)
+    mas_clothes_nou_shirt = MASClothes(
+        "nou_shirt",
+        "nou_shirt",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        ex_props={
+            store.mas_sprites.EXP_C_C_DTS: True
+        },
+        pose_arms=MASPoseArms(
+            {
+                9: MASArmRight(
+                    "def",
+                    {
+                        MASArm.LAYER_MID: True,
+                    }
+                ),
+            }
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_nou_shirt)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_nou_shirt,
+        "Shirt (NOU)",
+        "nou_shirt",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "No U! Ehehe~",
+            "Ready to draw some more cards?~",
+            "Colorful!",
+            "Plus 10 to luck~",
+            "Up for a game, [player]?"
+        ]
+    )
+
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
