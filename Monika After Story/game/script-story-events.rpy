@@ -2710,16 +2710,66 @@ label mas_broke_spacetime_fabric:
         store.mas_rmEVL("mas_broke_spacetime_fabric")
 
     m 2eksdld "[player], something is wrong with the game..."
+
+    show black as sky_darkness zorder 1:
+        alpha 0.0
+        linear 15.0 alpha 1.0
+
+    show rects_bn1 as r1 zorder 4:
+        alpha 0.0
+        pos (75, 84)
+        parallel:
+            linear 30.0 alpha 0.5
+        parallel:
+            pause 5.0
+            linear 10.0 zoom 1.3
+            pause 5.0
+            linear 5.0 zoom 5.5
+
     m 2rksdlc "I'm feeling dizzy..."
+
+    show rects_bn2 as r2 zorder 7:
+        alpha 0.0
+        pos (1115, 402)
+        linear 15.0 alpha 0.7
+        pause 5.0
+        linear 10.0 zoom 3.3
+        pause 5.0
+        block:
+            linear 0.5 rotate 360
+            rotate 0
+            repeat
+
     m 2etd "Wait, {w=0.3}{nw}"
     extend 2efd "did you really change the clock?"
 
     if mas_seenEvent("monika_timetravel"):
         m 7efo "I've warned you before not to mess with the time!"
 
-    show screen mas_background_timed_jump(4, "mas_broke_spacetime_fabric.end")
+    show rects_bn1 as r3 onlayer screens zorder 500:
+        alpha 0.7
+        zoom 0.0
+        pos (148, 548)
+        pause 1.0
+        parallel:
+            ease 3.0 alpha 0.7
+        parallel:
+            linear 3.0 zoom 6.6
+
+    show rects_bn2 as r4 zorder 11:
+        alpha 0.0
+        zoom 3.3
+        pos (789, 219)
+        linear 5.0 alpha 1.0 zoom 7.7
+
+    show black as room_darkness zorder 3:
+        alpha 0.0
+        linear 4.0 alpha 0.99
+
     m 6rktpc "I trusted my life to you...{nw}"
     $ _history_list.pop()
+    $ style.say_window = style.window_monika
+    show screen mas_background_timed_jump(5, "mas_broke_spacetime_fabric.end")
     menu:
         m "I trusted my life to you...{fast}"
 
@@ -2737,12 +2787,12 @@ label mas_broke_spacetime_fabric:
             jump .end
 
     play sound "sfx/glitch2.ogg"
-    extend 6wutdo "[glitchtext(10)]!{w=1.0}{nw}"
+    extend 6wutdo "[glitchtext(10)]!{w=0.5}{nw}"
 
     label .end:
         hide screen mas_background_timed_jump
 
     play sound "sfx/glitch1.ogg"
-    m 6cutdx "{cps=*1.5}[glitchtext(3)][player][glitchtext(5)]help[glitchtext(4)]me[glitchtext(2)]{/cps}{w=1.0}{nw}"
+    m 6cutdx "{cps=*1.5}[glitchtext(3)][player][glitchtext(5)]endless[glitchtext(4)]suffering[glitchtext(2)]{/cps}{w=0.5}{nw}"
 
     return "quit"
