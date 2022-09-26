@@ -1140,14 +1140,6 @@ init 999 python in mas_reset:
         Runs reset code for affection
         """
         store.mas_affection._withdraw_aff()
-        if store.mas_globals.tt_detected:
-            # this will tell the player they fooked up persistent
-            # and hopefully they will revert
-            store.mas_loseAffectionFraction(
-                0.99,
-                min_amount=50,
-                current_evlabel="[tt detected, possible data corruption]"
-            )
 
 
     @ch30_reset(-760)
@@ -1393,6 +1385,19 @@ init 999 python in mas_reset:
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
 
+    def _time_travel_reset():
+        """
+        Runs reset code for tt event
+        """
+        if (
+            store.mas_globals.tt_detected
+            or mas_tt_guard.has_broken_spacetime_fabric()
+        ):
+            # this will tell the player their data is gone
+            # and hopefully they will revert
+            store.MASEventList.push("mas_broke_spacetime_fabric")
+
+
     def final():
         """
         Runs reset code that should run after everythign else
@@ -1407,6 +1412,8 @@ init 999 python in mas_reset:
             #Let's also push the event to get rid of the thermos too
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
                 store.queueEvent("mas_consumables_remove_thermos")
+
+        _time_travel_reset()
 
         # clean up the event list of baka events
         # ALWAYS LAST
