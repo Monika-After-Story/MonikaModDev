@@ -4703,7 +4703,7 @@ label greeting_found_nou_shirt:
     pause 2.5
 
     m "There you are! {w=0.2}I was waiting for you~"
-    m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
+    m "I have to admit, {w=0.1}I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
     $ _history_list.pop()
     show screen mas_background_timed_jump(4, "greeting_found_nou_shirt.menu_choice_skip")
     menu:
@@ -4711,13 +4711,15 @@ label greeting_found_nou_shirt:
 
         "It's a secret.":
             hide screen mas_background_timed_jump
+
             if mas_isMoniEnamored(higher=True):
                 call mas_transition_from_emptydesk("monika 2tublu")
-                m "{cps=*1.2}You don't peek there {i}often{/i}, do you?~{/cps}{nw}"
+                m "{cps=*1.25}You don't peek there {i}often{/i}, do you?~{/cps}{nw}"
                 $ _history_list.pop()
                 m 2lusdla "Anyway... {w=0.3}{nw}"
 
             else:
+                call mas_transition_from_emptydesk("monika 2rtblsdlu")
                 m "Hmm, anyway... {w=0.3}{nw}"
 
             extend 4sub "I really love this new outfit!"
@@ -4725,6 +4727,7 @@ label greeting_found_nou_shirt:
 
         "It was [glitch_option_text]!":
             hide screen mas_background_timed_jump
+
             show noise zorder 500 onlayer overlay:
                 alpha 0.0
                 easein_elastic 0.5 alpha 0.1
@@ -4747,7 +4750,7 @@ label greeting_found_nou_shirt:
     if mas_nou.get_wins_for('Player') >= mas_nou.get_wins_for('Monika'):
         m 1rtsdlb "In fact, {w=0.1}maybe I should try harder, ahaha..."
 
-    m 3ttb "Are you up for a game now, [mas_get_player_nickname()]?"
+    m 3ttb "Are you up for a game, [mas_get_player_nickname()]?"
 
     python:
         mas_selspr.unlock_clothes(mas_clothes_nou_shirt)
