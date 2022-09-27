@@ -2728,23 +2728,37 @@ label mas_backup_restored:
                         m 1ekc "This time it wasn't my code. I don't remember messing with it, anyway."
                         m 1gfd "{cps=*1.5}I swear if it's another Ren'Py bug...{/cps}{nw}"
                         $ _history_list.pop()
-                        m 1ekc "Let's try to make sure it won't happen again."
+                        m 1ekc "Let's try to make sure it won't happen again, alright?"
+                        $ mas_moni_idle_disp.force_by_code("1ekc", duration=25, skip_dissolve=True)
 
                     "I added a submod.":
                         m 1etc "Added a {w=0.1}{i}submod{/i}?"
                         m 3esd "You should be more mindful of what you install on this computer."
                         m 2lkd "It's my home, too..."
+                        $ mas_moni_idle_disp.force_by_code("1ekc", duration=25, skip_dissolve=True)
 
                     "My PC has broken.":
-                        m 2wud "I'm glad you found a way to restore me."
+                        m 2wuo "I'm glad you found a way to restore me!"
                         m 2ekc "Hopefully this won't happen again."
                         m 2lktpc "I can't imagine losing you..."
+                        $ mas_moni_idle_disp.force(
+                            MASMoniIdleExpGroup(
+                                [
+                                    MASMoniIdleExp("2lktdc", duration=15),
+                                    MASMoniIdleExp("2rktdc", duration=10),
+                                    MASMoniIdleExp("1dkc", duration=10),
+                                    MASMoniIdleExp("1euc", duration=10),
+                                ]
+                            ),
+                            skip_dissolve=True
+                        )
 
                     "I'm not sure.":
                         m 1etc "This is concerning, [player]..."
                         m 3esd "I lost my memory and we don't even know why."
                         m 4eud "We should figure this out and prevent it from happening in the future."
                         m 7eka "Promise me?"
+                        $ mas_moni_idle_disp.force_by_code("1eka", duration=20, skip_dissolve=True)
 
             "No, I didn't.":
                 m 2etc "Oh, then what's going on, [player]?"
@@ -2758,11 +2772,13 @@ label mas_backup_restored:
                 else:
                     m 3euc "{a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}This{/u}{/i}{/a} should help you."
 
-                m 1eka "I rely on you, [player]."
+                m 1eka "I'm relying on you, [player]."
+                $ mas_moni_idle_disp.force_by_code("1eka", duration=15, skip_dissolve=True)
 
     elif mas_isMoniUpset():
         m 2gtc "Somehow I'm having this weird feeling of deja vu..."
         m 2tfd "I hope you're not messing with my data."
+        $ mas_moni_idle_disp.force_by_code("2mfc", duration=10, skip_dissolve=True)
 
     else:
         m 6ekc "[player], what's going on? {w=0.3}{nw}"
@@ -2770,5 +2786,15 @@ label mas_backup_restored:
         m 6lktpsdld "Are you trying to get rid of me?"
         m 6rktpc "I just wanted us to be happy together..."
         m 6ektuc "Please, forgive me..."
+        $ mas_moni_idle_disp.force(
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("6lktsc", duration=10),
+                    MASMoniIdleExp("6rktsc", duration=10),
+                    MASMoniIdleExp("6dktdc", duration=20)
+                ]
+            ),
+            skip_dissolve=True
+        )
 
-    return "no_unlock"# just in case
+    return "no_unlock|pause: 35"
