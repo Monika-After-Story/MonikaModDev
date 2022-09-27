@@ -3136,7 +3136,7 @@ init -3 python:
                 startup=False
             ):
             """
-            Changes both clothes and hair. also sets the persisten forced vars
+            Changes both clothes and hair. also sets the persistent forced vars
             to by_user, if its not None
 
             IN:
@@ -3838,7 +3838,7 @@ init -3 python:
 
         def set_acs(self, acs, wear):
             """
-            Basically a single function so callers don't need to 
+            Basically a single function so callers don't need to
             if-statement-toggle wearing and removal of ACS.
 
             IN:
@@ -7591,7 +7591,7 @@ init -3 python:
         Use the functions to modify outfit data as appropriate.
 
         Supports:
-            - preventing ACS from being removed 
+            - preventing ACS from being removed
             - preventing hair or ACS from being worn
         """
 
@@ -7634,7 +7634,7 @@ init -3 python:
         def set_acs_change_all(self, value):
             """
             Enables or disables ALL ACS changing as part of outfit mode
-            
+
             IN:
                 value - pass True to enable, False to disable
             """

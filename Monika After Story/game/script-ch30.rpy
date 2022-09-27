@@ -1391,9 +1391,10 @@ init 999 python in mas_reset:
         """
         Runs reset for backup code
         """
-        if persisten._mas_is_backup:
+        if persistent._mas_is_backup:
             store.MASEventList.push("mas_backup_restored")
-            persisten._mas_is_backup = False
+            mas_utils.mas_log.info("Detected a restored backup")
+            persistent._mas_is_backup = False
 
 
     def final():

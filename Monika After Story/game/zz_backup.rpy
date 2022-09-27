@@ -17,7 +17,7 @@ default persistent._mas_incompat_per_rpy_files_found = False
 # only set if the user entered the incompat flow at all
 default persistent._mas_incompat_per_entered = False
 
-default persisten._mas_is_backup = False
+default persistent._mas_is_backup = False
 
 python early in mas_per_check:
     import __main__
@@ -131,7 +131,7 @@ python early in mas_per_check:
         Checks if a persistent version can work with the current version
 
         IN:
-            per_version - the persisten version to check
+            per_version - the persistent version to check
             cur_version - the current version to check.
 
         RETURNS: True if the per version can work with the current version
@@ -662,14 +662,15 @@ init -900 python:
         """
         try:
             p_savedir = os.path.normcase(renpy.config.savedir + "/")
+            is_pers_backup = persistent._mas_is_backup
 
             try:
-                persisten._mas_is_backup = True
+                persistent._mas_is_backup = True
                 renpy.save_persistent()
                 numnum, numnum_del = __mas__backupAndDelete(p_savedir, "persistent")
 
             finally:
-                persisten._mas_is_backup = False
+                persistent._mas_is_backup = is_pers_backup
                 renpy.save_persistent()
 
             __mas__backupAndDelete(p_savedir, "db.mcal", numnum=numnum)
