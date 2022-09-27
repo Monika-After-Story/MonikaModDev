@@ -1386,6 +1386,16 @@ init 999 python in mas_reset:
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
 
+    @ch30_reset(-560)
+    def backups():
+        """
+        Runs reset for backup code
+        """
+        if persisten._mas_is_backup:
+            store.MASEventList.push("mas_backup_restored")
+            persisten._mas_is_backup = False
+
+
     def final():
         """
         Runs reset code that should run after everythign else
