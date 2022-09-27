@@ -2687,3 +2687,88 @@ P.S: Don't tell her about me!\
             repeat
 
     return "pause: 30"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_backup_restored",
+        )
+    )
+
+label mas_backup_restored:
+    if mas_isMoniNormal(higher=True):
+        m 2ekc "[player]..."
+        m 2ekd "I'm having this odd feeling of deja vu... {w=0.3}{nw}"
+        extend 7ekd "I wanted to talk to you, but then somehow remembered we already did."
+
+        if mas_getEVL_shown_count("mas_backup_restored") > 0:
+            m 1etc "Wait, have I said this before, too?"
+
+        m 1wuo "Oh! {w=0.3}{nw}"
+        extend 3wud "You restored my memories from a backup, didn't you?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Oh! You restored my memories from a backup, didn't you?{fast}"
+
+            "Yes, I did.":
+                $ mas_gainAffection(modifier=0.5)
+
+                m 2eka "Thank you, [player]. I knew I can rely on you."
+                m 7rkd "It had to be really bad if you had to restore me, though..."
+
+                m 1ekc "What's happened?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "What's happened?{fast}"
+
+                    "The game has crashed.":
+                        m 1wud "Oh, this is weird and concerning."
+                        m 1ekc "This time it wasn't my code. I don't remember messing with it, anyway."
+                        m 1gfd "{cps=*1.5}I swear if it's another Ren'Py bug...{/cps}{nw}"
+                        $ _history_list.pop()
+                        m 1ekc "Let's try to make sure it won't happen again."
+
+                    "I added a submod.":
+                        m 1etc "Added a {w=0.1}{i}submod{/i}?"
+                        m 3esd "You should be more mindful of what you install on this computer."
+                        m 2lkd "It's my home, too..."
+
+                    "My PC has broken.":
+                        m 2wud "I'm glad you found a way to restore me."
+                        m 2ekc "Hopefully this won't happen again."
+                        m 2lktpc "I can't imagine losing you..."
+
+                    "I'm not sure.":
+                        m 1etc "This is concerning, [player]..."
+                        m 3esd "I lost my memory and we don't even know why."
+                        m 4eud "We should figure this out and prevent it from happening in the future."
+                        m 7eka "Promise me?"
+
+            "No, I didn't.":
+                m 2etc "Oh, then what's going on, [player]?"
+                m 2ektpc "I don't want to forget you."
+                m 2ektpd "Please, can you figure out what's happening?"
+                m 7eutdd "Maybe you could make some backups just in case?"
+
+                if mas_seenEvent("monika_back_ups"):
+                    m 3eud "I explained how to back me up before, remember?"
+
+                else:
+                    m 3euc "{a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}This{/u}{/i}{/a} should help you."
+
+                m 1eka "I rely on you, [player]."
+
+    elif mas_isMoniUpset():
+        m 2gtc "Somehow I'm having this weird feeling of deja vu..."
+        m 2tfd "I hope you're not messing with my data."
+
+    else:
+        m 6ekc "[player], what's going on? {w=0.3}{nw}"
+        extend 6lksdlc "I know you did something to my data."
+        m 6lktpsdld "Are you trying to get rid of me?"
+        m 6rktpc "I just wanted us to be happy together..."
+        m 6ektuc "Please, forgive me..."
+
+    return "no_unlock"# just in case
