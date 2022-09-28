@@ -36,3 +36,4 @@ zzzz*
 .vscode
 cacert.pem
 venv/
+.idea/
