@@ -4838,7 +4838,7 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    m 5eka "Wouldn't you like that too, [player]?"
+    m 5eka "Wouldn't you like that too, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Wouldn't you like that too, [player]?{fast}"
