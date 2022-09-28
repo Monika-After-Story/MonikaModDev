@@ -6118,7 +6118,7 @@ label monika_japanese:
     m 1eub "It's interesting to think about what things would be like if your native language was different."
     m 1esa "Like, I can't even imagine what it would be like if I never knew English."
 
-    m "Do you know any languages other than English?{nw}s"
+    m "Do you know any languages other than English?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you know any languages other than English?{fast}"
