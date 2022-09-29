@@ -7,11 +7,14 @@ init 10 python:
 
 init -989 python:
     #Log initialized submods
-    if store.mas_submod_utils.submod_map:
+    if store.mas_submod_utils.Submod.hasSubmods():
         mas_submod_utils.submod_log.info(
             "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
-                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.values()]
+                    [
+                        "    '{0}' v{1}".format(submod.name, submod.version)
+                        for submod in store.mas_submod_utils.Submod.getSubmods()
+                    ]
                 )
             )
         )
@@ -21,25 +24,145 @@ init -989 python:
 
 init -991 python in mas_submod_utils:
     import re
-    import store
+    import os
+    import json
     # import sys
     # import traceback
+    from urllib.parse import urlparse
 
-    persistent = store.persistent
+    import store
+    from store import (
+        config,
+        persistent,
+        mas_utils,
+        mas_logging
+    )
 
-    submod_log = store.mas_logging.init_log("submod_log")
 
-    @store.mas_utils.deprecated(use_instead="submod_log.debug, submod_log.info, submod_log.warning, submod_log.error, submod_log.exception")
-    def writeLog(msg):
+    submod_log = mas_logging.init_log("submod_log")
+
+    # NOTE: ALWAYS UPDATE VERSION IF YOU CHANGE HEADER FORMAT
+    # That way we can keep things compatible!
+    HEADER_VERSION = 1
+    HEADER_JSON_FN = "header.json"
+    # The directories we're checking for submods, relative to `game/`
+    SUBMOD_DIRS = [
+        "Submods/"
+    ]
+
+
+    def _read_submod_header(path: str) -> dict|None:
         """
-        Writes to the submod log if it is open
+        Tries to read a submod header at the given path
 
         IN:
-            msg - message to write to log
+            path - str, abs path to the submod
         """
-        submod_log.info(msg)
+        header_path = os.path.join(path, HEADER_JSON_FN)
+        if not os.path.exists(header_path):
+            return None
 
-    submod_map = dict()
+        header_json = None
+        last_err = None
+        try:
+            with open(header_path) as header_file:
+                header_json = json.load(header_file)
+
+        except Exception as last_err:
+            pass
+
+        if not header_json:
+            submod_log.error(
+                "Found submod header, but couldn't read it: '{}'".format(path),
+                exc_info=(last_err is not None)
+            )
+            return None
+
+        return header_json
+
+    def _process_submod_header(header_json: dict, path: str) -> bool:
+        """
+        This does extra processing on header, like setting default values
+        if optional parameters not present
+
+        IN:
+            header_json - dict, the parsed submod json
+            path - str, abs path to the submod
+
+        OUT:
+            boolean - True if successfully, False otherwise
+        """
+        # NOTE: pop from the dict sinse it's not used in the submod constructor
+        v = header_json.pop("header_version", None)
+        if v is None:
+            submod_log.error(
+                "Submod is missing required 'header_version' field: '{}'".format(path)
+            )
+            return False
+
+        # NOTE: for now we just don't load outdated headers,
+        # but we could try to process old headers in the future if
+        # we decide we want to do so
+        if v < HEADER_VERSION:
+            submod_log.error(
+                "Submod has outdated header version (expected {}, got {}): '{}'".format(
+                    HEADER_VERSION,
+                    v,
+                    path
+                )
+            )
+            return False
+
+        header_json.setdefault("description", None)
+        header_json.setdefault("dependencies", None)
+        header_json.setdefault("settings_pane", None)
+        header_json.setdefault("version_updates", {})
+        header_json.setdefault("coauthors", ())
+        header_json.setdefault("repository", None)
+        header_json.setdefault("priority", 0)
+
+        return True
+
+    def _load_submod(path: str):
+        """
+        Reads a submod json header at the given path,
+        validates and and tries to load the submod
+
+        IN:
+            path - str, abs path to the submod location
+        """
+        if not (header_json := _read_submod_header(path)):
+            return
+
+        if not _process_submod_header(header_json, path):
+            return
+
+        try:
+            submod_obj = Submod(**header_json)
+
+        except (SubmodError, TypeError) as e:# TypeError is for extra/invalid args
+            submod_log.error(
+                "Invalid submod found at: '{}'".format(path),
+                exc_info=True
+            )
+
+        except Exception as e:
+            submod_log.critical(
+                "Critical error while validating submod at: '{}'".format(path),
+                exc_info=True,
+                stack_info=True
+            )
+
+    def _load_submods():
+        """
+        Scans and loads submods
+        """
+        for submod_dir in SUBMOD_DIRS:
+            path = os.path.join(config.gamedir, submod_dir)
+            for entry in os.scandir(path):
+                if entry.is_dir():
+                    _load_submod(entry.path)
+
 
     class SubmodError(Exception):
         def __init__(self, _msg):
@@ -64,18 +187,23 @@ init -991 python in mas_submod_utils:
         FB_VERS_STR = "0.0.0"
 
         #Regular expression representing a valid author and name
-        AN_REGEXP = re.compile(r'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+        AN_REGEXP = re.compile(r'^[a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+
+        _submod_map = dict()
 
         def __init__(
             self,
             author,
             name,
             version,
-            description=None,
-            dependencies={},
+            modules,
+            description="",
+            dependencies=None,
             settings_pane=None,
             version_updates={},
-            coauthors=[]
+            coauthors=(),
+            repository=None,
+            priority=0,
         ):
             """
             Submod object constructor
@@ -88,8 +216,10 @@ init -991 python in mas_submod_utils:
                 version - version number in format SPECIFICALLY like so: `1.2.3`
                     (You can add more or less as need be, but splits MUST be made using periods)
 
+                modules - list of modules of this submod
+
                 description - a short description for the submod
-                    (Default: None)
+                    (Default: "")
 
                 dependencies - dictionary in the following structure: {"name": ("minimum_version", "maximum_version")}
                 corresponding to the needed submod name and version required
@@ -97,6 +227,7 @@ init -991 python in mas_submod_utils:
                     (Default: empty dict)
 
                 settings_pane - a string representing the screen for this submod's settings
+                    (Default: None)
 
                 version_updates - dict of the format {"old_version_update_label_name": "new_version_update_label_name"}
                     NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submods
@@ -110,18 +241,22 @@ init -991 python in mas_submod_utils:
                     becomes:
                         label monikaafterstory_example_submod_v1_2_3(version="v1_2_3")
 
-                coauthors - list/tuple of co-authors of this submod
-                    (Default: empty list)
+                coauthors - tuple of co-authors of this submod
+                    (Default: empty tuple)
+
+                repository - link to the submod repository
+                    (Default: None)
+
+                priority - submod loading priority. Must be within -999 and 999
+                    (Default: 0)
             """
             #First make sure this name us unique
-            if name in submod_map:
-                raise SubmodError("A submod with name '{0}' has been installed twice. Please, uninstall the duplicate.".format(name))
+            if name in self._submod_map:
+                raise SubmodError("A submod with name '{}' has been installed twice. Please, uninstall the duplicate.".format(name))
 
             #Now we verify that the version number is something proper
-            try:
-                tuple(map(int, version.split('.')))
-            except ValueError:
-                raise SubmodError("Version number '{0}' is invalid.".format(version))
+            if not self._isValidVersion(version):
+                raise SubmodError("Version number '{}' is invalid.".format(version))
 
             #Make sure author and name are proper label names
             if not Submod.AN_REGEXP.match(author):
@@ -129,18 +264,66 @@ init -991 python in mas_submod_utils:
             if not Submod.AN_REGEXP.match(name):
                 raise SubmodError("Name '{0}' is invalid.".format(name))
 
+            if not isinstance(description, str):
+                raise SubmodError("Description '{0}' is invalid.".format(description))
+
+            if dependencies is not None:
+                if not isinstance(dependencies, (dict, python_dict)):
+                    raise SubmodError("Invalid 'dependencies' field for the submod '{}'.".format(name))
+
+                for k, v in dependencies.items():
+                    if not isinstance(k, str):
+                        raise SubmodError("Invalid key '{}' in the 'dependencies' field for the submod '{}'.".format(k, name))
+
+                    if not isinstance(v, (tuple, list, python_list)):
+                        raise SubmodError("Invalid value type for key '{}' in the 'dependencies' field for the submod '{}'.".format(k, name))
+
+                    if len(v) != 2:
+                        raise SubmodError("Invalid value for key '{}' in the 'dependencies' field for the submod '{}'.".format(k, name))
+
+                    for i in v:
+                        if not self._isValidVersion(i):
+                            raise SubmodError("Invalid value for key '{}' in the 'dependencies' field for the submod '{}'.".format(k, name))
+
+            else:
+                dependencies = {}
+
+            if settings_pane is not None and not isinstance(settings_pane, str):
+                raise SubmodError("Invalid 'settings_pane' field for the submod '{}'.".format(name))
+
+            if repository:
+                url = urlparse(repository)
+                if url.scheme != "https":
+                    submod_log.warning("Submod '{}' doesn't use https scheme in its repository link")
+                if url.netloc != "github.com":
+                    submod_log.warning("Submod '{}' uses unknown repository hosting. Consider switching to GitHub.com")
+                elif (
+                    url.path.count("/") != 2
+                    or url.params
+                    or url.query
+                    or url.fragmnent
+                ):
+                    # Only for github
+                    submod_log.warning("Submod '{}' seems to have invalid link to the repository.")
+
+            if not isinstance(priority, int) or not (-999 <= priority <= 999):
+                raise SubmodError("Invalid 'priority' field for the submod '{}'.".format(name))
+
             #With verification done, let's make the object
             self.author = author
             self.name = name
-            self.description = description if description is not None else ""
             self.version = version
+            self.modules = modules
+            self.description = description
             self.dependencies = dependencies
             self.settings_pane = settings_pane
             self.version_updates = version_updates
             self.coauthors = tuple(coauthors)
+            self.repository = repository
+            self.priority = priority
 
             #Now we add these to our maps
-            submod_map[name] = self
+            self._submod_map[name] = self
 
             #NOTE: We check for things having updated later so all update scripts get called together
             if name not in persistent._mas_submod_version_data:
@@ -159,7 +342,7 @@ init -991 python in mas_submod_utils:
             OUT:
                 List of integers representing the version number
             """
-            return list(map(int, self.version.split('.')))
+            return list(self._parseVersions(self.version))
 
         def hasUpdated(self):
             """
@@ -177,7 +360,7 @@ init -991 python in mas_submod_utils:
                 return False
 
             try:
-                old_vers = list(map(int, old_vers.split('.')))
+                old_vers = list(self._parseVersions(old_vers))
 
             #Persist data was bad, we'll replace it with something safe and return False as we need not check more
             except:
@@ -215,18 +398,18 @@ init -991 python in mas_submod_utils:
                     - 0 if the current version is the same as the comparitive version
                     - 1 if the current version is greater than the comparitive version
             """
-            return store.mas_utils.compareVersionLists(
+            return mas_utils.compareVersionLists(
                 self.getVersionNumberList(),
                 comparative_vers
             )
 
-        @staticmethod
-        def _checkUpdates():
+        @classmethod
+        def _checkUpdates(cls):
             """
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in submod_map.values():
+            for submod in cls.getSubmods():
                 #If it has updated, we need to call their update scripts and adjust the version data value
                 if submod.hasUpdated():
                     submod.updateFrom(
@@ -241,25 +424,44 @@ init -991 python in mas_submod_utils:
                 persistent._mas_submod_version_data[submod.name] = submod.version
 
         @staticmethod
-        def _checkDependencies():
+        def _parseVersions(version):
+            """
+            Parses a string version number to list format.
+
+            IN:
+                version - version string to parse
+
+            OUT:
+                tuple - representing the parsed version number
+
+            NOTE: Does not handle errors as to get here, formats must be correct regardless
+            """
+            return tuple(map(int, version.split('.')))
+
+        @classmethod
+        def _isValidVersion(cls, version):
+            """
+            Checks if the given version string has valid format
+
+            IN:
+                version - version string to test
+
+            OUT:
+                boolean
+            """
+            try:
+                cls._parseVersions(version)
+            except ValueError:
+                return False
+
+            return True
+
+        @classmethod
+        def _checkDependencies(cls):
             """
             Checks to see if the dependencies for this submod are met
             """
-            def parseVersions(version):
-                """
-                Parses a string version number to list format.
-
-                IN:
-                    version - version string to parse
-
-                OUT:
-                    list() - representing the parsed version number
-
-                NOTE: Does not handle errors as to get here, formats must be correct regardless
-                """
-                return tuple(map(int, version.split('.')))
-
-            for submod in submod_map.values():
+            for submod in cls.getSubmods():
                 for dependency, minmax_version_tuple in submod.dependencies.items():
                     dependency_submod = Submod._getSubmod(dependency)
 
@@ -270,7 +472,7 @@ init -991 python in mas_submod_utils:
                         #First, check the minimum version. If we get -1, we're out of date
                         if (
                             minimum_version
-                            and dependency_submod.checkVersions(parseVersions(minimum_version)) < 0
+                            and dependency_submod.checkVersions(cls._parseVersions(minimum_version)) < 0
                         ):
                             raise SubmodError(
                                 "Submod '{0}' is out of date. Version {1} required for {2}. Installed version is {3}".format(
@@ -282,7 +484,7 @@ init -991 python in mas_submod_utils:
                         #If we get 1, this is incompatible and we should crash to avoid other ones
                         elif (
                             maximum_version
-                            and dependency_submod.checkVersions(parseVersions(maximum_version)) > 0
+                            and dependency_submod.checkVersions(cls._parseVersions(maximum_version)) > 0
                         ):
                             raise SubmodError(
                                 "Version '{0}' of '{1}' is installed and is incompatible with {2}.\nVersion {3} is compatible.".format(
@@ -298,8 +500,18 @@ init -991 python in mas_submod_utils:
                             )
                         )
 
-        @staticmethod
-        def _getSubmod(name):
+        @classmethod
+        def hasSubmods(cls):
+            """
+            Checks if any submods were loaded
+
+            OUT:
+                bool
+            """
+            return bool(cls._submod_map)
+
+        @classmethod
+        def _getSubmod(cls, name):
             """
             Gets the submod with the name provided
 
@@ -310,7 +522,17 @@ init -991 python in mas_submod_utils:
                 Submod object representing the submod by name if installed and registered
                 None if not found
             """
-            return submod_map.get(name)
+            return cls._submod_map.get(name)
+
+        @classmethod
+        def getSubmods(cls):
+            """
+            Returns all the submods
+
+            OUT:
+                iterable of Submod objects
+            """
+            return cls._submod_map.values()
 
     #END: Submod class
     def isSubmodInstalled(name, version=None):

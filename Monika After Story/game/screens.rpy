@@ -857,7 +857,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils.Submod.hasSubmods():
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -919,7 +919,7 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils.Submod.hasSubmods():
             textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
@@ -3151,7 +3151,7 @@ screen submods():
                 xfill True
                 xmaximum 1000
 
-                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
+                for submod in sorted(store.mas_submod_utils.Submod.getSubmods(), key=lambda x: x.name):
                     vbox:
                         xfill True
                         xmaximum 1000
