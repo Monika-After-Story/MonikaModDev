@@ -113,13 +113,13 @@ init -991 python in mas_submod_utils:
             )
             return False
 
-        header_json.setdefault("description", None)
-        header_json.setdefault("dependencies", None)
-        header_json.setdefault("settings_pane", None)
-        header_json.setdefault("version_updates", {})
-        header_json.setdefault("coauthors", ())
-        header_json.setdefault("repository", None)
-        header_json.setdefault("priority", 0)
+        # header_json.setdefault("description", "")
+        # header_json.setdefault("dependencies", None)
+        # header_json.setdefault("settings_pane", None)
+        # header_json.setdefault("version_updates", {})
+        # header_json.setdefault("coauthors", ())
+        # header_json.setdefault("repository", "")
+        # header_json.setdefault("priority", 0)
 
         return True
 
@@ -202,7 +202,7 @@ init -991 python in mas_submod_utils:
             settings_pane=None,
             version_updates={},
             coauthors=(),
-            repository=None,
+            repository="",
             priority=0,
         ):
             """
@@ -245,7 +245,7 @@ init -991 python in mas_submod_utils:
                     (Default: empty tuple)
 
                 repository - link to the submod repository
-                    (Default: None)
+                    (Default: "")
 
                 priority - submod loading priority. Must be within -999 and 999
                     (Default: 0)
