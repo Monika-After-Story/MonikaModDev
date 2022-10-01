@@ -94,35 +94,52 @@ python early in mas_tt_guard:
 
     import store
 
-    class MASUptimeSyncValidator(object):
+    class __Desync(object):
+        NONE = 0
+        MAJOR = 1
+        MINOR = 2
+        SYSTEM = 4
+
+    class MASUptimeSyncValidator(object, store.NoRollback):
         """
         Validates uptime using clock
         """
+        __SOFT_LIM = 3.3
+        __HARD_LIM = 3720.0
+
         __slots__ = (
-            "__on_desync",
             "__log_obj",
             "__last_proc_clock",
             "__last_os_clock",
-            "__quit",
+            "__start_ts",
+            "__uptime",
+            "__desync",
             "__desyncs",
+            "__min_desync_count",
+            "__last_min_desync",
             "__th",
         )
 
-        def __init__(self, on_desync=None, log=None):
+        def __init__(self, log=None):
             """
             Constructor:
 
             IN:
-                on_desync - a function to call on desync
-                    NOTE: will be called from another thread
-                        make sure it's thread-safe
                 log - the log object to use for logging purposes
             """
-            self.__on_desync = on_desync
             self.__log_obj = log
-            self.__last_os_ts = 0.0
-            self.__quit = False
+
+            self.__last_proc_clock = 0.0
+            self.__last_os_clock = 0.0
+
+            self.__start_ts = 0.0
+            self.__uptime = 0.0
+
+            self.__desync = __Desync.NONE
             self.__desyncs = []
+            self.__min_desync_count = 0
+            self.__last_min_desync = 0.0
+
             self.__th = None
 
         def __log(self, kind, *args, **kwargs):
@@ -159,41 +176,64 @@ python early in mas_tt_guard:
             """
             self.__log("error", *args, **kwargs)
 
-        def __run_desync_cb(self):
-            """
-            Tries to run the callback, logs any errors
-            """
-            if self.__on_desync:
-                try:
-                    self.__on_desync()
-                except Exception as e:
-                    self.__log_error("Failed to run desync callback: {}".format(e), exc_info=True)
-
-        def _start(self):
+        def __start(self):
             """
             Starts the validator loop
             """
-            LIMIT = 3600.0 * 30.0
-            while not self.__quit:
+            self.__start_ts = time.time()
+            while True:
                 wait_time = float(random.randint(3, 7))
-                self.__last_os_ts = time.time()
+                self.__last_proc_clock = time.clock()
+                self.__last_os_clock = time.time()
 
                 time.sleep(wait_time)
 
-                change = time.time() - self.__last_os_ts
-                diff = change - wait_time
-                abs_diff = abs(diff)
+                proc_change = time.clock() - self.__last_proc_clock
+                os_change = time.time() - self.__last_os_clock
 
-                if abs_diff > 1.0:
-                    if abs_diff > LIMIT:
-                        self.__desyncs.append(diff)
-                        self.__log_warning("Major uptime desync, possible corruption: {}".format(diff))
-                        self.__run_desync_cb()
+                proc_diff = proc_change - wait_time
+                abs_proc_diff = abs(proc_diff)
+                os_diff = os_change - wait_time
+                abs_os_diff = abs(os_diff)
 
-                    else:
-                        self.__log_warning("Minor uptime desync, skipping: {}".format(diff))
+                self.__uptime += (proc_change if proc_change > 0.0 else wait_time)
 
-        def get_desyncs(self):
+                # This is the worst that can happen
+                if (
+                    (abs_os_diff > self.__HARD_LIM and abs_proc_diff < self.__HARD_LIM)
+                    or (abs_os_diff > self.__SOFT_LIM and self.__min_desync_count >= 3)
+                ):
+                    self.__desync |= __Desync.MAJOR
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Major uptime desync. POSSIBLE CORRUPTION: {} | {}".format(proc_diff, os_diff))
+                    return
+
+                # This is probably okay and we can handle smol shifts
+                elif abs_os_diff > self.__SOFT_LIM:
+                    if abs_proc_diff <= self.__SOFT_LIM:
+                        if self.__uptime - self.__last_min_desync < 3600.0:
+                            self.__min_desync_count += 1
+                        self.__last_min_desync = self.__uptime
+
+                    self.__desync |= __Desync.MINOR
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Minor uptime desync. POSSIBLE CORRUPTION: {} | {}".format(proc_diff, os_diff))
+                    return
+
+                # This should never happen, reporting just in case, but probably would be terrible, too
+                elif abs_proc_diff > self.__SOFT_LIM:
+                    self.__desync |= __Desync.SYSTEM
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Process desync. POSSIBLE SYSTEM ISSUES: {} | {}".format(proc_diff, os_diff))
+
+                # Reset the counter if it's safe
+                if (
+                    self.__min_desync_count
+                    and self.__uptime - self.__last_min_desync > 10800.0
+                ):
+                    self.__min_desync_count -= 1
+
+        def _get_desyncs(self):
             """
             Returns a list of all desync gaps
 
@@ -202,36 +242,55 @@ python early in mas_tt_guard:
             """
             return list(self.__desyncs)
 
-        def is_in_desync(self):
+        def _get_uptime(se_Desynclf):
+            """
+            Returns current update since launch
+            """
+            return self.__uptime
+
+        def __is_desync(self, kind):
             """
             Returns a boolean indicating if there was a desync
 
             OUT:
                 bool
             """
-            return bool(self.__desyncs)
+            return (self.__desync & kind) != 0
+
+        def is_major_desync(self):
+            """
+            Checks if there was AT LEAST a major desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.MAJOR)
+
+        def is_minor_desync(self):
+            """
+            Checks if there was AT LEAST a minor desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.MINOR)
+
+        def is_system_desync(self):
+            """
+            Checks if there was AT LEAST a system desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.SYSTEM)
 
         def start(self):
             """
             Starts the validator by invoking its logic in a thread
             """
-            self.__th = th = threading.Thread(target=self._start)
+            self.__th = th = threading.Thread(target=self.__start)
             th.daemon = True
             th.start()
-
-        def stop(self):
-            """
-            Stop the validator on its next loop
-            """
-            self.__quit = True
-
-        def kill(self):
-            """
-            Kills the validator by joined its thread
-            """
-            self.stop()
-            if self.__th:
-                self.__th.join()
 
 
     def enable_tt_ff_mode():
