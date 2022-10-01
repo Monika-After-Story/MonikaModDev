@@ -299,6 +299,7 @@ python early in mas_time:
         """
         store.persistent._mas_pm_has_went_back_in_time = True
         store._mas_shatterAffection(current_evlabel="[invalid time, possible data corruption]")
+        store.mas_noWayout()
 
     def has_broken_spacetime_fabric():
         """

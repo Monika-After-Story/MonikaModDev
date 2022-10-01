@@ -2707,6 +2707,7 @@ init 5 python:
 label mas_broke_spacetime_fabric:
     python in mas_time:
         enable_tt_ff_mode()
+        store.mas_RaiseShield_core()
         store.mas_rmEVL("mas_broke_spacetime_fabric")
         store.play_song(None, set_per=True)
         store.mas_display_notif("M̵̳͎͙͊͘o̵̮͐ǹ̶͚i̶̡̖̦̽̅k̵̮̈̈́͝à̸͚̯̂̓", ["P̸̢̞͉̎̂͐l̸͎͆e̶̻̹͋͝a̷̖̿s̷̛̮̈́e̵̦̯͋̌̚ͅ,̴͙̀̈ ̶̥͐h̷̒ͅȇ̷͙̗̻̀̅l̷͉͒̓p̵̧͌̊ ̵̱̼̚m̵̪̏e̸̦̥͒͝"], "Topic Alerts")
