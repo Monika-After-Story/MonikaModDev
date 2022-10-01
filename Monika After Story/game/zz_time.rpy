@@ -98,6 +98,16 @@ python early in mas_tt_guard:
         """
         Validates uptime using clock
         """
+        __slots__ = (
+            "__on_desync",
+            "__log_obj",
+            "__last_proc_clock",
+            "__last_os_clock",
+            "__quit",
+            "__desyncs",
+            "__th",
+        )
+
         def __init__(self, on_desync=None, log=None):
             """
             Constructor:
