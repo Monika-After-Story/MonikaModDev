@@ -1392,7 +1392,7 @@ init 999 python in mas_reset:
         if (
             store.mas_globals.tt_detected
             or (
-                store.mas_tt_guard.has_broken_spacetime_fabric()
+                store.mas_time.has_broken_spacetime_fabric()
                 and store._mas_getAffection() > 0.0
             )
         ):
@@ -1761,7 +1761,7 @@ label ch30_autoload:
             persistent._mas_load_in_finalfarewell_mode = True
             persistent._mas_finalfarewell_poem_id = "ff_affection"
 
-        elif mas_tt_guard.has_broken_spacetime_fabric():
+        elif mas_time.has_broken_spacetime_fabric():
             persistent._mas_load_in_finalfarewell_mode = True
             persistent._mas_finalfarewell_poem_id = "ff_broke_spacetime_fabric"
             play_song(songs.FP_KAZOO_COVER, fadein=10.0, set_per=True)

@@ -3727,6 +3727,6 @@ Monika
         category="ff",
         prompt="",
         title=_("???"),
-        text=store.mas_tt_guard.generate_poem(),
+        text=store.mas_time.generate_poem(),
         author="???"
     )

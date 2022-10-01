@@ -2705,7 +2705,7 @@ init 5 python:
     )
 
 label mas_broke_spacetime_fabric:
-    python in mas_tt_guard:
+    python in mas_time:
         enable_tt_ff_mode()
         store.mas_rmEVL("mas_broke_spacetime_fabric")
         store.play_song(None, set_per=True)

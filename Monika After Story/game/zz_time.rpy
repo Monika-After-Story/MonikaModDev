@@ -87,7 +87,7 @@ python early:
             return MASLocalTz.create()
 
 
-python early in mas_tt_guard:
+python early in mas_time:
     import time
     import threading
     import random

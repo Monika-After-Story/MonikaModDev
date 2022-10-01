@@ -175,7 +175,7 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
-        guard = mas_tt_guard.MASUptimeSyncValidator(
+        guard = mas_time.MASUptimeSyncValidator(
             on_desync=lambda: (
                 setattr(store.mas_globals, "tt_detected", True),
                 store.MASEventList.push("mas_broke_spacetime_fabric")
