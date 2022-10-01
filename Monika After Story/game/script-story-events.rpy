@@ -2694,7 +2694,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_broke_spacetime_fabric",
-            conditional="store.mas_globals.tt_detected",
+            conditional="store.mas_globals.tt_detected and not mas_inEVL('mas_broke_spacetime_fabric')",
             action=EV_ACT_PUSH,
             show_in_idle=True,
             rules={

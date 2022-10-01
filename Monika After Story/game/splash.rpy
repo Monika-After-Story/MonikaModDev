@@ -162,7 +162,7 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
-    python hide:
+    python:
         _mas_AffStartup()
 
         persistent.sessions['current_session_start']=datetime.datetime.now()
@@ -175,14 +175,8 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
-        guard = mas_time.MASUptimeSyncValidator(
-            on_desync=lambda: (
-                setattr(store.mas_globals, "tt_detected", True),
-                store.MASEventList.push("mas_broke_spacetime_fabric")
-            ),
-            log=mas_utils.mas_log
-        )
-        guard.start()
+        _mas_ntp = mas_time.MASUptimeSyncValidator(log=mas_utils.mas_log)
+        _mas_ntp.start()
 
     if store.mas_per_check.should_show_chibika_persistent():
         # we have a corrupted per w/ no backups or incompatible per

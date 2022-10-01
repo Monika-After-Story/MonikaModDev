@@ -1385,18 +1385,18 @@ init 999 python in mas_reset:
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
 
-    def _time_travel_reset():
+    def _tt_reset():
         """
         Runs reset code for tt event
         """
         if (
-            store.mas_globals.tt_detected
+            mas_TTDetected()
             or (
                 store.mas_time.has_broken_spacetime_fabric()
-                and store._mas_getAffection() > 0.0
+                and not store.mas_isBelowZero()
             )
         ):
-            # this will tell the player their data is gone
+            # this will tell the player their data is corrupted
             # and hopefully they will revert
             store.MASEventList.push("mas_broke_spacetime_fabric")
 
@@ -1416,7 +1416,7 @@ init 999 python in mas_reset:
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
                 store.queueEvent("mas_consumables_remove_thermos")
 
-        _time_travel_reset()
+        _tt_reset()
 
         # clean up the event list of baka events
         # ALWAYS LAST
@@ -2105,6 +2105,10 @@ label ch30_visual_skip:
     # else:
     #     $ config.allow_skipping = False
 
+    if _mas_ntp.is_major_desync():
+        $ store.mas_globals.tt_detected = True
+        $ store.MASEventList.push("mas_broke_spacetime_fabric")
+
     # check for outstanding threads
     if store.mas_dockstat.abort_gen_promise:
         $ store.mas_dockstat.abortGenPromise()
@@ -2113,8 +2117,8 @@ label ch30_visual_skip:
         jump ch30_post_mid_loop_eval
 
     #Do the weather thing
-#    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
-#        call spaceroom(dissolve_masks=True)
+    # if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
+    #     call spaceroom(dissolve_masks=True)
 
     # check reoccuring checks
     $ now_check = datetime.datetime.now()
