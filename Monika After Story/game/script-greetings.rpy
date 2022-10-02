@@ -4695,6 +4695,8 @@ init 5 python:
 
     del ev_rules
 
+default persistent._mas_pm_snitched_on_chibika = None
+
 label greeting_found_nou_shirt:
     $ monika_chr.change_clothes(mas_clothes_nou_shirt, by_user=False, outfit_mode=True)
     $ glitch_option_text = glitchtext(7)
@@ -4715,6 +4717,7 @@ label greeting_found_nou_shirt:
 
         "It was [glitch_option_text]!":
             hide screen mas_background_timed_jump
+            $ persistent._mas_pm_snitched_on_chibika = True
             $ renpy.invoke_in_thread(
                 mas_utils.trywrite,
                 os.path.join(renpy.config.basedir, "characters/for snitch.txt"),
