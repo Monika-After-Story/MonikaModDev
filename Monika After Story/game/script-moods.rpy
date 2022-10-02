@@ -962,9 +962,9 @@ init 5 python:
 label mas_mood_insecure:
     m 2wkd "[player]..."
     m 2dkc "..."
-    m 2eka "There's this quote from a certain anime that says..."
+    m 2eka "There's a quote from an anime that Natsuki really liked..."
     m 7dku "'Believe in me, who believes in you.'"
     m 3eka "And that's exactly what I want to tell you right now."
     m 3ekbsa "If you can't believe in yourself, believe in me."
-    m 1eubsu "Because I, for sure, trust you can overcome whatever has you doubting yourself right now~"
+    m 1eubsu "Because I,{w=0.1} for sure,{w=0.1} trust you can overcome whatever has you doubting yourself right now~"
     return
