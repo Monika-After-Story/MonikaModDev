@@ -138,7 +138,7 @@ label monika_ptod_tip000:
     # enable tip 1
     $ tip_label = "monika_ptod_tip001"
     $ mas_showEVL(tip_label, "EVE", unlock=True, _pool=True)
-    $ pushEvent(tip_label,skipeval=True)
+    $ MASEventList.push(tip_label,skipeval=True)
     return
 
 ###############################################################################
@@ -157,12 +157,12 @@ label monika_ptod_tip001:
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
-    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.2} which is built off of Python."
+    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w=0.1} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
     m 1hua "Wouldn't that be great, [mas_get_player_nickname()]?"
-    m 3eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.2} Python2 and Python3."
+    m 3eub "Anyway, I need to mention that there are currently two main versions of Python:{w=0.3} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this caused a rift in the Python community,{w=0.2} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m "Even though this caused a rift in the Python community,{w=0.1} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 1eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
@@ -202,7 +202,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:{w=0.3} {i}integers{/i}, or {b}ints{/b},{w=0.3} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w=0.3} {i}integers{/i}, or {b}ints{/b},{w=0.1} and {i}floats{/i}."
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -305,10 +305,10 @@ label monika_ptod_tip003:
     if mas_getEVL_last_seen("monika_ptod_tip003") is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
-        m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
-        m "Not that you would{fast}{nw}"
+        m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game."
+        m "{cps=*2}Not that you would...{/cps}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this.{w=0.3} Sorry..."
+        m 1eksdlb "I can't let you use this.{w=0.2} Sorry..."
         m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
@@ -423,7 +423,7 @@ label monika_ptod_tip005:
     call mas_wx_cmd("a > c")
     call mas_wx_cmd("a < c")
 
-    m 3eub "Greater-than-or-equal-to (>=) and less-than-or-equal-to (<=) also have their own symbols, which,{w=1} unsurprisingly,{w=1} are just the greater-than and less-than signs with equal signs."
+    m 3eub "Greater-than-or-equal-to (>=) and less-than-or-equal-to (<=) also have their own symbols, which,{w=0.1} unsurprisingly,{w=0.1} are just the greater-than and less-than signs with equal signs."
     call mas_wx_cmd("a >= b")
     call mas_wx_cmd("a <= b")
     call mas_wx_cmd("a >= c")
@@ -434,7 +434,7 @@ label monika_ptod_tip005:
         m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
 
     m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
-    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w=0.3} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
+    m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w=0.1} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
     m 1hua "Let's go through some examples."
 
     $ val_a = local_ctx["a"]
@@ -466,7 +466,7 @@ label monika_ptod_tip005:
 
     m 1eub "Again, when using the {b}and{/b} operator, the result is {b}True{/b} if and only if both comparisons evaluate to {b}True{/b}."
 
-    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w=0.3} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
+    m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w=0.1} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
     m 3eua "Let's go through some examples."
 
     call mas_w_cmd("a == b or a == c")
@@ -571,13 +571,13 @@ label monika_ptod_tip006:
 
     # variable intro
     m 1eua "Variables represent memory locations that store data."
-    m "To create a variable,"
+    m "To create a variable, {w=0.1}{nw}"
 
     show monika at t22
     show screen mas_py_console_teaching
 
     # a number
-    m 3eua "you do '{b}symbol_name{/b} = {b}value{/b}', like this:"
+    extend 3eua "you do '{b}symbol_name{/b} = {b}value{/b}', like this..."
 
     call mas_wx_cmd("a_number = " + num_store, local_ctx)
 
@@ -592,14 +592,14 @@ label monika_ptod_tip006:
     m 1eub "That is called assignment, where we take whatever is on the left of the equals sign and point it to, or {i}assign{/i} it, the value of whatever is on the right."
 
     # b_number
-    m 1eua "Assignment is executed in right-to-left order.{w=0.3} To illustrate this, let's create a new variable, 'b_number'."
+    m 1eua "Assignment is executed in right-to-left order.{w=0.2} To illustrate this, let's create a new variable, 'b_number'."
     call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
-    m "In assignment, the right side of the equal sign is evaluated first,{w=0.2} then its data type is inferred and an appropriate amount of memory is reserved."
+    m "In assignment, the right side of the equal sign is evaluated first,{w=0.1} then its data type is inferred and an appropriate amount of memory is reserved."
     m "That memory is linked to the symbol on the left via a lookup table."
-    m 1eub "When Python encounters a symbol,{w=0.2} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
+    m 1eub "When Python encounters a symbol,{w=0.1} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w=0.2} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w=0.1} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     show monika 3eua
     call mas_x_cmd(local_ctx)
 
@@ -622,8 +622,8 @@ label monika_ptod_tip006:
     m "We didn't have to explicitly say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
     m "Other languages, like C or Java, require types to be defined with the variable."
-    m "Dynamic typing enables variables in Python to change types during execution,"
-    m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
+    m "Dynamic typing enables variables in Python to change types during execution, {w=0.1}{nw}"
+    extend 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
     if last_seen_is_none:
         m 1eud "Whew!{w=0.2} That was a mouthful!"
@@ -636,7 +636,7 @@ label monika_ptod_tip006:
             m 1hua "Yay!"
 
         "I'm a bit confused.":
-            m 1eksdla "That's okay.{w=0.3} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
+            m 1eksdla "That's okay.{w=0.2} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
             m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
             m 1eua "Just knowing how to work with variables is enough for future lessons."
             m "Anyway..."
@@ -889,7 +889,7 @@ label monika_ptod_tip010:
 # NOTE: base the solids off of hangman. That should help us out
 
 image cn_frame = "mod_assets/console/cn_frame.png"
-define mas_ptod.font = "mod_assets/font/mplus-1mn-medium.ttf"
+define mas_ptod.font = mas_ui.MONO_FONT
 
 # NOTE: Console text:
 # style console_text (for regular console text)

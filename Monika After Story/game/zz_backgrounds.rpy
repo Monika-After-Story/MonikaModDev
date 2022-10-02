@@ -2021,7 +2021,7 @@ init -10 python:
                 )
             if not isinstance(filter_man, MASBackgroundFilterManager):
                 raise TypeError(
-                    "Exepcted MASBackroundFilterManager, got {0}".format(
+                    "Exepcted MASBackgroundFilterManager, got {0}".format(
                         type(filter_man)
                     )
                 )
