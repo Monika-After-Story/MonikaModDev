@@ -966,7 +966,7 @@ label mas_mood_loved:
 
     $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
     if has_family or persistent._mas_pm_has_friends:
-        if has_family and persistent._mas_pm_has_friend:
+        if has_family and persistent._mas_pm_has_friends:
             $ fnf_str = "friends and family"
         elif has_family:
             $ fnf_str = "family"
