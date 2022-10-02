@@ -9,19 +9,30 @@ If you would like to make your own mod like this one, check out our sister proje
 
 ### Installation
 
-Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
+1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
 
-* Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+2. Click the link for your OS.
 
-* Click the latest version link. This will download a zip file to your system.
+3. Once downloaded, run the installer and follow the prompts.
+    * If the installer doesn't work on your system, see the manual install steps below.
 
-* Extract the contents the zip file into the `/game` folder of your DDLC installation.
+4. Running DDLC will now load the Monika After Story Mod.
 
-* Running DDLC will now load the Monika After Story Mod.
+### Manual Install
 
-*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Monika-After-Story/MonikaModDev/releases).*
+**Only follow these steps if the installer doesn't run on your system**
 
-For more help with installation, please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
+1. Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+
+2. Click the desired **Zips** link. This will download a zip file to your system.
+
+3. Extract the contents of the zip file into the base directory (the folder that contains the DDLC.exe file) of your DDLC installation.
+
+4. Running DDLC will now load the Monika After Story Mod.
+
+*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](http://www.monikaafterstory.com/releases.html).*
+
+For more help with installation (including manual for non-steam Mac), please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
 ### Features
 
@@ -92,7 +103,7 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 [More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
 ### Join the conversation
-You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates. 
+You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates.
 
 If you want to find pianonotes, spritepacks, submods, external content, or translations, or just discuss MAS in general, visit [our discussions page](https://github.com/Monika-After-Story/MonikaModDev/discussions)
 
