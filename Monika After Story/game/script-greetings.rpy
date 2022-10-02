@@ -4715,6 +4715,11 @@ label greeting_found_nou_shirt:
 
         "It was [glitch_option_text]!":
             hide screen mas_background_timed_jump
+            $ renpy.invoke_in_thread(
+                mas_utils.trywrite,
+                os.path.join(renpy.config.basedir, "characters/for snitch.txt"),
+                ">:("
+            )
             jump .menu_choice_other
 
         "I have no idea...":
