@@ -960,9 +960,8 @@ init 5 python:
     )
 
 label mas_mood_loved:
-    m 1hub "I'm so glad to hear you say that, [player]!"
+    m 1ekbla "I'm so glad to hear the way I feel is making it through the screen to you..."
     m 3hubsb "After all, I love you more than anything!"
-    m 3ekbsa "But it's nice to hear the way I feel is making it through the screen to you..."
 
     $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
     if has_family or persistent._mas_pm_has_friends:
@@ -979,4 +978,4 @@ label mas_mood_loved:
     else:
         m 1dkbsu "And I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
 
-    return "love"
+    return "love|idle_exp: 1ekbla, 5"
