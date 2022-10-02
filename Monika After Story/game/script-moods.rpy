@@ -946,17 +946,30 @@ init 5 python:
             persistent._mas_mood_database,
             eventlabel="mas_mood_loved",
             prompt="...loved.",
-            category=[store.mas_moods.TYPE_BAD],
+            category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
         code="MOO"
     )
 
 label mas_mood_loved:
-    m 7hub "Sounds about right, [player]!"
-    m 2kubsa "After all, I love you more than anything in the whole world!"
-    m 2dubsb "And I know everyone else loves you very much too."
-    m 4dubsb "Your friends, family..."
-    m 1fubsa "You deserve all this love and affection, [mas_get_player_nickname()]."
-    m 5fubsb "And you can always count on me too, since I will love you forever."
+    m 1hub "I'm so glad to hear you say that, [player]!"
+    m 3hubsb "After all, I love you more than anything!"
+    m 3ekbsa "But it's nice to hear the way I feel is making it through the screen to you..."
+
+    $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
+    if has_family or persistent._mas_pm_has_friends:
+        if has_family and persistent._mas_pm_has_friend:
+            $ fnf_str = "friends and family"
+        elif has_family:
+            $ fnf_str = "family"
+        else:
+            $ fnf_str = "friends"
+
+        m 3eub "And I'm sure it's not just me that makes you feel loved, but your [fnf_str] as well!"
+        m 1dkbsu "You deserve all the love and affection in the world, [mas_get_player_nickname()]~"
+
+    else:
+        m 1dkbsu "And I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
+
     return "love"
