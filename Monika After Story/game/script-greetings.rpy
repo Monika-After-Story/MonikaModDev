@@ -4705,43 +4705,23 @@ label greeting_found_nou_shirt:
     m "There you are! {w=0.2}I was waiting for you~"
     m "I have to admit, {w=0.1}I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
     $ _history_list.pop()
-    show screen mas_background_timed_jump(4, "greeting_found_nou_shirt.menu_choice_skip")
+    show screen mas_background_timed_jump(4, "greeting_found_nou_shirt.menu_skip")
     menu:
         m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{fast}"
 
         "It's a secret.":
             hide screen mas_background_timed_jump
-
-            if mas_isMoniEnamored(higher=True):
-                call mas_transition_from_emptydesk("monika 2tublu")
-                m "{cps=*1.25}You don't peek there {i}often{/i}, do you?~{/cps}{nw}"
-                $ _history_list.pop()
-                m 2lusdla "Anyway... {w=0.3}{nw}"
-
-            else:
-                call mas_transition_from_emptydesk("monika 2rtblsdlu")
-                m "Hmm, anyway... {w=0.3}{nw}"
-
-            extend 4sub "I really love this new outfit!"
             jump .menu_choice_secret
 
         "It was [glitch_option_text]!":
             hide screen mas_background_timed_jump
+            jump .menu_choice_other
 
-            show noise zorder 500 onlayer overlay:
-                alpha 0.0
-                easein_elastic 0.5 alpha 0.1
-            play sound "sfx/s_kill_glitch1.ogg"
-            pause 0.5
-            hide noise onlayer overlay
+        "I have no idea...":
+            hide screen mas_background_timed_jump
+            jump .menu_choice_other
 
-    label .menu_choice_skip:
-        hide screen mas_background_timed_jump
-
-    call mas_transition_from_emptydesk("monika 4sub")
-    m "But I love it~"
-
-    label .menu_choice_secret:
+    label .post_menu:
         pass
 
     m 1ekbla "Thanks, [player]."
@@ -4759,3 +4739,35 @@ label greeting_found_nou_shirt:
         renpy.save_persistent()
         del glitch_option_text
     return
+
+label .menu_skip:
+    hide screen mas_background_timed_jump
+    call mas_transition_from_emptydesk("monika 4sub")
+    m "But I love it~"
+
+    jump .post_menu
+
+label .menu_choice_secret:
+    if mas_isMoniEnamored(higher=True):
+        call mas_transition_from_emptydesk("monika 2tublu")
+        m "{cps=*1.5}You don't peek there {i}often{/i}, do you?~{/cps}{w=0.1}{nw}"
+        $ _history_list.pop()
+        m 2lusdla "Anyway... {w=0.3}{nw}"
+
+    else:
+        call mas_transition_from_emptydesk("monika 2rtblsdlu")
+        m "Hmm, anyway... {w=0.3}{nw}"
+
+    extend 4sub "I really love this new outfit!"
+
+    jump .post_menu
+
+label .menu_choice_other:
+    show noise zorder 500 onlayer overlay:
+        alpha 0.0
+        easein_elastic 0.5 alpha 0.1
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.5
+    hide noise onlayer overlay
+
+    jump .menu_skip
