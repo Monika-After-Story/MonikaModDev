@@ -953,11 +953,10 @@ init 5 python:
     )
 
 label mas_mood_guilty:
-    m 1wkd "[player]! I'm sure you don't need to feel that way."
-    m 2fkb "The way for people to come to understand each other is forgiveness."
-    m 1dkc "We all make mistakes. "
-    extend 1fka "And I'm sure you can be forgiven of whatever has happened."
-    m 7hub "After all, you're a great person. "
-    extend 2dka "You're kind, helpful and true to yourself."
-    m 2fka "I love you. Don't be so hard on yourself, okay?"
+    m 1wkd "[player]! {w=0.2}I'm sure you don't need to feel that way, but even if you do..."
+    m 1dkc "We all make mistakes...{w=0.3}{nw}"
+    extend 3eka "and I'm sure you can be forgiven for whatever has happened."
+    m 3dku "After all, you're a great person... {w=0.3}{nw}"
+    extend 3eka "You're kind, helpful and true to yourself."
+    m 1ekbsu "I love you. Don't be so hard on yourself, okay?"
     return "love"
