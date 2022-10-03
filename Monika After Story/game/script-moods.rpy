@@ -973,9 +973,8 @@ label mas_mood_loved:
             $ fnf_str = "friends"
 
         m 3eub "And I'm sure it's not just me that makes you feel loved, but your [fnf_str] as well!"
-        m 1dkbsu "You deserve all the love and affection in the world, [mas_get_player_nickname()]~"
 
-    else:
-        m 1dkbsu "And I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
+    m 1dkbsa "You deserve all the love and affection in the world, {w=0.1}{nw}"
+    extend 1ekbsu "and I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
 
     return "love|idle_exp: 1ekbla, 5"
