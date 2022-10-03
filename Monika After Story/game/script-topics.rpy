@@ -1268,28 +1268,16 @@ label monika_portraitof:
 
     m 2hksdlb "Ahaha, sorry!{fast}{w=0.005}{nw}"
     m 2lksdla "Actually, I don't think I should be talking about this.{fast}{w=0.005}{nw}"
-    hide monika
-    show yuri glitch zorder MAS_BACKGROUND_Z
-    play sound "sfx/glitch3.ogg"
     m 1wuw "Ah...{fast}{w=0.005}{nw}"
     m 4hub "It's funny, because I'm pretty sure that book--{fast}{w=0.005}{nw}"
-    hide yuri glitch
-    show yuri glitch2 zorder MAS_BACKGROUND_Z
-    play sound "sfx/glitch3.ogg"
     m "Portrait of...whatever it was called...{fast}{w=0.005}{nw}"
-    hide yuri glitch2
-    show yuri glitch zorder MAS_BACKGROUND_Z
-    hide yuri glitch
     m 4eua "Hey, you know that book you were reading with Yuri?{fast}{w=0.005}{nw}"
-
-    show monika 3hua at i11 zorder MAS_MONIKA_Z
     m 3hua "Like I said, just forget I said anything~"
 
     python:
         # Remove previous 14 lines from history.
         del _history_list[-14:]
 
-    $ mas_hideEVL("monika_portraitof", "EVE", lock=True)
     return "derandom"
 
 init 5 python:
