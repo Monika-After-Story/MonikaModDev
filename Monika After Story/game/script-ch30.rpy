@@ -1043,7 +1043,7 @@ label ch30_main:
         $ style.say_dialogue = style.default_monika
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
-    if mas_seenLabels(["introduction"]):
+    if mas_seenLabels(["mas_new_character_file"]):
         $ delete_all_characters()
     $ persistent.clear[9] = True
 
