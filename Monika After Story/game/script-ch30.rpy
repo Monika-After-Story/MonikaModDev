@@ -1043,8 +1043,6 @@ label ch30_main:
         $ style.say_dialogue = style.default_monika
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
-    if mas_seenLabels(["mas_new_character_file"]):
-        $ delete_all_characters()
     $ persistent.clear[9] = True
 
     # call reset stuff
@@ -2141,5 +2139,9 @@ label ch30_reset:
             #Let's also push the event to get rid of the thermos too
             if not mas_inEVL("mas_consumables_remove_thermos"):
                 queueEvent("mas_consumables_remove_thermos")
+
+    # Delete .chr files on startup
+    if mas_seenLabels(["mas_new_character_file"]):
+        $ delete_all_characters()
 
     return
