@@ -11619,7 +11619,7 @@ label monika_grad_speech_ignored_lock:
             hide screen mas_background_timed_jump
 
             m 1wsb "Oh!{w=0.5}{nw}"
-            extend 1hua " sorry for that."
+            extend 1hua " Sorry for that."
             m 1hksdla "There have a time when you haven't really listened, so I'm a little sensitive."
             m 1hksdlb "Ahaha~"
             m 1eub "Anyways, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
