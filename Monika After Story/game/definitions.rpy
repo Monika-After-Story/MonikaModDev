@@ -3861,15 +3861,22 @@ init 25 python:
         def start(self):
             """
             Starts this displayable
+
+            OUT:
+                bool - the result of interaction:
+                    True if the user clicked
+                    False if the dispalyable was stopped
             """
             self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
-            ui.interact()
+            return ui.interact()
 
         def stop(self):
             """
             Stops this disp's interaction, aborts its event
+            This will cause the displayable to return False
+                in the event method
             """
             ui.remove(self)
             self.__abort_events = True
@@ -4130,7 +4137,10 @@ init -1 python in _mas_root:
         }
 
         # affection
-        renpy.game.persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection = collections.defaultdict(float)
+        renpy.game.persistent._mas_affection_data = store.mas_affection.get_default_data()
+        renpy.game.persistent._mas_affection_should_apologise = False
+        renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=50)
 
 
     def initialSessionData():
@@ -4560,7 +4570,7 @@ init -995 python in mas_utils:
 
     def is_file_present(filename):
         """
-        Checks if a file is present
+        Checks if a file is present (exists)
         """
         if not filename.startswith("/"):
             filename = "/" + filename
@@ -6228,10 +6238,10 @@ init 2 python:
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+                monika_chr.wear_acs(mas_acs_quetzalplushie_santahat)
 
             else:
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+                monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         else:
             # run the plushie exit PP if plushie is not selected
@@ -6332,7 +6342,7 @@ init 2 python:
                 - Raw affection value to be greater than or equal to
             grace:
                 - a grace period passed in as a timedelta
-                  defaults to 1 week
+                defaults to 1 week
 
         OUT:
             boolean:
@@ -6348,7 +6358,7 @@ init 2 python:
         return (
             persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and persistent._mas_affection.get("affection", 0) >= aff_thresh
+            and _mas_getAffection() >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
@@ -7960,7 +7970,12 @@ default persistent.sessions = {
     "first_session": datetime.datetime.now()
 }
 default persistent.random_seen = 0
-default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
+# Deprecated
+default persistent._mas_affection = collections.defaultdict(float)
+default persistent._mas_affection_version = 2
+default persistent._mas_affection_data = mas_affection.get_default_data()
+default persistent._mas_affection_should_apologise = False
+default persistent._mas_affection_backups = collections.deque(maxlen=50)
 default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False

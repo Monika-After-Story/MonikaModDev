@@ -159,7 +159,7 @@ label introduction:
             "I love you too!":
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
-                $ mas_gainAffection(10,bypass=True)
+                $ mas_gainAffection(7, bypass=True)
                 # increment the counter so if you get this, you don't get the similar dlg in monika_love
                 $ persistent._mas_monika_lovecounter += 1
                 m 1subsw "...!"

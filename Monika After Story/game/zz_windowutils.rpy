@@ -38,7 +38,9 @@ init -10 python in mas_windowreacts:
 
 init python in mas_windowutils:
     import os
+
     import store
+    from store import mas_utils
     #The initial setup
 
     # The window object, used on Linux systems, otherwise always None
@@ -69,13 +71,15 @@ init python in mas_windowutils:
             #Now we set the hwnd of this temporarily
             __tip.hwnd = None
 
-        except:
+        except Exception as e:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
 
             #Log this
-            store.mas_utils.mas_log.warning("win32api/win32gui failed to be imported, disabling notifications.")
+            store.mas_utils.mas_log.warning(
+                "win32api/win32gui failed to be imported, disabling notifications: {}".format(e)
+            )
 
     elif renpy.linux:
         #Get session type
@@ -93,16 +97,18 @@ init python in mas_windowutils:
                 import Xlib
 
                 from Xlib.display import Display
-                from Xlib.error import BadWindow
+                from Xlib.error import BadWindow, XError
 
                 __display = Display()
                 __root = __display.screen().root
 
-            except:
+            except Exception as e:
                 store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
 
-                store.mas_utils.mas_log.warning("Xlib failed to be imported, disabling notifications.")
+                store.mas_utils.mas_log.warning(
+                    "Xlib failed to be imported, disabling notifications: {}".format(e)
+                )
 
         else:
             store.mas_windowreacts.can_show_notifs = False
@@ -154,7 +160,8 @@ init python in mas_windowutils:
 
         try:
             return __display.create_resource_object("window", active_winid)
-        except Xlib.error.XError:
+        except XError as e:
+            mas_utils.mas_log.error("Failed to get active window object: {}".format(e))
             return None
 
     def __getMASWindowLinux():
@@ -173,8 +180,13 @@ init python in mas_windowutils:
         NET_CLIENT_LIST_ATOM = __display.intern_atom('_NET_CLIENT_LIST', False)
 
         try:
-            winid_list = __root.get_full_property(NET_CLIENT_LIST_ATOM, 0).value
+            prop = __root.get_full_property(NET_CLIENT_LIST_ATOM, 0)
+            # Apparently x-window can return None here, the reason is unknown to me,
+            # but we can just sanity check it, per #9421
+            if prop is None:
+                return
 
+            winid_list = prop.value
             for winid in winid_list:
                 win = __display.create_resource_object("window", winid)
                 transient_for = win.get_wm_transient_for()
@@ -183,7 +195,8 @@ init python in mas_windowutils:
                 if transient_for is None and winname and store.mas_getWindowTitle() == winname:
                     return win
 
-        except BadWindow:
+        except XError as e:
+            mas_utils.mas_log.error("Failed to get MAS window object: {}".format(e))
             return None
 
     def __getMASWindowHWND():
@@ -211,6 +224,9 @@ init python in mas_windowutils:
 
         except MASWindowFoundException as e:
             return e.hwnd
+
+        mas_utils.mas_log.error("Failed to get MAS window hwnd")
+        return None
 
     def __getAbsoluteGeometry(win):
         """
@@ -248,7 +264,11 @@ init python in mas_windowutils:
         except Xlib.error.BadDrawable:
             #In the case of a bad drawable, we'll try to re-get the MAS window to get a good one
             _setMASWindow()
-            return None
+
+        except XError as e:
+            mas_utils.mas_log.error("Failed to get window geometry: {}".format(e))
+
+        return None
 
     def _setMASWindow():
         """
@@ -307,6 +327,11 @@ init python in mas_windowutils:
 
         except BadWindow:
             return ""
+
+        except XError as e:
+            mas_utils.mas_log.error("Failed to get active window handle: {}".format(e))
+
+        return ""
 
     def _getActiveWindowHandle_OSX():
         """
@@ -384,7 +409,7 @@ init python in mas_windowutils:
             #Try except here because we may not have permissions to do so
             try:
                 cur_pos = win32gui.GetCursorPos()
-            except:
+            except Exception:
                 cur_pos = DEF_MOUSE_POS_RETURN
 
         else:
@@ -624,9 +649,6 @@ init python:
             return store.mas_windowutils._window_get()
         return ""
 
-        #TODO: Remove this alias at some point
-        mas_getActiveWindow = mas_getActiveWindowHandle
-
     def mas_display_notif(title, body, group=None, skip_checks=False):
         """
         Notification creation method
@@ -735,7 +757,7 @@ init python:
                 and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 and mas_notifsEnabledForGroup(ev.rules.get("notif-group"))
             ):
-                queueEvent(ev_label)
+                MASEventList.queue(ev_label)
                 ev.unlocked = False
 
                 #Add the blacklist
