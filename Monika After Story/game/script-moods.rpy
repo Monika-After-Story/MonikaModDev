@@ -1017,7 +1017,7 @@ init 5 python:
 
 label mas_mood_guilty:
     m 2wkd "[player]!"
-    m 2dkc "We all make mistakes...{w=0.3}{nw}"
+    m 2dkc "We all make mistakes... {w=0.3}{nw}"
     extend 7eka "I'm sure you can be forgiven for whatever happened."
     m 3dku "After all, you're a great person... {w=0.3}{nw}"
     extend 1eka "You're kind, helpful and true to yourself."
