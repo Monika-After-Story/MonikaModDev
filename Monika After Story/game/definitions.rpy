@@ -4659,7 +4659,7 @@ init -100 python in mas_utils:
         """
         return [bullet + " " + str(item) for item in _list]
 
-    
+
     def nested_defaultdict(final_factory=None, levels=1):
         """
         Generates a nested defaultdict. Basically good for creating an n-level
@@ -6088,6 +6088,15 @@ init -1 python:
         """
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
+
+
+    def delete_all_characters():
+        """
+        Deletes all characters (monika.chr, yuri.chr, natsuki.chr, sayori.chr)
+        """
+
+        for chrname in ["monika", "yuri", "natsuki", "sayori"]:
+            delete_character(chrname)
 
 
     def delete_character(name):
