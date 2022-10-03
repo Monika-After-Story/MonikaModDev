@@ -1016,12 +1016,12 @@ init 5 python:
     )
 
 label mas_mood_guilty:
-    m 1wkd "[player]!"
-    m 3dkc "We all make mistakes...{w=0.3}{nw}"
-    extend 3eka "I'm sure you can be forgiven for whatever happened."
+    m 2wkd "[player]!"
+    m 2dkc "We all make mistakes...{w=0.3}{nw}"
+    extend 7eka "I'm sure you can be forgiven for whatever happened."
     m 3dku "After all, you're a great person... {w=0.3}{nw}"
-    extend 3eka "You're kind, helpful and true to yourself."
-    m 3eua "And now that you've found the strength to accept your mistake, you just need to overcome it."
+    extend 1eka "You're kind, helpful and true to yourself."
+    m 1dua "And now that you've found the strength to accept your mistake, you just need to overcome it."
     m 1ekbsu "I love you.{w=0.2} Don't be so hard on yourself, okay?"
     $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
     return "love"
