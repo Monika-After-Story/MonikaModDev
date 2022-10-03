@@ -946,3 +946,25 @@ label mas_mood_grateful_gratefulforyou:
     m 3ekbla "I love you, [player]~"
     $ mas_ILY()
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_insecure",
+            prompt="...insecure.",
+            category=[store.mas_moods.TYPE_BAD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_insecure:
+    m 2wkd "[player]..."
+    m 2dkc "..."
+    m 2eka "There's a quote from an anime that Natsuki really liked..."
+    m 7dku "'Believe in me, who believes in you.'"
+    m 3eka "And that's exactly what I want to tell you right now."
+    m 3ekbsa "If you can't believe in yourself, believe in me."
+    m 1eubsu "Because I,{w=0.1} for sure,{w=0.1} trust you can overcome whatever has you doubting yourself right now~"
+    return
