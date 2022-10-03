@@ -11386,7 +11386,7 @@ label monika_grad_speech_call:
                 #timed menu to see if player listened
                 m "Well [player]? What do you think?{nw}"
                 $ _history_list.pop()
-                show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention")
+                show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention_doublecheck")
                 menu:
                     m "Well [player]? What do you think?{fast}"
 
@@ -11445,7 +11445,7 @@ label monika_grad_speech_call:
     #if you want to hear it again
     else:
         #did you timeout once?
-        if not renpy.seen_label("monika_grad_speech_not_paying_attention_real") or persistent._mas_pm_listened_to_grad_speech:
+        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_listened_to_grad_speech:
             m 2eub "Sure thing, [player]. I'll happily give my speech again!"
 
             m 2eka "You have enough time, right?{nw}"
@@ -11485,7 +11485,7 @@ label monika_grad_speech_call:
             m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
             $ _history_list.pop()
             #another timed menu checking if you were listening
-            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock")
+            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock_doublecheck")
             menu:
                 m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{fast}"
                 #If menu is used, set player on a good path
@@ -11537,14 +11537,14 @@ label monika_grad_speech_call:
                     m 6dstsc "But I guess that's too much to ask."
     return
 
-label monika_grad_speech_not_paying_attention:
+label monika_grad_speech_not_paying_attention_doublecheck:
     hide screen mas_background_timed_jump
 
     # Make a double check here.
     m 1euc "...[player]?{w=0.3}{nw}"
     m 1wud "Are you...{w=0.3}listening?{nw}"
     $ _history_list.pop()
-    show screen mas_background_timed_jump(5, "monika_grad_speech_not_paying_attention_real")
+    show screen mas_background_timed_jump(5, "monika_grad_speech_not_paying_attention")
     menu:
         m "Are you...listening?{fast}"
         "Of course!":
@@ -11573,7 +11573,7 @@ label monika_grad_speech_not_paying_attention:
     
     return
 
-label monika_grad_speech_not_paying_attention_real:
+label monika_grad_speech_not_paying_attention:
     # So you really aren't listening.
     $ persistent._mas_pm_listened_to_grad_speech = False
 
@@ -11604,7 +11604,7 @@ label monika_grad_speech_not_paying_attention_real:
 
     return
 
-label monika_grad_speech_ignored_lock:
+label monika_grad_speech_ignored_lock_doublecheck:
     hide screen mas_background_timed_jump
 
     # Still, we make a double check.
@@ -11612,7 +11612,7 @@ label monika_grad_speech_ignored_lock:
     extend 1esd "[player].{nw}"
 
     $ _history_list.pop()
-    show screen mas_background_timed_jump(5, "monika_grad_speech_ignored_lock_real")
+    show screen mas_background_timed_jump(5, "monika_grad_speech_ignored_lock")
     menu:
         m "...[player].{fast}"
         "I'm listening!":
@@ -11636,7 +11636,7 @@ label monika_grad_speech_ignored_lock:
                 "That {i}was{/i} long.":
                     jump monika_grad_speech_call.waslong_ignored_before
 
-label monika_grad_speech_ignored_lock_real:
+label monika_grad_speech_ignored_lock:
     # Okay, so you really aren't listening, TWICE. We hide this topic for you.
     $ persistent._mas_pm_listened_to_grad_speech = False
     $ persistent._mas_grad_speech_timed_out = True
