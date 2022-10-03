@@ -967,4 +967,38 @@ label mas_mood_insecure:
     m 3eka "And that's exactly what I want to tell you right now."
     m 3ekbsa "If you can't believe in yourself, believe in me."
     m 1eubsu "Because I,{w=0.1} for sure,{w=0.1} trust you can overcome whatever has you doubting yourself right now~"
+    $ mas_moni_idle_disp.force_by_code("1eka", duration=5, skip_dissolve=True)
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_loved",
+            prompt="...loved.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_loved:
+    m 1ekbla "I'm so glad to hear the way I feel is making it through the screen to you..."
+    m 3hubsb "After all, I love you more than anything!"
+
+    $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
+    if has_family or persistent._mas_pm_has_friends:
+        if has_family and persistent._mas_pm_has_friends:
+            $ fnf_str = "friends and family"
+        elif has_family:
+            $ fnf_str = "family"
+        else:
+            $ fnf_str = "friends"
+
+        m 3eub "And I'm sure it's not just me that makes you feel loved, but your [fnf_str] as well!"
+
+    m 1dkbsa "You deserve all the love and affection in the world, {w=0.1}{nw}"
+    extend 1ekbsu "and I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
+
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
+    return "love"
