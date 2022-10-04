@@ -11387,15 +11387,15 @@ label monika_grad_speech_call:
                 m "Well [player]? What do you think?{nw}"
                 $ _history_list.pop()
                 show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention_doublecheck")
+
+                label .menu_normal:
+                    pass
+
                 menu:
                     m "Well [player]? What do you think?{fast}"
 
                     "It's great! I'm so proud of you!":
                         hide screen mas_background_timed_jump
-
-                        label .itsgreat:
-                            pass
-
                         $ mas_gainAffection(amount=5, bypass=True)
                         $ persistent._mas_pm_liked_grad_speech = True
                         $ persistent._mas_pm_listened_to_grad_speech = True
@@ -11409,10 +11409,6 @@ label monika_grad_speech_call:
 
                     "I like it!":
                         hide screen mas_background_timed_jump
-
-                        label .likeit:
-                            pass
-
                         $ mas_gainAffection(amount=3, bypass=True)
                         $ persistent._mas_pm_liked_grad_speech = True
                         $ persistent._mas_pm_listened_to_grad_speech = True
@@ -11422,10 +11418,6 @@ label monika_grad_speech_call:
 
                     "That {i}was{/i} long.":
                         hide screen mas_background_timed_jump
-
-                        label .waslong:
-                            pass
-
                         $ mas_loseAffectionFraction(min_amount=50)
                         $ persistent._mas_pm_liked_grad_speech = False
                         $ persistent._mas_pm_listened_to_grad_speech = True
@@ -11486,15 +11478,15 @@ label monika_grad_speech_call:
             $ _history_list.pop()
             #another timed menu checking if you were listening
             show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock_doublecheck")
+
+            label menu_ignored:
+                pass
+
             menu:
                 m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{fast}"
                 #If menu is used, set player on a good path
                 "It's great! I'm so proud of you!":
                     hide screen mas_background_timed_jump
-
-                    label .itsgreat_ignored_before:
-                        pass
-
                     $ mas_gainAffection(amount=3, bypass=True)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = True
@@ -11509,10 +11501,6 @@ label monika_grad_speech_call:
 
                 "I like it!":
                     hide screen mas_background_timed_jump
-
-                    label .likeit_ignored_before:
-                        pass
-
                     $ mas_gainAffection(amount=1, bypass=True)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = True
@@ -11522,10 +11510,6 @@ label monika_grad_speech_call:
 
                 "That {i}was{/i} long.":
                     hide screen mas_background_timed_jump
-
-                    label .waslong_ignored_before:
-                        pass
-
                     $ mas_loseAffectionFraction(min_amount=75, modifier=2.0)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = False
@@ -11551,27 +11535,16 @@ label monika_grad_speech_not_paying_attention_doublecheck:
             hide screen mas_background_timed_jump
 
             m 1hub "Ah, sorry for assuming~"
-            m 1hua "Anyways, what do you think?{nw}"
+            m 1hua "Well [player]? What do you think?{nw}"
         
         "Of course not!":
             hide screen mas_background_timed_jump
 
             m 1hksdla "...{w=0.5}{nw}"
-            m 1hua "Anyways, what do you think?{nw}"
+            m 1hua "Well [player]? What do you think?{nw}"
     
     $ _history_list.pop()
-    menu:
-        m "Anyways, what do you think?{fast}"
-        "It's great! I'm so proud of you!":
-            jump monika_grad_speech_call.itsgreat
-        
-        "I like it!":
-            jump monika_grad_speech_call.likeit
-        
-        "That {i}was{/i} long.":
-            jump monika_grad_speech_call.waslong
-    
-    return
+    jump monika_grad_speech_call.menu_normal
 
 label monika_grad_speech_not_paying_attention:
     # So you really aren't listening.
@@ -11622,19 +11595,10 @@ label monika_grad_speech_ignored_lock_doublecheck:
             extend 1hua " Sorry for that."
             m 1hksdla "There have a time when you haven't really listened, so I'm a little sensitive."
             m 1hksdlb "Ahaha~"
-            m 1eub "Anyways, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
+            m 1eub "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
 
             $ _history_list.pop()
-            menu:
-                m "Anyways, [player], now that you actually {i}heard{/i} my speech, what do you think?{fast}"
-                "It's great! I'm so proud of you!":
-                    jump monika_grad_speech_call.itsgreat_ignored_before
-                
-                "I like it!":
-                    jump monika_grad_speech_call.likeit_ignored_before
-                
-                "That {i}was{/i} long.":
-                    jump monika_grad_speech_call.waslong_ignored_before
+            jump monika_grad_speech_call.menu_ignored
 
 label monika_grad_speech_ignored_lock:
     # Okay, so you really aren't listening, TWICE. We hide this topic for you.
