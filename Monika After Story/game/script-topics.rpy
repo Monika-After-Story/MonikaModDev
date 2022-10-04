@@ -11536,13 +11536,7 @@ label monika_grad_speech_not_paying_attention_doublecheck:
 
             m 1hub "Ah, sorry for assuming~"
             m 1hua "Well [player]? What do you think?{nw}"
-        
-        "Of course not!":
-            hide screen mas_background_timed_jump
 
-            m 1hksdla "...{w=0.5}{nw}"
-            m 1hua "Well [player]? What do you think?{nw}"
-    
     $ _history_list.pop()
     jump monika_grad_speech_call.menu_normal
 
