@@ -2428,8 +2428,4 @@ label ch30_reset:
 
     $ store.mas_reset.final()
 
-    # Delete .chr files on startup
-    if mas_seenLabels(["mas_new_character_file"]):
-        $ delete_all_characters()
-
     return
