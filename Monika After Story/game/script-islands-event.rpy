@@ -700,7 +700,7 @@ init -25 python in mas_island_event:
     DATA_READ_CHUNK_SIZE = 2 * 1024**2
     DATA_SPACING = 8 * 1024**2
 
-    LIVING_ROOM_NAME = "living_room"
+    LIVING_ROOM_ID = "living_room"
     FLT_LR_NIGHT = "lr_night"
     mas_sprites.add_filter(
         FLT_LR_NIGHT,
@@ -1038,15 +1038,15 @@ init -25 python in mas_island_event:
             FLT_LR_NIGHT,
             interior_disp_map["interior_tablechair"]["table"]
         )
-        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 0)] = table_im
-        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 1)] = table_im# shadow variant can reuse the same img
-        tablechair_disp_cache[(FLT_LR_NIGHT, 1, LIVING_ROOM_NAME)] = mas_sprites._gen_im(
+        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 0)] = table_im
+        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 1)] = table_im# shadow variant can reuse the same img
+        tablechair_disp_cache[(FLT_LR_NIGHT, 1, LIVING_ROOM_ID)] = mas_sprites._gen_im(
             FLT_LR_NIGHT,
             interior_disp_map["interior_tablechair"]["chair"]
         )
         # Shadow is being stored in the highlight cache
         table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
-        table_shadow_hl_disp_cache[(mas_sprites.CID_TC, FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
+        table_shadow_hl_disp_cache[(mas_sprites.CID_TC, FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
 
         # Build glitch disp
         def _glitch_transform_func(transform, st, at):
@@ -1453,85 +1453,97 @@ init -1 python in mas_island_event:
         store.monika_chr.tablechair.table = "def"
         store.monika_chr.tablechair.chair = "def"
 
+    def register_room(id_):
+        """
+        Registers lr as a background object
 
-    MASFilterableBackground(
-        "living_room",
-        "Living room",
-        MASFilterWeatherMap(
-            day=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: "living_room_day",
-                    mas_weather.PRECIP_TYPE_RAIN: "living_room_day_rain",
-                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_day_overcast",
-                    mas_weather.PRECIP_TYPE_SNOW: "living_room_day_snow"
-                }
-            ),
-            lr_night=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: "living_room_night",
-                    mas_weather.PRECIP_TYPE_RAIN: "living_room_night_rain",
-                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_night_overcast",
-                    mas_weather.PRECIP_TYPE_SNOW: "living_room_night_snow"
-                }
-            ),
-            sunset=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: "living_room_ss",
-                    mas_weather.PRECIP_TYPE_RAIN: "living_room_ss_rain",
-                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_ss_overcast",
-                    mas_weather.PRECIP_TYPE_SNOW: "living_room_ss_snow"
-                }
-            )
-        ),
-        MASBackgroundFilterManager(
-            MASBackgroundFilterChunk(
-                False,
-                None,
-                MASBackgroundFilterSlice.cachecreate(
-                    FLT_LR_NIGHT,
-                    60,
-                    None,
-                    10
-                )
-            ),
-            MASBackgroundFilterChunk(
-                True,
-                None,
-                MASBackgroundFilterSlice.cachecreate(
-                    mas_sprites.FLT_SUNSET,
-                    60,
-                    30*60,
-                    10
+        IN:
+            id_ - the id to register under
+
+        OUT:
+            MASFilterableBackground
+        """
+        return MASFilterableBackground(
+            id_,
+            "Living room",
+            MASFilterWeatherMap(
+                day=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: id_ + "_day",
+                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_day_rain",
+                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_day_overcast",
+                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_day_snow"
+                    }
                 ),
-                MASBackgroundFilterSlice.cachecreate(
-                    mas_sprites.FLT_DAY,
-                    60,
-                    None,
-                    10
+                lr_night=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: id_ + "_night",
+                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_night_rain",
+                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_night_overcast",
+                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_night_snow"
+                    }
                 ),
-                MASBackgroundFilterSlice.cachecreate(
-                    mas_sprites.FLT_SUNSET,
-                    60,
-                    30*60,
-                    10
+                sunset=MASWeatherMap(
+                    {
+                        mas_weather.PRECIP_TYPE_DEF: id_ + "_ss",
+                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_ss_rain",
+                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_ss_overcast",
+                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_ss_snow"
+                    }
                 )
             ),
-            MASBackgroundFilterChunk(
-                False,
-                None,
-                MASBackgroundFilterSlice.cachecreate(
-                    FLT_LR_NIGHT,
-                    60,
+            MASBackgroundFilterManager(
+                MASBackgroundFilterChunk(
+                    False,
                     None,
-                    10
+                    MASBackgroundFilterSlice.cachecreate(
+                        FLT_LR_NIGHT,
+                        60,
+                        None,
+                        10
+                    )
+                ),
+                MASBackgroundFilterChunk(
+                    True,
+                    None,
+                    MASBackgroundFilterSlice.cachecreate(
+                        mas_sprites.FLT_SUNSET,
+                        60,
+                        30*60,
+                        10
+                    ),
+                    MASBackgroundFilterSlice.cachecreate(
+                        mas_sprites.FLT_DAY,
+                        60,
+                        None,
+                        10
+                    ),
+                    MASBackgroundFilterSlice.cachecreate(
+                        mas_sprites.FLT_SUNSET,
+                        60,
+                        30*60,
+                        10
+                    )
+                ),
+                MASBackgroundFilterChunk(
+                    False,
+                    None,
+                    MASBackgroundFilterSlice.cachecreate(
+                        FLT_LR_NIGHT,
+                        60,
+                        None,
+                        10
+                    )
                 )
-            )
-        ),
-        hide_calendar=True,
-        unlocked=False,
-        entry_pp=_living_room_entry,
-        exit_pp=_living_room_exit
-    )
+            ),
+            hide_calendar=True,
+            unlocked=False,
+            entry_pp=_living_room_entry,
+            exit_pp=_living_room_exit
+        )
+
+    register_room(LIVING_ROOM_ID)
+    register_room(LIVING_ROOM_ID + "_lit")
 
 
 init 5 python:
