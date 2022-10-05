@@ -2644,7 +2644,10 @@ init -10 python:
 
             if not img_found:
                 raise Exception(
-                    "No images found for filters: {}".format(", ".join(flts))
+                    "In background '{}' no images found for filters: {}".format(
+                        self.background_id,
+                        ", ".join(flts)
+                    )
                 )
 
 
