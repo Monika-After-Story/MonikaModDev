@@ -109,19 +109,19 @@ image living_room_night_snow = mas_island_event._get_room_sprite("n_s", False)
 # Sunset images
 image living_room_ss = MASFilteredSprite(
     store.mas_sprites.FLT_SUNSET,
-    "living_room_day"
+    renpy.displayable("living_room_day")
 )
 image living_room_ss_rain = MASFilteredSprite(
     store.mas_sprites.FLT_SUNSET,
-    "living_room_day_rain"
+    renpy.displayable("living_room_day_rain")
 )
 image living_room_ss_overcast = MASFilteredSprite(
     store.mas_sprites.FLT_SUNSET,
-    "living_room_day_overcast"
+    renpy.displayable("living_room_day_overcast")
 )
 image living_room_ss_snow = MASFilteredSprite(
     store.mas_sprites.FLT_SUNSET,
-    "living_room_day_snow"
+    renpy.displayable("living_room_day_snow")
 )
 
 ## Lit room
