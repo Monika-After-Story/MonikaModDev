@@ -681,8 +681,7 @@ init -25 python in mas_island_event:
 
     DEF_PROGRESS = -1
     MAX_PROGRESS_ENAM = 4
-    # TODO: add a few more lvl
-    MAX_PROGRESS_LOVE = 7
+    MAX_PROGRESS_LOVE = 9
     PROGRESS_FACTOR = 4
 
     SHIMEJI_CHANCE = 100
@@ -1138,9 +1137,32 @@ init -25 python in mas_island_event:
 
         return False
 
+    def _unlock_one(first, second):
+        """
+        Unlocks one of 2 sprites at random.
+        Runs only once
 
-    # # # START functions for lvl unlocks, head to __handle_unlocks to understand how this works
-    # NOTE: Please, keep these private
+        IN:
+            first - the id of the 1st sprite
+            second - the id of the 2nd sprite
+
+        OUT:
+            boolean whether or not the sprite was unlocked
+        """
+        if (
+            not _is_unlocked(first)
+            and not _is_unlocked(second)
+        ):
+            return _unlock(
+                first
+                if random.random() > 0.5
+                else second
+            )
+
+        return False
+
+
+    # # # START functions for lvl unlocks
     def __unlocks_for_lvl_0():
         _unlock("island_1")
         _unlock("island_8")
@@ -1154,27 +1176,11 @@ init -25 python in mas_island_event:
 
     def __unlocks_for_lvl_3():
         # Unlock only one, the rest at lvl 5
-        if (
-            not _is_unlocked("island_4")
-            and not _is_unlocked("island_5")
-        ):
-            if bool(random.randint(0, 1)):
-                _unlock("island_4")
-
-            else:
-                _unlock("island_5")
+        _unlock_one("island_4", "island_5")
 
     def __unlocks_for_lvl_4():
         # Unlock only one, the rest at lvl 6
-        if (
-            not _is_unlocked("island_6")
-            and not _is_unlocked("island_7")
-        ):
-            if bool(random.randint(0, 1)):
-                _unlock("island_6")
-
-            else:
-                _unlock("island_7")
+        _unlock_one("island_6", "island_7")
 
     def __unlocks_for_lvl_5():
         _unlock("decal_bushes")
@@ -1185,15 +1191,7 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_6():
         _unlock("island_3")
         # Unlock only one, the rest at lvl 7
-        if (
-            not _is_unlocked("decal_bookshelf")
-            and not _is_unlocked("decal_tree")
-        ):
-            if bool(random.randint(0, 1)):
-                _unlock("decal_bookshelf")
-
-            else:
-                _unlock("decal_tree")
+        _unlock_one("decal_bookshelf", "decal_tree")
         # Unlock everything from lvl 4
         _unlock("island_7")
         _unlock("island_6")
@@ -1206,6 +1204,12 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_8():
         # TODO: me
         # Also update monika_why_spaceroom
+        if persistent._mas_pm_cares_island_progress:
+            pass
+        return
+
+    def __unlocks_for_lvl_9():
+        # TODO: me
         return
 
     # # # END
@@ -1253,7 +1257,7 @@ init -25 python in mas_island_event:
                 modifier -= 0.1
 
             elif persistent._mas_pm_cares_island_progress is False:
-                modifier += 0.2
+                modifier += 0.3
 
             progress_factor = PROGRESS_FACTOR * modifier
 
@@ -1290,7 +1294,7 @@ init -25 python in mas_island_event:
             and persistent._mas_pm_cares_island_progress is None
             and not store.seen_event("mas_monika_islands_progress")
             # Hasn't visited the islands for a few days
-            and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=3))
+            and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=1))
         ):
             store.MASEventList.push("mas_monika_islands_progress")
 
