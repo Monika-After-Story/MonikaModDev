@@ -647,6 +647,8 @@ init -25 python in mas_island_event:
         }
     )
 
+    LIVING_ROOM_NAME = "living_room"
+
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
     decal_disp_map = dict()
@@ -933,6 +935,24 @@ init -25 python in mas_island_event:
         # Build the interior
         for name, img_map in interior_imgs_map.iteritems():
             interior_disp_map[name] = img_map
+
+        # HACK: add custom tablechair into the cache right here
+        # That's because our images are not on the disk, we can't just use a sprite tag
+        # because the paths are hardcoded and we can't use a displayable directly
+        tablechair_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_TC]
+        table_im = mas_sprites._gen_im(
+            FLT_LR_NIGHT,
+            interior_disp_map["interior_tablechair"]["table"]
+        )
+        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 0)] = table_im
+        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 1)] = table_im# shadow variant can reuse the same img
+        tablechair_disp_cache[(FLT_LR_NIGHT, 1, LIVING_ROOM_NAME)] = mas_sprites._gen_im(
+            FLT_LR_NIGHT,
+            interior_disp_map["interior_tablechair"]["chair"]
+        )
+        # Shadow is being stored in the highlight cache
+        table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
+        table_shadow_hl_disp_cache[(mas_sprites.CID_TC, FLT_LR_NIGHT, 0, LIVING_ROOM_NAME, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
 
         # Build glitch disp
         def _glitch_transform_func(transform, st, at):
