@@ -656,6 +656,7 @@ init -25 python in mas_island_event:
     import random
     import functools
     import math
+    import io
     from zipfile import ZipFile
     import datetime
 
@@ -694,6 +695,11 @@ init -25 python in mas_island_event:
             mas_sprites.FLT_SUNSET
         }
     )
+
+    DATA_ITS_JUST_MONIKA = b"JUSTMONIKA"*1024
+    DATA_JM_SIZE = len(DATA_ITS_JUST_MONIKA)
+    DATA_READ_CHUNK_SIZE = 2 * 1024**2
+    DATA_SPACING = 8 * 1024**2
 
     LIVING_ROOM_NAME = "living_room"
     FLT_LR_NIGHT = "lr_night"
@@ -765,16 +771,47 @@ init -25 python in mas_island_event:
             **filter_pairs
         )
 
-    @mas_utils.deprecated()
-    def shouldDecodeImages():
+    def _handle_raw_pkg_data(pkg_data):
         """
-        DEPRECATED
-        A united check whether or not we should decode images in this sesh
+        Handles raw data and returns clean, parsed data
+        Logs errors
+
+        IN:
+            pkg_data - memory buffer
+
+        OUT:
+            memory buffer or None
         """
-        return (
-            not store.mas_isO31()
-            # and (X or not Y)
-        )
+        buf = io.BytesIO()
+        buf.seek(0)
+        pkg_data.seek(0)
+
+        try:
+            while True:
+                this_slice_read = 0
+                pkg_data.seek(DATA_JM_SIZE, io.SEEK_CUR)
+
+                while this_slice_read < DATA_SPACING:
+                    chunk = pkg_data.read(DATA_READ_CHUNK_SIZE)
+                    chunk_size = len(chunk)
+
+                    if not chunk_size:
+                        buf.seek(0)
+                        return buf
+
+                    this_slice_read += chunk_size
+                    buf.write(chunk)
+
+        except Exception as e:
+            mas_utils.writelog(
+                err_msg.format(
+                    "Unexpected exception while parsing raw package data: {}".format(e)
+                )
+            )
+            return None
+
+        buf.seek(0)
+        return buf
 
     def decodeImages():
         """
@@ -794,7 +831,11 @@ init -25 python in mas_island_event:
         pkg_data = islands_station.unpackPackage(pkg, pkg_slip=None)#mas_ics.ISLAND_PKG_CHKSUM)# FIXME: undo this
 
         if not pkg_data:
-            mas_utils.writelog(err_msg.format("Bad package."))
+            mas_utils.writelog(err_msg.format("Bad package"))
+            return False
+
+        zip_data = _handle_raw_pkg_data(pkg_data)
+        if not zip_data:
             return False
 
         glitch_frames = None
@@ -815,7 +856,7 @@ init -25 python in mas_island_event:
                     path_map[sprite_type] = img
 
         try:
-            with ZipFile(pkg_data, "r") as zip_file:
+            with ZipFile(zip_data, "r") as zip_file:
                 island_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_ISLAND)
                 decal_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_DECAL)
                 bg_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_BG)
