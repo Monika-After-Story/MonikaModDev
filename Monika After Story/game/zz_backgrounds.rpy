@@ -2643,7 +2643,9 @@ init -10 python:
                         return
 
             if not img_found:
-                raise Exception("No images found for these filters")
+                raise Exception(
+                    "No images found for filters: {}".format(", ".join(flts))
+                )
 
 
 #Helper methods and such
