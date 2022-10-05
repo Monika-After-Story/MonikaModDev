@@ -94,6 +94,44 @@ image mas_islands_lightning_overlay:
 
         repeat
 
+
+## Base room
+# Day images
+image living_room_day = mas_island_event._get_room_sprite("d", False)
+image living_room_day_rain = mas_island_event._get_room_sprite("d_r", False)
+image living_room_day_overcast = "living_room_day_rain"
+image living_room_day_snow = mas_island_event._get_room_sprite("d_s", False)
+# Night images
+image living_room_night = mas_island_event._get_room_sprite("n", False)
+image living_room_night_rain = mas_island_event._get_room_sprite("n_r", False)
+image living_room_night_overcast = "living_room_night_rain"
+image living_room_night_snow = mas_island_event._get_room_sprite("n_s", False)
+# Sunset images
+image living_room_ss = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "living_room_day"
+)
+image living_room_ss_rain = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "living_room_day_rain"
+)
+image living_room_ss_overcast = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "living_room_day_overcast"
+)
+image living_room_ss_snow = MASFilteredSprite(
+    store.mas_sprites.FLT_SUNSET,
+    "living_room_day_snow"
+)
+
+## Lit room
+# Day images
+
+# Night images
+
+# Sunset images
+
+
 # # # Image defination
 init -20 python in mas_island_event:
     class IslandsImageDefinition(object):
@@ -648,6 +686,12 @@ init -25 python in mas_island_event:
     )
 
     LIVING_ROOM_NAME = "living_room"
+    FLT_LR_NIGHT = "lr_night"
+    mas_sprites.add_filter(
+        FLT_LR_NIGHT,
+        store.im.matrix.tint(0.421, 0.520, 0.965),
+        mas_sprites.FLT_NIGHT
+    )
 
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
@@ -979,6 +1023,25 @@ init -25 python in mas_island_event:
         overlay_disp_map["overlay_thunder"] = partial_disp()
 
         return
+
+    def _get_room_sprite(key, is_lit):
+        """
+        Returns an appropriate displayable for the room sprite based on the criteria
+
+        IN:
+            key - str - the sprite key
+            is_lit - bool - sprite for the lit or unlit version?
+
+        OUT:
+            MASImageData
+            or Null displayable if we failed to get the image
+        """
+        main_key = "interior_room" if not is_lit else "interior_room_lit"
+        try:
+            return interior_disp_map[main_key][key]
+
+        except KeyError:
+            return NULL_DISP
 
     def _isUnlocked(id_):
         """
