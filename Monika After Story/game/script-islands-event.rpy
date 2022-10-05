@@ -104,6 +104,7 @@ init -20 python in mas_island_event:
         TYPE_DECAL = "decal"
         TYPE_BG = "bg"
         TYPE_OVERLAY = "overlay"
+        TYPE_INTERIOR = "interior"
         TYPE_OBJECT = "obj"# This is basically for everything else
         TYPES = frozenset(
             (
@@ -111,9 +112,15 @@ init -20 python in mas_island_event:
                 TYPE_DECAL,
                 TYPE_BG,
                 TYPE_OVERLAY,
+                TYPE_INTERIOR,
                 TYPE_OBJECT
             )
         )
+
+        FILENAMES_MAP = {
+            TYPE_OVERLAY: ("d", "n"),
+        }
+        DEF_FILENAMES = ("d", "d_r", "d_s", "n", "n_r", "n_s", "s", "s_r", "s_s")
 
         DELIM = "_"
 
@@ -124,6 +131,7 @@ init -20 python in mas_island_event:
             id_,
             type_=None,
             default_unlocked=False,
+            filenames=None,
             fp_map=None,
             partial_disp=None
         ):
@@ -143,13 +151,16 @@ init -20 python in mas_island_event:
                     (Default: None)
                 default_unlocked - whether or not this sprite is unlocked from the get go
                     (Default: False)
+                filenames - the used filenames for this data, those are the keys for fp_map, if None, will be used default
+                    paths in the FILENAMES_MAP or DEF_FILENAMES
+                    (Default: None)
                 fp_map - the map of the images for this sprite, if None, we automatically generate it
                     NOTE: after decoding this will point to a loaded ImageData object instead of a failepath
                     (Default: None)
                 partial_disp - functools.partial of the displayable for this sprite
                     (Default: None)
             """
-            if id_.split(self.DELIM)[0] not in self.TYPES:
+            if self.__split_id(id_)[0] not in self.TYPES:
                 raise ValueError(
                     "Bad id format. Supported formats for id: {}, got: '{}'.".format(
                         ", ".join("'{}_###'".format(t) for t in self.TYPES),
@@ -171,6 +182,7 @@ init -20 python in mas_island_event:
             self.type = type_
 
             self.default_unlocked = bool(default_unlocked)
+            self.filenames = filenames
             self.fp_map = fp_map if fp_map is not None else self._buildFPMap()
             self.partial_disp = partial_disp
 
@@ -183,7 +195,7 @@ init -20 python in mas_island_event:
             OUT:
                 str
             """
-            return self.id.split(self.DELIM)[0]
+            return self._split_id()[0]
 
         def _buildFPMap(self):
             """
@@ -192,24 +204,35 @@ init -20 python in mas_island_event:
             OUT:
                 dict
             """
-            filepath_fmt = "{prefix}s/{name}/{suffix}"
-            prefix, name = self.id.split(self.DELIM)
-            # Otherlays are a bit different
-            if self.type == self.TYPE_OVERLAY:
-                suffixes = ("d", "n")
-
+            filepath_fmt = "{type_}/{name}/{filename}"
+            type_, name = self._split_id()
+            if self.filenames is None:
+                filenames = self.FILENAMES_MAP.get(self.type, self.DEF_FILENAMES)
             else:
-                suffixes = ("d", "d_r", "d_s", "n", "n_r", "n_s", "s", "s_r", "s_s")
+                filenames = self.filenames
 
             # FIXME: Use f-strings with py3 pls
             return {
-                suffix: filepath_fmt.format(
-                    prefix=prefix,
+                filename: filepath_fmt.format(
+                    type_=type_,
                     name=name,
-                    suffix=suffix
+                    filename=filename
                 )
-                for suffix in suffixes
+                for filename in filenames
             }
+
+        def _split_id(self):
+            """
+            Splits an id into type and name strings
+            """
+            return self.__split_id(self.id)
+
+        @classmethod
+        def __split_id(cls, id_):
+            """
+            Splits an id into type and name strings
+            """
+            return id_.split(cls.DELIM, 1)
 
         @classmethod
         def getDataFor(cls, id_):
@@ -502,7 +525,7 @@ init -20 python in mas_island_event:
     )
     IslandsImageDefinition(
         "decal_glitch",
-        fp_map={},
+        fp_map={},# TODO: move GLITCH_FPS to fp_map
         partial_disp=functools.partial(
             ParallaxDecal,
             x=216,
@@ -511,6 +534,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_glitchedmess"
         )
     )
+    # Objects
     IslandsImageDefinition(
         "obj_shimeji",
         fp_map={},
@@ -523,6 +547,19 @@ init -20 python in mas_island_event:
             function=__chibi_transform_func,
             on_click="mas_island_shimeji"
         )
+    )
+    # Interior
+    IslandsImageDefinition(
+        "interior_room",
+        filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
+    )
+    IslandsImageDefinition(
+        "interior_room_lit",
+        filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
+    )
+    IslandsImageDefinition(
+        "interior_tablechair",
+        filenames=("chair", "shadow", "table")
     )
     # BGs
     IslandsImageDefinition(
@@ -616,6 +653,7 @@ init -25 python in mas_island_event:
     obj_disp_map = dict()
     bg_disp_map = dict()
     overlay_disp_map = dict()
+    interior_disp_map = dict()
 
     NULL_DISP = store.Null()
 
@@ -726,8 +764,9 @@ init -25 python in mas_island_event:
                 decal_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_DECAL)
                 bg_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_BG)
                 overlay_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_OVERLAY)
+                interior_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_INTERIOR)
                 # Now override maps to contain imgs instead of img paths
-                for map_ in (island_map, decal_map, bg_map, overlay_map):
+                for map_ in (island_map, decal_map, bg_map, overlay_map, interior_map):
                     _read_zip(zip_file, map_)
 
                 # Anim frames are handled a bit differently
@@ -741,11 +780,18 @@ init -25 python in mas_island_event:
 
         else:
             # We loaded the images, now create dynamic displayables
-            _buildDisplayables(island_map, decal_map, bg_map, overlay_map, glitch_frames)
+            _buildDisplayables(island_map, decal_map, bg_map, overlay_map, interior_map, glitch_frames)
 
         return True
 
-    def _buildDisplayables(island_imgs_maps, decal_imgs_maps, bg_imgs_maps, overlay_imgs_maps, glitch_frames):
+    def _buildDisplayables(
+        island_imgs_maps,
+        decal_imgs_maps,
+        bg_imgs_maps,
+        overlay_imgs_maps,
+        interior_imgs_map,
+        glitch_frames
+    ):
         """
         Takes multiple maps with images and builds displayables from them, sets global vars
         NOTE: no sanity checks
@@ -756,9 +802,11 @@ init -25 python in mas_island_event:
             decal_imgs_maps - the map from decal names to raw images map
             bg_imgs_maps - the map from bg ids to raw images map
             overlay_imgs_maps - the map from overlay ids to raw images map
+            interior_imgs_map - the map from the interior stuff to the raw images map
             glitch_frames - tuple of glitch raw anim frames
         """
-        global island_disp_map, decal_disp_map, obj_disp_map, bg_disp_map, overlay_disp_map
+        global island_disp_map, decal_disp_map, obj_disp_map
+        global bg_disp_map, overlay_disp_map, interior_disp_map
 
         # Build the islands
         for island_name, img_map in island_imgs_maps.iteritems():
@@ -881,6 +929,10 @@ init -25 python in mas_island_event:
                 ),
                 speed=overlay_speed_map.get(overlay_name, 1.0)
             )
+
+        # Build the interior
+        for name, img_map in interior_imgs_map.iteritems():
+            interior_disp_map[name] = img_map
 
         # Build glitch disp
         def _glitch_transform_func(transform, st, at):
