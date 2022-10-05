@@ -126,10 +126,20 @@ image living_room_ss_snow = MASFilteredSprite(
 
 ## Lit room
 # Day images
-
+image living_room_lit_day = "living_room_day"
+image living_room_lit_day_rain = "living_room_day_rain"
+image living_room_lit_day_overcast = "living_room_day_overcast"
+image living_room_lit_day_snow = "living_room_day_snow"
 # Night images
-
+image living_room_lit_night = mas_island_event._get_room_sprite("n", True)
+image living_room_lit_night_rain = mas_island_event._get_room_sprite("n_r", True)
+image living_room_lit_night_overcast = "living_room_lit_night_rain"
+image living_room_lit_night_snow = mas_island_event._get_room_sprite("n_s", True)
 # Sunset images
+image living_room_lit_ss = "living_room_ss"
+image living_room_lit_ss_rain = "living_room_ss_rain"
+image living_room_lit_ss_overcast = "living_room_ss_overcast"
+image living_room_lit_ss_snow = "living_room_ss_snow"
 
 
 # # # Image defination
@@ -781,7 +791,7 @@ init -25 python in mas_island_event:
             mas_utils.writelog(err_msg.format("Missing package"))
             return False
 
-        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=mas_ics.ISLAND_PKG_CHKSUM)
+        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=None)#mas_ics.ISLAND_PKG_CHKSUM)# FIXME: undo this
 
         if not pkg_data:
             mas_utils.writelog(err_msg.format("Bad package."))
