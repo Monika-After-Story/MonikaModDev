@@ -1384,6 +1384,111 @@ init -25 python in mas_island_event:
         return store.mas_is_raining or store.mas_current_weather == store.mas_weather_overcast
 
 
+init -1 python in mas_island_event:
+    from store import (
+        MASFilterableBackground,
+        MASFilterWeatherMap,
+        MASBackgroundFilterManager,
+        MASBackgroundFilterChunk,
+        MASBackgroundFilterSlice
+    )
+
+    def _living_room_entry(_old, **kwargs):
+        """
+        Entry pp for lr background
+        """
+        store.monika_chr.tablechair.table = "living_room"
+        store.monika_chr.tablechair.chair = "living_room"
+
+
+    def _living_room_exit(_new, **kwargs):
+        """
+        Exit pp for lr background
+        """
+        store.monika_chr.tablechair.table = "def"
+        store.monika_chr.tablechair.chair = "def"
+
+
+    MASFilterableBackground(
+        "living_room",
+        "Living room",
+        MASFilterWeatherMap(
+            day=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: "living_room_day",
+                    mas_weather.PRECIP_TYPE_RAIN: "living_room_day_rain",
+                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_day_overcast",
+                    mas_weather.PRECIP_TYPE_SNOW: "living_room_day_snow"
+                }
+            ),
+            lr_night=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: "living_room_night",
+                    mas_weather.PRECIP_TYPE_RAIN: "living_room_night_rain",
+                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_night_overcast",
+                    mas_weather.PRECIP_TYPE_SNOW: "living_room_night_snow"
+                }
+            ),
+            sunset=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: "living_room_ss",
+                    mas_weather.PRECIP_TYPE_RAIN: "living_room_ss_rain",
+                    mas_weather.PRECIP_TYPE_OVERCAST: "living_room_ss_overcast",
+                    mas_weather.PRECIP_TYPE_SNOW: "living_room_ss_snow"
+                }
+            )
+        ),
+        MASBackgroundFilterManager(
+            MASBackgroundFilterChunk(
+                False,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    FLT_LR_NIGHT,
+                    60,
+                    None,
+                    10
+                )
+            ),
+            MASBackgroundFilterChunk(
+                True,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    mas_sprites.FLT_SUNSET,
+                    60,
+                    30*60,
+                    10
+                ),
+                MASBackgroundFilterSlice.cachecreate(
+                    mas_sprites.FLT_DAY,
+                    60,
+                    None,
+                    10
+                ),
+                MASBackgroundFilterSlice.cachecreate(
+                    mas_sprites.FLT_SUNSET,
+                    60,
+                    30*60,
+                    10
+                )
+            ),
+            MASBackgroundFilterChunk(
+                False,
+                None,
+                MASBackgroundFilterSlice.cachecreate(
+                    FLT_LR_NIGHT,
+                    60,
+                    None,
+                    10
+                )
+            )
+        ),
+        hide_calendar=True,
+        unlocked=False,
+        entry_pp=_living_room_entry,
+        exit_pp=_living_room_exit
+    )
+
+
 init 5 python:
     addEvent(
         Event(
