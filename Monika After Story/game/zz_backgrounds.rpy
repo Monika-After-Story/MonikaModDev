@@ -2774,7 +2774,7 @@ init -20 python in mas_background:
 
     def saveMBGData():
         """
-        Saves MASBackground data from weather map into persistent
+        Saves MASBackground data from bg map into persistent
         """
         for mbg_id, mbg_obj in BACKGROUND_MAP.iteritems():
             store.persistent._mas_background_MBGdata[mbg_id] = mbg_obj.toTuple()
@@ -2795,18 +2795,55 @@ init -20 python in mas_background:
 
         IN:
             min_amt_unlocked - minimum number of BGs which should be unlocked to return true
+
         OUT:
             True if we have at least min_amt_unlocked BGs unlocked, False otherwise
         """
-        unlocked_count = 0
-        for mbg_obj in BACKGROUND_MAP.itervalues():
-            unlocked_count += int(mbg_obj.unlocked)
+        return getUnlockedBGCount() >= min_amt_unlocked
 
-            #Now check if we've surpassed the minimum
-            if unlocked_count >= min_amt_unlocked:
-                return True
+    def getBackground(id_):
+        """
+        Returns a bg object
 
-        return False
+        IN:
+            id_ - str - background id
+
+        OUT:
+            background object
+            or None if not found
+        """
+        return BACKGROUND_MAP.get(id_)
+
+    def _toggleBackground(id_, value):
+        """
+        Locks/unlocks a bg
+
+        IN:
+            id_ - str - background id
+            value - bool - the value for the unlock field
+        """
+        bg_obj = getBackground(id_)
+        if bg_obj:
+            bg_obj.unlock = True
+            store.persistent._mas_background_MBGdata[id_] = bg_obj.toTuple()
+
+    def unlockBackground(id_):
+        """
+        Unlocks a bg
+
+        IN:
+            id_ - str - background id
+        """
+        _toggleBackground(id_, True)
+
+    def lockBackground(id_):
+        """
+        Locks a bg
+
+        IN:
+            id_ - str - background id
+        """
+        _toggleBackground(id_, False)
 
 
     def log_bg(bg_obj, exc_info=None):
