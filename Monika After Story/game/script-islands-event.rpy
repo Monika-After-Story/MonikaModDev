@@ -22,7 +22,7 @@ init 1:
     #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
-    define mas_decoded_islands = store.mas_island_event.decodeImages()
+    define mas_decoded_islands = store.mas_island_event.decode_images()
     define mas_cannot_decode_islands = not mas_decoded_islands
 
     python:
@@ -813,7 +813,7 @@ init -25 python in mas_island_event:
         buf.seek(0)
         return buf
 
-    def decodeImages():
+    def decode_images():
         """
         Attempts to decode the images
 
@@ -877,11 +877,11 @@ init -25 python in mas_island_event:
 
         else:
             # We loaded the images, now create dynamic displayables
-            _buildDisplayables(island_map, decal_map, bg_map, overlay_map, interior_map, glitch_frames)
+            _build_displayables(island_map, decal_map, bg_map, overlay_map, interior_map, glitch_frames)
 
         return True
 
-    def _buildDisplayables(
+    def _build_displayables(
         island_imgs_maps,
         decal_imgs_maps,
         bg_imgs_maps,
