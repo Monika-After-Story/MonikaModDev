@@ -3464,7 +3464,7 @@ init 5 python:
 
 label greeting_ourreality:
     # Unlock islands
-    $ store.mas_island_event.startProgression()
+    $ store.mas_island_event.start_progression()
 
     m 1hub "Hi, [player]!"
     m 1hua "Ehehe~"

@@ -1036,7 +1036,7 @@ init -25 python in mas_island_event:
 
     def _get_room_sprite(key, is_lit):
         """
-        Returns an appropriate displayable for the room sprite based on the criteria
+        Returns the appropriate displayable for the room sprite based on the criteria
 
         IN:
             key - str - the sprite key
@@ -1053,7 +1053,7 @@ init -25 python in mas_island_event:
         except KeyError:
             return NULL_DISP
 
-    def _isUnlocked(id_):
+    def _is_unlocked(id_):
         """
         Checks if a sprite is unlocked
 
@@ -1098,7 +1098,7 @@ init -25 python in mas_island_event:
         return False
 
 
-    # # # START functions for lvl unlocks, head to __handleUnlocks to understand how this works
+    # # # START functions for lvl unlocks, head to __handle_unlocks to understand how this works
     # NOTE: Please, keep these private
     def __unlocks_for_lvl_0():
         _unlock("island_1")
@@ -1114,8 +1114,8 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_3():
         # Unlock only one, the rest at lvl 5
         if (
-            not _isUnlocked("island_4")
-            and not _isUnlocked("island_5")
+            not _is_unlocked("island_4")
+            and not _is_unlocked("island_5")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("island_4")
@@ -1126,8 +1126,8 @@ init -25 python in mas_island_event:
     def __unlocks_for_lvl_4():
         # Unlock only one, the rest at lvl 6
         if (
-            not _isUnlocked("island_6")
-            and not _isUnlocked("island_7")
+            not _is_unlocked("island_6")
+            and not _is_unlocked("island_7")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("island_6")
@@ -1145,8 +1145,8 @@ init -25 python in mas_island_event:
         _unlock("island_3")
         # Unlock only one, the rest at lvl 7
         if (
-            not _isUnlocked("decal_bookshelf")
-            and not _isUnlocked("decal_tree")
+            not _is_unlocked("decal_bookshelf")
+            and not _is_unlocked("decal_tree")
         ):
             if bool(random.randint(0, 1)):
                 _unlock("decal_bookshelf")
@@ -1170,7 +1170,7 @@ init -25 python in mas_island_event:
     # # # END
 
 
-    def __handleUnlocks():
+    def __handle_unlocks():
         """
         Method to unlock various islands features when the player progresses.
         For example: new decals, new islands, new extra events, set persistent vars, etc.
@@ -1182,7 +1182,7 @@ init -25 python in mas_island_event:
             if callback is not None:
                 callback()
 
-    def _calcProgress(curr_lvl, start_lvl):
+    def _calc_progress(curr_lvl, start_lvl):
         """
         Returns islands progress for the given current and start levels
         NOTE: this has no sanity checks, don't use this directly
@@ -1223,7 +1223,7 @@ init -25 python in mas_island_event:
 
         return progress
 
-    def advanceProgression():
+    def advance_progression():
         """
         Increments the lvl of progression of the islands event,
         it will do nothing if the player hasn't unlocked the islands yet or if
@@ -1233,7 +1233,7 @@ init -25 python in mas_island_event:
         if persistent._mas_islands_start_lvl is None:
             return
 
-        new_progress = _calcProgress(store.mas_xp.level(), persistent._mas_islands_start_lvl)
+        new_progress = _calc_progress(store.mas_xp.level(), persistent._mas_islands_start_lvl)
 
         if new_progress == DEF_PROGRESS:
             return
@@ -1256,25 +1256,25 @@ init -25 python in mas_island_event:
         # Now set new level
         persistent._mas_islands_progress = min(max(new_progress, curr_progress), MAX_PROGRESS_LOVE)
         # Run unlock callbacks
-        __handleUnlocks()
+        __handle_unlocks()
 
         return
 
-    def getProgression():
+    def _get_progression():
         """
         Returns current islands progress lvl
         """
         return persistent._mas_islands_progress
 
-    def startProgression():
+    def start_progression():
         """
         Starts islands progression
         """
         if store.mas_isMoniEnamored(higher=True) and persistent._mas_islands_start_lvl is None:
             persistent._mas_islands_start_lvl = store.mas_xp.level()
-            advanceProgression()
+            advance_progression()
 
-    def _resetProgression():
+    def _reset_progression():
         """
         Resets island progress
         """
@@ -1282,7 +1282,7 @@ init -25 python in mas_island_event:
         persistent._mas_islands_progress = DEF_PROGRESS
         persistent._mas_islands_unlocks = IslandsImageDefinition.getDefaultUnlocks()
 
-    def getIslandsDisplayable(enable_interaction=True, check_progression=False):
+    def get_islands_displayable(enable_interaction=True, check_progression=False):
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
@@ -1311,13 +1311,13 @@ init -25 python in mas_island_event:
 
         # Progress lvl
         if check_progression:
-            advanceProgression()
+            advance_progression()
 
         sub_displayables = list()
 
         # Add all unlocked islands
         for key, disp in island_disp_map.iteritems():
-            if _isUnlocked(key):
+            if _is_unlocked(key):
                 _reset_parallax_disp(disp)
                 sub_displayables.append(disp)
 
@@ -1332,11 +1332,11 @@ init -25 python in mas_island_event:
                     "decal_tree",
                     "decal_glitch"
                 )
-                if _isUnlocked(key)
+                if _is_unlocked(key)
             ]
         )
 
-        if _isUnlocked("obj_shimeji") and renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+        if _is_unlocked("obj_shimeji") and renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
             shimeji_disp = obj_disp_map["obj_shimeji"]
             _reset_parallax_disp(shimeji_disp)
             SHIMEJI_CHANCE *= 2
@@ -1361,7 +1361,7 @@ init -25 python in mas_island_event:
 
         return ParallaxBackground(*sub_displayables)
 
-    def isWinterWeather():
+    def is_winter_weather():
         """
         Checks if the weather on the islands is wintery
 
@@ -1372,7 +1372,7 @@ init -25 python in mas_island_event:
         """
         return store.mas_is_snowing or store.mas_isWinter()
 
-    def isCloudyWeather():
+    def is_cloudy_weather():
         """
         Checks if the weather on the islands is cloudy
 
@@ -1590,7 +1590,7 @@ label mas_islands(
         # Always scene change unless asked not to
         spaceroom_kwargs.setdefault("scene_change", True)
         is_done = False
-        islands_displayable = mas_island_event.getIslandsDisplayable(
+        islands_displayable = mas_island_event.get_islands_displayable(
             enable_interaction=enable_interaction,
             check_progression=check_progression
         )
@@ -1682,7 +1682,7 @@ label mas_island_cherry_blossom_tree:
                 "mas_island_cherry_blossom4"
             ]
 
-            if not mas_island_event.isWinterWeather():
+            if not mas_island_event.is_winter_weather():
                 _mas_cherry_blossom_events.append("mas_island_cherry_blossom2")
 
             renpy.call(renpy.random.choice(_mas_cherry_blossom_events))
@@ -1690,7 +1690,7 @@ label mas_island_cherry_blossom_tree:
     return
 
 label mas_island_cherry_blossom1:
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "This tree may look dead right now...but when it blooms, it's gorgeous."
 
     else:
@@ -1702,7 +1702,7 @@ label mas_island_cherry_blossom1:
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is awe-inspiring."
 
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "When it's blooming, that is."
         m "I can't wait until we get the chance to experience that, [player]."
 
@@ -1719,7 +1719,7 @@ label mas_island_cherry_blossom3:
     m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
 
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "Even if it's bare now, it'll blossom again soon."
 
     m "Know that I'll always be grateful to you for being in my life."
@@ -1734,7 +1734,7 @@ label mas_island_cherry_blossom4:
     m "Ahaha! I'm just kidding."
     m "I'd rather have tea or coffee."
 
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "Or hot chocolate, even. It'd certainly help with the cold."
         m "Of course, even if that failed, we could always cuddle together...{w=0.5} That'd be really romantic~"
 
@@ -1771,7 +1771,7 @@ label mas_island_sky:
 label mas_island_day1:
     #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "What a beautiful day today."
         m "Perfect for taking a walk to admire the scenery."
         m "...Huddled together, so as to stave off the cold."
@@ -1791,7 +1791,7 @@ label mas_island_day1:
     else:
         m "It's a nice day today."
 
-        if mas_island_event._isUnlocked("decal_tree"):
+        if mas_island_event._is_unlocked("decal_tree"):
             m "This weather would be good for a little book reading under the Cherry Blossom tree right, [player]?"
 
         else:
@@ -1806,14 +1806,14 @@ label mas_island_day1:
 label mas_island_day2:
     #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "Have you ever made a snow angel, [player]?"
         m "I've tried in the past, but never had much success..."
         m "It's a lot harder than it looks like."
         m "I bet we'd have a lot of fun, even if whatever we make doesn't end up looking like an angel."
         m "It's just a matter of being a bit silly, you know?"
 
-    elif mas_island_event.isCloudyWeather():
+    elif mas_island_event.is_cloudy_weather():
         m "Going outdoors with this kind of weather doesn't look very appealing..."
         m "Maybe if I had an umbrella I'd feel more comfortable."
         m "Imagine both of us, shielded from the rain, inches apart."
@@ -1827,7 +1827,7 @@ label mas_island_day2:
         m "We even have a great view to accompany it with!"
         m "Wouldn't it be nice?"
 
-        if mas_island_event._isUnlocked("decal_tree"):
+        if mas_island_event._is_unlocked("decal_tree"):
             m "Eating under the Cherry Blossom tree."
 
         m "Adoring the scenery around us."
@@ -1845,7 +1845,7 @@ label mas_island_day3:
     else:
         m "It's pretty peaceful outside."
 
-        if mas_island_event.isWinterWeather():
+        if mas_island_event.is_winter_weather():
             m "We could have a snowball fight, you know."
             m "Ahaha, that'd be so much fun!"
             m "I bet I could land a shot on you a few islands away."
@@ -1865,7 +1865,7 @@ label mas_island_night1:
     return
 
 label mas_island_night2:
-    if not mas_isWinter() and mas_island_event.isCloudyWeather():
+    if not mas_isWinter() and mas_island_event.is_cloudy_weather():
         m "Too bad we can't see the stars tonight..."
         m "I would've loved to gaze at the cosmos with you."
         m "That's alright though, we'll get to see it some other time, then."
@@ -1889,7 +1889,7 @@ label mas_island_night2:
     return
 
 label mas_island_night3:
-    if not mas_isWinter() and mas_island_event.isCloudyWeather():
+    if not mas_isWinter() and mas_island_event.is_cloudy_weather():
         m "Cloudy weather is kind of depressing, don't you think?"
         m "Especially at nighttime, when it hides the stars away from our view."
         m "It's such a shame, really..."
@@ -1897,7 +1897,7 @@ label mas_island_night3:
     else:
         m "What a beautiful night!"
 
-        if mas_island_event.isWinterWeather():
+        if mas_island_event.is_winter_weather():
             m "There's just something about a cold, crisp night that I love."
             m "The contrast of the dark sky and the land covered in snow is really breathtaking, don't you think?"
         else:
@@ -1964,12 +1964,12 @@ label mas_island_bookshelf:
 label mas_island_bookshelf1:
     #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "That bookshelf might not look terribly sturdy, but I'm sure it can weather a little snow."
         m "It's the books that worry me a bit."
         m "I just hope they don't get too damaged..."
 
-    elif mas_island_event.isCloudyWeather():
+    elif mas_island_event.is_cloudy_weather():
         m "At times like this, I wish I would've kept my books indoors..."
         m "Looks like we'll just have to wait for better weather to read them."
         m "In the meantime..."
@@ -1986,14 +1986,14 @@ label mas_island_bookshelf1:
 label mas_island_bookshelf2:
     #NOTE: this ordering is key, during winter we only use snow covered islands with clear sky
     # so Winter path needs to be first
-    if mas_island_event.isWinterWeather():
+    if mas_island_event.is_winter_weather():
         m "You know, I wouldn't mind doing some reading outside even if there is a bit of snow."
         m "Though I wouldn't venture out without a warm coat, a thick scarf, and a snug pair of gloves."
         m "I guess turning the pages might be a bit hard that way, ahaha..."
         m "But I'm sure we'll manage somehow."
         m "Isn't that right, [player]?"
 
-    elif mas_island_event.isCloudyWeather():
+    elif mas_island_event.is_cloudy_weather():
         m "Reading indoors with rain just outside the window is pretty relaxing."
         m "If only I hadn't left the books outside..."
         m "I should probably bring some in here when I get the chance."

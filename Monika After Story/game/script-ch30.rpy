@@ -1361,7 +1361,7 @@ init 999 python in mas_reset:
         Runs reset code for islands
         """
         # Did Monika make any progress on the islands?
-        mas_island_event.advanceProgression()
+        mas_island_event.advance_progression()
 
 
     @ch30_reset(-580)
@@ -2398,7 +2398,7 @@ label ch30_day:
             persistent._mas_d25_started_upset = True
 
         # Once per day Monika does stuff on the islands
-        store.mas_island_event.advanceProgression()
+        store.mas_island_event.advance_progression()
 
         # Give the bonus
         mas_affection._withdraw_aff()

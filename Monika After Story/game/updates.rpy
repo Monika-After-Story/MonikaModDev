@@ -3238,11 +3238,11 @@ label mas_lupd_v0_12_3_1:
     python:
         # Unlock for people who has seen the event before
         if seen_event("mas_monika_islands"):
-            mas_island_event.startProgression()
+            mas_island_event.start_progression()
             # Technically it's impossible to have this as 0,
             # So it'll mean the islands were unlocked prior to the revamp
             persistent._mas_islands_start_lvl = 0
-            mas_island_event.advanceProgression()
+            mas_island_event.advance_progression()
 
     return
 
