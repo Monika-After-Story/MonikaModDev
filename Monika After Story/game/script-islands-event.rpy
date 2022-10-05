@@ -700,11 +700,22 @@ init -25 python in mas_island_event:
     DATA_READ_CHUNK_SIZE = 2 * 1024**2
     DATA_SPACING = 8 * 1024**2
 
+    SFX_LIT = "_lit"
+    SFX_NIGHT = "_night"
+
     LIVING_ROOM_ID = "living_room"
-    FLT_LR_NIGHT = "lr_night"
+    LIVING_ROOM_LIT_ID = LIVING_ROOM_ID + SFX_LIT
+
+    FLT_LR_NIGHT = LIVING_ROOM_ID + SFX_NIGHT
     mas_sprites.add_filter(
         FLT_LR_NIGHT,
         store.im.matrix.tint(0.421, 0.520, 0.965),
+        mas_sprites.FLT_NIGHT
+    )
+    FLT_LR_LIT_NIGHT = LIVING_ROOM_LIT_ID + SFX_NIGHT
+    mas_sprites.add_filter(
+        FLT_LR_LIT_NIGHT,
+        store.im.matrix.tint(0.972, 0.916, 0.796),
         mas_sprites.FLT_NIGHT
     )
 
@@ -1033,20 +1044,21 @@ init -25 python in mas_island_event:
         # HACK: add custom tablechair into the cache right here
         # That's because our images are not on the disk, we can't just use a sprite tag
         # because the paths are hardcoded and we can't use a displayable directly
-        tablechair_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_TC]
-        table_im = mas_sprites._gen_im(
-            FLT_LR_NIGHT,
-            interior_disp_map["interior_tablechair"]["table"]
-        )
-        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 0)] = table_im
-        tablechair_disp_cache[(FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 1)] = table_im# shadow variant can reuse the same img
-        tablechair_disp_cache[(FLT_LR_NIGHT, 1, LIVING_ROOM_ID)] = mas_sprites._gen_im(
-            FLT_LR_NIGHT,
-            interior_disp_map["interior_tablechair"]["chair"]
-        )
-        # Shadow is being stored in the highlight cache
-        table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
-        table_shadow_hl_disp_cache[(mas_sprites.CID_TC, FLT_LR_NIGHT, 0, LIVING_ROOM_ID, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
+        for flt_id in (FLT_LR_NIGHT, FLT_LR_LIT_NIGHT):
+            tablechair_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_TC]
+            table_im = mas_sprites._gen_im(
+                flt_id,
+                interior_disp_map["interior_tablechair"]["table"]
+            )
+            tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 0)] = table_im
+            tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 1)] = table_im# shadow variant can reuse the same img
+            tablechair_disp_cache[(flt_id, 1, LIVING_ROOM_ID)] = mas_sprites._gen_im(
+                flt_id,
+                interior_disp_map["interior_tablechair"]["chair"]
+            )
+            # Shadow is being stored in the highlight cache
+            table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
+            table_shadow_hl_disp_cache[(mas_sprites.CID_TC, flt_id, 0, LIVING_ROOM_ID, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
 
         # Build glitch disp
         def _glitch_transform_func(transform, st, at):
@@ -1463,41 +1475,44 @@ init -1 python in mas_island_event:
         OUT:
             MASFilterableBackground
         """
+        flt_name_night = id_ + SFX_NIGHT
+        mfwm_params = {
+            "day": MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: id_ + "_day",
+                    mas_weather.PRECIP_TYPE_RAIN: id_ + "_day_rain",
+                    mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_day_overcast",
+                    mas_weather.PRECIP_TYPE_SNOW: id_ + "_day_snow"
+                }
+            ),
+            "sunset": MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: id_ + "_ss",
+                    mas_weather.PRECIP_TYPE_RAIN: id_ + "_ss_rain",
+                    mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_ss_overcast",
+                    mas_weather.PRECIP_TYPE_SNOW: id_ + "_ss_snow"
+                }
+            )
+        }
+        mfwm_params[flt_name_night] = MASWeatherMap(
+            {
+                mas_weather.PRECIP_TYPE_DEF: id_ + "_night",
+                mas_weather.PRECIP_TYPE_RAIN: id_ + "_night_rain",
+                mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_night_overcast",
+                mas_weather.PRECIP_TYPE_SNOW: id_ + "_night_snow"
+            }
+        )
+
         return MASFilterableBackground(
             id_,
             "Living room",
-            MASFilterWeatherMap(
-                day=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: id_ + "_day",
-                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_day_rain",
-                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_day_overcast",
-                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_day_snow"
-                    }
-                ),
-                lr_night=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: id_ + "_night",
-                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_night_rain",
-                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_night_overcast",
-                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_night_snow"
-                    }
-                ),
-                sunset=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: id_ + "_ss",
-                        mas_weather.PRECIP_TYPE_RAIN: id_ + "_ss_rain",
-                        mas_weather.PRECIP_TYPE_OVERCAST: id_ + "_ss_overcast",
-                        mas_weather.PRECIP_TYPE_SNOW: id_ + "_ss_snow"
-                    }
-                )
-            ),
+            MASFilterWeatherMap(**mfwm_params),
             MASBackgroundFilterManager(
                 MASBackgroundFilterChunk(
                     False,
                     None,
                     MASBackgroundFilterSlice.cachecreate(
-                        FLT_LR_NIGHT,
+                        id_ + SFX_NIGHT,
                         60,
                         None,
                         10
@@ -1529,7 +1544,7 @@ init -1 python in mas_island_event:
                     False,
                     None,
                     MASBackgroundFilterSlice.cachecreate(
-                        FLT_LR_NIGHT,
+                        id_ + SFX_NIGHT,
                         60,
                         None,
                         10
@@ -1543,7 +1558,7 @@ init -1 python in mas_island_event:
         )
 
     register_room(LIVING_ROOM_ID)
-    register_room(LIVING_ROOM_ID + "_lit")
+    register_room(LIVING_ROOM_LIT_ID)
 
 
 init 5 python:
