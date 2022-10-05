@@ -2820,11 +2820,11 @@ init -20 python in mas_background:
 
         IN:
             id_ - str - background id
-            value - bool - the value for the unlock field
+            value - bool - the value for the unlocked field
         """
         bg_obj = getBackground(id_)
         if bg_obj:
-            bg_obj.unlock = True
+            bg_obj.unlocked = value
             store.persistent._mas_background_MBGdata[id_] = bg_obj.toTuple()
 
     def unlockBackground(id_):
