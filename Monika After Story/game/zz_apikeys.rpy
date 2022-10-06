@@ -434,7 +434,7 @@ init -980 python in mas_api_keys:
                     ERR_ON_CHG_CRASH.format(feature, repr(e))
                 )
 
-                return False, ERR_ON_CHG_MSG
+                return False, ERR_ON_CHG_CRASH_MSG
 
             # type check
             try:
