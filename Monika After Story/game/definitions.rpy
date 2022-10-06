@@ -6099,32 +6099,36 @@ init -1 python:
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
 
-
-    def delete_all_characters():
+    def mas_delete_chr(name, log=False):
         """
-        Deletes all characters (monika.chr, yuri.chr, natsuki.chr, sayori.chr)
-        """
-
-        for chrname in ["monika", "yuri", "natsuki", "sayori"]:
-            delete_character(chrname)
-
-
-    def delete_character(name):
-        """
-        Deletes a .chr file for a character
+        Deletes a .chr file
 
         IN:
-            name of the character who's chr file we want to delete
+            name - str - filename
         """
-        if persistent.do_not_delete:
-            return
-
         try:
-            os.remove(config.basedir + "/characters/" + name + ".chr")
+            if not name.endswith(".chr"):
+                name += ".chr"
+            os.remove(
+                os.path.join(config.basedir, "characters", name)
+            )
 
-        except:
-            pass
+        except Exception as e:
+            if log:
+                store.mas_utils.mas_log.error(
+                    "Failed to delete a '{}' chr file: {}".format(name, e)
+                )
 
+    @store.mas_utils.deprecated("mas_delete_chr")
+    def delete_character(name):
+        mas_delete_chr(name)
+
+    def mas_delete_all_chrs(log=False):
+        """
+        Deletes all chr files (monika.chr, yuri.chr, natsuki.chr, sayori.chr)
+        """
+        for chrname in ("monika.chr", "yuri.chr", "natsuki.chr", "sayori.chr"):
+            mas_delete_chr(chrname, log=log)
 
     def pause(time=None):
         """

@@ -1392,7 +1392,7 @@ init 999 python in mas_reset:
         """
 
         if mas_seenLabels(["mas_new_character_file"]):
-            delete_all_characters()
+            store.mas_delete_all_chrs()
 
 
     def final():
