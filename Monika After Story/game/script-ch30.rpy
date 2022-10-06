@@ -1388,10 +1388,10 @@ init 999 python in mas_reset:
     @ch30_reset(-560)
     def chr_removal():
         """
-        Remove .chr files in characters folder
+        Remove .chr files in the characters folder
         """
-
-        if mas_seenLabels(["mas_new_character_file"]):
+        # Only cleanup after the intro has been seen
+        if renpy.seen_label("introduction"):
             store.mas_delete_all_chrs()
 
 
