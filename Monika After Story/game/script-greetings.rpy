@@ -4713,7 +4713,7 @@ label greeting_found_nou_shirt:
 
         "It's a secret.":
             hide screen mas_background_timed_jump
-            jump .menu_choice_secret
+            jump greeting_found_nou_shirt.menu_choice_secret
 
         "It was [glitch_option_text]!":
             hide screen mas_background_timed_jump
@@ -4723,17 +4723,17 @@ label greeting_found_nou_shirt:
                 os.path.join(renpy.config.basedir, "characters/for snitch.txt"),
                 ">:("
             )
-            jump .menu_choice_other
+            jump greeting_found_nou_shirt.menu_choice_other
 
         "I have no idea...":
             hide screen mas_background_timed_jump
-            jump .menu_choice_other
+            jump greeting_found_nou_shirt.menu_choice_other
 
     label .post_menu:
         pass
 
     m 1ekbla "Thanks, [player]."
-    m 1tfu "Don't think I'd go any easier on you, though~"
+    m 1tfu "Don't think I'll go any easier on you, though~"
 
     if mas_nou.get_wins_for('Player') >= mas_nou.get_wins_for('Monika'):
         m 1rtsdlb "In fact, {w=0.1}maybe I should try harder, ahaha..."
@@ -4748,14 +4748,14 @@ label greeting_found_nou_shirt:
         del glitch_option_text
     return
 
-label .menu_skip:
+label greeting_found_nou_shirt.menu_skip:
     hide screen mas_background_timed_jump
     call mas_transition_from_emptydesk("monika 4sub")
     m "But I love it~"
 
-    jump .post_menu
+    jump greeting_found_nou_shirt.post_menu
 
-label .menu_choice_secret:
+label greeting_found_nou_shirt.menu_choice_secret:
     if mas_isMoniEnamored(higher=True):
         call mas_transition_from_emptydesk("monika 2tublu")
         m "{cps=*1.5}You don't peek there {i}often{/i}, do you?~{/cps}{w=0.1}{nw}"
@@ -4768,9 +4768,9 @@ label .menu_choice_secret:
 
     extend 4sub "I really love this new outfit!"
 
-    jump .post_menu
+    jump greeting_found_nou_shirt.post_menu
 
-label .menu_choice_other:
+label greeting_found_nou_shirt.menu_choice_other:
     show noise zorder 500 onlayer overlay:
         alpha 0.0
         easein_elastic 0.5 alpha 0.1
@@ -4778,4 +4778,4 @@ label .menu_choice_other:
     pause 0.5
     hide noise onlayer overlay
 
-    jump .menu_skip
+    jump greeting_found_nou_shirt.menu_skip
