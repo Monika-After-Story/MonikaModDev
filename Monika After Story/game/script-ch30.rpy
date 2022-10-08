@@ -1392,7 +1392,8 @@ init 999 python in mas_reset:
         """
         # Only cleanup after the intro has been seen
         if renpy.seen_label("introduction"):
-            store.mas_delete_all_chrs()
+            for pkg in store.mas_ics.mas_docking_station.getPackageList("chr"):
+                store.mas_ics.mas_docking_station.destroyPackage(pkg)
 
 
     def final():
