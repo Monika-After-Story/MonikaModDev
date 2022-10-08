@@ -684,7 +684,7 @@ init -25 python in mas_island_event:
     MAX_PROGRESS_LOVE = 9
     PROGRESS_FACTOR = 4
 
-    SHIMEJI_CHANCE = 100
+    SHIMEJI_CHANCE = 0.01
     DEF_SCREEN_ZORDER = 55
 
     SUPPORTED_FILTERS = frozenset(
@@ -1365,22 +1365,23 @@ init -25 python in mas_island_event:
             # Reset offsets and zoom
             disp.reset_mouse_pos()
             disp.zoom = disp.min_zoom
+            # Return it for convenience
+            return disp
 
         # Progress lvl
         if check_progression:
             advance_progression()
 
-        sub_displayables = list()
-
         # Add all unlocked islands
-        for key, disp in island_disp_map.iteritems():
-            if _is_unlocked(key):
-                _reset_parallax_disp(disp)
-                sub_displayables.append(disp)
+        sub_displayables = [
+            _reset_parallax_disp(disp)
+            for key, disp in island_disp_map.iteritems()
+            if _is_unlocked(key)
+        ]
 
         # Add all unlocked decals for islands 1 (other islands don't have any as of now)
         island_disp_map["island_1"].add_decals(
-            *[
+            *(
                 decal_disp_map[key]
                 for key in (
                     "decal_bookshelf",
@@ -1390,13 +1391,13 @@ init -25 python in mas_island_event:
                     "decal_glitch"
                 )
                 if _is_unlocked(key)
-            ]
+            )
         )
 
-        if _is_unlocked("obj_shimeji") and renpy.random.randint(1, SHIMEJI_CHANCE) == 1:
+        if _is_unlocked("obj_shimeji") and random.random() <= SHIMEJI_CHANCE:
             shimeji_disp = obj_disp_map["obj_shimeji"]
             _reset_parallax_disp(shimeji_disp)
-            SHIMEJI_CHANCE *= 2
+            SHIMEJI_CHANCE /= 2.0
             sub_displayables.append(shimeji_disp)
 
         # Add the bg (we only have one as of now)
