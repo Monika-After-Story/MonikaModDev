@@ -2819,7 +2819,7 @@ init -20 python in mas_background:
         """
         return BACKGROUND_MAP.get(id_)
 
-    def _toggleBackground(id_, value):
+    def _toggleBackgroundUnlock(id_, value):
         """
         Locks/unlocks a bg
 
@@ -2839,7 +2839,7 @@ init -20 python in mas_background:
         IN:
             id_ - str - background id
         """
-        _toggleBackground(id_, True)
+        _toggleBackgroundUnlock(id_, True)
 
     def lockBackground(id_):
         """
@@ -2848,8 +2848,22 @@ init -20 python in mas_background:
         IN:
             id_ - str - background id
         """
-        _toggleBackground(id_, False)
+        _toggleBackgroundUnlock(id_, False)
 
+    def isBackgroundUnlocked(id_):
+        """
+        Checks if a background is unlocked
+
+        IN:
+            id_ - str - background id
+
+        OUT:
+            boolean
+        """
+        bg = getBackground(id_)
+        if bg:
+            return bg.unlocked
+        return False
 
     def log_bg(bg_obj, exc_info=None):
         """
@@ -2950,10 +2964,9 @@ init 800 python:
         """
         if (
             mas_isMoniEnamored(higher=True)
-            and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
-            and mas_getBackground(persistent._mas_current_background).unlocked
+            and mas_isBackgroundUnlocked(persistent._mas_current_background)
         ):
-            background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
+            background_to_set = mas_getBackground(persistent._mas_current_background)
             mas_changeBackground(background_to_set, startup=True)
 
             if background_to_set.disable_progressive:
@@ -2991,7 +3004,36 @@ init python:
         OUT:
             MASFilterableBackground if found, None otherwise
         """
-        return store.mas_background.BACKGROUND_MAP.get(background_id, default)
+        return mas_background.getBackground(background_id, default)
+
+    def mas_getCurrentBackgroundId(default=None):
+        """
+        Returns the id of the current background
+
+        IN:
+            default - the fallback value to return
+                (Default: None)
+
+        OUT:
+            string - the bg id
+            or default if not found
+        """
+        curr_bg = mas_current_background
+        if curr_bg:
+            return curr_bg.background_id
+        return default
+
+    def mas_isBackgroundUnlocked(id_):
+        """
+        Checks if a background with the given id is unlocked
+
+        IN:
+            id_ - str - the background id
+
+        OUT:
+            boolean
+        """
+        return mas_background.isBackgroundUnlocked(id_)
 
 #START: Programming points
 init -2 python in mas_background:
