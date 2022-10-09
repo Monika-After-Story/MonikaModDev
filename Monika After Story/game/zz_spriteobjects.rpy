@@ -521,13 +521,40 @@ init -2 python in mas_sprites:
                 # find ACS and wear for this outfit
                 _acs_wear_if_found(_moni_chr, "briaryoung_front_bow_black")
 
-
     def _clothes_briaryoung_shuchiin_academy_uniform_exit(_moni_chr, **kwargs):
         """
         Exit prog point for the shuchiin academy uniform
         """
         # NOTE: this prog point is chika specific. See above.
         _acs_remove_if_found(_moni_chr, "briaryoung_front_bow_black")
+
+    def _clothes_hatana_2b_entry(_moni_chr, **kwargs):
+        """
+        Entry pp for hatana 2b
+        """
+        outfit_mode = kwargs.get("outfit_mode", False)
+
+        if outfit_mode:
+            # swap to bun braid if found. if not, dont wear acs.
+            downshort = store.mas_sprites.get_sprite(
+                store.mas_sprites.SP_HAIR,
+                "echo_downshort"
+            )
+            if downshort is not None:
+                _moni_chr.change_hair(downshort)
+            else:
+                _moni_chr.change_hair(store.mas_hair_down)
+
+        _acs_remove_if_found(_moni_chr, "promisering")
+
+
+    def _clothes_hatana_2b_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for the shuchiin academy uniform
+        """
+        # NOTE: this prog point is chika specific. See above.
+        if store.persistent._mas_acs_enable_promisering:
+            _moni_chr.wear_acs(store.mas_acs_promisering)
 
 
     ######### ACS [SPR030] ###########

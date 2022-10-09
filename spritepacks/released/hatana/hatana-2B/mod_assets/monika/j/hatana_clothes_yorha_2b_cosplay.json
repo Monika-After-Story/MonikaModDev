@@ -19,7 +19,8 @@
     "stay_on_start": true,
     "ex_props": {
         "cosplay": true,
-        "costume": true
+        "costume": "o31",
+        "hide-ring": true
     },
     "select_info": {
         "display_name": "YoRHa No.2 Type B",

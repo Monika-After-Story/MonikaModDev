@@ -1038,7 +1038,8 @@ init 999 python in mas_reset:
         # this is likely to occur in crashes / reloads
         if persistent._mas_acs_enable_promisering:
             # TODO: need to be able to add a different promise ring
-            store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
+            if not store.monika_chr.is_wearing_clothes_with_exprop("hide-ring"):
+                store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
 
 
     def _sprites_setup():

@@ -1126,6 +1126,36 @@ label greeting_o31_briaryoung_shuchiin_academy_uniform:
     call greeting_o31_cleanup
     return
 
+#2b intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_hatana_2b",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_hatana_2b:
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+    #moni is off-screen
+
+    # TODO: add real dialogue
+    if not persistent._mas_o31_relaunch:
+        m "To be..."
+
+    else:
+        m "To be..."
+
+    #show moni now
+    call mas_transition_from_emptydesk("monika 3hub")
+
+    m 3hub "or not to be!"
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+
 label greeting_o31_deco:
     m 1eua "Anyway..."
     m 3eua "Do you like what I've done with the room?"
