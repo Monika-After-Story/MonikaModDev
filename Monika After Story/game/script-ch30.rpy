@@ -1036,10 +1036,9 @@ init 999 python in mas_reset:
         ## accessory hotfixes
         # mainly to re add accessories that may have been removed for some reason
         # this is likely to occur in crashes / reloads
-        if persistent._mas_acs_enable_promisering:
+        if persistent._mas_acs_enable_promisering and not store.monika_chr.is_wearing_clothes_with_exprop("hide-ring"):
             # TODO: need to be able to add a different promise ring
-            if not store.monika_chr.is_wearing_clothes_with_exprop("hide-ring"):
-                store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
+            store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
 
 
     def _sprites_setup():

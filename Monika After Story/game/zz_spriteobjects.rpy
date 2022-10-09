@@ -540,17 +540,14 @@ init -2 python in mas_sprites:
                 store.mas_sprites.SP_HAIR,
                 "echo_downshort"
             )
-            if downshort is not None:
-                _moni_chr.change_hair(downshort)
-            else:
-                _moni_chr.change_hair(store.mas_hair_down)
+            _moni_chr.change_hair(downshort if downshort is not None else store.mas_hair_down)
 
         _acs_remove_if_found(_moni_chr, "promisering")
 
 
     def _clothes_hatana_2b_exit(_moni_chr, **kwargs):
         """
-        Exit prog point for the shuchiin academy uniform
+        Exit prog point for hatana 2b
         """
         # NOTE: this prog point is chika specific. See above.
         if store.persistent._mas_acs_enable_promisering:

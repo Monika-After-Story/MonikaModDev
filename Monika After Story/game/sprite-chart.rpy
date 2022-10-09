@@ -389,6 +389,7 @@ init -100 python in mas_sprites:
     EXP_C_HIDE_RING = "hide-ring"
     # v: ignored
     # marks clothes that hides the promise ring
+    # TODO: migrate to an acs (glove) exp prop once implemented
 
     # --- default exprops ---
 
