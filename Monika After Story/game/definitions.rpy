@@ -6099,36 +6099,17 @@ init -1 python:
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
 
-    def mas_delete_chr(name, log=False):
-        """
-        Deletes a .chr file
-
-        IN:
-            name - str - filename
-        """
-        try:
-            if not name.endswith(".chr"):
-                name += ".chr"
-            os.remove(
-                os.path.join(config.basedir, "characters", name)
-            )
-
-        except Exception as e:
-            if log:
-                store.mas_utils.mas_log.error(
-                    "Failed to delete a '{}' chr file: {}".format(name, e)
-                )
-
-    @store.mas_utils.deprecated("mas_delete_chr")
-    def delete_character(name):
-        mas_delete_chr(name)
-
     def mas_delete_all_chrs(log=False):
         """
-        Deletes all chr files (monika.chr, yuri.chr, natsuki.chr, sayori.chr)
+        Deletes all chr files under /characters/ folder.
+
+        IN:
+            log (deprecated):
+                If True, print log message on deletion error. Deprecated and is
+                no longer used as docking station will always log errors.
         """
-        for chrname in ("monika.chr", "yuri.chr", "natsuki.chr", "sayori.chr"):
-            mas_delete_chr(chrname, log=log)
+        for pkg in store.mas_ics.mas_docking_station.getPackageList("chr"):
+            store.mas_ics.mas_docking_station.destroyPackage(pkg)
 
     def pause(time=None):
         """
