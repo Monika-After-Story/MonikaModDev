@@ -6,12 +6,13 @@ import os
 import subprocess
 import shutil
 
-from typing import Dict, Union, Optional
+from typing import Union
 
 import menutils
 
 
-from spack.spack import Spack, SpackType
+from spack.spack import Spack, SpackDB
+from spack.spackio import SpackLoader
 
 use_git_rename = "GIT_MV" in os.environ
 
@@ -25,23 +26,16 @@ class SpackConverter():
     # path to mod_assets folder to check
     ma_folder_path: str
 
-    spacks: Dict[str, Spack]
-    spacks_by_type: Dict[SpackType, Dict[str, Spack]]
+    spack_db: SpackDB
 
     def __init__(self, ma_folder_path: str):
         self.ma_folder_path = ma_folder_path
-
-    #region loading
-
-
 
     def load(self):
         """
         Loads spritepacks in the set dir
         """
-
-
-    #endregion
+        self.spack_db = SpackLoader.load(self.ma_folder_path)
 
     def create_dir(self, spack: Spack):
         """

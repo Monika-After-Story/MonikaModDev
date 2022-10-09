@@ -1,41 +1,9 @@
 
 import os
-import re
 
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
-from spack.spack import Spack, SpackType, SpackDB
-
-
-MOD_ASSETS = "mod_assets"
-PNG_EXT = ".png"
-
-ACS_PATH = "monika/a"
-HAIR_PATH = "monika/h"
-CLOTHES_PATH = "monika/c"
-SPRITE_PATHS = [ACS_PATH, HAIR_PATH, CLOTHES_PATH]
-
-
-# matches ACS files. 2 capturing groups:
-#   1 - acs ID (img sit)
-#   2 - ACS file codes
-ACS_FILE_IN = re.compile(r"acs-(\w+)-([\w-]+)\.png")
-ACS_FILE_OUT = "acs-{0}-{1}.png"
-
-# matches non-leaning hair files. 3 capturing groups:
-#   1 - hair ID (img sit)
-#   2 - hair code (front/back/mid/etc...)
-#   3 - any remaining hair codes like highlight, will include dash (-) prefix
-HAIR_FILE_IN = re.compile(r"hair-(\w+)-(back|mid|front|0|5|10)((?:-\w+)*)\.png")
-HAIR_FILE_OUT = "hair-{0}-{1}{2}.png"
-
-# matches leaning hair files. 4 capturing groups:
-#   1 - lean type
-#   2 - hair ID (img sit)
-#   2 - hair code (front/back/mid/etc...)
-#   3 - any remaining hair codes like highlight, will include dash (-) prefix
-HAIR_LEAN_FILE_IN = re.compile(r"hair-leaning-(\w+)-(\w+)-(back|mid|front|0|5|10)((?:-\w+)*)\.png")
-HAIR_LEAN_FILE_OUT = "hair-leaning-{0}-{1}-{2}{3}.png"
+from spack.spack import Spack, SpackType, SpackDB, trim_to_mod_assets, sprite_paths
 
 
 class SpackLoader():
@@ -43,19 +11,8 @@ class SpackLoader():
     Loads spacks
     """
 
-    @staticmethod
-    def trim_to_mod_assets(ma_folder_path: str) -> str:
-        """
-        Slices the given ma folder path so the path ends at mod assets.
-        Raises exception if not mod assets folder path.
-        :param ma_folder_path: mod assets folder path to trim
-        :returns: trimmed mod assets folder path
-        """
-        start = ma_folder_path.find(MOD_ASSETS)
-        if start >= 0:
-            return ma_folder_path[:start+len(MOD_ASSETS)]
-
-        raise ValueError("mod_assets not in selected folder path: {0}".format(ma_folder_path))
+    # alias
+    trim_to_mod_assets = trim_to_mod_assets
 
     @classmethod
     def load(cls, ma_folder_path: str) -> SpackDB:
@@ -64,10 +21,10 @@ class SpackLoader():
         :param ma_folder_path: mod assets folder path
         :returns: Spack Database
         """
-        ma_folder_path = cls.trim_to_mod_assets(ma_folder_path)
+        ma_folder_path = trim_to_mod_assets(ma_folder_path)
         db = SpackDB()
 
-        for path in SPRITE_PATHS:
+        for path in sprite_paths():
             sp_folder_path = os.path.normcase(os.path.join(ma_folder_path, path))
             contents = os.listdir(sp_folder_path)
 
@@ -139,3 +96,39 @@ class SpackLoader():
 
 
         return None
+
+
+class SpackWriter():
+    """
+    Writes spacks
+    """
+
+    # alias
+    trim_to_mod_assets = trim_to_mod_assets
+
+    @staticmethod
+    def delete_spack(ma_folder_path: str, spack: Spack):
+        """
+        deletes a spack. Cannot be reversed
+        :param spack: spack to delete
+        """
+        if spack.is_new:
+            file_list = [
+                path_from_type(spack.spack_type, spack.img_sit, file_name)
+                for file_name in spack.file_list
+            ]
+
+        else:
+            file_list = spack.file_list
+
+        for file_name in file_list:
+            real_path = os.path.normcase(os.path.join(ma_folder_path, file_name))
+            os.remove(real_path)
+
+    @staticmethod
+    def convert_spack(src_spack: Spack, dest_spack: Spack):
+        """
+        Converts the spack
+        :param src_spack: the spack to start with
+        :param dest_spack: the spack to convert to
+        """
