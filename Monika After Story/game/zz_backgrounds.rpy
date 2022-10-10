@@ -3004,7 +3004,10 @@ init python:
         OUT:
             MASFilterableBackground if found, None otherwise
         """
-        return mas_background.getBackground(background_id, default)
+        bg = mas_background.getBackground(background_id)
+        if bg:
+            return bg
+        return default
 
     def mas_getCurrentBackgroundId(default=None):
         """
