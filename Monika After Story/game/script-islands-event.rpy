@@ -112,22 +112,11 @@ image living_room_night_rain = mas_island_event._get_room_sprite("n_r", False)
 image living_room_night_overcast = "living_room_night_rain"
 image living_room_night_snow = mas_island_event._get_room_sprite("n_s", False)
 # Sunset images
-image living_room_ss = MASFilteredSprite(
-    store.mas_sprites.FLT_SUNSET,
-    renpy.displayable("living_room_day")
-)
-image living_room_ss_rain = MASFilteredSprite(
-    store.mas_sprites.FLT_SUNSET,
-    renpy.displayable("living_room_day_rain")
-)
-image living_room_ss_overcast = MASFilteredSprite(
-    store.mas_sprites.FLT_SUNSET,
-    renpy.displayable("living_room_day_overcast")
-)
-image living_room_ss_snow = MASFilteredSprite(
-    store.mas_sprites.FLT_SUNSET,
-    renpy.displayable("living_room_day_snow")
-)
+image living_room_ss = mas_island_event._apply_flt_on_room_sprite("living_room_day", mas_sprites.FLT_SUNSET)
+image living_room_ss_rain = mas_island_event._apply_flt_on_room_sprite("living_room_day_rain", mas_sprites.FLT_SUNSET)
+image living_room_ss_overcast = mas_island_event._apply_flt_on_room_sprite("living_room_day_overcast", mas_sprites.FLT_SUNSET)
+image living_room_ss_snow = mas_island_event._apply_flt_on_room_sprite("living_room_day_snow", mas_sprites.FLT_SUNSET)
+
 
 ## Lit room
 # Day images
@@ -1120,6 +1109,26 @@ init -25 python in mas_island_event:
 
         except KeyError:
             return NULL_DISP
+
+    def _apply_flt_on_room_sprite(room_img_tag, flt):
+        """
+        Returns the room image with the filter applied on it
+
+        IN:
+            room_img_tag - str - the image tag
+            flt - str - the filter id to use
+
+        OUT:
+            image manipulator
+            or Null displayable if we failed to decode the images
+        """
+        if not store.mas_decoded_islands:
+            return NULL_DISP
+
+        return store.MASFilteredSprite(
+            flt,
+            renpy.displayable(room_img_tag)
+        )
 
     def _is_unlocked(id_):
         """
