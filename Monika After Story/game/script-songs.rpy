@@ -2127,7 +2127,7 @@ label mas_monika_plays_yr(skip_leadin=False):
     call mas_timed_text_events_prep
 
     pause 2.0
-    $ play_song(store.songs.FP_YOURE_REAL,loop=False)
+    $ mas_play_song(store.songs.FP_YOURE_REAL,loop=False)
 
     # TODO: possibly generalize this for future use
     show monika 6hua
@@ -2234,7 +2234,7 @@ label mas_monika_plays_or(skip_leadin=False):
         $ disable_esc()
 
     pause 2.0
-    $ play_song(songs.FP_PIANO_COVER,loop=False)
+    $ mas_play_song(songs.FP_PIANO_COVER,loop=False)
 
     show monika 1dsa
     pause 9.15

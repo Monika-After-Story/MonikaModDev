@@ -1293,7 +1293,7 @@ label mas_timed_text_events_prep:
 
         # store/stop current music and background/sounds
         curr_song = songs.current_track
-        play_song(None, 1.0)
+        mas_play_song(None, 1.0)
         amb_vol = songs.getVolume("backsound")
         renpy.music.set_volume(0.0, 1.0, "background")
         renpy.music.set_volume(0.0, 1.0, "backsound")
@@ -1313,9 +1313,9 @@ label mas_timed_text_events_wrapup:
 
         # restart song/sounds that were playing before event
         if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
-            play_song(curr_song, 1.0)
+            mas_play_song(curr_song, 1.0)
         else:
-            play_song(None, 1.0)
+            mas_play_song(None, 1.0)
 
         renpy.music.set_volume(amb_vol, 1.0, "background")
         renpy.music.set_volume(amb_vol, 1.0, "backsound")

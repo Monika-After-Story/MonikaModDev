@@ -1098,7 +1098,7 @@ init python:
         Meant for usage in startup processes.
         """
         if persistent.current_track is not None:
-            play_song(persistent.current_track, if_changed=True)
+            mas_play_song(persistent.current_track, if_changed=True)
 
 
     def select_music():
@@ -1115,7 +1115,7 @@ init python:
 
             # workaround to handle new context
             if selected_track != songs.current_track:
-                play_song(selected_track, set_per=True)
+                mas_play_song(selected_track, set_per=True)
 
             # unwanted interactions are no longer unwanted
             if store.mas_globals.dlg_workflow:

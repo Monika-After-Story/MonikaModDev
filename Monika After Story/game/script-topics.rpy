@@ -2393,11 +2393,11 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
                 # The user has not started another track
                 and not renpy.music.is_playing(channel="music")
             ):
-                store.play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
+                store.mas_play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
 
         # Stop the music
         if stop_music:
-            play_song(None, fadeout=5.0)
+            mas_play_song(None, fadeout=5.0)
 
         # Queue the lullaby
         if lullaby == MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC:
@@ -2415,7 +2415,7 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
 
         # Just play the lullaby
         elif lullaby == MAS_HOLDME_PLAY_LULLABY:
-            play_song(store.songs.FP_MONIKA_LULLABY)
+            mas_play_song(store.songs.FP_MONIKA_LULLABY)
 
         # Hide ui and disable hotkeys
         HKBHideButtons()
@@ -2671,7 +2671,7 @@ label monika_holdme_long:
         "{i}Wake Monika up.{/i}":
             # Only fadeout if we're playing the lullaby
             if songs.current_track == songs.FP_MONIKA_LULLABY:
-                $ play_song(None, fadeout=5.0)
+                $ mas_play_song(None, fadeout=5.0)
 
             if mas_isMoniLove():
                 m 6dubsa "...{w=1}Mmm~"
@@ -11581,7 +11581,7 @@ label monika_grad_speech_ignored_lock:
 label monika_grad_speech:
     call mas_timed_text_events_prep
 
-    $ play_song("mod_assets/bgm/PaC.ogg",loop=False)
+    $ mas_play_song("mod_assets/bgm/PaC.ogg",loop=False)
 
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3}.{w=0.3}.{w=0.6}{nw}"
