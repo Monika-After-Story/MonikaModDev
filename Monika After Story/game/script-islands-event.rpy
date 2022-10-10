@@ -27,7 +27,7 @@ init 1:
     #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
-    define mas_decoded_islands = store.mas_island_event.decode_images()
+    define mas_decoded_islands = store.mas_island_event.decode_data()
     define mas_cannot_decode_islands = not mas_decoded_islands
 
     python:
@@ -850,7 +850,7 @@ init -25 python in mas_island_event:
         buf.seek(0)
         return buf
 
-    def decode_images():
+    def decode_data():
         """
         Attempts to decode the images
 
@@ -1268,19 +1268,28 @@ init -25 python in mas_island_event:
         _unlock("decal_bookshelf")
         _unlock("decal_tree")
 
-    def __final_unlocks():
-        # Also update monika_why_spaceroom
-        if renpy.seen_label("mas_monika_islands_final_reveal"):
-            _unlock("decal_house")
-            _lock("decal_glitch")
+    def _final_unlocks():
+        # TODO: update monika_why_spaceroom
+        # NOTE: NO SANITY CHECKS, use carefully
+        _unlock("other_isly")
+        _unlock("decal_house")
+        _lock("decal_glitch")
 
     def __unlocks_for_lvl_8():
         if persistent._mas_pm_cares_island_progress is not False:
-            __final_unlocks()
+            if renpy.seen_label("mas_monika_islands_final_reveal"):
+                _final_unlocks()
+
+            else:
+                pass
 
     def __unlocks_for_lvl_9():
         if persistent._mas_pm_cares_island_progress is False:
-            __final_unlocks()
+            if renpy.seen_label("mas_monika_islands_final_reveal"):
+                _final_unlocks()
+
+            else:
+                pass
 
     # # # END
 
@@ -1396,6 +1405,36 @@ init -25 python in mas_island_event:
         persistent._mas_islands_start_lvl = None
         persistent._mas_islands_progress = DEF_PROGRESS
         persistent._mas_islands_unlocks = IslandsImageDefinition.getDefaultUnlocks()
+
+    def play_music():
+        """
+        Plays appropriate music based on the current weather
+        """
+        if not _is_unlocked("other_isly"):
+            return
+
+        if store.mas_is_raining:
+            track = store.audio.isld_isly_rain
+
+        elif store.mas_is_snowing:
+            track = store.audio.isld_isly_snow
+
+        else:
+            track = store.audio.isld_isly_clear
+
+        if track:
+            store.mas_play_song(track, loop=True, set_per=False, fadein=2.5, fadeout=2.5)
+
+    def stop_music():
+        """
+        Stops islands music
+        """
+        if store.songs.current_track in (
+            store.audio.isld_isly_rain,
+            store.audio.isld_isly_snow,
+            store.audio.isld_isly_clear
+        ):
+            store.mas_play_song(None, fadeout=2.5)
 
     def get_islands_displayable(enable_interaction=True, check_progression=False):
         """
