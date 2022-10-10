@@ -14,6 +14,11 @@ default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 # Bear in mind, if you decide to add a new item, you'll need an update script
 default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefinition.getDefaultUnlocks()
 
+# Will be loaded later
+default 0 audio.isld_isly_clear = None
+default 0 audio.isld_isly_rain = None
+default 0 audio.isld_isly_snow = None
+
 
 ### initialize the island images
 init 1:
@@ -153,7 +158,7 @@ init -20 python in mas_island_event:
         TYPE_BG = "bg"
         TYPE_OVERLAY = "overlay"
         TYPE_INTERIOR = "interior"
-        TYPE_OBJECT = "obj"# This is basically for everything else
+        TYPE_OTHER = "other"# This is basically for everything else
         TYPES = frozenset(
             (
                 TYPE_ISLAND,
@@ -161,7 +166,7 @@ init -20 python in mas_island_event:
                 TYPE_BG,
                 TYPE_OVERLAY,
                 TYPE_INTERIOR,
-                TYPE_OBJECT
+                TYPE_OTHER
             )
         )
 
@@ -193,7 +198,7 @@ init -20 python in mas_island_event:
                         - 'decal_###'
                         - 'bg_###'
                         - 'overlay_###'
-                        - 'obj_###'
+                        - 'other_###'
                         where ### is something unique
                 type_ - type of this sprite, if None, we automatically get it from the id
                     (Default: None)
@@ -584,7 +589,7 @@ init -20 python in mas_island_event:
     )
     # Objects
     IslandsImageDefinition(
-        "obj_shimeji",
+        "other_shimeji",
         fp_map={},
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -595,6 +600,10 @@ init -20 python in mas_island_event:
             function=__chibi_transform_func,
             on_click="mas_island_shimeji"
         )
+    )
+    IslandsImageDefinition(
+        "other_isly",
+        filenames=("clear", "rain", "snow")
     )
     # Interior
     IslandsImageDefinition(
@@ -722,7 +731,7 @@ init -25 python in mas_island_event:
     # These're being populated later once we decode the imgs
     island_disp_map = dict()
     decal_disp_map = dict()
-    obj_disp_map = dict()
+    other_disp_map = dict()
     bg_disp_map = dict()
     overlay_disp_map = dict()
     interior_disp_map = dict()
@@ -781,7 +790,7 @@ init -25 python in mas_island_event:
             **filter_pairs
         )
 
-    def _handle_raw_pkg_data(pkg_data):
+    def _handle_raw_pkg_data(pkg_data, base_err_msg):
         """
         Handles raw data and returns clean, parsed data
         Logs errors
@@ -813,8 +822,8 @@ init -25 python in mas_island_event:
                     buf.write(chunk)
 
         except Exception as e:
-            mas_utils.writelog(
-                err_msg.format(
+            mas_utils.mas_log.error(
+                base_err_msg.format(
                     "Unexpected exception while parsing raw package data: {}".format(e)
                 )
             )
@@ -830,21 +839,21 @@ init -25 python in mas_island_event:
         OUT:
             True upon success, False otherwise
         """
-        err_msg = "[ERROR] Failed to decode images: {}.\n"
+        err_msg = "Failed to decode isld data: {}.\n"
 
         pkg = islands_station.getPackage("our_reality")
 
         if not pkg:
-            mas_utils.writelog(err_msg.format("Missing package"))
+            mas_utils.mas_log.error(err_msg.format("Missing package"))
             return False
 
         pkg_data = islands_station.unpackPackage(pkg, pkg_slip=None)#mas_ics.ISLAND_PKG_CHKSUM)# FIXME: undo this
 
         if not pkg_data:
-            mas_utils.writelog(err_msg.format("Bad package"))
+            mas_utils.mas_log.error(err_msg.format("Bad package"))
             return False
 
-        zip_data = _handle_raw_pkg_data(pkg_data)
+        zip_data = _handle_raw_pkg_data(pkg_data, err_msg)
         if not zip_data:
             return False
 
@@ -881,8 +890,15 @@ init -25 python in mas_island_event:
                     (store.MASImageData(zip_file.read(fn), fn + ".png") for fn in GLITCH_FPS)
                 )
 
+                # Audio is being loaded right away
+                isly_data = IslandsImageDefinition.getDataFor("other_isly")
+                for fn, fp in isly_data.fp_map.iteritems():
+                    audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
+                    setattr(store.audio, "isld_isly_" + fn, audio_data)
+
         except Exception as e:
-            mas_utils.writelog(err_msg.format(e))
+            # mas_utils.writelog(err_msg.format(e))
+            mas_utils.mas_log.error(err_msg.format(e), exc_info=True)
             return False
 
         else:
@@ -912,7 +928,7 @@ init -25 python in mas_island_event:
             interior_imgs_map - the map from the interior stuff to the raw images map
             glitch_frames - tuple of glitch raw anim frames
         """
-        global island_disp_map, decal_disp_map, obj_disp_map
+        global island_disp_map, decal_disp_map, other_disp_map
         global bg_disp_map, overlay_disp_map, interior_disp_map
 
         # Build the islands
@@ -1077,8 +1093,8 @@ init -25 python in mas_island_event:
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
         # Build chibi disp
-        partial_disp = IslandsImageDefinition.getDataFor("obj_shimeji").partial_disp
-        obj_disp_map["obj_shimeji"] = partial_disp()
+        partial_disp = IslandsImageDefinition.getDataFor("other_shimeji").partial_disp
+        other_disp_map["other_shimeji"] = partial_disp()
 
         # Build thunder overlay
         partial_disp = IslandsImageDefinition.getDataFor("overlay_thunder").partial_disp
@@ -1180,8 +1196,9 @@ init -25 python in mas_island_event:
         _unlock("island_8")
 
     def __unlocks_for_lvl_1():
-        _unlock("obj_shimeji")
-        _unlock("decal_glitch")
+        _unlock("other_shimeji")
+        if not renpy.seen_label("mas_monika_islands_final_reveal"):
+            _unlock("decal_glitch")
 
     def __unlocks_for_lvl_2():
         _unlock("island_2")
@@ -1213,16 +1230,19 @@ init -25 python in mas_island_event:
         _unlock("decal_bookshelf")
         _unlock("decal_tree")
 
-    def __unlocks_for_lvl_8():
-        # TODO: me
+    def __final_unlocks():
         # Also update monika_why_spaceroom
-        if persistent._mas_pm_cares_island_progress:
-            pass
-        return
+        if renpy.seen_label("mas_monika_islands_final_reveal"):
+            _unlock("decal_house")
+            _lock("decal_glitch")
+
+    def __unlocks_for_lvl_8():
+        if persistent._mas_pm_cares_island_progress is not False:
+            __final_unlocks()
 
     def __unlocks_for_lvl_9():
-        # TODO: me
-        return
+        if persistent._mas_pm_cares_island_progress is False:
+            __final_unlocks()
 
     # # # END
 
@@ -1394,8 +1414,8 @@ init -25 python in mas_island_event:
             )
         )
 
-        if _is_unlocked("obj_shimeji") and random.random() <= SHIMEJI_CHANCE:
-            shimeji_disp = obj_disp_map["obj_shimeji"]
+        if _is_unlocked("other_shimeji") and random.random() <= SHIMEJI_CHANCE:
+            shimeji_disp = other_shimeji["other_shimeji"]
             _reset_parallax_disp(shimeji_disp)
             SHIMEJI_CHANCE /= 2.0
             sub_displayables.append(shimeji_disp)
@@ -1626,7 +1646,7 @@ label mas_monika_islands_progress:
 
         "I'm not interested.":
             $ persistent._mas_pm_cares_island_progress = False
-            $ mas_loseAffectionFraction(min_amount=50, modifier=1.2)
+            $ mas_loseAffectionFraction(min_amount=50, modifier=1.0)
             m 2ekc "Oh..."
             m 6rktpc "I..."
             m 6fktpd "I worked really hard on this..."
@@ -2017,7 +2037,7 @@ label mas_island_shimeji:
     m "Ah!"
     m "How'd she get there?"
     m "Give me a second, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    $ islands_displayable.remove(mas_island_event.obj_disp_map["obj_shimeji"])
+    $ islands_displayable.remove(mas_island_event.other_shimeji["other_shimeji"])
     m "All done!"
     m "Don't worry, I just moved her to a different place."
     return
