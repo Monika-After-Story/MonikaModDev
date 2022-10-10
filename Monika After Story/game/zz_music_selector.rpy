@@ -1047,7 +1047,7 @@ init python:
             songs.setUserVolume(songs.music_volume, "music")
 
 
-    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
+    def mas_play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
         """
         literally just plays a song onto the music channel
         Also sets the currentt track
@@ -1087,6 +1087,9 @@ init python:
         if set_per:
             persistent.current_track = song
 
+    @mas_utils.deprecated(use_instead="mas_play_song")
+    def play_song(*args, **kwargs):
+        mas_play_song(*args, **kwargs)
 
     def mas_startup_song():
         """
