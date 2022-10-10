@@ -377,7 +377,10 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.11.1
 label v0_12_11_1(version="v0_12_11_1"):
     python hide:
-        pass
+        isld_p_data = persistent._mas_islands_unlocks
+        if isld_p_data is not None:
+            isld_p_data["other_shimeji"] = isld_p_data.pop("obj_shimeji", False)
+            isld_p_data["other_isly"] = False
 
     return
 
