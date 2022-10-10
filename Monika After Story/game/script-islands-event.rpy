@@ -56,6 +56,35 @@ init 1:
             return mas_decoded_islands and mas_island_event.isFilterSupported(flt)
 
 
+# A bunch of transforms we use for the final islands event
+transform mas_islands_final_reveal_trans_1(delay, move_time):
+    zoom 3.2
+    align (0.45, 0.0)
+
+    pause delay
+    linear move_time align (0.9, 0.0)
+
+transform mas_islands_final_reveal_trans_2(delay, move_time):
+    zoom 2.5
+    align (0.15, 0.5)
+
+    pause delay
+    linear move_time align (0.0, 0.2) zoom 1.9
+
+transform mas_islands_final_reveal_trans_3(delay, move_time, zoom_time):
+    zoom 3.0
+    align (1.0, 0.2)
+
+    pause delay
+    linear move_time align (0.7, 0.6)
+    linear zoom_time zoom 1.0
+
+transform mas_islands_final_reveal_trans_4(delay, zoom_time):
+    align (0.62, 0.55)
+    pause delay
+    linear zoom_time zoom 10.0
+
+
 # Transform for weather overlays
 transform mas_islands_weather_overlay_transform(speed=1.0, img_width=1500, img_height=2000):
     animation
