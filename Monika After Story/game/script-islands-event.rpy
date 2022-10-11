@@ -15,9 +15,12 @@ default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefinition.getDefaultUnlocks()
 
 # Will be loaded later
-default 0 audio.isld_isly_clear = None
-default 0 audio.isld_isly_rain = None
-default 0 audio.isld_isly_snow = None
+init python in audio:
+    # can't use define with mutable data
+    # default just doesn't work /shrug
+    isld_isly_clear = None
+    isld_isly_rain = None
+    isld_isly_snow = None
 
 
 ### initialize the island images
@@ -726,6 +729,24 @@ init -25 python in mas_island_event:
     DATA_JM_SIZE = len(DATA_ITS_JUST_MONIKA)
     DATA_READ_CHUNK_SIZE = 2 * 1024**2
     DATA_SPACING = 8 * 1024**2
+
+    REVEAL_FADEIN_TIME = 0.5
+    REVEAL_WAIT_TIME = 0.1
+    REVEAL_FADEOUT_TIME = REVEAL_FADEIN_TIME
+
+    REVEAL_TRANSITION_TIME = REVEAL_FADEIN_TIME + REVEAL_WAIT_TIME + REVEAL_FADEOUT_TIME
+    REVEAL_ANIM_DELAY = REVEAL_FADEIN_TIME + REVEAL_WAIT_TIME
+
+    REVEAL_ANIM_1_DURATION = 12.85
+    REVEAL_ANIM_2_DURATION = 13.1
+    REVEAL_ANIM_3_1_DURATION = 13.6
+    REVEAL_ANIM_3_2_DURATION = 12.7
+    REVEAL_ANIM_4_DURATION = 0.5
+
+    REVEAL_OVERVIEW_DURATION = 10.0
+
+    REVEAL_FADE_TRANSITION = store.Fade(REVEAL_FADEIN_TIME, REVEAL_WAIT_TIME, REVEAL_FADEOUT_TIME)
+    REVEAL_DISSOLVE_TRANSITION = store.Dissolve(REVEAL_FADEIN_TIME)
 
     SFX_LIT = "_lit"
     SFX_NIGHT = "_night"
@@ -1737,6 +1758,170 @@ label mas_monika_islands_progress:
             m 7eka "Just don't keep me waiting too long~"
             $ mas_setEventPause(20)
             $ mas_moni_idle_disp.force_by_code("1euc", duration=20, skip_dissolve=True)
+
+    return
+
+default persistent._mas_pm_likes_islands = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monika_islands_final_reveal"
+        ),
+        restartBlacklist=True
+    )
+
+label mas_monika_islands_final_reveal:
+    python:
+        renpy.dynamic("islands_disp")
+        mas_island_event._final_unlocks()
+        islands_disp = mas_island_event.get_islands_displayable(False, False)
+
+    m 4sub "I'm so excited to finally show you my work!"
+
+    if mas_getCurrentBackgroundId() != "spaceroom":
+        m 7eua "Let's return to the classroom for the best view."
+        call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True)
+
+    m 1eua "Now let me turn off the light.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
+    window hide
+    call .islands_scene
+    window auto
+
+    m "..."
+    m "I'm surprised it actually worked, ahaha!~"
+    m "You know, after spending so much time working on this..."
+    m "It feels so satisfying to not only being able to see the result myself..."
+    m "But also being able to show it to you, [mas_get_player_nickname()]."
+    m "I'm sure you had been wondering what was behind that bug on the central island~"
+    m "It's a small house for us to spend time in, we can go there any time now, just ask."
+
+    if mas_background.getUnlockedBGCount() == 1:
+        m "I know staying in this empty classroom can feel tiresome sometimes."
+        m "So it's nice to get more places to visit."
+
+    else:
+        m "Even with all the other places we have, it's always nice to get new surroundings."
+
+    m "Now, why don't we go inside, [player]?"
+
+    window hide
+    call .zoom_in
+    window auto
+
+    python hide:
+        bg = mas_getBackground(mas_island_event.LIVING_ROOM_ID)
+        if bg:
+            mas_changeBackground(bg)
+        mas_island_event.stop_music()
+
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 4hub")
+
+    m "Tada!~"
+    m 2eua "So, [player]..."
+    m 3eka "Your opinion is {i}really{/i} important to me."
+
+    call .ask_opinion
+
+    return
+
+label mas_monika_islands_final_reveal.islands_scene:
+    $ mas_RaiseShield_core()
+    $ mas_OVLHide()
+    $ mas_hotkeys.no_window_hiding = True
+    $ mas_play_song(None)
+    scene black with dissolve
+
+    $ mas_island_event.play_music()
+
+    # I'd love to split the lines properly, but renpy doesn't allow that, so have this cursed thing instead
+    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_1(
+        delay=mas_island_event.REVEAL_ANIM_DELAY,
+        move_time=mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY
+    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+    $ renpy.pause(mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
+
+    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_2(
+        delay=mas_island_event.REVEAL_ANIM_DELAY,
+        move_time=mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_ANIM_DELAY
+    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+    $ renpy.pause(mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
+
+    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_3(
+        delay=mas_island_event.REVEAL_ANIM_DELAY,
+        move_time=mas_island_event.REVEAL_ANIM_3_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY,
+        zoom_time=mas_island_event.REVEAL_ANIM_3_2_DURATION
+    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+    $ renpy.pause(mas_island_event.REVEAL_ANIM_3_1_DURATION + mas_island_event.REVEAL_ANIM_3_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME, hard=True)
+
+    $ renpy.pause(mas_island_event.REVEAL_OVERVIEW_DURATION, hard=True)
+    $ mas_hotkeys.no_window_hiding = False
+    $ mas_OVLShow()
+    $ mas_DropShield_core()
+    $ mas_RaiseShield_dlg()
+
+    return
+
+label mas_monika_islands_final_reveal.zoom_in:
+    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_4(
+        delay=0.0,
+        zoom_time=mas_island_event.REVEAL_ANIM_4_DURATION
+    ) zorder mas_island_event.DEF_SCREEN_ZORDER
+    $ renpy.pause(mas_island_event.REVEAL_ANIM_4_DURATION - mas_island_event.REVEAL_FADEOUT_TIME, hard=True)
+    scene black with mas_island_event.REVEAL_DISSOLVE_TRANSITION
+
+    return
+
+label mas_monika_islands_final_reveal.ask_opinion:
+    m 1eksdla "What do you think?~{nw}"
+    $ _history_list.pop()
+    menu:
+        m "What do you think?~{fast}"
+
+        "It's not too bad.":
+            $ persistent._mas_pm_likes_islands = False
+            $ mas_loseAffectionFraction(min_amount=50, modifier=1.0)
+            $ mas_lockEVL("mas_monika_islands", "EVE")
+            m 2ekd "Oh...{w=0.3}{nw}"
+            extend 2lkc "I guess it's not perfect..."
+            m 2dktpc "But after all that time I've spent working for a place for us, {w=0.1}{nw}"
+            extend 2fktud "you could at least pretend to care."
+
+            if persistent._mas_pm_cares_island_progress is False:
+                $ mas_loseAffectionFraction(min_amount=50, modifier=0.5)
+                m 2dktsc "..."
+                m 2gftpc "Although, what did I expect...{w=0.3}{nw}"
+                extend 2eftud "you have said you don't care before."
+                m 2dstdc "Forget, {w=0.3}{nw}"
+                extend 2mstdc "this was a waste of time. {w=0.3}{nw}"
+                extend 2tsc "For both of us."
+
+            else:
+                m 2dktsc "It hurts, [player]... {w=0.3}It really, {w=0.1}{i}really{/i} hurts."
+                m 2fftdd "You know what? {w=0.1}Forget. {w=0.3}{nw}"
+                extend 2mftdc "It was a mistake from the start."
+
+            # TODO: reference monika_sweatercurse?
+
+        "You did an amazing job!":
+            $ persistent._mas_pm_likes_islands = True
+            $ mas_gainAffection(10, bypass=True)
+            m 1wuo "Really? {w=0.3}{nw}"
+            extend 2suo "You can't imagine how much that means to me, [player]!"
+            m 2fktpa "I'm so, {w=0.1}{i}so{/i} glad you liked it."
+
+            if persistent._mas_pm_cares_island_progress is False:
+                $ mas_gainAffection(5, bypass=True)
+                m 3rktdc "You've got me a bit worried before when you said you don't care about our islands..."
+                m 1eka "It makes me incredibly happy you've changed your mind."
+
+            elif persistent._mas_pm_cares_island_progress:
+                $ mas_gainAffection(5, bypass=True)
+                m 3fktda "It's only because of your everlasting love and support I was able to finish this."
+
+            m 3hublb "Thanks for being my inspiration, [mas_get_player_nickname()]~"
 
     return
 
