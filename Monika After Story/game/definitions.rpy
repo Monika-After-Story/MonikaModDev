@@ -6099,14 +6099,10 @@ init -1 python:
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
 
-    def mas_delete_all_chrs(log=False):
+    def mas_delete_all_chrs():
         """
-        Deletes all chr files under /characters/ folder.
-
-        IN:
-            log (deprecated):
-                If True, print log message on deletion error. Deprecated and is
-                no longer used as docking station will always log errors.
+        Deletes all chr files under /characters/ folder. Any encountered errors
+        will be printed to log.
         """
         for pkg in store.mas_ics.mas_docking_station.getPackageList("chr"):
             store.mas_ics.mas_docking_station.destroyPackage(pkg)
