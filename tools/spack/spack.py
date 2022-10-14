@@ -87,6 +87,20 @@ class ConverterPackage():
     used for file converter to convert between things
     """
 
+    @property
+    def img_sit(self):
+        """
+        Should be the img_sit corresponding data
+        """
+        raise NotImplemented
+
+    @img_sit.setter
+    def img_sit(self, val):
+        """
+        Should set the img sit data
+        """
+        raise NotImplemented
+
 @dataclass
 class ACSConverterPackage(ConverterPackage):
     """
@@ -96,6 +110,14 @@ class ACSConverterPackage(ConverterPackage):
     acs_id: str = ""
     # ACS file codes
     file_codes: str = ""
+
+    @property
+    def img_sit(self):
+        return self.acs_id
+
+    @img_sit.setter
+    def img_sit(self, val):
+        self.acs_id = val
 
 
 @dataclass
@@ -111,6 +133,14 @@ class HairConverterPackage(ConverterPackage):
     other_hair_codes: str = ""
     # lean type (only if leaning)
     lean_type: str = ""
+
+    @property
+    def img_sit(self):
+        return self.hair_id
+
+    @img_sit.setter
+    def img_sit(self, val):
+        self.hair_id = val
 
 
 class FileConverter():
@@ -360,6 +390,22 @@ class SpackType(Enum):
         """
         return os.path.join(PATH_PREFIX, self.dir_name, *suffixes)
 
+    def get_img_sit_from_old(self, old_file_name: str) -> Optional[str]:
+        """
+        Gets image sit from an old file name
+        :param old_file_name: old style filename
+        :returns: img sit, or null string if could not get
+        """
+        if self.file_converter:
+
+            old_pkg = self.file_converter.build_converter_package()
+
+            if self.file_converter.create_old_pkg(old_file_name, old_pkg):
+
+                return old_pkg.img_sit
+
+        return None
+
     def verify_file(self, file_name: str) -> SpackTypeVerificationResult:
         """
         Verifies if the given file is valid for this spack type
@@ -369,7 +415,7 @@ class SpackType(Enum):
         if self.file_converter:
 
             # always try old first, then new
-            if self.file_converter.match_on_new(file_name):
+            if self.file_converter.match_on_old(file_name):
                 return SpackTypeVerificationResult.OLD
 
             elif self.file_converter.match_on_new(file_name):
@@ -392,21 +438,6 @@ class SpackType(Enum):
         :returns: list of mod asset paths
         """
         return [spack_type.as_ma_path() for spack_type in cls.enums()]
-
-    @classmethod
-    def from_file(cls, file_name: str) -> Optional["SpackType"]:
-        """
-        determines spack type from the given file name
-        :param file_name: file name to check
-        :returns: spack type, or None if not valid/unknown spack type
-        """
-        if file_name.startswith(cls.ACS.as_prefix()):
-            return cls.ACS
-
-        elif file_name.startswith(cls.HAIR.as_prefix()):
-            return cls.HAIR
-
-        return None
 
     @classmethod
     def from_path(cls, path: str) -> Optional["SpackType"]:
@@ -479,18 +510,58 @@ class Spack():
     def as_new(self) -> "Spack":
         """
         Creates a "new" version of this spack.
+        Raises ValueError if file could not be converted, or if this spack cannot be turned new
         :returns: new version of this spack. If this spack is already new, itself is returned
         """
         if self.is_new:
             return self
 
-        if self.spack_type == SpackType.ACS:
-            pass
+        if self.spack_type == SpackType.CLOTHES:
+            raise ValueError("unsupported spack tried to become new")
 
-        elif self.spack_type == SpackType.HAIR:
-            pass
+        new_file_list = []
 
-        return self
+        for file_name in self.file_list:
+            new_file_name = self.spack_type.file_converter.convert_to_new(file_name)
+
+            if new_file_name == file_name:
+                # this is bad
+                raise ValueError("file '{0}' does not match old-style file convention".format(file_name))
+
+            new_file_list.append(new_file_name)
+
+        return Spack(self.img_sit, True, new_file_list, self.spack_type)
+
+
+    def as_old(self) -> "Spack":
+        """
+        Creates an "old" version of this spack.
+        Raises ValueError if file could not be converted, or if this spack cannot be turned old
+        :returns: old version of this spack. If this spack is already old, itself is returned.
+        """
+        if not self.is_new:
+            return self
+
+        if self.spack_type == SpackType.CLOTHES:
+            raise ValueError("unsupported spack tried to become old")
+
+        old_file_list = []
+
+        # new files do not have img sit
+        conv_data = self.spack_type.file_converter.build_converter_package()
+        conv_data.img_sit = self.img_sit
+
+        for file_name in self.file_list:
+            old_file_name = self.spack_type.file_converter.convert_to_old(file_name, conv_data)
+
+            if old_file_name == file_name:
+                # this is bad
+                raise ValueError("file '{0}' does not match new-style file convention".format(file_name))
+
+            old_file_list.append(old_file_name)
+
+        return Spack(self.img_sit, False, old_file_list, self.spack_type)
+
 
 
 
