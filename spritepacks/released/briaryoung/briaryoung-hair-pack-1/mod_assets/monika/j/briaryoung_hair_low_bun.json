@@ -1,0 +1,19 @@
+{
+    "__author": "Briar Young",
+    "version": 3,
+    "type": 1,
+    "name": "briaryoung_low_bun",
+    "img_sit": "briaryoung_low_bun",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Bun (Low)",
+        "thumb": "briaryoung_low_bun",
+        "group": "hair"
+    },
+    "unlock": true
+}

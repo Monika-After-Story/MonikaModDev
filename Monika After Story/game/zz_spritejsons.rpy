@@ -318,7 +318,7 @@
 # Highlight Split JSON
 #   Highlight split objects are only for MASSPlitAccessory (Split ACS).
 #   Keys should be the same as values used in the corresponding pose_map.
-#   Values should be {Highlight objects}
+#   Values should be {Highlight objects}, using the HighlightSplit keys.
 #
 # Highlight JSON
 #   Intended values vary wildly based on object. See below the JSON for
@@ -2597,6 +2597,7 @@ init 189 python in mas_sprites_json:
             try:
                 addSpriteObject(j_path, post_proc_data)
             except Exception as e:
+                # TODO - ValueError is the real exception
                 log.exception(e)
 
 
@@ -2652,8 +2653,8 @@ init 189 python in mas_sprites_json:
         log.info(OE_LOADING, pfx_newline=True)
 
         for sp_name in outfit_extras:
-            outfit_hair = outfit_extras[sp_name]["hair"]
-            outfit_acs = outfit_extras[sp_name]["acs"]
+            outfit_hair = outfit_extras.get(sp_name, {}).get("hair", None)
+            outfit_acs = outfit_extras.get(sp_name, {}).get("acs", None)
 
             if outfit_hair is not None:
                 if outfit_hair in HAIR_MAP:
@@ -2666,10 +2667,10 @@ init 189 python in mas_sprites_json:
                     ))
 
             if outfit_acs is not None:
-                actual_acs = []
+                actual_acs = {}
                 for acs_name in outfit_acs:
                     if acs_name in ACS_MAP:
-                        actual_acs.append(ACS_MAP[acs_name])
+                        actual_acs[acs_name] = ACS_MAP[acs_name]
                     else:
                         parsewritelog((
                             MSG_WARN_T,

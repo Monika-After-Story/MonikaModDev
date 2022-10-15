@@ -275,7 +275,7 @@ label mas_monikamovie:
             #Starts closure Block
             python:
                 if movieInformation.closure:
-                    pushEvent(movieInformation.closure)
+                    MASEventList.push(movieInformation.closure)
 
 
 

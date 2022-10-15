@@ -17,10 +17,6 @@ init -10 python in mas_games:
             return platform.system() == 'Windows'
 
 init 1 python in mas_games:
-    #Constant for hangman name
-    #NOTE: This is adjusted in the mas_pick_a_game label
-    HANGMAN_NAME = _("Hangman")
-
     def _total_games_played(exclude_list=[]):
         """
         Returns the total number of games played by adding up the shown_count of each game
@@ -131,7 +127,10 @@ init 5 python:
                 "persistent._mas_chess_timed_disable is not True "
                 "and mas_games.is_platform_good_for_chess() "
                 "and mas_timePastSince(persistent._mas_chess_timed_disable, datetime.timedelta(hours=1))"
-            )
+            ),
+            rules={
+                "display_name": "chess",
+            }
         ),
         code="GME",
         restartBlacklist=True
@@ -147,7 +146,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_hangman",
-            prompt="[mas_games.HANGMAN_NAME]"
+            prompt="Hangman"
         ),
         code="GME",
         restartBlacklist=True
@@ -162,7 +161,10 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_piano",
-            prompt="Piano"
+            prompt="Piano",
+            rules={
+                "display_name": "piano",
+            }
         ),
         code="GME",
         restartBlacklist=True
@@ -193,9 +195,6 @@ label mas_pick_a_game:
     $ mas_RaiseShield_dlg()
 
     python:
-        #Adjust for this name
-        mas_games.HANGMAN_NAME = _("Hangman")
-
         #Decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
 
@@ -259,7 +258,7 @@ label mas_pick_a_game:
             else:
                 m 3hub "[game_quip]"
 
-        $ pushEvent(selected_game, skipeval=True)
+        $ MASEventList.push(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
         show monika idle at t11

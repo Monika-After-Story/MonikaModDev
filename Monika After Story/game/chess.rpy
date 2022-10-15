@@ -777,7 +777,7 @@ label game_chess:
                 if quicksaved_file is None:
                     python:
                         persistent._mas_chess_timed_disable = datetime.datetime.now()
-                        mas_loseAffection(modifier=0.5)
+                        mas_loseAffection()
 
                     m 2wfw "[player]!"
                     m 2wfx "You removed the save again."
@@ -1743,7 +1743,7 @@ label mas_chess_dlg_quickfile_edited_yes:
     elif qf_edit_count == 2:
         python:
             persistent._mas_chess_timed_disable = datetime.datetime.now()
-            mas_loseAffection(modifier=0.5)
+            mas_loseAffection()
 
         m 2dfc "I am incredibly disappointed in you..."
         m 2rfc "Let's play chess some other time.{w=0.2} I don't feel like playing right now."

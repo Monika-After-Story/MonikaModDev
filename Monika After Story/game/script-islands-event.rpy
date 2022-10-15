@@ -1106,7 +1106,7 @@ init -25 python in mas_island_event:
             # Hasn't visited the islands for a few days
             and store.mas_timePastSince(store.mas_getEVL_last_seen("mas_monika_islands"), datetime.timedelta(days=3))
         ):
-            store.pushEvent("mas_monika_islands_progress")
+            store.MASEventList.push("mas_monika_islands_progress")
 
         # Now set new level
         persistent._mas_islands_progress = min(max(new_progress, curr_progress), MAX_PROGRESS_LOVE)
@@ -1288,7 +1288,7 @@ label mas_monika_islands_progress:
 
         "Sure, [m_name].":
             $ persistent._mas_pm_cares_island_progress = True
-            $ mas_gainAffection(3, bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             m 2hub "Yay!"
 
             call mas_islands(force_exp="monika 1hua")
@@ -1303,7 +1303,7 @@ label mas_monika_islands_progress:
 
         "I'm not interested.":
             $ persistent._mas_pm_cares_island_progress = False
-            $ mas_loseAffection(25)
+            $ mas_loseAffectionFraction(min_amount=50, modifier=1.2)
             m 2ekc "Oh..."
             m 6rktpc "I..."
             m 6fktpd "I worked really hard on this..."

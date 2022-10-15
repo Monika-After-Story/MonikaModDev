@@ -1,8 +1,32 @@
+
 #NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
 init -1500 python:
     import os
     import singleton
     me = singleton.SingleInstance()
+
+
+init -1500 python in mas_utils:
+    # ssl/https usage checks
+
+
+    def can_use_https():
+        """
+        Checks if we can safely use https in general - this combines several
+        checks, mainly:
+            - ssl
+            - a cert
+
+        NOTE: https can still be used with sites that do not require SSL verify
+        even if no cert is found.
+
+        RETURNS: True if https can be used.
+        """
+        return (
+            store.mas_can_import.ssl()
+            and store.mas_can_import.certifi.cert_available
+        )
+
 
 python early in mas_logging:
     import datetime
@@ -312,6 +336,19 @@ python early in mas_logging:
 
         return log
 
+
+    def get_log(name):
+        """
+        Gets a log from the log map
+
+        IN:
+            name - log name
+
+        RETURNS: log, or None if no log
+        """
+        return LOG_MAP.get(name)
+
+
     def is_inited(name):
         """
         Checks if a log has been inited
@@ -320,6 +357,7 @@ python early in mas_logging:
             name - log name
         """
         return name in LOG_MAP
+
 
 python early in mas_utils:
     import codecs
@@ -333,7 +371,24 @@ python early in mas_utils:
     import functools
 
     from store import mas_logging
-    mas_log = mas_logging.init_log("mas_log")
+
+    
+    def init_mas_log():
+        """
+        Initializes the MAS log, or gets it if its already init.
+
+        RETURNS: the init'd mas_log
+        """
+        global mas_log
+
+        if mas_logging.is_inited("mas_log"):
+            return mas_logging.get_log("mas_log")
+
+        mas_log = mas_logging.init_log("mas_log")
+        return mas_log
+
+
+    mas_log = init_mas_log()
 
 
     def deprecated(use_instead=None, should_raise=False):
@@ -881,3 +936,4 @@ python early in mas_utils:
             return int(value)
         except:
             return default
+
