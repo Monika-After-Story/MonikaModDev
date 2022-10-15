@@ -727,7 +727,7 @@ init 5 python:
 
 label mas_song_with_you:
     m 1dso "{i}~If somebody tries to take my place~{/i}"
-    m 1hub "{i}~let's pretend we just can't see their face~{/i}"
+    m 1hub "{i}~Let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
     m 1ekbsa "There is nothing that makes me happier than discovering that I'm in love with you."

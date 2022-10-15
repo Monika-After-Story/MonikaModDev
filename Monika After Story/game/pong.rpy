@@ -736,7 +736,7 @@ label mas_pong_dlg_winner:
     #The player has lost 5, 10, 15, ... matches in a row.
     elif loss_streak_counter >= 5 and loss_streak_counter % 5 == 0:
         m 1eua "I hope you're having fun, [mas_get_player_nickname(regex_replace_with_nullstr='my ')]."
-        m 1eka "I wouldn't want you get upset over a game, after all."
+        m 1eka "I wouldn't want you to get upset over a game, after all."
         m 1hua "We can always take a break and play again later if you want."
 
     #Monika wins after the player got a 3+ winstreak

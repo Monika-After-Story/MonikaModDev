@@ -151,6 +151,9 @@ init python:
     build.classify("log/**", None)
     build.classify("*.log", None)
 
+    build.classify("game/mod_assets/api_keys.json", None)
+    build.classify("**.pem", None)
+
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
 

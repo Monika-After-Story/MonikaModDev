@@ -1028,6 +1028,7 @@ init -10 python in mas_selspr:
     def _adjust_monika(
             moni_chr,
             old_map,
+            prev_map,
             new_map,
             select_type,
             use_old=False,
@@ -1042,7 +1043,8 @@ init -10 python in mas_selspr:
 
         IN:
             moni_chr - MASMonika object to adjust
-            old_map - the old select map (what was previously selected)
+            old_map - the old select map (what was loaded in)
+            prev_map - the old select mpa (what was previously selected)
             new_map - the new select map (what is currently selected)
             select_type - the select type, which determins what parts of
                 monika to adjust
@@ -1056,19 +1058,20 @@ init -10 python in mas_selspr:
                 (Default: False)
         """
         if select_type == SELECT_ACS:
-            old_map_view = old_map.keys()
             new_map_view = new_map.keys()
 
             # determine which map is the "old" and which is "new"
             # we want to remove what is excess from the desired map
             if use_old:
+                old_map_view = old_map.keys()
                 remove_keys = new_map_view - old_map_view
                 remove_map = new_map
                 add_map = old_map
 
             else:
+                old_map_view = prev_map.keys()
                 remove_keys = old_map_view - new_map_view
-                remove_map = old_map
+                remove_map = prev_map
                 add_map = new_map
 
             # remove what is excess
@@ -1109,6 +1112,12 @@ init -10 python in mas_selspr:
                         store.mas_utils.mas_log.warning("BAD HAIR: " + repr(e))
                         moni_chr.change_hair(prev_hair)
 
+                        # undo the selection
+                        prev_sel = prev_map[prev_hair.name]
+                        prev_sel._core_select() # re-adds the old hair to select map
+                        prev_sel._send_select_dlg()
+                        new_map.pop(new_hair.name)
+
                     return # always quit early since you can only have 1 hair
 
         elif select_type == SELECT_CLOTH:
@@ -1139,6 +1148,12 @@ init -10 python in mas_selspr:
                     except Exception as e:
                         store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
+
+                        # undo the selection
+                        prev_sel = prev_map[prev_cloth.name]
+                        prev_sel._core_select() # re-adds the old clothing to select map
+                        prev_sel._send_select_dlg()
+                        new_map.pop(new_cloth.name)
 
                     return # quit early since you can only have 1 clothes
 
@@ -2692,30 +2707,12 @@ init -1 python:
                 at
             )
 
-        def _select(self):
+        def _core_select(self):
             """
-            Makes this item a selected item. Also handles other logic realted
-            to selecting this.
+            does selection, but without gui elements.
+            Call this to select programatically.
+            DOES NOT CHECK IF ALREADY SELECTED.
             """
-            # if already selected, then we need to deselect.
-            if self.selected:
-                # TODO: this actually can break things if we dselect
-                #   probably should handle this a smarter way like if
-                #   something was selected originally, dont make it possible
-                #   to deselect.
-                #   or make it select what was originally selected.
-                # deselect self
-#                self.selected = False
-#                renpy.redraw(self, 0)
-
-                # end interaction so display text is rest
-#                self.end_interaction = True
-                return
-
-            # TODO: should be moved to the top when deselect can happen
-            # play the select sound
-            renpy.play(gui.activate_sound, channel="sound")
-
             # otherwise select self
             self.selected = True
 
@@ -2730,6 +2727,10 @@ init -1 python:
             # add this item to the select map
             self.select_map[self.selectable.name] = self
 
+        def _send_select_dlg(self):
+            """
+            Sends select dialogue as appropraite to mailbox
+            """
             # the appropriate dialogue
             if self.been_selected:
                 if self.selectable.select_dlg is not None:
@@ -2758,6 +2759,34 @@ init -1 python:
 
                 else:
                     self._send_generic_select_text()
+
+        def _select(self):
+            """
+            Makes this item a selected item. Also handles other logic realted
+            to selecting this.
+            """
+            # if already selected, then we need to deselect.
+            if self.selected:
+                # TODO: this actually can break things if we dselect
+                #   probably should handle this a smarter way like if
+                #   something was selected originally, dont make it possible
+                #   to deselect.
+                #   or make it select what was originally selected.
+                # deselect self
+#                self.selected = False
+#                renpy.redraw(self, 0)
+
+                # end interaction so display text is rest
+#                self.end_interaction = True
+                return
+
+            # TODO: should be moved to the top when deselect can happen
+            # play the select sound
+            renpy.play(gui.activate_sound, channel="sound")
+
+            self._core_select()
+
+            self._send_select_dlg()
 
             # always reset interaction if something has been selected
             self.end_interaction = True
@@ -3633,6 +3662,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 
         # make copy of old select map
         old_select_map = dict(select_map)
+        prev_select_map = dict(select_map)
 
         # also create views that we use for comparisons
         old_view = old_select_map.keys()
@@ -3672,6 +3702,7 @@ label mas_selector_sidebar_select_loop:
             store.mas_selspr._adjust_monika(
                 monika_chr,
                 old_select_map,
+                prev_select_map,
                 select_map,
                 select_type,
                 outfit_mode=new_outfit_cbx,
@@ -3685,6 +3716,7 @@ label mas_selector_sidebar_select_midloop:
     python:
         # once select map is cleaned, check if diff
         #has_diff = not store.mas_selspr.is_same(old_view, new_view)
+        # NOTE: wouild this be for multi select?
         has_diff = not monika_chr.same_state(prev_moni_state)
         mailbox.send_conf_enable(has_diff)
         mailbox.send_restore_enable(has_diff)
@@ -3699,8 +3731,11 @@ label mas_selector_sidebar_select_midloop:
         if disp_fast:
             disp_text += "{fast}"
 
+        # update previous select
+        prev_select_map = dict(select_map)
+
         # force this to execute in this python block (no prediction)
-        renpy.say(m, disp_text)
+        renpy.say(m, disp_text) # NOTE: this is where it waits
 
         #Clear repeated lines
         if prev_line != disp_text:
@@ -3764,14 +3799,6 @@ label mas_selector_sidebar_select_confirm:
                 monika_chr
             )
 
-#            store.mas_selspr._adjust_monika(
-#                monika_chr,
-#                old_select_map,
-#                select_map,
-#                select_type,
-#                True
-#            )
-
             # reload state
             monika_chr.restore(prev_moni_state)
 
@@ -3807,14 +3834,6 @@ label mas_selector_sidebar_select_cancel:
             preview_selections,
             monika_chr
         )
-
-#        store.mas_selspr._adjust_monika(
-#            monika_chr,
-#            old_select_map,
-#            select_map,
-#            select_type,
-#            True
-#        )
 
         # delete the remover if we used one
         if add_remover:

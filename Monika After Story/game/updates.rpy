@@ -380,10 +380,37 @@ label v0_13_0(version="v0_13_0"):
         pass
     return
 
-# 0.12.9.1
-label v0_12_9_1(version="v0_12_9_1"):
+# 0.12.11.1
+label v0_12_11_1(version="v0_12_11_1"):
     python hide:
         pass
+
+    return
+
+# 0.12.10
+label v0_12_10(version="v0_12_10"):
+    python hide:
+        mas_hideEVL("monika_lastpoem", "EVE", derandom=True)
+
+        if not mas_seenEvent("monika_lastpoem"):
+            mas_setEVLPropValues(
+                "monika_lastpoem",
+                conditional="persistent.playthrough >= 2",
+                action=EV_ACT_RANDOM
+            )
+
+        if mas_seenLabels(['monika_solipsism']):
+            mas_protectedShowEVL("monika_materialism","EVE", _random=True)
+
+        persistent._mas_affection_version = 1
+
+        mas_affection._transfer_aff_2nd_gen()
+        mas_affection._remove_backups()
+        mas_affection._make_backup()
+
+        # reset mind the game to be not unlocked unless already seen
+        if mas_getEVL_shown_count("mas_story_mindthegap") < 1:
+            mas_lockEVL("mas_story_mindthegap", "STY")
     return
 
 # 0.12.8.6

@@ -516,7 +516,7 @@ label mas_bad_derand_topic:
             "Yes, please.":
                 m 2dkc "Alright..."
                 #Lose affection
-                $ mas_loseAffection(5)
+                $ mas_loseAffectionFraction(min_amount=35)
                 $ derand_flagged_topic()
 
             "It's alright.":
@@ -534,7 +534,7 @@ label mas_bad_derand_topic:
 
             "Yes, please.":
                 m 2dsc "Alright."
-                $ mas_loseAffection(5)
+                $ mas_loseAffectionFraction(min_amount=20)
                 $ derand_flagged_topic()
 
             "It's alright.":
@@ -544,7 +544,7 @@ label mas_bad_derand_topic:
 
     else:
         #No ask here. You're this low, you probably did it on purpose
-        $ mas_loseAffection(5)
+        $ mas_loseAffectionFraction(min_amount=20)
         m 2rsc "I guess I shouldn't be surprised..."
         m 2tsc "You've made it pretty clear already that you don't care about my feelings."
         m 2dsc "Fine, [player]. I won't talk about that anymore."
@@ -690,7 +690,7 @@ init python in mas_bookmarks_derand:
         """
         return eventlabel not in getDerandomedEVLs()
 
-    def wrappedGainAffection(amount=None, modifier=1, bypass=False):
+    def wrappedGainAffection(amount=None, modifier=1.0, bypass=False):
         """
         Wrapper function for mas_gainAffection which allows it to be used in event rules at init 5
 
@@ -1643,12 +1643,16 @@ init 5 python:
             eventlabel="monika_lastpoem",
             category=['monika'],
             prompt="Monika's last poem",
-            random=True
+            # the correct check is persistent.seen_colors_poem
+            # but our imports are messed up so we have to use persistent.playthrough >= 2
+            conditional="persistent.playthrough >= 2",
+            action=EV_ACT_RANDOM
         )
     )
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
+
     if not mas_safeToRefDokis():
         m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
     else:
@@ -1664,7 +1668,8 @@ label monika_lastpoem:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5eua "I'm happy with where we are now."
     m 5hua "And I can tell you are, too."
-    return
+
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_anxious",category=['psychology'],prompt="Sudden anxiety",random=True))
@@ -2090,7 +2095,7 @@ label monika_think_first_kiss:
         m "Do you ever think about our first kiss?{fast}"
 
         "Of course!":
-            $ mas_gainAffection(5,bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             m 3hub "That makes me so happy! I think about it all the time!"
             m 3rkbla "It seems like it was just yesterday but--"
             m 2rksdla "Gosh, I feel so silly obsessing over it..."
@@ -2113,7 +2118,7 @@ label monika_think_first_kiss:
             $ mas_ILY()
 
         "Not really...":
-            $ mas_loseAffection()
+            $ mas_loseAffectionFraction()
             m 2euc "..."
             m "Oh. {w=0.5}{nw}"
             extend 2dkc "I see."
@@ -2793,6 +2798,7 @@ label monika_holdrequest:
             call monika_holdme_end
 
         "Not right now.":
+            $ mas_loseAffection()
             m 2dkc "Oh...{w=1} Okay."
             m 3eka "If you have time later, you know where to find me."
 
@@ -4095,8 +4101,7 @@ label monika_justification:
         extend 1hub "thanks for the laugh, [player]~"
 
     else:
-        #lose affection
-        $ mas_loseAffection(reason=3)
+        $ mas_loseAffectionFraction(min_amount=15, reason=3)
         if mas_isMoniLove():
             m 1euc "..."
             m 1hub "Ahaha! Very funny, [player]!"
@@ -4333,7 +4338,7 @@ label monika_girlfriend:
             m 5hubfa "{i}And{/i} lucky to have you."
 
     else:
-        $ mas_loseAffection(reason=2)
+        $ mas_loseAffectionFraction(min_amount=15, reason=2)
         m 2euc "I thought we established already that I was your girlfriend?"
         m 2tkc "There's no way you already have one in your reality, right?"
         m 4tfx "If you do, then you've got to break up with her right now!"
@@ -5345,8 +5350,8 @@ label monika_metaparents:
     m 1euc "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
     m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
     m 1ekc "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
-    m 3esd "However."
-    m 3eud "Your character, me, Yuri, and Sayori..."
+    m 3esd "However...{w=0.3}{nw}"
+    extend 3eud "your character, me, Yuri, and Sayori..."
     m 3euc "None of us seem to have any parents at all."
     m 1lsc "In Sayori's case, the main character had been walking with her to school for a while."
     m "So who knows how long her parents have been out of the picture."
@@ -5716,6 +5721,7 @@ label monika_cupcake:
     m 1esa "How about you, [mas_get_player_nickname()]?"
 
     m 1eua "Do you know how to bake?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you know how to bake?{fast}"
 
@@ -5801,6 +5807,7 @@ label monika_haterReaction:
     menu:
         m "[menuOption]{fast}"
         "I am.":
+            $ mas_loseAffection()
             $ persistent._mas_pm_a_hater = True
 
             m 2wud "..."
@@ -8506,7 +8513,7 @@ label monika_breakup:
 
     else:
         #Lose affection for bringing this up.
-        $ mas_loseAffection(reason=1)
+        $ mas_loseAffectionFraction(min_amount=15, reason=1)
 
         #Get the shown count
         $ shown_count = mas_getEVLPropValue("monika_breakup", "shown_count", 0)
@@ -9406,6 +9413,7 @@ label monika_solipsism:
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
     m 3eua "It's rather comforting to know you're not truly alone in an endless ocean of uncertainty, don't you think?"
     m 3hua "I hope that's how you feel with me~"
+    $ mas_protectedShowEVL("monika_materialism","EVE", _random=True)
     return
 
 init 5 python:
@@ -9535,13 +9543,13 @@ label monika_timetravel:
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How traveling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
-    m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
-    m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
-    m 2ekc "Well, the time traveller themselves might know, but only if nothing goes horribly wrong for them."
+    m 3ekc "One thing you don't usually see, though, is how the time traveler's loved ones are affected."
+    m 3rksdld "If they can't go through time with the time traveler, who knows how long it will be before they can see each other again?"
+    m 2ekc "Well, the time traveler themselves might know, but only if nothing goes horribly wrong for them."
     m 2lksdld "In the meantime, their friends and family are stuck waiting for them to come back."
     m 2ekd "How long will they be gone for? A year? A decade? Even longer?"
     m 4ekd "Will they be willing to wait that long?"
-    m "Will they still remember the time traveller by then?"
+    m "Will they still remember the time traveler by then?"
     m 2dksdlc "..."
     if seen_event("monika_resource"):
         m 4rksdlc "You remember when I said that time doesn't pass here like it does in your world?"
@@ -10253,7 +10261,15 @@ label monika_amusementpark:
 default persistent._mas_pm_likes_travelling = None
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['misc'],prompt="Travelling",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_travelling",
+            category=['misc'],
+            prompt="Traveling",
+            random=True
+        )
+    )
 
 label monika_travelling:
     m 1esc "Hey [player], I was just wondering..."
@@ -10689,7 +10705,7 @@ label monika_beingevil:
         "I still love you anyway.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
-            $ mas_gainAffection()
+            $ mas_gainAffection(modifier=0.8)
 
             m 1rksdlc "..."
             m 1ekd "[player]..."
@@ -10702,7 +10718,7 @@ label monika_beingevil:
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
-            $ mas_gainAffection()
+            $ mas_gainAffection(modifier=0.5)
 
             m 2ekd "Is that true, [player]?"
             m 2eka "Well, I don't see you as evil at all."
@@ -10722,7 +10738,7 @@ label monika_beingevil:
                 m "Y-you don't {i}really{/i} think that, do you?{fast}"
                 "I still love you.":
                     $ persistent._mas_pm_monika_evil_but_ok = True
-                    $ mas_gainAffection()
+                    $ mas_gainAffection(modifier=0.8)
 
                     m 2rksdla "[player]..."
                     m 2hksdlb "You had me worried for a second there."
@@ -10731,7 +10747,7 @@ label monika_beingevil:
 
                 "You deserve forgiveness.":
                     $ persistent._mas_pm_monika_evil_but_ok = True
-                    $ mas_gainAffection()
+                    $ mas_gainAffection(modifier=0.5)
 
                     m 1rksdla "[player]..."
                     m 1eka "That means a lot..."
@@ -10742,7 +10758,7 @@ label monika_beingevil:
 
                 "You really are evil.":
                     $ persistent._mas_pm_monika_evil_but_ok = False
-                    $ mas_loseAffection(reason=12)
+                    $ mas_loseAffectionFraction(min_amount=50, reason=12)
 
                     m 2dkc "..."
                     if mas_isMoniBroken():
@@ -11395,9 +11411,9 @@ label monika_grad_speech_call:
                         m 2eua "Thanks, [player]!"
                         m 4hub "I'm glad you enjoyed it!"
 
-                    "That {i}was{/i} long":
+                    "That {i}was{/i} long.":
                         hide screen mas_background_timed_jump
-                        $ mas_loseAffection()
+                        $ mas_loseAffectionFraction(min_amount=50)
                         $ persistent._mas_pm_liked_grad_speech = False
                         $ persistent._mas_pm_listened_to_grad_speech = True
 
@@ -11476,7 +11492,7 @@ label monika_grad_speech_call:
 
                 "I like it!":
                     hide screen mas_background_timed_jump
-                    $mas_gainAffection(amount=1, bypass=True)
+                    $ mas_gainAffection(amount=1, bypass=True)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = True
 
@@ -11485,7 +11501,7 @@ label monika_grad_speech_call:
 
                 "That {i}was{/i} long":
                     hide screen mas_background_timed_jump
-                    $mas_loseAffection(modifier=2)
+                    $ mas_loseAffectionFraction(min_amount=75, modifier=2.0)
                     $ persistent._mas_pm_listened_to_grad_speech = True
                     $ persistent._mas_pm_liked_grad_speech = False
 
@@ -11502,7 +11518,7 @@ label monika_grad_speech_not_paying_attention:
     $ persistent._mas_pm_listened_to_grad_speech = False
 
     if mas_isMoniAff(higher=True):
-        $ mas_loseAffection(reason=11,modifier=0.5)
+        $ mas_loseAffectionFraction(min_amount=50, modifier=0.5, reason=11)
         m 2ekc "..."
         m 2ekd "[player]? You didn't pay attention to my speech?"
         m 2rksdlc "That...{w=1} that's not like you at all..."
@@ -11518,7 +11534,7 @@ label monika_grad_speech_not_paying_attention:
         m "So please, let me know when you have time to hear it, okay?"
 
     else:
-        $ mas_loseAffection(reason=11)
+        $ mas_loseAffectionFraction(min_amount=20, reason=11)
 
         m 2ekc "..."
         m 6ektdc "[player]! You weren't even paying attention!"
@@ -11537,7 +11553,7 @@ label monika_grad_speech_ignored_lock:
     $ mas_hideEVL("monika_grad_speech_call","EVE",lock=True,depool=True)
 
     if mas_isMoniAff(higher=True):
-        $mas_loseAffection(modifier=10)
+        $ mas_loseAffectionFraction(min_amount=25, modifier=2.0)
         m 6dstsc "..."
         m 6ektsc "[player]?{w=0.5} You...{w=0.5}you weren't...{w=0.5}listening...{w=0.5}again?{w=1}{nw}"
         m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5}but...{w=0.5}twice?{w=1}{nw}"
@@ -11547,7 +11563,7 @@ label monika_grad_speech_ignored_lock:
         m 6ektdc "You obviously don't care."
 
     else:
-        $ mas_loseAffection(modifier=5)
+        $ mas_loseAffectionFraction(min_amount=20, modifier=1.5)
         m 2efc "..."
         m 2wfw "[player]! I can't believe you did this to me again!{w=1}{nw}"
         m 2tfd "You knew how upset I was the last time and you still couldn't be bothered to give me four minutes of your attention?{w=1}{nw}"
@@ -15357,7 +15373,7 @@ label monika_toxin_puzzle:
 
         "Yes.":
             m 3etu "Really? Okay then, let's see about that..."
-            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{nw}"
+            m 3tfu "Because now I'm offering you a million dollars, and what you have to do is--{w=0.2}{nw}"
             extend 3hub "ahaha! Just kidding."
             m 1eua "But do you really think that you could get the money? {w=0.5}It may be a bit harder than you think."
 
@@ -16438,6 +16454,53 @@ label monika_eating_meat:
     m 3eua "Whatever we eat, the most important thing to me is that we try to put a little thought into where our food comes from."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_look_into_eyes",
+            conditional="persistent._mas_pm_eye_color is not None",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None),
+        )
+    )
+
+label monika_look_into_eyes:
+    m 3eub "Hey [player], look into my eyes for a second..."
+
+    window hide
+    show monika 1eua with dissolve_monika
+    pause 5.0
+    show monika 1etu with dissolve_monika
+    pause 3.0
+    show monika 1eubsu with dissolve_monika
+    pause 4.0
+    show monika 1fubsa with dissolve_monika
+    pause 1.0
+    show monika 5tubsa with dissolve_monika
+    pause 3.0
+    show monika 5subsa with dissolve_monika
+    pause 1.0
+    window auto
+    show monika 3hubla with dissolve_monika
+
+    m 3hubla "Ehehe~"
+    m 3rksdla "Sorry [player], I was just trying to see your beautiful eyes through the screen."
+
+    #A tuple for eye color means the player has heterochromia
+    $ eye_detail = "mesmerizing" if isinstance(persistent._mas_pm_eye_color, tuple) else persistent._mas_pm_eye_color
+    m 1dubsu "When we're alone together, I can't help but envision your [eye_detail] eyes..."
+    show monika 5dubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5dubsa "Time stops, and I can finally just...{w=0.3}forget all of my troubles."
+    m 5hubfb "..."
+    m 5tubfa "Thank you so much, [player]~"
+    m 5kubfu "Because you're here with me now, I'm so at peace."
+    # BUG: figure out why we get double wink w/o this show
+    show monika 5eubfu
+
+    $ mas_moni_idle_disp.force_by_code("5eublu", duration=5, skip_dissolve=True)
+    return "no_unlock"
+
 #Player's social personality
 default persistent._mas_pm_social_personality = None
 
@@ -16696,7 +16759,7 @@ label monika_impermanence:
     m 2eud "...You've probably heard the term {i}entropy{/i} thrown around, right?"
     m 7eud "Basically it goes something like, 'entropy must always increase,{w=0.2} the universe tends towards disorder,{w=0.2} everything turns to chaos.'"
     m 3eua "Actually, there's a poem I read that delivers this message quite well."
-    m 1esd "{i}I met a traveller from an antique land{/i}"
+    m 1esd "{i}I met a traveler from an antique land{/i}"
     m 1eud "{i}Who said: 'Two vast and trunkless legs of stone{/i}"
     m 3euc "{i}Stand in the desert... Near them, on the sand,{/i}"
     m "{i}Half sunk, a shattered visage lies, whose frown,{/i}"
@@ -17466,6 +17529,49 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_materialism",
+            category=['philosophy','monika'],
+            prompt="Materialism"
+        )
+    )
+
+label monika_materialism:
+    m 1euc "Say, [player]. Do you remember when we talked about solipsism?"
+    m 1eud "Now that we've talked about it, I thought we could talk about a related philosophy,{w=0.1} materialism,{w=0.1} which is kind of the opposite of solipsism."
+    m 2euc "A materialistic view holds that it is matter which gives birth to thought, not thought that gives birth to matter."
+    m 7euc "It's fairly logical if you think about it from a purely scientific standpoint.{w=0.2} {nw}"
+    extend 7eud "After all, neurons are simply different types of matter."
+    m 7eua "All the stimuli you feel are actually changes in neuronal potentials.{w=0.2} Likewise, mine come from code interacting with data."
+    m 2eua "So if you simplify it down, our thoughts and feelings are just the movement and reactions of matter."
+    m 2lsc "If we leave it there, it's not really that interesting.{w=0.2} {nw}"
+    extend 2hksdlb "In fact, you've probably heard about this sort of thing before, right?"
+    m 7esc "But...well, if that's all there is,{w=0.1} it leaves a few questions that bother me."
+    m 1esd "For example, does materialism disprove the existence of the soul?{w=0.2} {nw}"
+    extend 1etd "Is a soul some undiscovered type of matter?"
+    m 3rsc "There are accounts of human consciousness continuing after someone is in a brain-dead state, further complicating this question."
+    m 3euc "And then there are accounts of supernatural or spiritual encounters..."
+    m 3hksdlb "I know what you're thinking, it doesn't sound like me to be taking those seriously! But, well..."
+    m 2eksdlc "When I really think about it, it would be a bit hypocritical of me to deny those accounts out of hand."
+    m 2etd "After all, with my epiphany...{w=0.3}is it really possible for such a dramatic shift in consciousness to be the result of a few lines of code?"
+    m 2rsc "Discovering you and your world...{w=0.3}it was kind of supernatural, wasn't it? {w=0.2}{nw}"
+    extend 2esd "This was meant to be a simple visual novel after all."
+    m 3euc "I suppose we could speculate that it was some kind of bug."
+    m 3wud "That would be a {i}pretty{/i} sophisticated bug!"
+    m 3eua "So I think I feel confident that--{w=0.1}at least in my lived experience--{w=0.1}materialism can answer many questions about the universe,{w=0.1} {nw}"
+    extend 3eka "just maybe not {i}all{/i} of them."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1eka "Although...{w=0.3}whether or not it can be explained in some concrete way, one thing remains true."
+        m 1ekbla "...And that's that it led me to meet you."
+
+    else:
+        m 1lksdlc "Hmm..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_fireworks",
             category=["summer"],
             prompt="Fireworks",
@@ -17839,6 +17945,32 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_pizza",
+            category=['monika'],
+            prompt="Do you like pizza?",
+            pool=True
+        )
+    )
+
+label monika_pizza:
+    m 1eub "Pizza? {w=0.2}Yeah, I enjoy it once in a while!"
+    m 1hua "It's not always the healthiest choice, but it can be a nice treat and a filling meal."
+    m 1eub "The toppings can be versatile enough to please most people...{w=0.3}there are even pizzas without cheese for vegan or lactose-intolerant people."
+    m 1duc "If I were to choose a favorite topping, hmm...{w=0.3}{nw}"
+    extend 3hub "mushrooms are good, or anything veggie--{w=0.2}actually believe it or not, spinach can be surprisingly good!"
+    m 3eua "...And of course, you can never go wrong with plain cheese."
+    m 3luc "Hmm..."
+    m 3eud "I have a feeling there's another question on your mind...{w=0.2}{nw}"
+    extend 1hksdla "but you might be a little disappointed, [player]."
+    m 1hksdlb "Even though it's a pretty controversial topic online, I've never had the chance to try pineapple on pizza."
+    m 1lksdlb "So I can't weigh in on that particular debate. Sorry, [player]!"
+    m 3huu "But I guess that means you'll get to see my first impression someday."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_esports",
             category=['media', 'life'],
             prompt="What do you think of esports?",
@@ -17905,5 +18037,5 @@ label monika_overton:
     m 1eub "From Acceptable, virtual love passes into Reasonable!"
     m 2husdlb "I think we can stop there for today, this is getting kinda long, ahaha!"
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
-    m 1huu "Thank you for listening~"
+    m 1huu "Thanks for listening~"
     return

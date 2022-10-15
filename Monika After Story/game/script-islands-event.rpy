@@ -1288,7 +1288,7 @@ label mas_monika_islands_progress:
 
         "Sure, [m_name].":
             $ persistent._mas_pm_cares_island_progress = True
-            $ mas_gainAffection(3, bypass=True)
+            $ mas_gainAffection(5, bypass=True)
             m 2hub "Yay!"
 
             call mas_islands(force_exp="monika 1hua")
@@ -1303,7 +1303,7 @@ label mas_monika_islands_progress:
 
         "I'm not interested.":
             $ persistent._mas_pm_cares_island_progress = False
-            $ mas_loseAffection(25)
+            $ mas_loseAffectionFraction(min_amount=50, modifier=1.2)
             m 2ekc "Oh..."
             m 6rktpc "I..."
             m 6fktpd "I worked really hard on this..."

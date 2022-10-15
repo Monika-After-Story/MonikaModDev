@@ -134,7 +134,7 @@ label mas_mood_hungry:
     m 3hub "That doesn't just mean getting enough veggies, of course. {w=0.2}All sorts of foods are necessary to keep yourself nourished."
     m 3eka "So I want you to make sure you're not depriving yourself of important vitamins, okay?"
     m 1euc "Over time, you'd encounter a lot of health problems when you get older."
-    m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
+    m 2lksdla "I don't want you to feel like I'm nagging when I say these kinds of things, [player]."
     m 2eka "I just want to make sure you're taking good care of yourself until I cross over."
     m 4eub "After all, the healthier you are, the better the chances you'll live a long life!"
     m 1hua "Which means more time for us to spend together!~"
@@ -602,7 +602,15 @@ label mas_mood_lazy:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_bored",prompt="...bored.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(
+        Event(
+            persistent._mas_mood_database,eventlabel="mas_mood_bored",
+            prompt="...bored.",
+            category=[store.mas_moods.TYPE_NEUTRAL],
+            unlocked=True
+        ),
+        code="MOO"
+    )
 
 label mas_mood_bored:
     if mas_isMoniAff(higher=True):
@@ -621,32 +629,34 @@ label mas_mood_bored:
                 m 1eka "But, if you're bored, we should find something to do then..."
 
             "Well...":
-                $ mas_loseAffection()
+                $ mas_loseAffectionFraction(min_amount=15)
                 m 2ekc "Oh...{w=1} I see."
                 m 2dkc "I didn't realize I was boring you..."
                 m 2eka "I'm sure we can find something to do..."
 
     elif mas_isMoniDis(higher=True):
-        $ mas_loseAffection()
+        $ mas_loseAffectionFraction(min_amount=15)
         m 2lksdlc "I'm sorry that I'm boring you, [player]."
 
     else:
-        $ mas_loseAffection()
+        $ mas_loseAffectionFraction(min_amount=15)
         m 6ckc "You know [player], if I make you so miserable all of the time..."
         m "Maybe you should just go find something else to do."
         return "quit"
 
     python:
-        unlockedgames = [
-            game_ev.prompt.lower()
-            for game_ev in mas_games.game_db.values()
+        # build mapping from game label to display name for game
+        unlocked_games = {
+            # use display name, or prompt as backup
+            ev_label: game_ev.rules.get("display_name", game_ev.prompt)
+            for ev_label, game_ev in mas_games.game_db.items()
             if mas_isGameUnlocked(game_ev.prompt)
-        ]
+        }
 
-        gamepicked = renpy.random.choice(unlockedgames)
-        display_picked = gamepicked
+        picked_game_label = renpy.random.choice(list(unlocked_games.keys()))
+        picked_game_name = unlocked_games[picked_game_label]
 
-    if gamepicked == "piano":
+    if picked_game_label == "mas_piano":
         if mas_isMoniAff(higher=True):
             m 3eub "You could play something for me on the piano!"
 
@@ -658,13 +668,13 @@ label mas_mood_bored:
 
     else:
         if mas_isMoniAff(higher=True):
-            m 3eub "We could play a game of [display_picked]!"
+            m 3eub "We could play a game of [picked_game_name]!"
 
         elif mas_isMoniNormal(higher=True):
-            m 4eka "Maybe we could play a game of [display_picked]?"
+            m 4eka "Maybe we could play a game of [picked_game_name]?"
 
         else:
-            m 2rkc "Maybe we could play a game of [display_picked]..."
+            m 2rkc "Maybe we could play a game of [picked_game_name]..."
 
     $ chosen_nickname = mas_get_player_nickname()
     m "What do you say, [chosen_nickname]?{nw}"
@@ -672,14 +682,8 @@ label mas_mood_bored:
     menu:
         m "What do you say, [chosen_nickname]?{fast}"
         "Yes.":
-            if gamepicked == "pong":
-                call game_pong
-            elif gamepicked == "chess":
-                call game_chess
-            elif gamepicked == "hangman":
-                call game_hangman
-            elif gamepicked == "piano":
-                call mas_piano_start
+            $ MASEventList.push(picked_game_label, skipeval=True)
+
         "No.":
             if mas_isMoniAff(higher=True):
                 m 1eka "Okay..."
@@ -699,6 +703,8 @@ label mas_mood_bored:
             else:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
+
+    $ del unlocked_games, picked_game_label, picked_game_name
     return
 
 init 5 python:
@@ -907,7 +913,7 @@ label mas_mood_grateful:
 
         "For you.":
             if not renpy.seen_label("mas_mood_grateful_gratefulforyou"):
-                $ mas_gainAffection(3,bypass=True)
+                $ mas_gainAffection(5, bypass=True)
             call mas_mood_grateful_gratefulforyou
 
         "For someone.":
@@ -939,3 +945,82 @@ label mas_mood_grateful_gratefulforyou:
     m 3ekbla "I love you, [player]~"
     $ mas_ILY()
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_insecure",
+            prompt="...insecure.",
+            category=[store.mas_moods.TYPE_BAD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_insecure:
+    m 2wkd "[player]..."
+    m 2dkc "..."
+    m 2eka "There's a quote from an anime that Natsuki really liked..."
+    m 7dku "'Believe in me, who believes in you.'"
+    m 3eka "And that's exactly what I want to tell you right now."
+    m 3ekbsa "If you can't believe in yourself, believe in me."
+    m 1eubsu "Because I,{w=0.1} for sure,{w=0.1} trust you can overcome whatever has you doubting yourself right now~"
+    $ mas_moni_idle_disp.force_by_code("1eka", duration=5, skip_dissolve=True)
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_loved",
+            prompt="...loved.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_loved:
+    m 1ekbla "I'm so glad to hear the way I feel is making it through the screen to you..."
+    m 3hubsb "After all, I love you more than anything!"
+
+    $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
+    if has_family or persistent._mas_pm_has_friends:
+        if has_family and persistent._mas_pm_has_friends:
+            $ fnf_str = "friends and family"
+        elif has_family:
+            $ fnf_str = "family"
+        else:
+            $ fnf_str = "friends"
+
+        m 3eub "And I'm sure it's not just me that makes you feel loved, but your [fnf_str] as well!"
+
+    m 1dkbsa "You deserve all the love and affection in the world, {w=0.1}{nw}"
+    extend 1ekbsu "and I'll do my best to make sure you always feel loved, [mas_get_player_nickname()]~"
+
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_guilty",
+            prompt="...guilty.",
+            category=[store.mas_moods.TYPE_BAD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_guilty:
+    m 2wkd "[player]!"
+    m 2dkc "We all make mistakes... {w=0.3}{nw}"
+    extend 7eka "I'm sure you can be forgiven for whatever happened."
+    m 3dku "After all, you're a great person... {w=0.3}{nw}"
+    extend 1eka "You're kind, helpful and true to yourself."
+    m 1dua "And now that you've found the strength to accept your mistake, you just need to overcome it."
+    m 1ekbsu "I love you.{w=0.2} Don't be so hard on yourself, okay?"
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
+    return "love"

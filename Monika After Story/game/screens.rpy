@@ -190,6 +190,43 @@ init 900 python:
     mas_resetQuitMsg()
 
 
+init -800 python in mas_layout:
+
+    class MASScreenData(object):
+        """
+        Want a data/behavior object abstraction for screens that lets you do
+        more things without globals? extend this class.
+
+        Use properties, and define whatever functions you want.
+
+        Only 1 main function:
+            - loop - this should be called in the loop to do processing.
+        """
+
+        def __init__(self, screen_name):
+            """
+            Constructor
+
+            IN:
+                screen_name - name of this screen this data is for. ACts like
+                    an identifier, but is currently only used for repr
+            """
+            self._screen_name = screen_name
+
+        def __repr__(self):
+            return "data for screen {0}".format(self._screen_name)
+
+        def loop(self):
+            """
+            If you use this, only call it once in your screen code.
+            Expect this to be called multiple times by renpy as apart of
+            screen execution.
+
+            This should be used to avoid screen code clutter.
+            """
+            pass
+
+
 ## Initialization
 ################################################################################
 
@@ -219,7 +256,8 @@ style edited is default:
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
 
 style edited_dark is default:
     font "gui/font/VerilySerifMono.otf"
@@ -229,14 +267,18 @@ style edited_dark is default:
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
 
 style normal is default:
     pos (gui.text_xpos, gui.text_ypos)
     xanchor gui.text_xalign
     xsize gui.text_width
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
+    justify False
+    adjust_spacing False
 
 style input:
     color gui.accent_color
@@ -495,7 +537,10 @@ style say_dialogue is default:
     xsize gui.text_width
     ypos gui.text_ypos
     text_align gui.text_xalign
-    layout ("subtitle" if gui.text_xalign else "tex")
+    # layout ("subtitle" if gui.text_xalign else "tex")
+    layout "greedy"
+    justify False
+    adjust_spacing False
 
 style say_thought is say_dialogue
 
@@ -879,6 +924,9 @@ screen navigation():
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
+
+        if store.mas_api_keys.has_features():
+            textbutton _("API Keys") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
 
         textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
@@ -2783,7 +2831,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
         ypos left_area[1] - 55
         xsize right_area[0] - left_area[0] + right_area[2]# 530
         ysize 40
-        background Solid("#ffaa99aa")
+        background Solid(store.mas_ui.TEXT_FIELD_BG)
 
         viewport:
             draggable False
@@ -3136,3 +3184,66 @@ screen submods():
         xalign 0 yalign 1.0
         xoffset 300 yoffset -10
         style "main_menu_version"
+
+
+screen mas_apikeys():
+
+    tag menu
+
+    use game_menu(_("API Keys"), scroll="viewport"):
+
+        if not store.mas_api_keys.has_features():
+            text _("No API keys accepted"): # NOTE: the game menu screen shouldn't have let us get here.
+                style "main_menu_version"
+
+        else:
+
+            vbox:
+                spacing 30
+
+                if store.mas_can_import.certifi():
+                    textbutton _("Update Certificate"):
+                        style "mas_button_simple"
+                        action Function(store.mas_api_keys.screen_update_cert)
+
+                for feature_data in store.mas_api_keys.features_for_display():
+                    hbox:
+                        spacing 20
+
+                        label feature_data[0]: # name
+                            xalign 0
+                            xmaximum 400
+                            xsize 400
+                            text_text_align 0.0
+
+                        frame:
+                            xmaximum 600
+                            xsize 600
+                            xfill True
+                            ysize 43
+                            ymaximum 43
+                            yalign 0.0
+                            background Solid(store.mas_ui.TEXT_FIELD_BG)
+
+                            hbox:
+                                spacing 10
+
+                                if feature_data[2]:
+                                    textbutton _("Clear"):
+                                        style "mas_button_simple"
+                                        yalign 0.5
+                                        action Function(store.mas_api_keys.screen_clear, feature_data[1])
+                                else:
+                                    textbutton _("Paste"):
+                                        style "mas_button_simple"
+                                        yalign 0.5
+                                        action Function(store.mas_api_keys.screen_paste, feature_data[1])
+
+                                text feature_data[2]: # api key
+                                    xalign 0
+                                    yalign 0.5
+                                    size 20
+                                    ymaximum 43
+                                    layout "nobreak"
+                                    color mas_globals.button_text_insensitive_color
+                                    font mas_ui.MONO_FONT

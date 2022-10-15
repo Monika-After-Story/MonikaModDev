@@ -245,7 +245,7 @@ init 999 python:
                 "def": "School Uniform",
                 "blazerless": "S. Uniform (Blazerless)",
                 "marisa": "Witch Costume",
-            #    "rin": "Neko Costume",
+                "rin": "Neko Costume",
                 "santa": "Santa Monika",
                 "sundress_white": "Sundress (White)",
                 "blackdress": "Formal Dress (Black)",
@@ -257,7 +257,8 @@ init 999 python:
             },
             "time": {
                 "day": "Day",
-                "night": "Night"
+                "sunset": "Sunset",
+                "night": "Night",
             }
         }
 
@@ -383,7 +384,7 @@ init 999 python:
                 "def",
                 "blazerless",
                 "marisa",
-                # "rin",
+                "rin",
                 "santa",
                 "sundress_white",
                 "blackdress",
@@ -395,6 +396,7 @@ init 999 python:
             ],
             "time": [ # actually means Filter now
                 "day",
+                "sunset",
                 "night",
             ]
         }
@@ -434,12 +436,16 @@ init 999 python:
 
             # update torsos with spritepacked sprites
             torso_map = self.SEL_TX_MAP["torso"]
-            torso_list = self.SPRITE_CODE_MAP["torso"]
+            torso_list_add = []
             for sel in store.mas_selspr.CLOTH_SEL_MAP.values():
                 spr = sel.get_sprobj()
                 if spr.is_custom and spr.name not in torso_map:
                     torso_map[spr.name] = sel.display_name
-                    torso_list.append(spr.name)
+                    torso_list_add.append(spr.name)
+
+            # sort spritepacks list before adding - bit cleaner
+            torso_list_add.sort()
+            self.SPRITE_CODE_MAP["torso"].extend(torso_list_add)
 
             # background tile
             self.background = Solid(
@@ -609,6 +615,15 @@ init 999 python:
                 "torso": self._sel_torso
             }
 
+            # try to match current filter, if it is part of the built-in 3
+            # TODO - consider adding all custom filters to the exp previewer
+            try:
+                flt_time = self.SPRITE_CODE_MAP["time"].index(
+                    store.mas_sprites.get_filter()
+                )
+            except ValueError:
+                flt_time = 0
+
             # current selection of items
             # this needs to be a dict
             # this should be set to default options
@@ -624,7 +639,7 @@ init 999 python:
                 "nose": 0,
                 "sweat": 0,
                 "tears": 0,
-                "time": 0 if store.mas_current_background.isFltDay() else 1,
+                "time": flt_time,
                 "torso": 0
             }
 
@@ -1040,6 +1055,11 @@ init 999 python:
                 exp_kwargs = mas_sprite_decoder.parse_exp_to_kwargs(
                     spr_code
                 )
+
+                # adjust arms because drawmonika kwargs does not match entirely
+                #   with exp previewer reverse image map
+                if "lean" in exp_kwargs:
+                    exp_kwargs["arms"] = (exp_kwargs["lean"], exp_kwargs["arms"])
 
             except:
                 # Assuming invalid sprite code
