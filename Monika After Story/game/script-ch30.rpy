@@ -1324,7 +1324,7 @@ init 999 python in mas_reset:
         Runs reset code for window reactions
         """
         #set MAS window global
-        mas_windowutils._setMASWindow()
+        mas_windowutils._setMASWindow_Linux()
 
 
     @ch30_reset(-600)
