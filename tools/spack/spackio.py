@@ -1,16 +1,28 @@
 
 import os
+import subprocess
+import shutil
 
 from typing import Tuple, Optional, List
 
 from spack.spack import Spack, SpackType, SpackDB, trim_to_mod_assets, PNG_EXT,\
-    SpackTypeVerificationResult
+    SpackTypeVerificationResult, SpackConversion
 
 
 class SpackLoader():
     """
     Loads spacks
     """
+
+    # path to mod assets folder to check
+    ma_folder_path: str
+
+    # databsae of spacks from that mod assets folder
+    spack_db: SpackDB
+
+    def __init__(self, ma_folder_path: str):
+        self.ma_folder_path = ma_folder_path
+        self.spack_db = SpackLoader.load(ma_folder_path)
 
     @classmethod
     def load(cls, ma_folder_path: str) -> SpackDB:
@@ -133,13 +145,81 @@ class SpackWriter():
     Writes spacks
     """
 
+    @classmethod
+    def apply_conversion(cls, ma_folder_path: str, spack_conv: SpackConversion, use_git_rename: bool):
+        """
+        Applies a spack conversion. Throws ValueError if the given spack convesrion data
+        is not valid. May throw other errors - see SpackWriter.rename_file
+
+        :param ma_folder_path: the current mod assets folder path
+        :param spack_conv: SpackConversion data
+        :param use_git_rename: true to use git rename, false if not
+        """
+        if not spack_conv.is_valid:
+            if spack_conv.exception:
+                raise spack_conv.exception
+
+            raise ValueError("invalid spack conversion data with no exception: {0}".format(spack_conv))
+
+        rel_dir_path = os.path.join(
+            ma_folder_path,
+            spack_conv.src_spack.spack_type.as_ma_path()
+        )
+
+        # make dir if new
+        if spack_conv.needs_dir:
+            cls.create_dir(spack_conv.dest_spack)
+
+        # rename files (aka moving)
+        for curr, new in spack_conv.rel_file_name_map:
+            cls.rename_file(
+                os.path.normcase(os.path.join(rel_dir_path, curr)),
+                os.path.normcase(os.path.join(rel_dir_path, new)),
+                use_git_rename
+            )
+
     @staticmethod
-    def convert_spack(src_spack: Spack, dest_spack: Spack) -> bool:
+    def create_dir(spack: Spack):
         """
-        Converts the spack
-        :param src_spack: the spack to start with
-        :param dest_spack: the spack to convert to
-        :returns: True on success, false if not
+        Creates folder for spack (new style)
+        :param spack: Spritepack to create folder for
         """
-        if src_spack.spack_type == SpackType.CLOTHES:
-            return False
+        try:
+            os.mkdir(spack.img_sit)
+        except FileExistsError:
+            pass
+
+    @staticmethod
+    def rename_file(cur_name: str, new_name: str, use_git_rename: bool):
+        """
+        Renames file assuming relative dir.
+
+        If 'use_git_rename' is True, throws CalledProcessError if git rename fails.
+
+        If 'use_git_rename" is False, then the following can occur:
+            - on windows, FileExistsError can be raised if file already exists
+            - on unix, IsADirectoryError can be raised if the destination file exists as a dir
+
+        Permission errors will also be raised.
+
+        :param cur_name: current name (with path)
+        :param new_name: new name (with path)
+        :param use_git_rename: true to use git rename, false to not
+        """
+        if use_git_rename:
+            subprocess.run(["git", "mv", cur_name, new_name], shell=True, check=True)
+
+        else:
+            shutil.move(cur_name, new_name)
+
+
+
+
+
+
+
+
+
+
+
+

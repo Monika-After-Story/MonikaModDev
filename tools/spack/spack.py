@@ -507,63 +507,95 @@ class Spack():
             if file not in self.file_list:
                 self.file_list.append(file)
 
-    def as_new(self) -> "Spack":
+
+class SpackConversion():
+    """
+    represents a spack conversion that is ready to be executed
+    """
+
+    # the spack that is being converted
+    src_spack: Spack
+
+    # the resulting spack after conversion
+    dest_spack: Spack = None
+
+    # relative file name map - contains tuples of files names with dir prefixes for quick renaming.
+    #   [0] - the current file name + dir prefix if needed
+    #   [1] - the new file name + dir prefix if needed
+    rel_file_name_map: List[Tuple[str,str]] = None
+
+    # true if new dir is needed
+    needs_dir: bool = False
+
+    # true if this conversion is valid, false if not
+    # trying to run conv operations with this when it is invalid should raise exceptions
+    is_valid: bool = False
+
+    # the exception that was triggered if this is invalid
+    exception: ValueError = None
+
+    def __init__(self, src_spack: Spack):
+        self.src_spack = src_spack
+
+        try:
+            self.dest_spack, self.rel_file_name_map = SpackConversion._prepare(src_spack)
+            self.is_valid = True
+            self.needs_dir = self.dest_spack.is_new
+        except ValueError as e:
+            self.exception = e
+            self.is_valid = False
+
+    def __str__(self):
+        return "Src: {0}, Dest: {1}, files: {2}".format(self.src_spack, self.dest_spack, self.rel_file_name_map)
+
+    @staticmethod
+    def _prepare(src_spack: Spack) -> Tuple[Spack, List[Tuple[str, str]]]:
         """
-        Creates a "new" version of this spack.
-        Raises ValueError if file could not be converted, or if this spack cannot be turned new
-        :returns: new version of this spack. If this spack is already new, itself is returned
+        prepares conversion data by processing the current spack for conversion.
+        Raises ValueError if incompatible spack, or a file could not be converted
+        :param src_spack: the Spack to convert
+        :returns: tuple of the following formaT:
+            [0] - converted version of this spack
+            [1] - list of tuples with filename mappings:
+                [0] - current name (includes prefix if needed)
+                [1] - name to rename to (includes prefix if needed)
         """
-        if self.is_new:
-            return self
+        if src_spack.spack_type == SpackType.CLOTHES:
+            raise ValueError("tried to convert unsupported spack: {0}".format(src_spack))
 
-        if self.spack_type == SpackType.CLOTHES:
-            raise ValueError("unsupported spack tried to become new")
+        conv_file_list = []
+        conv_name_mapping = []
+        conv_data = src_spack.spack_type.file_converter.build_converter_package()
+        converting_to_old = src_spack.is_new
 
-        new_file_list = []
+        # handling depending on version
+        if converting_to_old:
+            conv_data.img_sit = src_spack.img_sit
 
-        for file_name in self.file_list:
-            new_file_name = self.spack_type.file_converter.convert_to_new(file_name)
+        # convert file names
+        for file_name in src_spack.file_list:
+
+            if converting_to_old:
+                new_file_name = src_spack.spack_type.file_converter.convert_to_old(file_name, conv_data)
+                conv_name_mapping.append((
+                    os.path.join(src_spack.img_sit, file_name),
+                    new_file_name,
+                ))
+
+            else:
+                new_file_name = src_spack.spack_type.file_converter.convert_to_new(file_name, conv_data)
+                conv_name_mapping.append((
+                    file_name,
+                    os.path.join(src_spack.img_sit, new_file_name),
+                ))
+
+            conv_file_list.append(new_file_name)
 
             if new_file_name == file_name:
-                # this is bad
-                raise ValueError("file '{0}' does not match old-style file convention".format(file_name))
+                # this is bad - means no conversion occured
+                raise ValueError("file '{0}' did not get converted - check if correctly named".format(file_name))
 
-            new_file_list.append(new_file_name)
-
-        return Spack(self.img_sit, True, new_file_list, self.spack_type)
-
-
-    def as_old(self) -> "Spack":
-        """
-        Creates an "old" version of this spack.
-        Raises ValueError if file could not be converted, or if this spack cannot be turned old
-        :returns: old version of this spack. If this spack is already old, itself is returned.
-        """
-        if not self.is_new:
-            return self
-
-        if self.spack_type == SpackType.CLOTHES:
-            raise ValueError("unsupported spack tried to become old")
-
-        old_file_list = []
-
-        # new files do not have img sit
-        conv_data = self.spack_type.file_converter.build_converter_package()
-        conv_data.img_sit = self.img_sit
-
-        for file_name in self.file_list:
-            old_file_name = self.spack_type.file_converter.convert_to_old(file_name, conv_data)
-
-            if old_file_name == file_name:
-                # this is bad
-                raise ValueError("file '{0}' does not match new-style file convention".format(file_name))
-
-            old_file_list.append(old_file_name)
-
-        return Spack(self.img_sit, False, old_file_list, self.spack_type)
-
-
-
+        return Spack(src_spack.img_sit, not src_spack.is_new, conv_file_list, src_spack.spack_type), conv_name_mapping
 
 
 class SpackEntry(NamedTuple):
@@ -579,7 +611,6 @@ class SpackDB():
 
     # spacks organized by type
     spacks_by_type: DefaultDict[SpackType, Dict[str, SpackEntry]] = field(default_factory=_defaultdict_maker)
-
 
     def __getitem__(self, item) -> Dict[str, SpackEntry]:
         if item not in SpackType.enums():

@@ -3,12 +3,10 @@
 # VER: python 3.9.10
 
 import os
-import subprocess
-import shutil
 
 from typing import Union
 
-import menutils
+import menutils3 as menutils
 
 
 from spack.spack import Spack, SpackDB
@@ -37,51 +35,27 @@ class SpackConverter():
         """
         self.spack_db = SpackLoader.load(self.ma_folder_path)
 
-    def create_dir(self, spack: Spack):
-        """
-        Creates folder for spack (new style)
-        :param spack: Spritepack to create folder for
-        """
-        try:
-            os.mkdir(spack.img_sit)
-        except FileExistsError:
-            pass
-
-    def rename_file(self, cur_name: str, new_name: str):
-        """
-        Renames file assuming relative dir
-        :param cur_name: current name (with path)
-        :param new_name: new name (with path)
-        """
-        if use_git_rename:
-            subprocess.run(["git", "mv", cur_name, new_name], shell=True, check=True)
-
-        else:
-            shutil.move(cur_name, new_name)
-
-    def convert_to_new(self, spack: Union[str, Spack]):
-        """
-        Converts a spack to new (based on string id)
-        :param spack: either string id or the spack to convert
-        """
-        if isinstance(spack, str):
-            spack = self.spacks[spack]
-
-        if not isinstance(spack, Spack):
-            raise ValueError("expected Spack, got {0}".format(type(spack)))
-
-        for
 
 
 
 
 
-def conv_new(convert: SpackConverter):
+def conv_new(loaded_spacks: SpackLoader):
     pass
 
 
-def conv_old(convert: SpackConverter):
+def conv_old(loaded_spacks: SpackLoader):
     pass
+
+
+def show_list(loaded_spacks: SpackLoader):
+    """
+    Shows list of spacks
+    """
+    menutils.paginate(
+        "Loaded Spacks",
+        # TODO
+    )
 
 
 def run():
@@ -97,7 +71,7 @@ def run():
         print("no mod_assets folder found, quitting...")
         exit(1)
 
-    converter = SpackConverter(ma_folder)
+    loaded_spacks = SpackLoader(ma_folder)
 
     choice = True
 
@@ -105,11 +79,12 @@ def run():
         choice = menutils.menu(menu_main)
 
         if choice is not None:
-            choice(converter)
+            choice(loaded_spacks)
 
 
 menu_main = [
     ("Spack Organizer", "Utility: "),
+    ("Show list of Spacks", show_list),
     ("Convert to Folder Structure (New)", conv_new),
     ("Convert to File Structure (Old)", conv_old),
 ]
