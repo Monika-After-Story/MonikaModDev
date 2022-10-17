@@ -3,10 +3,12 @@ import os
 import subprocess
 import shutil
 
-from typing import Tuple, Optional, List
+from typing import Optional
 
-from spack.spack import Spack, SpackType, SpackDB, trim_to_mod_assets, PNG_EXT,\
-    SpackTypeVerificationResult, SpackConversion, SpackStructureType
+from spack.spack import Spack, SpackType, trim_to_mod_assets, PNG_EXT,\
+    SpackTypeVerificationResult, SpackConversion, SpackStructureType, PATH_PREFIX
+from spack.spackdb import SpackDB
+from spack.spackjson import SpackJSONDB
 
 
 class SpackLoader():
@@ -43,8 +45,12 @@ class SpackLoader():
         ma_folder_path = trim_to_mod_assets(ma_folder_path)
         db = SpackDB()
 
+        # load spacks
         for spack_type in SpackType.enums():
             cls._load_path(ma_folder_path, spack_type, db)
+
+        # load jsons
+        db.spacks_json.load(os.path.normcase(os.path.join(ma_folder_path, PATH_PREFIX, "j")))
 
         return db
 
@@ -73,7 +79,7 @@ class SpackLoader():
                 db.add(spack)
 
     @staticmethod
-    def parse_file_old(file_name: str) -> Tuple[Optional[SpackType], Optional[str]]:
+    def parse_file_old(file_name: str) -> tuple[Optional[SpackType], Optional[str]]:
         """
         Parses a file into its possible spacktype and img sit id
         (assumign old style)
@@ -166,7 +172,13 @@ class SpackWriter():
     """
 
     @classmethod
-    def apply_conversion(cls, ma_folder_path: str, spack_conv: SpackConversion, use_git_rename: bool):
+    def apply_conversion(
+            cls,
+            ma_folder_path: str,
+            spack_conv: SpackConversion,
+            use_git_rename: bool,
+            json_db: SpackJSONDB = None
+    ):
         """
         Applies a spack conversion. Throws ValueError if the given spack convesrion data
         is not valid. May throw other errors - see SpackWriter.rename_file
@@ -174,6 +186,7 @@ class SpackWriter():
         :param ma_folder_path: the current mod assets folder path
         :param spack_conv: SpackConversion data
         :param use_git_rename: true to use git rename, false if not
+        :param json_db: pass in json spack db if available
         """
         if not spack_conv.is_valid:
             if spack_conv.exception:
@@ -204,6 +217,19 @@ class SpackWriter():
         if spack_conv.src_spack.structure_type == SpackStructureType.FOLDER:
             cls.remove_dir(os.path.normcase(os.path.join(rel_dir_path, spack_conv.src_spack.img_sit)))
 
+        # update json if available
+        if json_db and len(json_db) > 0:
+            img_sit_type = spack_conv.src_spack.as_img_sit_type()
+            json_data = json_db.get(img_sit_type)
+
+            if json_data:
+                if spack_conv.dest_spack.structure_type == SpackStructureType.FOLDER:
+                    json_data["use_folders"] = True
+                    json_db.save(img_sit_type=img_sit_type)
+                elif spack_conv.dest_spack.structure_type == SpackStructureType.FILES:
+                    if "use_folders" in json_data:
+                        json_data.pop("use_folders")
+                        json_db.save(img_sit_type=img_sit_type)
 
     @staticmethod
     def create_dir(file_path: str):

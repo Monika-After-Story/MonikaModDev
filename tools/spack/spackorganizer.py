@@ -10,9 +10,10 @@ import menutils3 as menutils
 import toolscache
 
 
-from spack.spack import Spack, SpackDB, SpackType, MOD_ASSETS, SpackDBFilterCriteria,\
+from spack.spack import Spack, SpackType, MOD_ASSETS,\
     SpackStructureType, SpackConversion
 from spack.spackio import SpackLoader, SpackWriter
+from spack.spackdb import SpackDB, SpackDBFilterCriteria
 
 
 CACHE_PATH = "spackorganizer-last-path"
@@ -72,10 +73,15 @@ def conv(
     # ask to use git or not
     use_git = menutils.ask("Use git mv instead of move", def_no=True)
 
+    # check for json data
+    json_file = loaded_spacks.spack_db.spacks_json.get_file(spack.as_img_sit_type())
+
     # final confirmation
     menutils.clear_screen()
     print("Converting {0} to {1} Format".format(spack.img_sit, conv_name))
     print("Using git mv to move: {0}".format(use_git))
+    if json_file:
+        print("JSON file will be updated: {0}".format(json_file))
     print()
     if not menutils.ask_continue():
         print("Aborting...")
@@ -84,7 +90,12 @@ def conv(
 
     # apply conversion
     print("Converting...")
-    SpackWriter.apply_conversion(loaded_spacks.ma_folder_path, conv_data, use_git)
+    SpackWriter.apply_conversion(
+        loaded_spacks.ma_folder_path,
+        conv_data,
+        use_git,
+        loaded_spacks.spack_db.spacks_json
+    )
     print("if no error occured, conversion probably complete!")
     loaded_spacks.reload()
     menutils.e_pause()
@@ -281,7 +292,10 @@ def run():
 
     # build menu
     menu_title = (
-        "Spack Organizer ({0})".format(ma_folder),
+        "Spack Organizer ({0}){1}".format(
+            ma_folder,
+            " - JSONS loaded" if loaded_spacks.spack_db.has_jsons() else ""
+        ),
         "Utility: "
     )
     menu_main = [
