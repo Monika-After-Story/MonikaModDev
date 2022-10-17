@@ -6,7 +6,7 @@ import shutil
 from typing import Tuple, Optional, List
 
 from spack.spack import Spack, SpackType, SpackDB, trim_to_mod_assets, PNG_EXT,\
-    SpackTypeVerificationResult, SpackConversion
+    SpackTypeVerificationResult, SpackConversion, SpackStructureType
 
 
 class SpackLoader():
@@ -24,6 +24,15 @@ class SpackLoader():
         self.ma_folder_path = ma_folder_path
         self.spack_db = SpackLoader.load(ma_folder_path)
 
+    def __len__(self):
+        return len(self.spack_db)
+
+    def reload(self):
+        """
+        Reloads this spack's data
+        """
+        self.spack_db = SpackLoader.load(self.ma_folder_path)
+
     @classmethod
     def load(cls, ma_folder_path: str) -> SpackDB:
         """
@@ -35,22 +44,33 @@ class SpackLoader():
         db = SpackDB()
 
         for spack_type in SpackType.enums():
-
-            # no clothes for now
-            if spack_type != SpackType.CLOTHES:
-
-                sp_folder_path = os.path.normcase(os.path.join(
-                    ma_folder_path,
-                    spack_type.as_ma_path()
-                ))
-                contents = os.listdir(sp_folder_path)
-
-                for file_name in contents:
-                    spack = cls._try_process_spack(sp_folder_path, file_name)
-                    if spack:
-                        db.add(spack)
+            cls._load_path(ma_folder_path, spack_type, db)
 
         return db
+
+    @classmethod
+    def _load_path(cls, ma_folder_path: str, spack_type: SpackType, db: SpackDB):
+        """
+        Loads spacks in a specific path based on type
+        :param ma_folder_path: mod assets folder path
+        :param spack_type: the SpackType to get spacks for
+        :param db: the DB to load spacks to
+        """
+        # no clothes for now
+        if spack_type == SpackType.CLOTHES:
+            return
+
+        sp_folder_path = os.path.normcase(os.path.join(ma_folder_path, spack_type.as_ma_path()))
+
+        # check if this spack has anything of this type
+        if not os.access(sp_folder_path, os.F_OK):
+            return
+
+        contents = os.listdir(sp_folder_path)
+        for file_name in contents:
+            spack = cls._try_process_spack(sp_folder_path, file_name)
+            if spack:
+                db.add(spack)
 
     @staticmethod
     def parse_file_old(file_name: str) -> Tuple[Optional[SpackType], Optional[str]]:
@@ -122,7 +142,7 @@ class SpackLoader():
 
                 parsed_sub_files.append(sub_file)
 
-        return Spack(file_name, True, parsed_sub_files, spack_type)
+        return Spack(file_name, SpackStructureType.FOLDER, parsed_sub_files, spack_type)
 
     @classmethod
     def _try_process_spack_old(cls, file_name: str) -> Optional[Spack]:
@@ -135,7 +155,7 @@ class SpackLoader():
         # determine if spack
         spack_type, img_sit = cls.parse_file_old(file_name)
         if spack_type and img_sit:
-            return Spack(img_sit, False, [file_name], spack_type)
+            return Spack(img_sit, SpackStructureType.FILES, [file_name], spack_type)
 
         return None
 
@@ -161,6 +181,8 @@ class SpackWriter():
 
             raise ValueError("invalid spack conversion data with no exception: {0}".format(spack_conv))
 
+        ma_folder_path = trim_to_mod_assets(ma_folder_path)
+
         rel_dir_path = os.path.join(
             ma_folder_path,
             spack_conv.src_spack.spack_type.as_ma_path()
@@ -168,7 +190,7 @@ class SpackWriter():
 
         # make dir if new
         if spack_conv.needs_dir:
-            cls.create_dir(spack_conv.dest_spack)
+            cls.create_dir(os.path.normcase(os.path.join(rel_dir_path, spack_conv.dest_spack.img_sit)))
 
         # rename files (aka moving)
         for curr, new in spack_conv.rel_file_name_map:
@@ -178,15 +200,29 @@ class SpackWriter():
                 use_git_rename
             )
 
+        # remove dir after if old
+        if spack_conv.src_spack.structure_type == SpackStructureType.FOLDER:
+            cls.remove_dir(os.path.normcase(os.path.join(rel_dir_path, spack_conv.src_spack.img_sit)))
+
+
     @staticmethod
-    def create_dir(spack: Spack):
+    def create_dir(file_path: str):
         """
         Creates folder for spack (new style)
-        :param spack: Spritepack to create folder for
         """
         try:
-            os.mkdir(spack.img_sit)
+            os.mkdir(file_path)
         except FileExistsError:
+            pass
+
+    @staticmethod
+    def remove_dir(file_path: str):
+        """
+        Removes folder
+        """
+        try:
+            os.rmdir(file_path)
+        except FileNotFoundError:
             pass
 
     @staticmethod

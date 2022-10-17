@@ -2,7 +2,7 @@
 import os
 import re
 
-from typing import Optional, Dict, DefaultDict, Tuple, NamedTuple, List, Pattern, Match
+from typing import Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from collections import defaultdict
@@ -129,10 +129,10 @@ class HairConverterPackage(ConverterPackage):
     hair_id: str = ""
     # hair code
     hair_code: str = ""
-    # remaining hair codes
-    other_hair_codes: str = ""
-    # lean type (only if leaning)
-    lean_type: str = ""
+    # other hair codes
+    _other_hair_codes: str = ""
+    # lean type (if appropriate)
+    _lean_type: str = ""
 
     @property
     def img_sit(self):
@@ -142,24 +142,45 @@ class HairConverterPackage(ConverterPackage):
     def img_sit(self, val):
         self.hair_id = val
 
+    @property
+    def lean_type(self):
+        # lean type (only if leaning)
+        return self._lean_type
+
+    @lean_type.setter
+    def lean_type(self, val):
+        if val is None:
+            val = ""
+        self._lean_type = val
+
+    @property
+    def other_hair_codes(self):
+        return self._other_hair_codes
+
+    @other_hair_codes.setter
+    def other_hair_codes(self, val):
+        if val is None:
+            val = ""
+        self._other_hair_codes = val
+
 
 class FileConverter():
     # input pattern for old-style file
-    old_input_pattern: Pattern[str]
+    old_input_pattern: re.Pattern[str]
 
     # output format string for old-style file
     old_output_format: str
 
     # input pattern for new-style file
-    new_input_pattern: Pattern[str]
+    new_input_pattern: re.Pattern[str]
 
     # output format string for new-style file
     new_output_format: str
 
     def __init__(self,
-        old_input_pattern: Pattern[str],
+        old_input_pattern: re.Pattern[str],
         old_output_format: str,
-        new_input_pattern: Pattern[str],
+        new_input_pattern: re.Pattern[str],
         new_output_format: str
     ):
         self.old_input_pattern = old_input_pattern
@@ -238,7 +259,7 @@ class FileConverter():
 
         return input_str
 
-    def match_on_new(self, input_str: str) -> Match:
+    def match_on_new(self, input_str: str) -> re.Match:
         """
         Matches on new pattern
         :param input_str: input string to match
@@ -246,7 +267,7 @@ class FileConverter():
         """
         return self.new_input_pattern.match(input_str)
 
-    def match_on_old(self, input_str: str) -> Match:
+    def match_on_old(self, input_str: str) -> re.Match:
         """
         Matches on old pattern
         :param input_str: input string to match
@@ -292,19 +313,27 @@ class HairFileConverter(FileConverter):
     def __init__(self):
         super().__init__(HAIR_FILE_IN_OLD, HAIR_FILE_OUT_OLD, HAIR_FILE_IN_NEW, HAIR_FILE_OUT_NEW)
 
+    def lean_out(self, conv_data: HairConverterPackage) -> str:
+        """
+        Gets lean out as the appropraite string
+        """
+        if conv_data.lean_type:
+            return conv_data.lean_type + "-"
+        return ""
+
     def build_converter_package(self) -> ConverterPackage:
         return HairConverterPackage()
 
     def create_new_output(self, conv_data: HairConverterPackage) -> str:
         return self.new_output_format.format(
-            conv_data.lean_type,
+            self.lean_out(conv_data),
             conv_data.hair_code,
             conv_data.other_hair_codes
         )
 
     def create_old_output(self, conv_data: HairConverterPackage) -> str:
         return self.old_output_format.format(
-            conv_data.lean_type,
+            self.lean_out(conv_data),
             conv_data.hair_id,
             conv_data.hair_code,
             conv_data.other_hair_codes
@@ -342,9 +371,9 @@ class SpackTypeVerificationResult(Enum):
 
 
 class SpackType(Enum):
-    ACS = ("a", "acs", ACSFileConverter())
-    HAIR = ("h", "hair", HairFileConverter())
-    CLOTHES = ("c", None, None)
+    ACS = ("a", "acs", ACSFileConverter(), "ACS")
+    HAIR = ("h", "hair", HairFileConverter(), "Hair")
+    CLOTHES = ("c", None, None, "Clothes")
 
     # directory name in mod assets structure
     dir_name: str
@@ -357,22 +386,24 @@ class SpackType(Enum):
     # None if does not support conversion
     file_converter: Optional[FileConverter]
 
-    def __init__(self, dir_name: str, file_prefix: Optional[str], file_converter: FileConverter):
+    # display name of this enum
+    display_name: str
+
+    def __init__(self, dir_name: str, file_prefix: Optional[str], file_converter: FileConverter, display_name: str):
         """
         ctor
-        :param dir_name: directory name
-        :param file_prefix: file prefix
         """
         self.dir_name = dir_name
         self.file_prefix = file_prefix
         self.file_converter = file_converter
+        self.display_name = display_name
 
     def as_dir(self) -> str:
         """
         Converts this enum as if it were a dir. (no trailing slash)
         :returns: value as dir string
         """
-        return "/" + self.value
+        return "/" + self.dir_name
 
     def as_prefix(self) -> str:
         """
@@ -424,7 +455,7 @@ class SpackType(Enum):
         return SpackTypeVerificationResult.INVALID
 
     @classmethod
-    def enums(cls) -> List["SpackType"]:
+    def enums(cls) -> list["SpackType"]:
         """
         gets a list of the enum values in here
         :returns: list of enums
@@ -432,7 +463,7 @@ class SpackType(Enum):
         return [x for x in cls]
 
     @classmethod
-    def ma_paths(cls) -> List[str]:
+    def ma_paths(cls) -> list[str]:
         """
         Gets list of all enums as mod asset paths
         :returns: list of mod asset paths
@@ -446,16 +477,21 @@ class SpackType(Enum):
         :param path: folder path to check
         :returns: spack type, or None if not valid/unknown spack type
         """
-        if path.endswith(cls.ACS.as_dir()):
+        if path.endswith(cls.ACS.dir_name):
             return cls.ACS
 
-        elif path.endswith(cls.HAIR.as_dir()):
+        elif path.endswith(cls.HAIR.dir_name):
             return cls.HAIR
 
-        elif path.endswith(cls.CLOTHES.as_dir()):
+        elif path.endswith(cls.CLOTHES.dir_name):
             return cls.CLOTHES
 
         return None
+
+
+class SpackStructureType(Enum):
+    FILES = 1
+    FOLDER = 2
 
 
 @dataclass
@@ -464,8 +500,8 @@ class Spack():
     # the acutal image id used for the sprites
     img_sit: str
 
-    # true if organized in new folder structure, false otherwise
-    is_new: bool
+    # how this spack is organized
+    structure_type: SpackStructureType
 
     # list of files associated with this spack
     file_list: list
@@ -477,13 +513,42 @@ class Spack():
         """
         Eq override
         """
-        return self.spack_type == other.spack_type and self.is_new == other.is_new and self.img_sit == other.img_sit
+        return (
+            self.spack_type == other.spack_type
+            and self.structure_type == other.structure_type
+            and self.img_sit == other.img_sit
+        )
 
     def __ne__(self, other) -> bool:
         """
         ne override
         """
         return not self.__eq__(other)
+
+    @staticmethod
+    def menustr(spack: "Spack"):
+        """
+        Converts spack into menuable string
+        """
+        return "|".join([
+            spack.spack_type.dir_name.capitalize(),
+            "N" if spack.structure_type == SpackStructureType.FOLDER else "O",
+            spack.img_sit
+        ])
+
+    def menu_file_list(self) -> list[str]:
+        """
+        file list for menu usage
+        :returns: list of strings of file names
+        """
+        if self.structure_type == SpackStructureType.FOLDER:
+            return [
+                os.path.join(self.img_sit, file_name)
+                for file_name in self.file_list
+            ]
+
+        return list(self.file_list)
+
 
     def merge(self, other: "Spack"):
         """
@@ -497,7 +562,7 @@ class Spack():
         if self.spack_type != other.spack_type:
             raise ValueError("Failed to merge: Mismatch in spack types")
 
-        if self.is_new != other.is_new:
+        if self.structure_type != other.structure_type:
             raise ValueError("Failed to merge: Mismatch in structure")
 
         if self.img_sit != other.img_sit:
@@ -522,7 +587,7 @@ class SpackConversion():
     # relative file name map - contains tuples of files names with dir prefixes for quick renaming.
     #   [0] - the current file name + dir prefix if needed
     #   [1] - the new file name + dir prefix if needed
-    rel_file_name_map: List[Tuple[str,str]] = None
+    rel_file_name_map: list[tuple[str, str]] = None
 
     # true if new dir is needed
     needs_dir: bool = False
@@ -540,7 +605,7 @@ class SpackConversion():
         try:
             self.dest_spack, self.rel_file_name_map = SpackConversion._prepare(src_spack)
             self.is_valid = True
-            self.needs_dir = self.dest_spack.is_new
+            self.needs_dir = self.dest_spack.structure_type == SpackStructureType.FOLDER
         except ValueError as e:
             self.exception = e
             self.is_valid = False
@@ -549,7 +614,7 @@ class SpackConversion():
         return "Src: {0}, Dest: {1}, files: {2}".format(self.src_spack, self.dest_spack, self.rel_file_name_map)
 
     @staticmethod
-    def _prepare(src_spack: Spack) -> Tuple[Spack, List[Tuple[str, str]]]:
+    def _prepare(src_spack: Spack) -> tuple[Spack, list[tuple[str, str]]]:
         """
         prepares conversion data by processing the current spack for conversion.
         Raises ValueError if incompatible spack, or a file could not be converted
@@ -566,7 +631,7 @@ class SpackConversion():
         conv_file_list = []
         conv_name_mapping = []
         conv_data = src_spack.spack_type.file_converter.build_converter_package()
-        converting_to_old = src_spack.is_new
+        converting_to_old = src_spack.structure_type == SpackStructureType.FOLDER
 
         # handling depending on version
         if converting_to_old:
@@ -595,12 +660,44 @@ class SpackConversion():
                 # this is bad - means no conversion occured
                 raise ValueError("file '{0}' did not get converted - check if correctly named".format(file_name))
 
-        return Spack(src_spack.img_sit, not src_spack.is_new, conv_file_list, src_spack.spack_type), conv_name_mapping
+        return (
+            Spack(
+                src_spack.img_sit,
+                SpackStructureType.FILES if converting_to_old else SpackStructureType.FOLDER,
+                conv_file_list,
+                src_spack.spack_type
+            ),
+            conv_name_mapping
+        )
 
 
-class SpackEntry(NamedTuple):
-    old: Optional[Spack] = None
-    new: Optional[Spack] = None
+@dataclass
+class SpackDBFilterCriteria():
+
+    # spack types to filter by
+    types: list[SpackType] = None
+
+    # ids to filter by
+    ids: list[str] = None
+
+    # structure types to filter by
+    struct_types: list[SpackStructureType] = None
+
+    @staticmethod
+    def copy(filter_criteria: "SpackDBFilterCriteria") -> "SpackDBFilterCriteria":
+        """
+        Generates a full copy of filter criteria.
+        """
+        new_criteria = SpackDBFilterCriteria()
+
+        if filter_criteria.types:
+            new_criteria.types = list(filter_criteria.types)
+        if filter_criteria.ids:
+            new_criteria.ids = list(filter_criteria.ids)
+        if filter_criteria.struct_types:
+            new_criteria.struct_types = list(filter_criteria.struct_types)
+
+        return new_criteria
 
 
 @dataclass
@@ -610,9 +707,9 @@ class SpackDB():
     """
 
     # spacks organized by type
-    spacks_by_type: DefaultDict[SpackType, Dict[str, SpackEntry]] = field(default_factory=_defaultdict_maker)
+    spacks_by_type: defaultdict[SpackType, dict[str, dict[SpackStructureType, Spack]]] = field(default_factory=_defaultdict_maker)
 
-    def __getitem__(self, item) -> Dict[str, SpackEntry]:
+    def __getitem__(self, item) -> dict[str, dict[SpackStructureType, Spack]]:
         if item not in SpackType.enums():
             raise ValueError("invalid spack type - {0}".format(item))
 
@@ -631,27 +728,86 @@ class SpackDB():
         :returns: self for chaining
         """
         spacks_dict = self[spack.spack_type]
-        existing_spack = spacks_dict.get(spack.img_sit, None)
+        existing_spacks = spacks_dict.get(spack.img_sit, None)
 
-        if existing_spack:
-            old_spack, new_spack = existing_spack
+        if existing_spacks:
+            existing_spack = existing_spacks.get(spack.structure_type)
 
-            if old_spack == spack:
-                old_spack.merge(spack)
+            if existing_spack:
+                existing_spack.merge(spack)
 
-            elif new_spack == spack:
-                new_spack.merge(spack)
+            else:
+                # add new one
+                existing_spacks[spack.structure_type] = spack
 
         else:
             # not existing, create new one
-            old_spack = None
-            new_spack = None
-
-            if spack.is_new:
-                new_spack = spack
-            else:
-                old_spack = spack
-
-            spacks_dict[spack.img_sit] = SpackEntry(old=old_spack, new=new_spack)
+            spacks_dict[spack.img_sit] = {
+                spack.structure_type: spack
+            }
 
         return self
+
+
+    def get(
+            self,
+            types: list[SpackType] = None,
+            ids: list[str] = None,
+            struct_types: list[SpackStructureType] = None,
+            filter_criteria: SpackDBFilterCriteria = None
+    ) -> list[Spack]:
+        """
+        Gets all spacks that pass a specific set of filter criteria. No criteria set will get all spacks in a list.
+        :param types: list of types of spack to get
+        :param ids: list of ids of the spack to get
+        :param struct_types: list of structure types to get
+        :param filter_criteria: pass to use objectified filter criteria instead. Takes prioritty.
+        :returns: list of spacks
+        """
+        if filter_criteria:
+            types = filter_criteria.types
+            ids = filter_criteria.ids
+            struct_types = filter_criteria.struct_types
+
+        # defaul types
+        if not types:
+            types = self.get_types()
+
+        # get base pop of spack ID structures
+        spack_id_structs = [self[spack_type] for spack_type in types]
+
+        # apply ID filter
+        spack_structures = []
+        for spack_id_struct in spack_id_structs:
+            if ids:
+                for id in ids:
+                    spack_structs_from_id = spack_id_struct.get(id)
+                    if spack_structs_from_id:
+                        spack_structures.append(spack_structs_from_id)
+            else:
+                spack_structures.extend(list(spack_id_struct.values()))
+
+        # apply struct type filter
+        spacks = []
+        for spack_struct in spack_structures:
+            if struct_types:
+                for struct_type in struct_types:
+                    spack = spack_struct.get(struct_type)
+                    if spack:
+                        spacks.append(spack)
+
+            else:
+                spacks.extend(list(spack_struct.values()))
+
+        return spacks
+
+    def get_types(self) -> list[SpackType]:
+        """
+        Gets types that have data in this DB
+        :returns: list of SpackTypes
+        """
+        return [
+            spack_type
+            for spack_type in SpackType.enums()
+            if len(self[spack_type]) > 0
+        ]

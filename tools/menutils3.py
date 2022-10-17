@@ -1,5 +1,5 @@
 ## module containing constants for menu creation
-# PY 3 ver
+# VER: py 3.9.10
 #
 # to run a menu, prepare a list of menu entries. Each entry should consist of
 # a tuple of the following format:
@@ -13,14 +13,17 @@
 # the menu generator function (menu) will add an exit / back option
 # automatically. this option always returns None
 
+# TODO - add auto-generated header templates stuff here
+
 import os
 import platform
+import sys
 
 try:
     input
 except NameError:
     print("this should be used in py3 only")
-    exit(1)
+    sys.exit(1)
 
 
 HEADER = """\n\n\
@@ -85,7 +88,7 @@ def menu(menu_opts, defindex=None):
             defval = None
             footer = MENU_END.format("[0]")
 
-    except:
+    except Exception:
         # if we failed, None everything so we dont do foolish things later
         defindex = None
         defval = None
@@ -138,7 +141,7 @@ def menu(menu_opts, defindex=None):
                 # user wants to go back
                 return None
 
-        except:
+        except Exception:
             # bad user input
             pass
 
@@ -175,7 +178,7 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
     per_page = restrict(per_page)
     show_pages = True
     page = 0
-    last_page = len(items) / per_page
+    last_page = len(items) // per_page
     while show_pages:
         # determine items to show this page
         items_to_show = items[(page*per_page):((page+1) * per_page)]
@@ -228,7 +231,7 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
             try:
                 page = int(page_input)-1
 
-            except:
+            except Exception:
                 # bad page input
                 pass
 
@@ -240,7 +243,7 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
                     return items_to_show[choice]
 
                 # otherwise bad input
-            except:
+            except Exception:
                 # bad input
                 pass
 
