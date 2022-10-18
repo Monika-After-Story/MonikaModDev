@@ -1793,7 +1793,7 @@ label mas_monika_islands_final_reveal:
     m "..."
     m "I'm surprised it actually worked, ahaha!~"
     m "You know, after spending so much time working on this..."
-    m "It feels so satisfying to not only being able to see the result myself..."
+    m "It feels so satisfying not only being able to see the result myself..."
     m "But also being able to show it to you, [mas_get_player_nickname()]."
     m "I'm sure you had been wondering what was behind that bug on the central island~"
     m "It's a small house for us to spend time in, we can go there any time now, just ask."
