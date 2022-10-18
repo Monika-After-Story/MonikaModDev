@@ -19,6 +19,9 @@ import os
 import platform
 import sys
 
+from typing import Any, Union, Optional
+from enum import Enum
+
 try:
     input
 except NameError:
@@ -35,7 +38,8 @@ HEADER = """\n\n\
 
 MENU_TITLE = "    {0}"
 MENU_ENTRY = "   {2}{0}{3} {1}"
-MENU_END = "\n   {0} Exit\n"
+MENU_END = "\n   {0} {1}\n"
+MENU_EXIT = "Exit"
 
 PAGE_ENTRY = MENU_TITLE
 PAGE_GOTO = "(G)oto ): "
@@ -45,6 +49,7 @@ PAGE_QUIT = "\n  ( (Q)uit"
 PAGE_QUIT_DEF = "\n  ( [Q]uit"
 PAGE_BAR = " | "
 PAGE_PROG = " - [Page {0}/{1}]"
+PAGE_CONFIRM = "(C)onfirm"
 
 LINE_SELECT = "{0: >2}) {1}"
 
@@ -54,45 +59,52 @@ __GOTO = "g"
 __NEXT = "n"
 __PREV = "p"
 __QUIT = "q"
+__CONF = "c"
 
 
-def menu(menu_opts, defindex=None):
+def menu(
+        menu_opts: list[tuple[str, Any]],
+        defindex: int = None,
+        exit_str: str = None,
+        exit_value: Any = None,
+) -> Any:
     """
     Generates a menu and returns the desired menu action
 
-    IN:
-        menu_opts - See above for menu formatting
-        defindex - index for teh default (blank enter) value
-            The value at this index is returned if blank is hit.
-            Formatting will also show square brackets around the appropriate
-            piece
-            Default: None (which corresponds to the Exit)
-
-    RETURNS:
-        the selected menu action
+    :param menu_opts: See above for menu formatting
+    :param defindex: index for the default (blank enter) value
+        The value at this index is returned if blank is hit.
+        Formatting will also show square brackets around the piece.
+        (Default: none - corresponds to exit)
+    :param exit_str: the string to show for the exit line. Do not include number.
+    :param exit_value: value to return when exit is hit.
+    :returns: selected menu action
     """
     if len(menu_opts) < 2:
         # a menu must consist of header + prompt entry and at least one
         # menu option
         return None
 
+    if not exit_str:
+        exit_str = MENU_EXIT
+
     # parse a default index
     try:
         if defindex is not None and 1 <= defindex < len(menu_opts):
             defval = menu_opts[defindex][1]
-            footer = MENU_END.format(" 0)")
+            footer = MENU_END.format(" 0)", exit_str)
 
         else:
             # if no defindex, null everyting
             defindex = None
-            defval = None
-            footer = MENU_END.format("[0]")
+            defval = exit_value
+            footer = MENU_END.format("[0]", exit_str)
 
     except Exception:
         # if we failed, None everything so we dont do foolish things later
         defindex = None
-        defval = None
-        footer = MENU_END.format("[0]")
+        defval = exit_value
+        footer = MENU_END.format("[0]", exit_str)
 
     no_sel = True
     while no_sel:
@@ -138,15 +150,27 @@ def menu(menu_opts, defindex=None):
                 return menu_opts[user_input][1]
 
             elif user_input == 0:
-                # user wants to go back
-                return None
+                # user wants to exit
+                return exit_value
 
         except Exception:
             # bad user input
             pass
 
 
-def paginate(title, items, per_page=20, str_func=str, select=False):
+class PaginateMode(Enum):
+    LIST = 1
+    SELECT = 2
+    CONFIRM = 3
+
+
+def paginate(
+        title,
+        items,
+        per_page=20,
+        str_func=str,
+        mode: PaginateMode = None
+) -> Optional[Union[Any, bool]]:
     """
     Paginates a list of items. Each item is shown with a tab 4 indent.
     Also runs the paginatation. This returns when the user hits q (quit),
@@ -159,8 +183,7 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
     :param str_func: function to use to convert an item into a string.
         If select is true, this will be prefixed with a ##) for selection
         (Default: str)
-    :param select: true to allow user selection of an item, False if not.
-        (Default: False)
+    :param mode: mode to use pagination in
     :returns: if select is true - the selected item, otherwise None
     """
     if len(items) < 1:
@@ -173,6 +196,9 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
 
     def restrict(page_value):
         return max(10, min(page_value, 50))
+
+    if mode is None:
+        mode = PaginateMode.LIST
 
     # otherwise, we have items
     per_page = restrict(per_page)
@@ -192,6 +218,9 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
         else:
             action_bar.append(PAGE_QUIT_DEF)
 
+        if mode == PaginateMode.CONFIRM:
+            action_bar.append(PAGE_CONFIRM)
+
         if page > 0:
             action_bar.append(PAGE_PREV)
 
@@ -207,7 +236,7 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
         # items
         for index, item in enumerate(items_to_show):
             line = PAGE_ENTRY.format(str_func(item))
-            if select:
+            if mode == PaginateMode.SELECT:
                 line = LINE_SELECT.format(index+1, line)
             print(line)
 
@@ -235,7 +264,11 @@ def paginate(title, items, per_page=20, str_func=str, select=False):
                 # bad page input
                 pass
 
-        elif select and user_input != "":
+        elif mode == PaginateMode.CONFIRM and user_input == __CONF:
+            # confirmation mode
+            return True
+
+        elif mode == PaginateMode.SELECT and user_input != "":
             # selection maybe?
             try:
                 choice = int(user_input)-1

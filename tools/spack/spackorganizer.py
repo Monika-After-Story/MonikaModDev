@@ -58,23 +58,28 @@ def conv(
     :param filter_criteria: filter criteria
     :param conv_name: name for conversion (display)
     """
-    spack = spack_select(loaded_spacks, filter_criteria)
-    if not spack:
+    spacks = spack_select(loaded_spacks, False, filter_criteria=filter_criteria)
+    if not spacks:
         return
 
-    # generate conversion
-    conv_data = SpackConversion(spack)
+    # generate conversions
+    conv_data = []
 
-    if not conv_data.is_valid:
-        print("unable to convert spack: {0}".format(conv_data.exception))
-        menutils.e_pause()
-        return
+    for spack in spacks:
+
+        spack_conv = SpackConversion(spack)
+
+        if not spack_conv.is_valid:
+            print("unable to convert spack: {0}".format(spack_conv.exception))
+            menutils.e_pause()
+            return
+
+        json_file = loaded_spacks.spack_db.spacks_json.get_file(spack.as_img_sit_type())
+
+        conv_data.append((spack_conv, json_file))
 
     # ask to use git or not
     use_git = menutils.ask("Use git mv instead of move", def_no=True)
-
-    # check for json data
-    json_file = loaded_spacks.spack_db.spacks_json.get_file(spack.as_img_sit_type())
 
     # final confirmation
     menutils.clear_screen()
@@ -138,11 +143,12 @@ def show_files(loaded_spacks: SpackLoader):
     Shows files assocaited with spack
     """
     # ask for spack
-    spack = spack_select(loaded_spacks)
+    spack = spack_select(loaded_spacks, True)
     if not spack:
         return
 
     # show files for the spack
+    spack = spack[0]
     menutils.paginate(
         "Files for {0}".format(spack.img_sit),
         spack.menu_file_list()
@@ -151,36 +157,79 @@ def show_files(loaded_spacks: SpackLoader):
 
 def spack_select(
         loaded_spacks: SpackLoader,
+        select_one: bool,
         filter_criteria: SpackDBFilterCriteria = None
-) -> Optional[Spack]:
+) -> Optional[list[Spack]]:
     """
     Selects a spack, with options to use entry or page select
     :param loaded_spacks: spackloader data
+    :param select_one: true to only select 1
     :param filter_criteria: filter criteria to use for the spacks
-    :returns: Spack or None if not selected
+    :returns: list of selected Spacks or None if not selected
     """
-    menu = [
-        ("Select Spack", "Option: "),
-        ("Enter Spack ID (img_sit)", 1),
-        ("Select From List", 2),
-    ]
+    selected_spacks = []
 
     choice = True
     while choice is not None:
-        choice = menutils.menu(menu)
+        menu = [
+            ("Select Spack(s)", "Option: "),
+            ("Enter Spack ID (img_sit)", 1),
+            ("Select From List", 2),
+            ("Select All Spacks", 3),
+        ]
+
+        if selected_spacks:
+            menu.append(("Confirm Selections", 4))
+            def_index = 4
+        else:
+            def_index = None
+
+        choice = menutils.menu(menu, defindex=def_index, exit_value=-1)
+
+        spack = None
 
         if choice == 1:
-            return spack_select_enter(
+            spack =  spack_select_enter(
                 loaded_spacks,
                 filter_criteria=filter_criteria
             )
 
         elif choice == 2:
-            return spack_select_list(
+            spack = spack_select_list(
                 loaded_spacks,
                 filter_criteria=filter_criteria,
-                select=True
+                mode=menutils.PaginateMode.SELECT
             )
+
+        elif choice == 3:
+            selected_spacks = loaded_spacks.spack_db.get(
+                filter_criteria=filter_criteria
+            )
+
+        elif choice == 4:
+            if menutils.paginate(
+                "Selected Spacks",
+                selected_spacks,
+                str_func=Spack.menustr,
+                mode=menutils.PaginateMode.CONFIRM
+            ):
+                return selected_spacks
+
+        elif choice == -1:
+            # exit clicked, confirm if we still have selected
+            if selected_spacks:
+                if menutils.ask("You have selected spacks, continue returning", def_no=True):
+                    return None
+
+            else:
+                return None
+
+        if spack:
+
+            if select_one:
+                return [spack]
+
+            selected_spacks.append(spack)
 
     return None
 
@@ -207,11 +256,11 @@ def spack_select_enter(
 
         if len(matching_spacks) > 1:
             # select from matching spacks
-            selection = menutils.paginate(
+            selection: Spack = menutils.paginate(
                 "Select Spack",
                 matching_spacks,
                 str_func=Spack.menustr,
-                select=True
+                mode=menutils.PaginateMode.SELECT
             )
             if selection is not None:
                 return selection
@@ -228,21 +277,25 @@ def spack_select_enter(
 def spack_select_list(
         loaded_spacks: SpackLoader,
         filter_criteria: SpackDBFilterCriteria = None,
-        select: bool = False
+        mode: menutils.PaginateMode = menutils.PaginateMode.LIST
 ) -> Optional[Spack]:
     """
     Select a spack
     :param loaded_spacks: spack loader data to select from
     :param filter_criteria: spack filter criteria to use
-    :param select: pass True to enable selection, false to not
-        (Default: False)
+    :param mode: paginate mode
     :returns: Spack or NOne if not selecting
     """
+    if mode == menutils.PaginateMode.SELECT:
+        title = "Select Spack"
+    else:
+        title = "Found Spacks"
+
     return menutils.paginate(
-        "Select Spack" if select else "Found Spacks",
+        title,
         loaded_spacks.spack_db.get(filter_criteria=filter_criteria),
         str_func=Spack.menustr,
-        select=select
+        mode=mode
     )
 
 
