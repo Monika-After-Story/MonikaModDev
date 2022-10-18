@@ -3292,56 +3292,52 @@ label monika_change_background:
     #FALL THROUGH
 
 label monika_change_background_loop:
-
-    show monika 1eua at t21
-
-    $ renpy.say(m, "Where would you like to go?", interact=False)
-
     python:
-        # build menu list
-        import store.mas_background as mas_background
-        import store.mas_moods as mas_moods
+        renpy.dynamic("def_predicate", "predicate", "backgrounds", "final_item")
 
-        # we assume that we will always have more than 1
-        # default should always be at the top
-        backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
-
-        #o31 just gets o31 enabled BGs
-        other_backgrounds = list()
+        def_predicate = lambda bg_id, bg_obj: (
+            bg_id != "spaceroom"
+            and bg_obj.unlocked
+            and bg_obj != mas_current_background
+        )
 
         #TODO: I don't really like this, but we limit to only o31 supported bgs during the o31 event
         if persistent._mas_o31_in_o31_mode:
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
-            ]
+            predicate = lambda bg_id, bg_obj: (
+                def_predicate(bg_id, bg_obj)
+                and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, bg_id)
+            )
 
         #D25 supporting bgs
         elif persistent._mas_d25_deco_active:
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, mbg_id)
-            ]
+            predicate = lambda bg_id, bg_obj: (
+                def_predicate(bg_id, bg_obj)
+                and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, bg_id)
+            )
 
-        #Non holiday specific bg sel
+        #Non holiday specific
         else:
-            # build other backgrounds list
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked
-            ]
+            predicate = def_predicate
 
-        # sort other backgrounds list
-        other_backgrounds.sort()
+        backgrounds = [
+            (bg_obj.prompt, bg_obj, False, False)
+            for bg_id, bg_obj in mas_background.BACKGROUND_MAP.iteritems()
+            if predicate(bg_id, bg_obj)
+        ]
+        backgrounds.sort()
 
-        # build full list
-        backgrounds.extend(other_backgrounds)
+        # Default should always be at the top
+        # Only show if
+        #    def is not the current bg
+        #    or no other bgs are available (bad, we shouldn't get here at all in that case)
+        if mas_current_background != mas_background_def or not backgrounds:
+            backgrounds.insert(0, (mas_background_def.prompt, mas_background_def, False, False))
 
-        # now add final quit item
+        # Add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
+
+    show monika 1eua at t21
+    m "Where would you like to go?" nointeract
 
     # call scrollable pane
     call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
@@ -3354,6 +3350,7 @@ label monika_change_background_loop:
     if sel_background is False:
         return "prompt"
 
+    # NOTE: Just in casem you shouldn't be able to select the current bg
     if sel_background == mas_current_background:
         m 1hua "We're here right now, silly."
         m "Try again~"
