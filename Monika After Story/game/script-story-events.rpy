@@ -379,7 +379,17 @@ init 3 python:
         "wicked",
         "witch",
         "worthless",
-        "wrong"
+        "wrong",
+        #Bad names - Italian
+        "merd[ea]",
+        "merdosa",
+        "stronza",
+        "degenerata",
+        "cretina",
+        #Bad names - French
+        "mauvais",
+        "corbeille",
+        "inutile"       
     ]
 
     #Base list for good nicknames. Apply modifiers for specifying the use
