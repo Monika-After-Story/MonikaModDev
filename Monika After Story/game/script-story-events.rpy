@@ -384,12 +384,14 @@ init 3 python:
         "merd[ea]",
         "merdosa",
         "stronza",
-        "degenerata",
-        "cretina",
+        "degenerat[ea]",
         #Bad names - French
         "mauvais",
         "corbeille",
-        "inutile"       
+        "inutile",
+        #Bad names - General
+        "puta", #uncertain if [oa] tag exists
+        "cretin"   
     ]
 
     #Base list for good nicknames. Apply modifiers for specifying the use
