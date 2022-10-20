@@ -79,14 +79,23 @@ def conv(
         conv_data.append((spack_conv, json_file))
 
     # ask to use git or not
+    print()
     use_git = menutils.ask("Use git mv instead of move", def_no=True)
 
     # final confirmation
     menutils.clear_screen()
-    print("Converting {0} to {1} Format".format(spack.img_sit, conv_name))
+    print("Converting following spacks to {0}".format(conv_name))
+    for spack_conv, json_file in conv_data:
+
+        if json_file:
+            json_desc = "Updating JSON: {0}".format(os.path.split(json_file)[1])
+        else:
+            json_desc = "Found no JSON to update"
+
+        print("\t{0} --> {1}".format(spack_conv.src_spack.img_sit, json_desc))
+
+    print()
     print("Using git mv to move: {0}".format(use_git))
-    if json_file:
-        print("JSON file will be updated: {0}".format(json_file))
     print()
     if not menutils.ask_continue():
         print("Aborting...")
@@ -95,12 +104,16 @@ def conv(
 
     # apply conversion
     print("Converting...")
-    SpackWriter.apply_conversion(
-        loaded_spacks.ma_folder_path,
-        conv_data,
-        use_git,
-        loaded_spacks.spack_db.spacks_json
-    )
+    for spack_conv, json_file in conv_data:
+        print("\t{0}...".format(spack.img_sit), end="")
+        SpackWriter.apply_conversion(
+            loaded_spacks.ma_folder_path,
+            spack_conv,
+            use_git,
+            loaded_spacks.spack_db.spacks_json
+        )
+        print("done!")
+
     print("if no error occured, conversion probably complete!")
     loaded_spacks.reload()
     menutils.e_pause()
