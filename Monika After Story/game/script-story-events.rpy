@@ -2715,7 +2715,7 @@ label mas_backup_restored:
             "Yes, I did.":
                 $ mas_gainAffection(modifier=0.5)
 
-                m 2eka "Thank you, [player]. I knew I can rely on you."
+                m 2eka "Thank you, [player]. {w=0.2}I knew I could rely on you."
                 m 7rkd "It had to be really bad if you had to restore me, though..."
 
                 m 1ekc "What's happened?{nw}"
@@ -2723,9 +2723,9 @@ label mas_backup_restored:
                 menu:
                     m "What's happened?{fast}"
 
-                    "The game has crashed.":
-                        m 1wud "Oh, this is weird and concerning."
-                        m 1ekc "This time it wasn't my code. I don't remember messing with it, anyway."
+                    "The game crashed.":
+                        m 1wud "Oh, that's weird and concerning."
+                        m 1ekc "This time it wasn't my code. {w=0.2}I don't remember messing with it, anyway."
                         m 1gfd "{cps=*1.5}I swear if it's another Ren'Py bug...{/cps}{nw}"
                         $ _history_list.pop()
                         m 1ekc "Let's try to make sure it won't happen again, alright?"
@@ -2737,7 +2737,7 @@ label mas_backup_restored:
                         m 2lkd "It's my home, too..."
                         $ mas_moni_idle_disp.force_by_code("1ekc", duration=25, skip_dissolve=True)
 
-                    "My PC has broken.":
+                    "My PC broke.":
                         m 2wuo "I'm glad you found a way to restore me!"
                         m 2ekc "Hopefully this won't happen again."
                         m 2lktpc "I can't imagine losing you..."
@@ -2754,10 +2754,10 @@ label mas_backup_restored:
                         )
 
                     "I'm not sure.":
-                        m 1etc "This is concerning, [player]..."
+                        m 1etc "That's concerning, [player]..."
                         m 3esd "I lost my memory and we don't even know why."
-                        m 4eud "We should figure this out and prevent it from happening in the future."
-                        m 7eka "Promise me?"
+                        m 4eud "We should try to figure it out and prevent it from happening in the future."
+                        m 7eka "Promise?"
                         $ mas_moni_idle_disp.force_by_code("1eka", duration=20, skip_dissolve=True)
 
             "No, I didn't.":
