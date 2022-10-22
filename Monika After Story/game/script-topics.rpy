@@ -1262,6 +1262,7 @@ label monika_portraitof:
     m "Portrait of...whatever it was called..."
     m 4hub "It's funny, because I'm pretty sure that book--"
     m 1wuw "Ah..."
+    $ del _history_list[-4:]
     m 2lksdla "Actually, I don't think I should be talking about this."
     m 2hksdlb "Ahaha, sorry!"
     m 1rksdla "Just forget I said anything."
