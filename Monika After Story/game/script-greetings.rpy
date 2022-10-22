@@ -4641,7 +4641,8 @@ label mas_after_bath_cleanup:
         m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     else:
-        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        $ player_nick = mas_get_player_nickname()
+        m 1eua "Give me a moment [player_nick], {w=0.2}{nw}"
         extend 3eua "I'm going to get dressed."
 
     window hide
