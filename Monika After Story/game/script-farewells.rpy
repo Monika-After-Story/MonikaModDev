@@ -107,6 +107,7 @@ init -1 python in mas_farewells:
             store.MASSelectiveRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASNumericalRepeatRule.evaluate_rule(check_time, ev, defval=True)
             and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+            and store.MASTimedeltaRepeatRule.evaluate_rule(ev)
         ):
             return False
 
@@ -172,7 +173,7 @@ label mas_farewell_start:
     # that let's the player go after selecting the farewell we'll need
     # to define a system to handle those.
     if persistent._mas_long_absence:
-        $ pushEvent("bye_long_absence_2")
+        $ MASEventList.push("bye_long_absence_2")
         return
 
     $ import store.evhand as evhand
@@ -229,13 +230,13 @@ label mas_farewell_start:
         if _return != -1:
             $ mas_setEventPause(None)
             #Push the selected event
-            $ pushEvent(_return.eventlabel, skipeval=True)
+            $ MASEventList.push(_return.eventlabel, skipeval=True)
             return
 
     $ mas_setEventPause(None)
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
-    $ pushEvent(farewell.eventlabel, skipeval=True)
+    $ MASEventList.push(farewell.eventlabel, skipeval=True)
 
     return
 
@@ -822,7 +823,7 @@ label bye_prompt_sleep_goodnight_kiss(chance=3):
                             m 6hubfb "Sleep tight!"
 
                         "No.":
-                            $ mas_loseAffection()
+                            $ mas_loseAffection(1.5)
                             m 1lkc "..."
                             m 7dkd "Fine..."
                             m 2lsc "Goodnight [player]..."

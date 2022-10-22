@@ -374,10 +374,99 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.11.1
+label v0_12_11_1(version="v0_12_11_1"):
+    python hide:
+        pass
+
+    return
+
+# 0.12.10
+label v0_12_10(version="v0_12_10"):
+    python hide:
+        mas_hideEVL("monika_lastpoem", "EVE", derandom=True)
+
+        if not mas_seenEvent("monika_lastpoem"):
+            mas_setEVLPropValues(
+                "monika_lastpoem",
+                conditional="persistent.playthrough >= 2",
+                action=EV_ACT_RANDOM
+            )
+
+        if mas_seenLabels(['monika_solipsism']):
+            mas_protectedShowEVL("monika_materialism","EVE", _random=True)
+
+        persistent._mas_affection_version = 1
+
+        mas_affection._transfer_aff_2nd_gen()
+        mas_affection._remove_backups()
+        mas_affection._make_backup()
+
+        # reset mind the game to be not unlocked unless already seen
+        if mas_getEVL_shown_count("mas_story_mindthegap") < 1:
+            mas_lockEVL("mas_story_mindthegap", "STY")
+    return
+
+# 0.12.8.6
+label v0_12_8_6(version="v0_12_8_6"):
+    python hide:
+        # chess actions fix
+        if not isinstance(persistent._mas_chess_dlg_actions, defaultdict):
+            replacement = defaultdict(int)
+            replacement.update(persistent._mas_chess_dlg_actions)
+            persistent._mas_chess_dlg_actions = replacement
+
+    return
+
+# 0.12.8.3
+label v0_12_8_3(version="v0_12_8_3"):
+    python hide:
+        if seen_event("monika_otaku"):
+            mas_protectedShowEVL("monika_conventions", "EVE", _random=True)
+    return
+
 # 0.12.8.1
 label v0_12_8_1(version="v0_12_8_1"):
     python hide:
-        pass
+        mas_setEVLPropValues(
+            "mas_bday_spent_time_with",
+            action=EV_ACT_PUSH,
+            conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')"
+        )
+
+        mas_setEVLPropValues(
+            "mas_bday_pool_happy_bday",
+            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        )
+
+        mas_setEVLPropValues(
+            "mas_bday_postbday_notimespent",
+            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        )
+
+        # transfer history vars
+        # only overwrite if not set.
+        if persistent._mas_nye_accomplished_resolutions is None:
+            persistent._mas_nye_accomplished_resolutions = persistent._mas_pm_accomplished_resolutions
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.did_new_years_resolutions"),
+                "nye.actions.did_new_years_resolutions"
+            )
+            safeDel("_mas_pm_accomplished_resolutions")
+
+        if persistent._mas_nye_has_new_years_res is None:
+            persistent._mas_nye_has_new_years_res = persistent._mas_pm_has_new_years_res
+            store.mas_history._store_all(
+                mas_HistLookup_all("pm.actions.made_new_years_resolutions"),
+                "nye.actions.made_new_years_resolutions"
+            )
+            safeDel("_mas_pm_has_new_years_res")
+
+        # Label names of these events were inconsistent
+        mas_transferTopicData("monika_idle_brb", "monika_brb_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_brb_idle_callback", "monika_idle_brb_callback")
+        mas_transferTopicData("monika_idle_writing", "monika_writing_idle", persistent.event_database)
+        mas_transferTopicSeen("monika_writing_idle_callback", "monika_idle_writing_callback")
     return
 
 # 0.12.8
@@ -611,6 +700,7 @@ label v0_12_2_2(version="v0_12_2_2"):
     python:
         if seen_event("monika_nihilism"):
             mas_protectedShowEVL('monika_impermanence', 'EVE', _random=True)
+
     return
 
 # 0.12.2

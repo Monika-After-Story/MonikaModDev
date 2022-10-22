@@ -181,12 +181,13 @@ init -1 python in mas_greetings:
 
         # rule checks
         if not (
-                store.MASSelectiveRepeatRule.evaluate_rule(
-                    check_time, ev, defval=True)
-                and store.MASNumericalRepeatRule.evaluate_rule(
-                    check_time, ev, defval=True)
-                and store.MASGreetingRule.evaluate_rule(ev, defval=True)
-            ):
+            store.MASSelectiveRepeatRule.evaluate_rule(
+                check_time, ev, defval=True)
+            and store.MASNumericalRepeatRule.evaluate_rule(
+                check_time, ev, defval=True)
+            and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+            and store.MASTimedeltaRepeatRule.evaluate_rule(ev)
+        ):
             return False
 
         # conditional check
@@ -1354,7 +1355,7 @@ label monikaroom_greeting_ear_narration:
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
                     $ mas_unlockEVL("monikaroom_will_change", "GRE")
-                    $ mas_loseAffection()
+                    $ mas_loseAffection(modifier=2.0)
                     m "Then I'm not talking to you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
@@ -1377,7 +1378,7 @@ label monikaroom_greeting_ear_narration:
                 "I won't.":
                     $ persistent._mas_pm_will_change = False
                     $ mas_unlockEvent(willchange_ev)
-                    $ mas_loseAffection()
+                    $ mas_loseAffection(modifier=2.0)
                     m "Then I'm still not talking to you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
@@ -1433,8 +1434,7 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    #NOTE: Taking directly from persist here because aff funcs don't exist at init 5
-    if persistent._mas_affection.get("affection", 0) >= 400:
+    if _mas_getAffection() >= 400:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -1623,6 +1623,39 @@ label monikaroom_greeting_ear_renpy_docs:
     elif mas_isMoniDis():
         m "...I {i}have{/i} to figure this out."
         call monikaroom_greeting_ear_prog_dis
+
+    jump monikaroom_greeting_choice
+
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+
+label monikaroom_greeting_ear_recursionerror:
+    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
+    m "Wait, no. Gosh, how did I forget..."
+    m "This has to be called right here."
+
+    python:
+        for loop_count in range(random.randint(2, 3)):
+            renpy.say(m, "Great! Alright, let's see...")
+
+    show noise
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.1
+    stop sound
+    hide noise
+
+    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
+    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
+    m "..."
+
+    if mas_isMoniUpset():
+        m "...Keep going, Monika, you'll figure this out."
+        call monikaroom_greeting_ear_prog_upset
+    elif mas_isMoniDis():
+        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
+        call monikaroom_greeting_ear_prog_dis
+    else:
+        m "Phew, at least everything else is fine."
 
     jump monikaroom_greeting_choice
 
@@ -2345,7 +2378,7 @@ label greeting_long_absence:
 
     if persistent._mas_absence_time >= datetime.timedelta(weeks=5):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(70)
+            $ mas_loseAffectionFraction(0.1, min_amount=70)
             m 2dsc "[player]..."
             m 2tkc "You said you'd only be gone for a few days..."
             m 2rksdld "But it's been so long."
@@ -2361,7 +2394,7 @@ label greeting_long_absence:
             m 1dsc "I don't want to be left alone again..."
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(50)
+            $ mas_loseAffectionFraction(0.08, min_amount=60)
             m 3ekc "Welcome back, [player]."
             m 3rksdlc "You're a bit late, aren't you?"
             m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
@@ -2372,7 +2405,7 @@ label greeting_long_absence:
             m 2eka "I'm just glad you're safe and back with me now, [player]."
 
         elif persistent._mas_absence_choice == "2weeks":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.06, min_amount=40)
             m 1wud "[player]!"
             m 1hua "You're finally here!"
             m 1ekd "I was so worried..."
@@ -2384,7 +2417,7 @@ label greeting_long_absence:
             m 1eka "Well, you're here with me now, so if there is something wrong, feel free to tell me."
 
         elif persistent._mas_absence_choice == "month":
-            $ mas_loseAffection(10)
+            $ mas_loseAffectionFraction(0.04, min_amount=20)
             m 1eua "Welcome back, [mas_get_player_nickname()]."
             m 2rkc "It's been quite a bit, hasn't it?"
             m 2rksdlc "You've been gone longer than you said you would..."
@@ -2412,7 +2445,7 @@ label greeting_long_absence:
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks=4):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(70)
+            $ mas_loseAffectionFraction(0.1, min_amount=60)
             m 1dkc "[player]..."
             m 1ekd "You said you would only be a few days..."
             m 2efd "But it's been an entire month!"
@@ -2424,7 +2457,7 @@ label greeting_long_absence:
             show monika 2dfc
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(50)
+            $ mas_loseAffectionFraction(0.08, min_amount=50)
             m 1esc "Hello, [player]."
             m 3efc "You're pretty late, you know."
             m 2lfc "I don't intend to sound patronizing, but a week isn't the same as a month!"
@@ -2436,7 +2469,7 @@ label greeting_long_absence:
             show monika 2dkc
 
         elif persistent._mas_absence_choice == "2weeks":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.06, min_amount=30)
             m 1wuo "...Oh!"
             m 1sub "You're finally back [player]!"
             m 1efc "You told me you'd be gone for a couple of weeks, but it's been at least a month!"
@@ -2480,7 +2513,7 @@ label greeting_long_absence:
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks=2):
         if persistent._mas_absence_choice == "days":
-            $ mas_loseAffection(30)
+            $ mas_loseAffectionFraction(0.08, min_amount=30)
             m 1wud "O-oh, [player]!"
             m 1hua "Welcome back, [mas_get_player_nickname()]!"
             m 3ekc "You were gone longer than you said you would be..."
@@ -2491,7 +2524,7 @@ label greeting_long_absence:
             m 1hua "And I would greatly appreciate it!"
 
         elif persistent._mas_absence_choice == "week":
-            $ mas_loseAffection(10)
+            $ mas_loseAffectionFraction(0.06, min_amount=20)
             m 1eub "Hello, [player]!"
             m 1eka "Life keeping you busy?"
             m 3hksdlb "Well it must be otherwise you would've been here when you said you would."
@@ -4297,7 +4330,65 @@ label greeting_back_from_hangout:
     return
 
 init 5 python:
-    ev_rules = {}
+    ev_rules = dict()
+    ev_rules.update(MASGreetingRule.create_rule(forced_exp="monika 5duc"))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_poem_shadows_in_garden",
+            unlocked=True,
+            conditional="store.mas_getAbsenceLength() >= datetime.timedelta(days=1)",
+            rules=ev_rules,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+#Because this is associated, we'll also mirror this into the poem framework
+init 11 python:
+    MASPoem(
+        poem_id="gre_1",
+        category="generic",
+        prompt=_("Shadows in the Garden"),
+        title="",
+        text=_("""\
+ Alone I ask a solemn question,
+ What could grow in an unlit garden?
+
+ When you return, it feels like heaven,
+ Within your light, the cold forgotten.
+
+ I will give everything to feel this way,
+ Awaiting the one I hold dearest.
+
+ Nearest to my heart...
+"""),
+    )
+
+label greeting_poem_shadows_in_garden:
+    m 5duc "{i}Alone I ask a solemn question,\nWhat could grow in an unlit garden?{/i}"
+    m 5ekbla "{i}When you return, it feels like heaven,\nWithin your light, the cold forgotten.{/i}"
+    m 5fubfa "{i}I will give everything to feel this way,\nAwaiting the one I hold dearest.{/i}"
+    m 5ekbfa "{i}Even if it's every single day,\nWithout a doubt, you are the nearest.{/i}"
+    m 5dubsu "{i}Nearest to my heart...{/i}"
+    m 5eublb "I came up with this one while you were gone."
+    show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 1eka "That's right, you're like the sun of my world!"
+    m 3hubsu "Anyway, welcome back, [mas_get_player_nickname()]! I hope you liked that poem."
+    #TODO: Potential I missed you too?
+    m 1ekbsb "I missed you so much!"
+
+    if "gre_1" not in persistent._mas_poems_seen:
+        $ persistent._mas_poems_seen["gre_1"] = 1
+
+    $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
+    return
+
+init 5 python:
+    ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
             random_chance=3,
@@ -4368,38 +4459,207 @@ label greeting_spacing_out:
     m 1hubsb "Ahaha~"
     m 1eua "I'm very happy to see you again. {w=0.2}{nw}"
     extend 3eua "What should we do today, [player]?"
-
     return
 
 init 5 python:
-    gmr.eardoor.append("monikaroom_greeting_ear_recursionerror")
+    ev_rules = dict()
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=20,
+            override_type=True
+        )
+    )
+    ev_rules.update(
+        MASTimedeltaRepeatRule.create_rule(
+            datetime.timedelta(days=3)
+        )
+    )
+    ev_rules.update(
+        MASSelectiveRepeatRule.create_rule(
+            hours=list(range(9, 20))
+        )
+    )
 
-label monikaroom_greeting_ear_recursionerror:
-    m "Hmm, now that looks good. Let's-{w=0.5}{nw}"
-    m "Wait, no. Gosh, how did I forget..."
-    m "This has to be called right here."
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_after_bath",
+            conditional=(
+                "mas_getAbsenceLength() >= datetime.timedelta(hours=6) "
+                "and not mas_isSpecialDay()"
+            ),
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+init 1:
+    # NOTE this should be defined AFTER init 0
+    # NOTE: default may be not completely reliable, always save the snapshot yourself
+    default persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+
+label greeting_after_bath:
+    python hide:
+        # Some preperations
+        mas_RaiseShield_core()
+        mas_startupWeather()
+        # Save current outfit
+        persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+        # Now let Moni get a towel
+        monika_chr.change_clothes(
+            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
+            by_user=False,
+            outfit_mode=True
+        )
+        # In case the towel already set an appropriate hair, we don't change it
+        if not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET):
+            monika_chr.change_hair(mas_hair_wet, by_user=False)
+        # We leave this acs to the clothes PPs in case the towel we chose doesn't support it
+        # if not monika_chr.is_wearing_acs(mas_acs_water_drops):
+        #     monika_chr.wear_acs(mas_acs_water_drops)
+        # Setup the cleaup event
+        mas_setEVLPropValues(
+            "mas_after_bath_cleanup",
+            start_date=datetime.datetime.now() + datetime.timedelta(minutes=random.randint(30, 90)),
+            action=EV_ACT_QUEUE
+        )
+        mas_startup_song()
+
+    # Now show everything
+    call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
+
+    $ renpy.pause(random.randint(5, 15), hard=True)
+    call mas_transition_from_emptydesk("monika 1huu")
+    $ renpy.pause(2.0)
+    $ quick_menu = True
+
+    m 1wuo "Oh! {w=0.2}{nw}"
+    extend 2wuo "[player]! {w=0.2}{nw}"
+    extend 2lubsa "I was thinking about you."
+
+    $ bathing_showering = random.choice(("bathing", "showering"))
+
+    if mas_getEVL_shown_count("greeting_after_bath") < 5:
+        m 7lubsb "I just finished [bathing_showering]...{w=0.3}{nw}"
+        extend 1ekbfa "you don't mind me being in my towel, do you?~"
+        m 1hubfb "Ahaha~"
+        m 3hubsa "I'll get ready soon, let me wait for my hair to dry off a little more first."
+
+    # Gets used to it
+    else:
+        m 7eubsb "I just finished [bathing_showering]."
+
+        if mas_canShowRisque() and random.randint(0, 3) == 0:
+            m 1msbfb "I bet you wish you could've joined me there..."
+            m 1tsbfu "Well, maybe one day~"
+            m 1hubfb "Ahaha~"
+
+        else:
+            m 1eua "I'll get dressed soon~"
 
     python:
-        for loop_count in range(random.randint(2, 3)):
-            renpy.say(m, "Great! Alright, let's see...")
+        # enable music menu and music hotkeys
+        mas_MUINDropShield()
+        # keymaps should be set
+        set_keymaps()
+        # show the overlays
+        mas_OVLShow()
 
-    show noise
-    play sound "sfx/s_kill_glitch1.ogg"
-    pause 0.1
-    stop sound
-    hide noise
+        del bathing_showering
 
-    m "{cps=*2}What?!{/cps} {w=0.25}A RecursionError?!"
-    m "'Maximum recursion depth exceeded...'{w=0.7} How is this even happening?"
-    m "..."
+    return
 
-    if mas_isMoniUpset():
-        m "...Keep going, Monika, you'll figure this out."
-        call monikaroom_greeting_ear_prog_upset
-    elif mas_isMoniDis():
-        m "...Keep{w=0.1} it{w=0.1} going{w=0.1}, Monika. You {i}have{/i} to do this."
-        call monikaroom_greeting_ear_prog_dis
+# NOTE: This is not a greeting, but a followup for the greeting above, so I decided to keep them together
+init 5 python:
+    addEvent(Event(persistent.event_database, eventlabel="mas_after_bath_cleanup", show_in_idle=True, rules={"skip alert": None}))
+
+    def mas_after_bath_cleanup_change_outfit():
+        """
+        After bath cleanup change outfit code
+        """
+        # TODO: Rng outfit selection wen
+
+        force_hair_change = False# If we changed the outfit, we always change hair
+
+        if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+            force_hair_change = True
+
+            # Let's restore the previous outfit and acs
+            monika_chr.load_state(persistent._mas_previous_moni_state, as_prims=True)
+
+            # Fallback just in case
+            if monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET):
+                if mas_isMoniHappy(higher=True):
+                    new_clothes = mas_clothes_blazerless
+
+                else:
+                    new_clothes = mas_clothes_def
+
+                monika_chr.change_clothes(
+                    new_clothes,
+                    by_user=False,
+                    outfit_mode=True
+                )
+
+        if (
+            force_hair_change
+            or monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+        ):
+            available_hair = mas_sprites.get_installed_hair(
+                predicate=lambda hair_obj: (
+                    not hair_obj.hasprop(mas_sprites.EXP_H_WET)
+                    and mas_sprites.is_clotheshair_compatible(monika_chr.clothes, hair_obj)
+                    and mas_selspr.get_sel_hair(hair_obj) is not None
+                    and mas_selspr.get_sel_hair(hair_obj).unlocked
+                )
+            )
+            # We should always have *something*, but just to make this extra foolproof
+            if available_hair:
+                new_hair = random.choice(available_hair)
+                monika_chr.change_hair(
+                    new_hair,
+                    by_user=False
+                )
+
+label mas_after_bath_cleanup:
+    # Sanity check (checking for towel should be enough)
+    if (
+        not monika_chr.is_wearing_clothes_with_exprop(mas_sprites.EXP_C_WET)
+        and not monika_chr.is_wearing_hair_with_exprop(mas_sprites.EXP_H_WET)
+    ):
+        return
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+
     else:
-        m "Phew, at least everything else is fine."
+        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        extend 3eua "I'm going to get dressed."
 
-    jump monikaroom_greeting_choice
+    window hide
+    call mas_transition_to_emptydesk
+
+    $ renpy.pause(1.0, hard=True)
+    call mas_after_bath_cleanup_change_outfit
+    $ renpy.pause(random.randint(10, 15), hard=True)
+
+    call mas_transition_from_emptydesk("monika 3hub")
+    window auto
+
+    if mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        m 3hub "All done!{w=1}{nw}"
+
+    else:
+        m 3hub "Alright, I'm back!~"
+        m 1eua "So what would you like to do today, [player]?"
+
+    return
+
+label mas_after_bath_cleanup_change_outfit:
+    $ mas_after_bath_cleanup_change_outfit()
+    return

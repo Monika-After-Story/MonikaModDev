@@ -1,8 +1,32 @@
+
 #NOTE: This is done during init because exceptions are suppressed in early, singleton needs to raise an exception
 init -1500 python:
     import os
     import singleton
     me = singleton.SingleInstance()
+
+
+init -1500 python in mas_utils:
+    # ssl/https usage checks
+
+
+    def can_use_https():
+        """
+        Checks if we can safely use https in general - this combines several
+        checks, mainly:
+            - ssl
+            - a cert
+
+        NOTE: https can still be used with sites that do not require SSL verify
+        even if no cert is found.
+
+        RETURNS: True if https can be used.
+        """
+        return (
+            store.mas_can_import.ssl()
+            and store.mas_can_import.certifi.cert_available
+        )
+
 
 python early in mas_logging:
     import datetime
@@ -312,6 +336,19 @@ python early in mas_logging:
 
         return log
 
+
+    def get_log(name):
+        """
+        Gets a log from the log map
+
+        IN:
+            name - log name
+
+        RETURNS: log, or None if no log
+        """
+        return LOG_MAP.get(name)
+
+
     def is_inited(name):
         """
         Checks if a log has been inited
@@ -320,6 +357,7 @@ python early in mas_logging:
             name - log name
         """
         return name in LOG_MAP
+
 
 python early in mas_utils:
     import codecs
@@ -333,7 +371,24 @@ python early in mas_utils:
     import functools
 
     from store import mas_logging
-    mas_log = mas_logging.init_log("mas_log")
+
+    
+    def init_mas_log():
+        """
+        Initializes the MAS log, or gets it if its already init.
+
+        RETURNS: the init'd mas_log
+        """
+        global mas_log
+
+        if mas_logging.is_inited("mas_log"):
+            return mas_logging.get_log("mas_log")
+
+        mas_log = mas_logging.init_log("mas_log")
+        return mas_log
+
+
+    mas_log = init_mas_log()
 
 
     def deprecated(use_instead=None, should_raise=False):
@@ -624,6 +679,89 @@ python early in mas_utils:
         trydel(old_path)
 
 
+    class IsolatedFlexProp(object):
+        """
+        class that supports flexible attributes.
+        all attributes that are set are stored in a 
+        separate internal structure. Supports a few additional behaviors
+        because of this.
+
+        Supports:
+            - extracting the vars that were manually set into a dict format
+                - _to_dict/_from_dict
+            - clearing all vars that were manually set
+                - _clear
+            - direct attribute get/set (obj.attribute)
+            - key-based get/set (obj[key])
+                Don't use this to access built-ins.
+            - attribute existence ("attribute" in obj)
+        """
+        __slots__ = ("_default_val", "_set_vars")
+
+        def __init__(self, default_val=None):
+            """
+            Constructor
+
+            IN:
+                default_val - the value to return as default when retrieving
+                    a prop that does not exist.
+                    (Default: None)
+            """
+            self._default_val = default_val
+            self._set_vars = {}
+
+        def __repr__(self):
+            return "<{}: (def value: {}, data: {})>".format(
+                type(self).__name__,
+                self._default_val,
+                self._set_vars
+            )
+
+        def __contains__(self, item):
+            return item in self._set_vars
+
+        def __getattr__(self, name):
+            if name.startswith("_"):
+                return super(IsolatedFlexProp, self).__getattribute__(name)
+            return self._set_vars.get(name, self._default_val)
+
+        def __setattr__(self, name, value):
+            if name.startswith("_"):
+                super(IsolatedFlexProp, self).__setattr__(name, value)
+            else:
+                self._set_vars[name] = value
+
+        def __getitem__(self, key):
+            return self.__getattr__(key)
+
+        def __setitem__(self, key, value):
+            self.__setattr__(key, value)
+
+        def _clear(self):
+            """
+            Clears manually set attributes
+            """
+            self._set_vars.clear()
+
+        def _from_dict(self, data):
+            """
+            sets internal data using a dict
+
+            IN:
+                data - dictionary to load from
+            """
+            for key in data:
+                self[key] = data[key]
+
+        def _to_dict(self):
+            """
+            Returns manually set data in raw format for persistent
+
+            RETURNS: dict of the manually set data (shallow copy)
+            """
+            return dict(self._set_vars)
+
+
     def compareVersionLists(curr_vers, comparative_vers):
         """
         Generic version number checker
@@ -798,3 +936,4 @@ python early in mas_utils:
             return int(value)
         except:
             return default
+

@@ -17,7 +17,9 @@ default persistent._mas_chess_difficulty = (0, 1)
 default persistent._mas_chess_quicksave = ""
 
 # dict containing action counts:
-default persistent._mas_chess_dlg_actions = {}
+# Currently using keys from 0 to 5 inclusively
+# Check 'dlg actions' constants defined below
+default persistent._mas_chess_dlg_actions = defaultdict(int)
 
 # when we need to disable chess for a period of time
 default persistent._mas_chess_timed_disable = None
@@ -31,11 +33,6 @@ default persistent._mas_chess_mangle_all = False
 # skip file checks
 default persistent._mas_chess_skip_file_checks = False
 
-define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
-define mas_chess.CHESS_SAVE_EXT = ".pgn"
-define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
-define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
-
 # mass chess store
 init python in mas_chess:
     import os
@@ -43,6 +40,16 @@ init python in mas_chess:
     import store.mas_ui as mas_ui
     import store
     import random
+
+    CHESS_SAVE_PATH = "/chess_games/"
+    CHESS_SAVE_EXT = ".pgn"
+    CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
+    CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+
+    #chess modes
+    MODE_NORMAL = "normal_chess"
+    MODE_BAD_CHESS = "badchess"
+    MODE_960 = "chess960"
 
     # relative chess directory
     REL_DIR = "chess_games/"
@@ -312,7 +319,7 @@ init python in mas_chess:
         #Otherwise, since we can't afford to expend more, we just get pawns
         return 'p'
 
-    def gen_side(white=True, max_side_value=14):
+    def _gen_side(white=True, max_side_value=14):
         """
         Generates a player's side
 
@@ -466,7 +473,7 @@ init python in mas_chess:
 
         return white_is_good and black_is_good
 
-    def generate_fen(is_player_white=True):
+    def generate_random_fen(is_player_white=True):
         """
         Generates a random fen
 
@@ -498,8 +505,8 @@ init python in mas_chess:
             and attempts < 10
         ):
             attempts += 1
-            player_first_row, player_second_row = gen_side(is_player_white, max_piece_value)
-            monika_first_row, monika_second_row = gen_side(not is_player_white, monika_max_piece_value)
+            player_first_row, player_second_row = _gen_side(is_player_white, max_piece_value)
+            monika_first_row, monika_second_row = _gen_side(not is_player_white, monika_max_piece_value)
 
             if is_player_white:
                 white_front = player_first_row
@@ -532,6 +539,73 @@ init python in mas_chess:
                 white_pieces_back=monika_second_row
             )
 
+    def generate_960_fen():
+        """
+        This function returns a random chess960 opening fen.
+
+        Chess960 rules are basically:
+        1. One rook must stay on the left side of king, and another one stay on the right side.
+           Due to this, the king can never be placed on a-file or h-file.
+        2. Bishops must stay on different color square.
+        3. Pawns must stay like the normal chess game.
+        4. The position of player A's pieces must be the 'reversed version' of player B's.
+        See chess960 wiki to get more exact information.
+
+        OUT:
+            A random chess960 opening fen.
+        """
+        #Gen king pos (cannot be on the outer squares)
+        king_position = random.randint(1, 6)
+
+        #Now gen rook positions
+        left_rook_position = random.randint(0, king_position-1)
+        right_rook_position = random.randint(king_position+1, 7)
+
+        #Now, we generate the remaining available range
+        occupied_positions = frozenset((king_position, left_rook_position, right_rook_position))
+        # FIXME: Due to a renpy bug, we have to access python set here via _set
+        # In the latest versions it might be fixed, so this should be adjusted w/ r7 support
+        available_white_positions = _set(range(1, 9, 2)) - occupied_positions
+        available_black_positions = _set(range(0, 8, 2)) - occupied_positions
+
+        #For picking bishops, we need to have one on a light square, one on a dark square
+        first_bishop_position = random.choice(tuple(available_white_positions))
+        second_bishop_position = random.choice(tuple(available_black_positions))
+        if bool(random.randint(0, 1)):
+            first_bishop_position, second_bishop_position = second_bishop_position, first_bishop_position
+
+        occupied_positions = frozenset((first_bishop_position, second_bishop_position))
+        available_positions = (available_white_positions | available_black_positions) - occupied_positions
+
+        #Queen can be anywhere remaining
+        queen_position = random.choice(tuple(available_positions))
+        available_positions.remove(queen_position)
+
+        #Finally, unpack for knights
+        first_knight_position, second_knight_position = available_positions
+
+        #Now that we have positions, we should format them for easy conversion to a FEN
+        pos_to_piece_map = {
+            king_position: "K",
+            left_rook_position: "R",
+            right_rook_position: "R",
+            first_bishop_position: "B",
+            second_bishop_position: "B",
+            queen_position: "Q",
+            first_knight_position: "N",
+            second_knight_position: "N"
+        }
+
+        back_row_str = "".join(pos_to_piece_map[i] for i in range(8))
+
+        # Finally. Now return a full fen.
+        return BASE_FEN.format(
+            black_pieces_back=back_row_str.lower(),
+            black_pieces_front="pppppppp",
+            white_pieces_front="PPPPPPPP",
+            white_pieces_back=back_row_str
+        )
+
     def enqueue_output(out, queue, lock):
         for line in iter(out.readline, b''):
             with lock:
@@ -551,7 +625,7 @@ label game_chess:
         failed_to_load_save = True
 
         #Prelim definitions of the rules for the menu later
-        do_really_bad_chess = False
+        chessmode = mas_chess.MODE_NORMAL
         casual_rules = False
         practice_mode = False
         is_player_white = 0
@@ -649,7 +723,6 @@ label game_chess:
                     #These also override the base settings as to play a continuation
                     practice_mode = eval(loaded_game.headers.get("Practice", "False"))
                     casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-                    do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
                 jump mas_chess_start_chess
 
@@ -704,7 +777,7 @@ label game_chess:
                 if quicksaved_file is None:
                     python:
                         persistent._mas_chess_timed_disable = datetime.datetime.now()
-                        mas_loseAffection(modifier=0.5)
+                        mas_loseAffection()
 
                     m 2wfw "[player]!"
                     m 2wfx "You removed the save again."
@@ -788,7 +861,6 @@ label game_chess:
             #These also override the base settings as to play a continuation
             practice_mode = eval(loaded_game.headers.get("Practice", "False"))
             casual_rules = eval(loaded_game.headers.get("CasualRules", "False"))
-            do_really_bad_chess = loaded_game.headers["FEN"] != MASChessDisplayableBase.START_FEN
 
         jump mas_chess_start_chess
 
@@ -799,8 +871,11 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", False, False, not do_really_bad_chess),
-                    ("Randomized Chess", True, False, do_really_bad_chess)
+                    ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
+                    ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
+                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960)),
+                    # Keep this last
+                    ("Can you explain these game-modes?", "explain_modes", False, False)
                 ],
                 "final_items": [
                     ("Ruleset", "ruleset_select", False, False, 20),
@@ -814,6 +889,7 @@ label mas_chess_remenu:
                 "options": [
                     ("Casual Rules", True, False, casual_rules),
                     ("Traditional Rules", False, False, not casual_rules),
+                    # Keep this last
                     ("What's the difference?", 0, False, False)
                 ],
                 "final_items": [
@@ -858,10 +934,10 @@ label mas_chess_remenu:
     $ menu_options = menu_contents[menu_category]["options"]
     $ final_items = menu_contents[menu_category]["final_items"]
 
+    m "How would you like to play?[('{fast}' if loopback else '')]" nointeract
+
     #Now we show menu
     call screen mas_gen_scrollable_menu(menu_options, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, *final_items)
-
-    $ renpy.say(m, "How would you like to play?{0}".format("{fast}" if loopback else ""), interact=False)
 
     $ loopback = True
 
@@ -883,9 +959,27 @@ label mas_chess_remenu:
     elif _return not in ("confirm", None):
         $ _history_list.pop()
 
-        #Normal/Really Bad Chess selection
+        #Normal/Really Bad Chess/Chess 960 selection
         if menu_category == "gamemode_select":
-            $ do_really_bad_chess = _return
+            if _return == "explain_modes":
+                # Take Monika back, so we won't face an empty right-side screen.
+                show monika at t11
+
+                m 1eub "Sure! {w=0.2}{nw}"
+                extend 1eua "Naturally, {i}Normal Chess{/i} means standard chess."
+                m 3eua "Then there's {i}Randomized Chess{/i}, a mode based on {i}Really Bad Chess{/i}."
+                m 3eub "We get completely random pieces which adds the factor of luck to make it fun for players of any skill level."
+                m 1eua "Alternatively, there's a more fair random chess mode called {i}Chess 960{/i}, also known as {i}Fischer Random Chess{/i}."
+                m 3eud "In this mode, the pieces in the back row are randomly shuffled while ensuring the bishops are placed on opposite color squares and the king is placed between two rooks."
+                m 4hua "There's 960 possible starting positions, so it was called {i}Chess 960{/i}."
+                m 1eua "{i}Chess 960{/i} allows players to avoid the complex opening theory while still testing their understanding of chess."
+                m 1etu "So which mode do you prefer? {w=0.3}{nw}"
+                extend 1hub "Ahaha~"
+
+                # There goes our Monika again.
+                show monika at t21
+            else:
+                $ chessmode = _return
 
         #Practice/Play mode
         elif menu_category == "ruleset_select":
@@ -923,7 +1017,13 @@ label mas_chess_remenu:
 
 label mas_chess_start_chess:
     #Setup the chess FEN
-    $ starting_fen = mas_chess.generate_fen(is_player_white) if do_really_bad_chess else None
+    python:
+        if chessmode == mas_chess.MODE_NORMAL:
+            starting_fen = None
+        elif chessmode == mas_chess.MODE_960:
+            starting_fen = mas_chess.generate_960_fen()
+        else:
+            starting_fen = mas_chess.generate_random_fen(is_player_white)
 
     #NOTE: This is a failsafe in case people jump to the mas_chess_start_chess label
     if persistent._mas_chess_timed_disable is not None:
@@ -1237,7 +1337,6 @@ label mas_chess_savegame(silent=False, allow_return=True):
         if game_result == mas_chess.IS_ONGOING:
             m 1eub "Let's continue this game soon!"
     return
-
 
 label mas_chess_locked_no_play:
     m 1euc "No thanks, [player]."
@@ -1644,7 +1743,7 @@ label mas_chess_dlg_quickfile_edited_yes:
     elif qf_edit_count == 2:
         python:
             persistent._mas_chess_timed_disable = datetime.datetime.now()
-            mas_loseAffection(modifier=0.5)
+            mas_loseAffection()
 
         m 2dfc "I am incredibly disappointed in you..."
         m 2rfc "Let's play chess some other time.{w=0.2} I don't feel like playing right now."

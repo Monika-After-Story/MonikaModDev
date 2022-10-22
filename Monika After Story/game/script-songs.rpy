@@ -281,7 +281,7 @@ label monika_sing_song_pool_menu:
             jump monika_sing_song_pool_menu
 
         else:
-            $ pushEvent(sel_song, skipeval=True)
+            $ MASEventList.push(sel_song, skipeval=True)
             show monika at t11
             m 3hub "Alright!"
 
@@ -324,7 +324,7 @@ label monika_sing_song_analysis:
     $ sel_analysis = _return
 
     if sel_analysis:
-        $ pushEvent(sel_analysis, skipeval=True)
+        $ MASEventList.push(sel_analysis, skipeval=True)
         show monika at t11
         m 3hub "Alright!"
 
@@ -414,7 +414,7 @@ label monika_sing_song_random:
             mas_unlockEVL("monika_sing_song_pool", "EVE")
 
             #Now push the random song and unlock it
-            pushEvent(rand_song, skipeval=True, notify=True)
+            MASEventList.push(rand_song, skipeval=True, notify=True)
             mas_unlockEVL(rand_song, "SNG")
 
             #Unlock the long version of the song
@@ -727,7 +727,7 @@ init 5 python:
 
 label mas_song_with_you:
     m 1dso "{i}~If somebody tries to take my place~{/i}"
-    m 1hub "{i}~let's pretend we just can't see their face~{/i}"
+    m 1hub "{i}~Let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
     m 1ekbsa "There is nothing that makes me happier than discovering that I'm in love with you."
@@ -2066,7 +2066,7 @@ label mas_song_on_the_front_porch:
     m 5hubsb "{i}~From the wicker swing, while the night birds sing~{/i}"
     m 5dubsu "{i}~We'll watch the fireflies sparkin', do some sparkin' too~{/i}"
     m 5dkbsb "{i}~How the hours fly, as the moon drifts by~{/i}"
-    m 5ekbsu "{i}~How sweet the air as we stare at the sun~{/i}"
+    m 5ekbsu "{i}~How sweet the air as we stare at the sky~{/i}"
     m 5ekbstpu "{i}~Oh how I'd love to linger here like this~{/i}"
     m 5dkbstpu "{i}~Hold your hand and steal a kiss {/i}{w=0.2}{nw}"
     extend 5gkbstub "{i}or two {/i}{w=0.2}{nw}"

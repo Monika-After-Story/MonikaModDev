@@ -4,9 +4,14 @@ define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
 python early:
+    # We want these to be available globally, please don't remove
+    # Add more as needed
     import io
+    import os
     import datetime
+    import random
     import traceback
+    from collections import defaultdict # this will be availalable anywhere now
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -3856,15 +3861,22 @@ init 25 python:
         def start(self):
             """
             Starts this displayable
+
+            OUT:
+                bool - the result of interaction:
+                    True if the user clicked
+                    False if the dispalyable was stopped
             """
             self.__should_enable_afm = store._preferences.afm_enable
             self.__set_end_datetimes()
             ui.implicit_add(self)
-            ui.interact()
+            return ui.interact()
 
         def stop(self):
             """
             Stops this disp's interaction, aborts its event
+            This will cause the displayable to return False
+                in the event method
             """
             ui.remove(self)
             self.__abort_events = True
@@ -4074,12 +4086,12 @@ init -1 python in _mas_root:
         renpy.game.persistent.closed_self = False
         renpy.game.persistent.seen_monika_in_room = False
         renpy.game.persistent._mas_ever_won = collections.defaultdict(bool)
-        renpy.game.persistent.sessions={
-            'last_session_end':datetime.datetime.now(),
-            'current_session_start':datetime.datetime.now(),
-            'total_playtime':datetime.timedelta(seconds=0),
-            'total_sessions':0,
-            'first_session':datetime.datetime.now()
+        renpy.game.persistent.sessions = {
+            "last_session_end": datetime.datetime.now(),
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 0,
+            "first_session": datetime.datetime.now()
         }
         renpy.game.persistent._mas_xp_lvl = 0
         renpy.game.persistent.rejected_monika = True
@@ -4113,8 +4125,22 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
 
+        # nou
+        renpy.game.persistent._mas_game_nou_points = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_wins = {"Monika": 0, "Player": 0}
+        renpy.game.persistent._mas_game_nou_abandoned = 0
+        renpy.game.persistent._mas_game_nou_house_rules = {
+            "points_to_win": 200,
+            "starting_cards": 7,
+            "stackable_d2": False,
+            "unrestricted_wd4": False
+        }
+
         # affection
-        renpy.game.persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection = collections.defaultdict(float)
+        renpy.game.persistent._mas_affection_data = store.mas_affection.get_default_data()
+        renpy.game.persistent._mas_affection_should_apologise = False
+        renpy.game.persistent._mas_affection_backups = collections.deque(maxlen=50)
 
 
     def initialSessionData():
@@ -4544,7 +4570,7 @@ init -995 python in mas_utils:
 
     def is_file_present(filename):
         """
-        Checks if a file is present
+        Checks if a file is present (exists)
         """
         if not filename.startswith("/"):
             filename = "/" + filename
@@ -4604,6 +4630,8 @@ init -100 python in mas_utils:
     import os
     import math
     from cStringIO import StringIO as fastIO
+    from collections import defaultdict
+    import functools
 
     __secInDay = 24 * 60 * 60
 
@@ -4640,6 +4668,31 @@ init -100 python in mas_utils:
         RETURNS: a list of strings where each string is an item with a bullet.
         """
         return [bullet + " " + str(item) for item in _list]
+
+
+    def nested_defaultdict(final_factory=None, levels=1):
+        """
+        Generates a nested defaultdict. Basically good for creating an n-level
+        dict of defaults.
+
+        IN:
+            final_factory - the constructor/object factory to use for the
+                innermost defaultdict
+                (Default: None)
+            levels - the number of nested defaultdicts to use. Must be greater
+                than 0 but less than 10.
+                The default value is equivalent to just calling defaultdict
+                (Default: 1)
+
+        RETURNS: a nested defaultdict implementation
+        """
+        def _nested_dd_recur(ff, lvls):
+            if lvls == 1:
+                return ff
+            return functools.partial(defaultdict, _nested_dd_recur(ff, lvls-1))
+
+        levels = min(max(levels, 1), 10)
+        return defaultdict(_nested_dd_recur(final_factory, levels))
 
 
     ### date adjusting functions
@@ -6176,10 +6229,10 @@ init 2 python:
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+                monika_chr.wear_acs(mas_acs_quetzalplushie_santahat)
 
             else:
-                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+                monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         else:
             # run the plushie exit PP if plushie is not selected
@@ -6280,7 +6333,7 @@ init 2 python:
                 - Raw affection value to be greater than or equal to
             grace:
                 - a grace period passed in as a timedelta
-                  defaults to 1 week
+                defaults to 1 week
 
         OUT:
             boolean:
@@ -6296,7 +6349,7 @@ init 2 python:
         return (
             persistent._mas_first_kiss is not None
             and mas_is18Over(_date)
-            and persistent._mas_affection.get("affection", 0) >= aff_thresh
+            and _mas_getAffection() >= aff_thresh
         )
 
     def mas_timePastSince(timekeeper, passed_time, _now=None):
@@ -7900,9 +7953,20 @@ default persistent.seen_monika_in_room = False
 default persistent._mas_ever_won = collections.defaultdict(bool)
 # TODO: Delete this as depricated
 # default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
+default persistent.sessions = {
+    "last_session_end": None,
+    "current_session_start": None,
+    "total_playtime": datetime.timedelta(seconds=0),
+    "total_sessions": 0,
+    "first_session": datetime.datetime.now()
+}
 default persistent.random_seen = 0
-default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
+# Deprecated
+default persistent._mas_affection = collections.defaultdict(float)
+default persistent._mas_affection_version = 2
+default persistent._mas_affection_data = mas_affection.get_default_data()
+default persistent._mas_affection_should_apologise = False
+default persistent._mas_affection_backups = collections.deque(maxlen=50)
 default persistent._mas_enable_random_repeats = True
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
@@ -8156,73 +8220,12 @@ init -1 python in mas_randchat:
 init 4 python:
     import store.mas_randchat as mas_randchat
 
-return
 
-#Gender specific word replacement
-#Those are to be used like this "It is [his] pen." Output:
-#"It is his pen." (if the player's gender is declared as male)
-#"It is her pen." (if the player's gender is decalred as female)
-#"It is their pen." (if player's gender is not declared)
-#Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
-#Please remember to update the list if you add more gender exclusive words. ^
+# Deprecated, call mas_set_pronouns directly
 label mas_set_gender:
-    python:
-        pronoun_gender_map = {
-            "M": {
-                "his": "his",
-                "he": "he",
-                "hes": "he's",
-                "heis": "he is",
-                "bf": "boyfriend",
-                "man": "man",
-                "boy": "boy",
-                "guy": "guy",
-                "him": "him",
-                "himself": "himself",
-                "hero": "hero"
-            },
-            "F": {
-                "his": "her",
-                "he": "she",
-                "hes": "she's",
-                "heis": "she is",
-                "bf": "girlfriend",
-                "man": "woman",
-                "boy": "girl",
-                "guy": "girl",
-                "him": "her",
-                "himself": "herself",
-                "hero": "heroine"
-            },
-            "X": {
-                "his": "their",
-                "he": "they",
-                "hes": "they're",
-                "heis": "they are",
-                "bf": "partner",
-                "man": "person",
-                "boy": "person",
-                "guy": "person",
-                "him": "them",
-                "himself": "themselves",
-                "hero": "hero"
-            }
-        }
-
-        pronouns = pronoun_gender_map[persistent.gender]
-
-        his = pronouns["his"]
-        he = pronouns["he"]
-        hes = pronouns["hes"]
-        heis = pronouns["heis"]
-        bf = pronouns["bf"]
-        man = pronouns["man"]
-        boy = pronouns["boy"]
-        guy = pronouns["guy"]
-        him = pronouns["him"]
-        himself = pronouns["himself"]
-        hero = pronouns["hero"]
+    $ mas_set_pronouns()
     return
+
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
