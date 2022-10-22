@@ -1879,7 +1879,7 @@ init 5 python:
             prompt="Prison Escape",
             unlocked=False
         ),
-    code="STY"
+        code="STY"
     )
 
 label mas_scary_story_prison_escape:
