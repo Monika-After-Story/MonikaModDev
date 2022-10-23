@@ -6104,8 +6104,8 @@ init -1 python:
         Deletes all chr files under /characters/ folder. Any encountered errors
         will be printed to log.
         """
-        for pkg in store.mas_ics.mas_docking_station.getPackageList("chr"):
-            store.mas_ics.mas_docking_station.destroyPackage(pkg)
+        for pkg in store.mas_docking_station.getPackageList("chr"):
+            store.mas_docking_station.destroyPackage(pkg)
 
     def pause(time=None):
         """
