@@ -1869,3 +1869,50 @@ label mas_scary_story_flowered_lantern_3:
     m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_prison_escape",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="Prison Escape",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_prison_escape:
+    call mas_scary_story_setup
+    m 1ekd "A pretty woman was serving a life sentence in prison for murder."
+    m 2tfc "Angry and resentful about her situation, she decided that she couldn't spend her life in prison. {w=0.2}She began plotting ways to escape."
+    m 7eua "Over time, she became good friends with one of the prison caretakers."
+    m 3esc "His job was to bury any prisoners who died in a graveyard just outside the prison walls."
+    m 3esd "Whenever a prisoner died, the caretaker rang a bell which was heard by all of the inmates."
+    m 3esc "Next, he got the body and put it in a casket, and then entered his office to fill out the death certificate before returning to the nail the casket lid shut."
+    m 3esd "Finally, he put it on a wagon to take to the graveyard and bury it."
+    m 1euc "Knowing this routine, the woman devised an escape plan and shared it with the caretaker..."
+    m 1eud "The next time the bell rang, the woman would leave her cell and sneak into the dark room where the coffins were kept."
+    m 1eud "She would slip into the coffin with the dead body while the caretaker was filling out the death certificate."
+    m 3euc "When the caretaker returned, he would nail the lid shut and take the coffin outside the prison and bury it."
+    m 3euc "The woman knew there would be enough air for her to breathe until later in the evening when the caretaker would return under cover of darkness, dig up the coffin, and set her free."
+    m 2eksdlc "The caretaker was reluctant to go along with this plan, {w=0.1}{nw}"
+    extend 4esa "but since he and the woman had become good friends over the years, he agreed to do it."
+    m 2tsc "The woman waited several months for one of the other inmates to die."
+    m 7dsc "One night, she was asleep in her cell when she heard the death bell ringing."
+    m 3euc "She got up, picked the lock of her cell, and slowly walked down the hallway."
+    m 3wud "She was nearly caught a couple of times...{w=0.3}her heart was beating so fast."
+    m 3ekc "She opened the door to the darkened room where the coffins were kept and quietly found the one that contained the dead body."
+    m 3dkc "After carefully climbing into it, she pulled the lid shut to wait for the caretaker to come and nail the lid down."
+    m 2eka "Soon she heard footsteps and the pounding of the hammer and nails."
+    m 4eksdlc "Even though she was very uncomfortable in the coffin with the dead body beneath her, she knew that with each nail she was one step closer to freedom."
+    m 2eud "The coffin was lifted onto the wagon and taken outside to the graveyard."
+    m 2eksdlc "She didn't make a sound as the coffin hit the bottom of the grave with a thud."
+    m 4eksdlc "Finally she heard the dirt dropping onto the top of the wooden coffin, {w=0.1}{nw}"
+    extend 4eksdla "and she knew that it was only a matter of time until she would be free at last."
+    m 2hksdlb "After a hour of absolute silence, she began to chuckle quietly to herself."
+    m 2eta "Feeling curious, she decided to light a match to find out the identity of the dead prisoner beside her. "
+    m 2wusdld "..!"
+    m 2wusdlo "It was the dead caretaker!"
+    call mas_scary_story_cleanup
+    return
