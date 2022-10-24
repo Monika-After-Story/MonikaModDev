@@ -6099,23 +6099,13 @@ init -1 python:
         for savegame in renpy.list_saved_games(fast=True):
             renpy.unlink_save(savegame)
 
-
-    def delete_character(name):
+    def mas_delete_all_chrs():
         """
-        Deletes a .chr file for a character
-
-        IN:
-            name of the character who's chr file we want to delete
+        Deletes all chr files under /characters/ folder. Any encountered errors
+        will be printed to log.
         """
-        if persistent.do_not_delete:
-            return
-
-        try:
-            os.remove(config.basedir + "/characters/" + name + ".chr")
-
-        except:
-            pass
-
+        for pkg in store.mas_docking_station.getPackageList("chr"):
+            store.mas_docking_station.destroyPackage(pkg)
 
     def pause(time=None):
         """

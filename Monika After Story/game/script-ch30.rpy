@@ -1385,6 +1385,15 @@ init 999 python in mas_reset:
                 store.mas_after_bath_cleanup_change_outfit()
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
+    @ch30_reset(-560)
+    def chr_removal():
+        """
+        Remove .chr files in the characters folder
+        """
+        # Only cleanup after the intro has been seen
+        if renpy.seen_label("introduction"):
+            store.mas_delete_all_chrs()
+
 
     def final():
         """
