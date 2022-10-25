@@ -4698,8 +4698,11 @@ init 5 python:
 default persistent._mas_pm_snitched_on_chibika = None
 
 label greeting_found_nou_shirt:
-    $ monika_chr.change_clothes(mas_clothes_nou_shirt, by_user=False, outfit_mode=True)
-    $ glitch_option_text = glitchtext(7)
+    python:
+        mas_RaiseShield_core()
+        mas_startupWeather()
+        monika_chr.change_clothes(mas_clothes_nou_shirt, by_user=False, outfit_mode=True)
+        glitch_option_text = glitchtext(7)
 
     call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
     pause 2.5
@@ -4707,7 +4710,7 @@ label greeting_found_nou_shirt:
     m "There you are! {w=0.2}I was waiting for you~"
     m "I have to admit, {w=0.1}I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
     $ _history_list.pop()
-    show screen mas_background_timed_jump(4, "greeting_found_nou_shirt.menu_skip")
+    show screen mas_background_timed_jump(5, "greeting_found_nou_shirt.menu_skip")
     menu:
         m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{fast}"
 
@@ -4745,7 +4748,14 @@ label greeting_found_nou_shirt:
         mas_selspr.save_selectables()
         mas_lockEVL("greeting_found_nou_shirt", "GRE")
         renpy.save_persistent()
+
         del glitch_option_text
+
+        mas_MUINDropShield()
+        set_keymaps()
+        HKBShowButtons()
+        mas_startup_song()
+        enable_esc()
     return
 
 label greeting_found_nou_shirt.menu_skip:
