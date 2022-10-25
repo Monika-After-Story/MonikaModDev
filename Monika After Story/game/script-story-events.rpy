@@ -1633,7 +1633,7 @@ label mas_corrupted_persistent:
         call mas_showpoem(mas_note_backups_all_good)
 
     window auto
-    $ _gtext = glitchtext(15)
+    $ _gtext = glitchtext(7)
 
     m 1ekc "Do you know what this is about?{nw}"
     $ _history_list.pop()
@@ -1643,6 +1643,7 @@ label mas_corrupted_persistent:
             jump mas_corrupted_persistent_post_menu
 
         "It's about [_gtext].":
+            $ persistent._mas_pm_snitched_on_chibika = True
             $ disable_esc()
             $ mas_MUMURaiseShield()
             window hide
