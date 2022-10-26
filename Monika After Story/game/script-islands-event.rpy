@@ -554,8 +554,8 @@ init -20 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxDecal,
             x=358,
-            y=55,
-            z=4,
+            y=62,
+            z=6,
             on_click="mas_island_bookshelf"
         )
     )
@@ -564,8 +564,8 @@ init -20 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxDecal,
             x=305,
-            y=63,
-            z=5,
+            y=70,
+            z=8,
             on_click=True
         )
     )
@@ -574,7 +574,7 @@ init -20 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxDecal,
             x=215,
-            y=-44,
+            y=-37,
             z=1
         )
     )
@@ -583,8 +583,8 @@ init -20 python in mas_island_event:
         partial_disp=functools.partial(
             ParallaxDecal,
             x=130,
-            y=-200,
-            z=3,
+            y=-194,
+            z=4,
             on_click="mas_island_cherry_blossom_tree"
         )
     )
@@ -608,6 +608,106 @@ init -20 python in mas_island_event:
             on_click="mas_island_glitchedmess"
         )
     )
+    IslandsDataDefinition(
+        "decal_bloodfall",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=213,
+            y=0,
+            z=1,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_ghost_0",
+        filenames=("d",),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=355,
+            y=-70,
+            z=5,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_ghost_1",
+        filenames=("d",),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=355,
+            y=-70,
+            z=5,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_ghost_2",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=355,
+            y=-70,
+            z=5,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_gravestones",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=125,
+            y=15,
+            z=1,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_jack",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=253,
+            y=63,
+            z=2,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_pumpkins",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=176,
+            y=61,
+            z=15,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_skull",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=100,
+            y=0,
+            z=1,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_webs",
+        filenames=("d",),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=187,
+            y=-99,
+            z=5,
+            on_click=True
+        )
+    )
+    # TODO: haunted tree
     # Objects
     IslandsDataDefinition(
         "other_shimeji",
