@@ -1070,9 +1070,8 @@ init -25 python in mas_island_event:
                     precip_map[p_type] = img_map[k]
 
             if not precip_map:
-                raise Exception("Aiaiai")
+                raise Exception("Failed to make precip map for: {}".format(img_map))
 
-            store.mas_utils.mas_log.info(precip_map)
             return MASWeatherMap(precip_map)
 
         filter_keys = ("day", "night", "sunset")
