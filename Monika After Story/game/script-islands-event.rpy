@@ -12,7 +12,7 @@ default persistent._mas_islands_progress = store.mas_island_event.DEF_PROGRESS
 # Most of the progression is linear, but some things are unlocked at random
 # that's so every player gets a bit different progression.
 # Bear in mind, if you decide to add a new item, you'll need an update script
-default persistent._mas_islands_unlocks = store.mas_island_event.IslandsImageDefinition.getDefaultUnlocks()
+default persistent._mas_islands_unlocks = store.mas_island_event.IslandsDataDefinition.getDefaultUnlocks()
 
 # Will be loaded later
 init python in audio:
@@ -170,7 +170,7 @@ image living_room_lit_ss_snow = "living_room_ss_snow"
 
 # # # Image defination
 init -20 python in mas_island_event:
-    class IslandsImageDefinition(object):
+    class IslandsDataDefinition(object):
         """
         A generalised abstraction around raw data for the islands sprites
         """
@@ -314,7 +314,7 @@ init -20 python in mas_island_event:
             Returns data for an id
 
             OUT:
-                IslandsImageDefinition
+                IslandsDataDefinition
             """
             return cls._data_map[id_]
 
@@ -451,7 +451,7 @@ init -20 python in mas_island_event:
     # during composite image building
     # NOTE: Use functools.partial instead of renpy.partial because the latter has an argument conflict. Smh Tom
     # Islands
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_0",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -462,7 +462,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_1",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -473,7 +473,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_2",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -484,7 +484,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_3",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -495,7 +495,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_4",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -505,7 +505,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_upsidedownisland"
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_5",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -516,7 +516,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_6",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -527,7 +527,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_7",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -538,7 +538,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "island_8",
         partial_disp=functools.partial(
             ParallaxSprite,
@@ -549,7 +549,7 @@ init -20 python in mas_island_event:
         )
     )
     # Decals
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "decal_bookshelf",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -559,7 +559,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_bookshelf"
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "decal_bushes",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -569,7 +569,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "decal_house",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -578,7 +578,7 @@ init -20 python in mas_island_event:
             z=1
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "decal_tree",
         partial_disp=functools.partial(
             ParallaxDecal,
@@ -597,7 +597,7 @@ init -20 python in mas_island_event:
         "other/glitch/frame_5",
         "other/glitch/frame_6"
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "decal_glitch",
         fp_map={},# TODO: move GLITCH_FPS to fp_map
         partial_disp=functools.partial(
@@ -609,7 +609,7 @@ init -20 python in mas_island_event:
         )
     )
     # Objects
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "other_shimeji",
         fp_map={},
         partial_disp=functools.partial(
@@ -622,25 +622,25 @@ init -20 python in mas_island_event:
             on_click="mas_island_shimeji"
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "other_isly",
         filenames=("clear", "rain", "snow")
     )
     # Interior
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "interior_room",
         filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "interior_room_lit",
         filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "interior_tablechair",
         filenames=("chair", "shadow", "table")
     )
     # BGs
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "bg_def",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -654,7 +654,7 @@ init -20 python in mas_island_event:
         )
     )
     # Overlays
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "overlay_rain",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -662,7 +662,7 @@ init -20 python in mas_island_event:
             use_fb=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "overlay_snow",
         default_unlocked=True,
         partial_disp=functools.partial(
@@ -670,7 +670,7 @@ init -20 python in mas_island_event:
             use_fb=True
         )
     )
-    IslandsImageDefinition(
+    IslandsDataDefinition(
         "overlay_thunder",
         default_unlocked=True,
         fp_map={},
@@ -915,11 +915,11 @@ init -25 python in mas_island_event:
 
         try:
             with ZipFile(zip_data, "r") as zip_file:
-                island_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_ISLAND)
-                decal_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_DECAL)
-                bg_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_BG)
-                overlay_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_OVERLAY)
-                interior_map = IslandsImageDefinition.getFilepathsForType(IslandsImageDefinition.TYPE_INTERIOR)
+                island_map = IslandsDataDefinition.getFilepathsForType(IslandsDataDefinition.TYPE_ISLAND)
+                decal_map = IslandsDataDefinition.getFilepathsForType(IslandsDataDefinition.TYPE_DECAL)
+                bg_map = IslandsDataDefinition.getFilepathsForType(IslandsDataDefinition.TYPE_BG)
+                overlay_map = IslandsDataDefinition.getFilepathsForType(IslandsDataDefinition.TYPE_OVERLAY)
+                interior_map = IslandsDataDefinition.getFilepathsForType(IslandsDataDefinition.TYPE_INTERIOR)
                 # Now override maps to contain imgs instead of img paths
                 for map_ in (island_map, decal_map, bg_map, overlay_map, interior_map):
                     _read_zip(zip_file, map_)
@@ -930,7 +930,7 @@ init -25 python in mas_island_event:
                 )
 
                 # Audio is being loaded right away
-                isly_data = IslandsImageDefinition.getDataFor("other_isly")
+                isly_data = IslandsDataDefinition.getDataFor("other_isly")
                 for fn, fp in isly_data.fp_map.iteritems():
                     audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
                     setattr(store.audio, "isld_isly_" + fn, audio_data)
@@ -998,7 +998,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefinition.getDataFor(island_name).partial_disp
+            partial_disp = IslandsDataDefinition.getDataFor(island_name).partial_disp
             island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
@@ -1029,7 +1029,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefinition.getDataFor(decal_name).partial_disp
+            partial_disp = IslandsDataDefinition.getDataFor(decal_name).partial_disp
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
@@ -1060,7 +1060,7 @@ init -25 python in mas_island_event:
                     }
                 )
             )
-            partial_disp = IslandsImageDefinition.getDataFor(bg_name).partial_disp
+            partial_disp = IslandsDataDefinition.getDataFor(bg_name).partial_disp
             bg_disp_map[bg_name] = partial_disp(disp)
 
         # Build the overlays
@@ -1070,7 +1070,7 @@ init -25 python in mas_island_event:
         }
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
             # Overlays are just dynamic displayables
-            partial_disp = IslandsImageDefinition.getDataFor(overlay_name).partial_disp
+            partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
             overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
                 child=partial_disp(
                     day=MASWeatherMap(
@@ -1128,15 +1128,15 @@ init -25 python in mas_island_event:
             return redraw
 
         glitch_disp = Transform(child=glitch_frames[0], function=_glitch_transform_func)
-        partial_disp = IslandsImageDefinition.getDataFor("decal_glitch").partial_disp
+        partial_disp = IslandsDataDefinition.getDataFor("decal_glitch").partial_disp
         decal_disp_map["decal_glitch"] = partial_disp(glitch_disp)
 
         # Build chibi disp
-        partial_disp = IslandsImageDefinition.getDataFor("other_shimeji").partial_disp
+        partial_disp = IslandsDataDefinition.getDataFor("other_shimeji").partial_disp
         other_disp_map["other_shimeji"] = partial_disp()
 
         # Build thunder overlay
-        partial_disp = IslandsImageDefinition.getDataFor("overlay_thunder").partial_disp
+        partial_disp = IslandsDataDefinition.getDataFor("overlay_thunder").partial_disp
         overlay_disp_map["overlay_thunder"] = partial_disp()
 
         return
@@ -1425,7 +1425,7 @@ init -25 python in mas_island_event:
         """
         persistent._mas_islands_start_lvl = None
         persistent._mas_islands_progress = DEF_PROGRESS
-        persistent._mas_islands_unlocks = IslandsImageDefinition.getDefaultUnlocks()
+        persistent._mas_islands_unlocks = IslandsDataDefinition.getDefaultUnlocks()
 
     def play_music():
         """
