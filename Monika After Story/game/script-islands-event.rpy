@@ -1051,32 +1051,39 @@ init -25 python in mas_island_event:
         Builds a single IslandFilterWeatherDisplayable
         using the given image map
         """
-        return IslandFilterWeatherDisplayable(
-            day=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: img_map["d"],
-                    mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
-                    mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
-                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
-                }
-            ),
-            night=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: img_map["n"],
-                    mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
-                    mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
-                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
-                }
-            ),
-            sunset=MASWeatherMap(
-                {
-                    mas_weather.PRECIP_TYPE_DEF: img_map["s"],
-                    mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
-                    mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
-                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
-                }
-            )
-        )
+        precip_to_suffix_map = {
+            mas_weather.PRECIP_TYPE_DEF: "",
+            mas_weather.PRECIP_TYPE_RAIN: "_r",
+            mas_weather.PRECIP_TYPE_SNOW: "_s",
+            mas_weather.PRECIP_TYPE_OVERCAST: "_r"# reuse rain
+        }
+
+        def _create_weather_map(main_key):
+            if main_key not in img_map:
+                return None
+
+            precip_map = {}
+
+            for p_type, suffix in precip_to_suffix_map.iteritems():
+                k = main_key + suffix
+                if k in img_map:
+                    precip_map[p_type] = img_map[k]
+
+            if not precip_map:
+                raise Exception("Aiaiai")
+
+            store.mas_utils.mas_log.info(precip_map)
+            return MASWeatherMap(precip_map)
+
+        filter_keys = ("day", "night", "sunset")
+        filter_pairs = {}
+
+        for k in filter_keys:
+            wm = _create_weather_map(k[0])
+            if wm is not None:
+                filter_pairs[k] = wm
+
+        return IslandFilterWeatherDisplayable(**filter_pairs)
 
     def _build_displayables(
         island_imgs_maps,
@@ -1126,51 +1133,64 @@ init -25 python in mas_island_event:
             "overlay_snow": 3.5
         }
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
-            # Overlays are just dynamic displayables
-            partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
-            overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
-                child=partial_disp(
+            # Special case
+            if overlay_name == "overlay_vignette":
+                partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
+                overlay_disp_map[overlay_name] = partial_disp(
                     day=MASWeatherMap(
                         {
                             mas_weather.PRECIP_TYPE_DEF: img_map["d"]
                         }
+                    )
+                )
+
+            else:
+                # Overlays are just dynamic displayables
+                partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
+                overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
+                    child=partial_disp(
+                        day=MASWeatherMap(
+                            {
+                                mas_weather.PRECIP_TYPE_DEF: img_map["d"]
+                            }
+                        ),
+                        night=MASWeatherMap(
+                            {
+                                mas_weather.PRECIP_TYPE_DEF: img_map["n"]
+                            }
+                        ),
+                        # sunset=MASWeatherMap(
+                        #     {
+                        #         mas_weather.PRECIP_TYPE_DEF: img_map["s"]
+                        #     }
+                        # )
                     ),
-                    night=MASWeatherMap(
-                        {
-                            mas_weather.PRECIP_TYPE_DEF: img_map["n"]
-                        }
-                    ),
-                    # sunset=MASWeatherMap(
-                    #     {
-                    #         mas_weather.PRECIP_TYPE_DEF: img_map["s"]
-                    #     }
-                    # )
-                ),
-                speed=overlay_speed_map.get(overlay_name, 1.0)
-            )
+                    speed=overlay_speed_map.get(overlay_name, 1.0)
+                )
 
         # Build the interior
         for name, img_map in interior_imgs_map.iteritems():
             interior_disp_map[name] = img_map
 
-        # HACK: add custom tablechair into the cache right here
-        # That's because our images are not on the disk, we can't just use a sprite tag
-        # because the paths are hardcoded and we can't use a displayable directly
-        for flt_id in (FLT_LR_NIGHT, FLT_LR_LIT_NIGHT):
-            tablechair_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_TC]
-            table_im = mas_sprites._gen_im(
-                flt_id,
-                interior_disp_map["interior_tablechair"]["table"]
-            )
-            tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 0)] = table_im
-            tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 1)] = table_im# shadow variant can reuse the same img
-            tablechair_disp_cache[(flt_id, 1, LIVING_ROOM_ID)] = mas_sprites._gen_im(
-                flt_id,
-                interior_disp_map["interior_tablechair"]["chair"]
-            )
-            # Shadow is being stored in the highlight cache
-            table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
-            table_shadow_hl_disp_cache[(mas_sprites.CID_TC, flt_id, 0, LIVING_ROOM_ID, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
+        if interior_disp_map:
+            # HACK: add custom tablechair into the cache right here
+            # That's because our images are not on the disk, we can't just use a sprite tag
+            # because the paths are hardcoded and we can't use a displayable directly
+            for flt_id in (FLT_LR_NIGHT, FLT_LR_LIT_NIGHT):
+                tablechair_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_TC]
+                table_im = mas_sprites._gen_im(
+                    flt_id,
+                    interior_disp_map["interior_tablechair"]["table"]
+                )
+                tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 0)] = table_im
+                tablechair_disp_cache[(flt_id, 0, LIVING_ROOM_ID, 1)] = table_im# shadow variant can reuse the same img
+                tablechair_disp_cache[(flt_id, 1, LIVING_ROOM_ID)] = mas_sprites._gen_im(
+                    flt_id,
+                    interior_disp_map["interior_tablechair"]["chair"]
+                )
+                # Shadow is being stored in the highlight cache
+                table_shadow_hl_disp_cache = mas_sprites.CACHE_TABLE[mas_sprites.CID_HL]
+                table_shadow_hl_disp_cache[(mas_sprites.CID_TC, flt_id, 0, LIVING_ROOM_ID, 1)] = interior_disp_map["interior_tablechair"]["shadow"]
 
         # Build glitch disp
         def _glitch_transform_func(transform, st, at):
