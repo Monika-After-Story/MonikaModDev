@@ -1513,7 +1513,7 @@ init -25 python in mas_island_event:
         )
 
         if _is_unlocked("other_shimeji") and random.random() <= SHIMEJI_CHANCE:
-            shimeji_disp = other_shimeji["other_shimeji"]
+            shimeji_disp = other_disp_map["other_shimeji"]
             _reset_parallax_disp(shimeji_disp)
             SHIMEJI_CHANCE /= 2.0
             sub_displayables.append(shimeji_disp)
@@ -2299,7 +2299,7 @@ label mas_island_shimeji:
     m "Ah!"
     m "How'd she get there?"
     m "Give me a second, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"
-    $ islands_displayable.remove(mas_island_event.other_shimeji["other_shimeji"])
+    $ islands_displayable.remove(mas_island_event.other_disp_map["other_shimeji"])
     m "All done!"
     m "Don't worry, I just moved her to a different place."
     return
