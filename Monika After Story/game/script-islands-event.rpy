@@ -946,6 +946,38 @@ init -25 python in mas_island_event:
 
         return True
 
+    def _build_ifwd(img_map):
+        """
+        Builds a single IslandFilterWeatherDisplayable
+        using the given image map
+        """
+        return IslandFilterWeatherDisplayable(
+            day=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: img_map["d"],
+                    mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
+                    mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
+                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
+                }
+            ),
+            night=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: img_map["n"],
+                    mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
+                    mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
+                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
+                }
+            ),
+            sunset=MASWeatherMap(
+                {
+                    mas_weather.PRECIP_TYPE_DEF: img_map["s"],
+                    mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
+                    mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
+                    mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
+                }
+            )
+        )
+
     def _build_displayables(
         island_imgs_maps,
         decal_imgs_maps,
@@ -972,94 +1004,19 @@ init -25 python in mas_island_event:
 
         # Build the islands
         for island_name, img_map in island_imgs_maps.iteritems():
-            disp = IslandFilterWeatherDisplayable(
-                day=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
-                    }
-                ),
-                night=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
-                    }
-                ),
-                sunset=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
-                    }
-                )
-            )
+            disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(island_name).partial_disp
             island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
         for decal_name, img_map in decal_imgs_maps.iteritems():
-            disp = IslandFilterWeatherDisplayable(
-                day=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
-                    }
-                ),
-                night=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
-                    }
-                ),
-                sunset=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
-                    }
-                )
-            )
+            disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(decal_name).partial_disp
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
         for bg_name, img_map in bg_imgs_maps.iteritems():
-            disp = IslandFilterWeatherDisplayable(
-                day=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["d"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["d_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["d_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["d_r"]
-                    }
-                ),
-                night=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["n"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["n_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["n_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["n_r"]
-                    }
-                ),
-                sunset=MASWeatherMap(
-                    {
-                        mas_weather.PRECIP_TYPE_DEF: img_map["s"],
-                        mas_weather.PRECIP_TYPE_RAIN: img_map["s_r"],
-                        mas_weather.PRECIP_TYPE_SNOW: img_map["s_s"],
-                        mas_weather.PRECIP_TYPE_OVERCAST: img_map["s_r"]
-                    }
-                )
-            )
+            disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(bg_name).partial_disp
             bg_disp_map[bg_name] = partial_disp(disp)
 
