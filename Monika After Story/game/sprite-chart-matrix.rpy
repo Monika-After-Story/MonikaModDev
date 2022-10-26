@@ -664,7 +664,7 @@ init 1 python in mas_sprites:
         ord_memo = []
         curr_flt = _find_next_fb(flt, memo, ord_memo)
         while not mfwm.has_def(curr_flt):
-            nxt_flt = _find_nxt_fb(curr_flt, memo, ord_memo)
+            nxt_flt = _find_next_fb(curr_flt, memo, ord_memo)
 
             # if filter has not changed, we are done searching.
             if nxt_flt == curr_flt:
