@@ -652,6 +652,40 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
+    # NOTE: these trees have same params as decal_tree
+    IslandsDataDefinition(
+        "decal_haunted_tree_0",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=130,
+            y=-194,
+            z=4,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_haunted_tree_1",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=130,
+            y=-194,
+            z=4,
+            on_click=True
+        )
+    )
+    IslandsDataDefinition(
+        "decal_haunted_tree_2",
+        filenames=("d", "n"),
+        partial_disp=functools.partial(
+            ParallaxDecal,
+            x=130,
+            y=-194,
+            z=4,
+            on_click=True
+        )
+    )
     IslandsDataDefinition(
         "decal_gravestones",
         filenames=("d", "n"),
