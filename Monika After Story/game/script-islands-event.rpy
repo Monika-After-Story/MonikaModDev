@@ -621,22 +621,22 @@ init -20 python in mas_island_event:
     )
     IslandsDataDefinition(
         "decal_ghost_0",
-        filenames=("d",),
+        filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=355,
-            y=-70,
+            x=366,
+            y=-48,
             z=5,
             on_click=True
         )
     )
     IslandsDataDefinition(
         "decal_ghost_1",
-        filenames=("d",),
+        filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=355,
-            y=-70,
+            x=366,
+            y=-48,
             z=5,
             on_click=True
         )
@@ -646,8 +646,8 @@ init -20 python in mas_island_event:
         filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=355,
-            y=-70,
+            x=366,
+            y=-48,
             z=5,
             on_click=True
         )
@@ -657,8 +657,8 @@ init -20 python in mas_island_event:
         filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=125,
-            y=15,
+            x=123,
+            y=17,
             z=1,
             on_click=True
         )
@@ -679,8 +679,8 @@ init -20 python in mas_island_event:
         filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=176,
-            y=61,
+            x=178,
+            y=59,
             z=15,
             on_click=True
         )
@@ -690,15 +690,15 @@ init -20 python in mas_island_event:
         filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
-            x=100,
-            y=0,
+            x=120,
+            y=-10,
             z=1,
             on_click=True
         )
     )
     IslandsDataDefinition(
         "decal_webs",
-        filenames=("d",),
+        filenames=("d", "n"),
         partial_disp=functools.partial(
             ParallaxDecal,
             x=187,
