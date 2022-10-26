@@ -845,7 +845,7 @@ init -25 python in mas_island_event:
 
     DEF_PROGRESS = -1
     MAX_PROGRESS_ENAM = 4
-    MAX_PROGRESS_LOVE = 9
+    MAX_PROGRESS_LOVE = 8
     PROGRESS_FACTOR = 4
 
     SHIMEJI_CHANCE = 0.01
@@ -1334,29 +1334,22 @@ init -25 python in mas_island_event:
 
         return False
 
-    def _unlock_one(first, second):
+    def _unlock_one(*items):
         """
-        Unlocks one of 2 sprites at random.
+        Unlocks one of the sprites at random.
         Runs only once
 
         IN:
-            first - the id of the 1st sprite
-            second - the id of the 2nd sprite
+            *items - the ids of the sprites
 
         OUT:
-            boolean whether or not the sprite was unlocked
+            boolean whether or not a sprite was unlocked
         """
-        if (
-            not _is_unlocked(first)
-            and not _is_unlocked(second)
-        ):
-            return _unlock(
-                first
-                if random.random() > 0.5
-                else second
-            )
+        for i in items:
+            if _is_unlocked(i):
+                return False
 
-        return False
+        return _unlock(random.choice(items))
 
 
     # # # START functions for lvl unlocks
@@ -1368,45 +1361,64 @@ init -25 python in mas_island_event:
         _unlock("other_shimeji")
         if not renpy.seen_label("mas_monika_islands_final_reveal"):
             _unlock("decal_glitch")
+        _unlock("decal_pumpkins")
+        _unlock("decal_skull")
 
     def __unlocks_for_lvl_2():
         _unlock("island_2")
 
     def __unlocks_for_lvl_3():
-        # Unlock only one, the rest at lvl 5
+        # Unlock only one, the rest at lvl 6
         _unlock_one("island_4", "island_5")
 
     def __unlocks_for_lvl_4():
-        # Unlock only one, the rest at lvl 6
+        # Unlock only one, the rest at lvl 7
         _unlock_one("island_6", "island_7")
 
     def __unlocks_for_lvl_5():
+        # This requires the 4th isld
+        if _is_unlocked("island_4"):
+            _unlock("decal_bloodfall")
+        # This requires the 5th isld
+        if _is_unlocked("island_5"):
+            _unlock("decal_gravestones")
+
+    def __unlocks_for_lvl_6():
         _unlock("decal_bushes")
         # Unlock everything from lvl 3
         _unlock("island_4")
         _unlock("island_5")
 
-    def __unlocks_for_lvl_6():
+    def __unlocks_for_lvl_7():
         _unlock("island_3")
         # Unlock only one, the rest at lvl 7
         _unlock_one("decal_bookshelf", "decal_tree")
+        # These require the tree
+        if _is_unlocked("decal_tree"):
+            _unlock_one(*("decal_ghost_" + i for i in "012"))
         # Unlock everything from lvl 4
         _unlock("island_7")
         _unlock("island_6")
 
-    def __unlocks_for_lvl_7():
-        # Unlock everything from lvl 6
+    def __unlocks_for_lvl_8():
+        # Unlock everything from lvl 7
         _unlock("decal_bookshelf")
         _unlock("decal_tree")
+        # These require the tree
+        for i in "012":
+            _unlock("decal_haunted_tree_" + i)
 
     def _final_unlocks():
         # TODO: update monika_why_spaceroom
         # NOTE: NO SANITY CHECKS, use carefully
         _unlock("other_isly")
         _unlock("decal_house")
+        # These requires the house
+        _unlock("decal_jack")
+        _unlock("decal_webs")
         _lock("decal_glitch")
 
-    def __unlocks_for_lvl_8():
+    def __unlocks_for_lvl_9():
         if persistent._mas_pm_cares_island_progress is not False:
             if renpy.seen_label("mas_monika_islands_final_reveal"):
                 _final_unlocks()
@@ -1414,7 +1426,7 @@ init -25 python in mas_island_event:
             else:
                 pass
 
-    def __unlocks_for_lvl_9():
+    def __unlocks_for_lvl_10():
         if persistent._mas_pm_cares_island_progress is False:
             if renpy.seen_label("mas_monika_islands_final_reveal"):
                 _final_unlocks()
@@ -1464,7 +1476,7 @@ init -25 python in mas_island_event:
             modifier = 1.0
 
             if persistent._mas_pm_cares_island_progress is True:
-                modifier -= 0.1
+                modifier -= 0.2
 
             elif persistent._mas_pm_cares_island_progress is False:
                 modifier += 0.3
@@ -1607,20 +1619,52 @@ init -25 python in mas_island_event:
             if _is_unlocked(key)
         ]
 
-        # Add all unlocked decals for islands 1 (other islands don't have any as of now)
+        # Add all unlocked decals for islands 1
+        isld_1_decals = ["decal_bookshelf", "decal_bushes", "decal_house", "decal_glitch"]
+        if not persistent._mas_o31_in_o31_mode:# O31 has a different tree
+            isld_1_decals.append("decal_tree")
+
         island_disp_map["island_1"].add_decals(
             *(
                 decal_disp_map[key]
-                for key in (
-                    "decal_bookshelf",
-                    "decal_bushes",
-                    "decal_house",
-                    "decal_tree",
-                    "decal_glitch"
-                )
+                for key in isld_1_decals
                 if _is_unlocked(key)
             )
         )
+
+        # Now add all unlocked O31 decals
+        if persistent._mas_o31_in_o31_mode:
+            isld_to_decals_map = {
+                "island_0": ("decal_skull",),
+                "island_1": (
+                    "decal_ghost_0",
+                    "decal_ghost_1",
+                    "decal_ghost_2",
+                    "decal_jack",
+                    "decal_pumpkins",
+                    "decal_webs"
+                ),
+                "island_4": ("decal_bloodfall",),
+                "island_5": ("decal_gravestones",)
+            }
+            for isld, decals in isld_to_decals_map.iteritems():
+                island_disp_map[isld].add_decals(
+                    *(decal_disp_map[key] for key in decals if _is_unlocked(key))
+                )
+
+            # The tree has extra logic
+            if store.mas_current_background.isFltDay():
+                if random.random() < 0.5:
+                    haunted_tree = "decal_haunted_tree_0"
+
+                else:
+                    haunted_tree = "decal_haunted_tree_1"
+
+            else:
+                haunted_tree = "decal_haunted_tree_2"
+
+            if _is_unlocked(haunted_tree):
+                island_disp_map["island_1"].add_decals(decal_disp_map[haunted_tree])
 
         if _is_unlocked("other_shimeji") and random.random() <= SHIMEJI_CHANCE:
             shimeji_disp = other_disp_map["other_shimeji"]
@@ -1637,6 +1681,7 @@ init -25 python in mas_island_event:
         sub_displayables.sort(key=lambda sprite: sprite.z, reverse=True)
 
         # Now add overlays (they are always last)
+        # TODO: vignette
         if store.mas_is_raining:
             sub_displayables.append(overlay_disp_map["overlay_rain"])
             if store.mas_globals.show_lightning:

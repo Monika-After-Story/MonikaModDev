@@ -380,7 +380,21 @@ label v0_12_11_1(version="v0_12_11_1"):
         isld_p_data = persistent._mas_islands_unlocks
         if isld_p_data is not None:
             isld_p_data["other_shimeji"] = isld_p_data.pop("obj_shimeji", False)
-            isld_p_data["other_isly"] = False
+            # isld_p_data["other_isly"] = False
+
+            for k in ("decal_ghost_", "decal_haunted_tree_"):
+                for i in "012":
+                    isld_p_data[k + i] = False
+
+            for k in (
+                "decal_bloodfall",
+                "decal_gravestones",
+                "decal_jack",
+                "decal_pumpkins",
+                "decal_skull",
+                "decal_webs"
+            ):
+                isld_p_data[k] = False
 
     return
 
