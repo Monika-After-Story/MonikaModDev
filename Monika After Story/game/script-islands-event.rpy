@@ -2538,14 +2538,14 @@ label mas_island_distant_islands:
 label mas_island_spooky_ambience:
     m "{i}It was a dark and stormy night...{/i}"
     m "Ehehe~ This is the perfect time of year for spooky stories, isn't it?"
-    m "If you're in the mood, we should enjoy some together."
+    m "If you're in the mood, we should read some together."
     m "Although, I don't mind just enjoying the ambience with you for now."
 
     return
 
 label mas_island_bloodfall:
-    m "I'm pretty proud of the waterfall there. It was already looking pretty surreal being upside-down."
-    m "All I really had to do was change the value of the water to #641F21, and..."
+    m "I'm pretty proud of that waterfall there. It was already looking pretty surreal being upside-down."
+    m "All I really had to do was change the value of the water to #641F21, and--{nw}"
     $ _history_list.pop()
     m "Wait, I don't want to ruin the magic for you!{w=0.2} Forget I said that, please!"
 
@@ -2565,12 +2565,12 @@ label mas_island_gravestones:
         m "I was thinking, though...{w=0.2}Halloween is a time when some cultures honor the dead."
         m "Sure, there are a lot of spooky stories about the dead rising, or ghosts haunting people..."
         m "But there's a side of this holiday about remembering, isn't there?"
-        m "I suppose I just thought I shouldn't leave them out."
+        m "I guess I just thought I shouldn't leave them out."
 
     else:
         m "What?"
         m "...{w=0.2}What tombstones? {w-0.2}I'm not sure what you're talking about."
-        m "Are you...{w=0.2}pfff--"
+        m "Are you...{w=0.2}pfft--"
         m "Ahaha!"
         m "Sorry, I couldn't resist."
         m "It would be pretty spooky if those three were still haunting our happy ending, wouldn't it?"
