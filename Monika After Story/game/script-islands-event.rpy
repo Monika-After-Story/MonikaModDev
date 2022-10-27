@@ -2560,20 +2560,20 @@ label mas_island_pumpkins:
     return
 
 label mas_island_gravestones:
-    if not mas_safeToRefDokis():
+    if mas_safeToRefDokis():
+        m "What?"
+        m "...{w=0.2}What tombstones? {w=0.2}I'm not sure what you're talking about."
+        m "Are you...{w=0.2}pfft--"
+        m "Ahaha!"
+        m "Sorry, I couldn't resist."
+        m "It would be pretty spooky if those three were still haunting our happy ending, wouldn't it?"
+
+    else:
         m "Ehehe...I'm not sure if those decorations are entirely tasteful."
         m "I was thinking, though...{w=0.2}Halloween is a time when some cultures honor the dead."
         m "Sure, there are a lot of spooky stories about the dead rising, or ghosts haunting people..."
         m "But there's a side of this holiday about remembering, isn't there?"
         m "I guess I just thought I shouldn't leave them out."
-
-    else:
-        m "What?"
-        m "...{w=0.2}What tombstones? {w-0.2}I'm not sure what you're talking about."
-        m "Are you...{w=0.2}pfft--"
-        m "Ahaha!"
-        m "Sorry, I couldn't resist."
-        m "It would be pretty spooky if those three were still haunting our happy ending, wouldn't it?"
 
     return
 
