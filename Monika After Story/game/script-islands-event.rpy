@@ -1081,7 +1081,6 @@ init -25 python in mas_island_event:
                         setattr(store.audio, "isld_isly_" + fn, audio_data)
 
         except Exception as e:
-            # mas_utils.writelog(err_msg.format(e))
             mas_utils.mas_log.error(err_msg.format(e), exc_info=True)
             return False
 
@@ -2561,7 +2560,7 @@ label mas_island_pumpkins:
     return
 
 label mas_island_gravestones:
-    if mas_safeToRefDokis():
+    if not mas_safeToRefDokis():
         m "Ehehe...I'm not sure if those decorations are entirely tasteful."
         m "I was thinking, though...{w=0.2}Halloween is a time when some cultures honor the dead."
         m "Sure, there are a lot of spooky stories about the dead rising, or ghosts haunting people..."
