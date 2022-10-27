@@ -750,7 +750,7 @@ init -20 python in mas_island_event:
         fp_map={},
         partial_disp=functools.partial(
             ParallaxSprite,
-            Transform(renpy.easy.displayable("chibika smile"), zoom=0.4),
+            Transform(renpy.easy.displayable("chibika smile"), zoom=0.3),
             x=930,
             y=335,
             z=36,
@@ -797,16 +797,16 @@ init -20 python in mas_island_event:
         "overlay_rain",
         default_unlocked=True,
         partial_disp=functools.partial(
-            MASFilterWeatherDisplayable,
-            use_fb=True
+            _build_weather_overlay_transform,
+            speed=0.8
         )
     )
     IslandsDataDefinition(
         "overlay_snow",
         default_unlocked=True,
         partial_disp=functools.partial(
-            MASFilterWeatherDisplayable,
-            use_fb=True
+            _build_weather_overlay_transform,
+            speed=3.5
         )
     )
     IslandsDataDefinition(
@@ -820,11 +820,7 @@ init -20 python in mas_island_event:
     )
     IslandsDataDefinition(
         "overlay_vignette",
-        default_unlocked=True,
-        partial_disp=functools.partial(
-            MASFilterWeatherDisplayable,
-            use_fb=True
-        )
+        default_unlocked=True
     )
 
 
@@ -1093,10 +1089,10 @@ init -25 python in mas_island_event:
 
         return True
 
-    def _build_ifwd(img_map):
+    def _build_filter_pairs(img_map):
         """
-        Builds a single IslandFilterWeatherDisplayable
-        using the given image map
+        Builds filter pairs for IslandFilterWeatherDisplayable
+        or MASFilterWeatherDisplayable
         """
         precip_to_suffix_map = {
             mas_weather.PRECIP_TYPE_DEF: "",
@@ -1129,7 +1125,34 @@ init -25 python in mas_island_event:
             if wm is not None:
                 filter_pairs[k] = wm
 
+        return filter_pairs
+
+    def _build_ifwd(img_map):
+        """
+        Builds a single IslandFilterWeatherDisplayable
+        using the given image map
+        """
+        filter_pairs = _build_filter_pairs(img_map)
         return IslandFilterWeatherDisplayable(**filter_pairs)
+
+    def _build_fwd(img_map):
+        """
+        Builds a single MASFilterWeatherDisplayable
+        using the given image map
+        """
+        filter_pairs = _build_filter_pairs(img_map)
+        return MASFilterWeatherDisplayable(use_fb=True, **filter_pairs)
+
+    def _build_weather_overlay_transform(child, speed):
+        """
+        A wrapper around mas_islands_weather_overlay_transform
+        It exists so we can properly pass the child argument
+        to the transform
+        """
+        return store.mas_islands_weather_overlay_transform(
+            child=child,
+            speed=speed
+        )
 
     def _build_displayables(
         island_imgs_maps,
@@ -1174,46 +1197,12 @@ init -25 python in mas_island_event:
             bg_disp_map[bg_name] = partial_disp(disp)
 
         # Build the overlays
-        overlay_speed_map = {
-            "overlay_rain": 0.8,
-            "overlay_snow": 3.5
-        }
         for overlay_name, img_map in overlay_imgs_maps.iteritems():
-            # Special case
-            if overlay_name == "overlay_vignette":
-                partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
-                overlay_disp_map[overlay_name] = partial_disp(
-                    day=MASWeatherMap(
-                        {
-                            mas_weather.PRECIP_TYPE_DEF: img_map["d"]
-                        }
-                    ),
-                    night=MASWeatherMap(
-                        {
-                            mas_weather.PRECIP_TYPE_DEF: img_map["n"]
-                        }
-                    )
-                )
-                # MASFilterWeatherDisplayable(use_fb=True)
-
-            else:
-                # Overlays are just dynamic displayables
-                partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
-                overlay_disp_map[overlay_name] = store.mas_islands_weather_overlay_transform(
-                    child=partial_disp(
-                        day=MASWeatherMap(
-                            {
-                                mas_weather.PRECIP_TYPE_DEF: img_map["d"]
-                            }
-                        ),
-                        night=MASWeatherMap(
-                            {
-                                mas_weather.PRECIP_TYPE_DEF: img_map["n"]
-                            }
-                        )
-                    ),
-                    speed=overlay_speed_map.get(overlay_name, 1.0)
-                )
+            disp = _build_fwd(img_map)
+            partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
+            if partial_disp is not None:
+                disp = partial_disp(disp)
+            overlay_disp_map[overlay_name] = disp
 
         # Build the interior
         for name, img_map in interior_imgs_map.iteritems():
