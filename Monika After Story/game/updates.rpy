@@ -396,6 +396,8 @@ label v0_12_11_1(version="v0_12_11_1"):
             ):
                 isld_p_data[k] = False
 
+            isld_p_data["overlay_vignette"] = True
+
     return
 
 # 0.12.10

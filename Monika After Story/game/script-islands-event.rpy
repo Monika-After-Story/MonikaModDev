@@ -548,6 +548,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
+
     # Decals
     IslandsDataDefinition(
         "decal_bookshelf",
@@ -608,6 +609,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_glitchedmess"
         )
     )
+    # O31 specific decals
     IslandsDataDefinition(
         "decal_bloodfall",
         filenames=("d", "n"),
@@ -741,7 +743,7 @@ init -20 python in mas_island_event:
             on_click=True
         )
     )
-    # TODO: haunted tree
+
     # Objects
     IslandsDataDefinition(
         "other_shimeji",
@@ -760,6 +762,7 @@ init -20 python in mas_island_event:
         "other_isly",
         filenames=("clear", "rain", "snow")
     )
+
     # Interior
     IslandsDataDefinition(
         "interior_room",
@@ -773,6 +776,7 @@ init -20 python in mas_island_event:
         "interior_tablechair",
         filenames=("chair", "shadow", "table")
     )
+
     # BGs
     IslandsDataDefinition(
         "bg_def",
@@ -787,6 +791,7 @@ init -20 python in mas_island_event:
             on_click="mas_island_sky"
         )
     )
+
     # Overlays
     IslandsDataDefinition(
         "overlay_rain",
@@ -811,6 +816,14 @@ init -20 python in mas_island_event:
         partial_disp=functools.partial(
             renpy.easy.displayable,
             "mas_islands_lightning_overlay"
+        )
+    )
+    IslandsDataDefinition(
+        "overlay_vignette",
+        default_unlocked=True,
+        partial_disp=functools.partial(
+            MASFilterWeatherDisplayable,
+            use_fb=True
         )
     )
 
@@ -1174,8 +1187,14 @@ init -25 python in mas_island_event:
                         {
                             mas_weather.PRECIP_TYPE_DEF: img_map["d"]
                         }
+                    ),
+                    night=MASWeatherMap(
+                        {
+                            mas_weather.PRECIP_TYPE_DEF: img_map["n"]
+                        }
                     )
                 )
+                # MASFilterWeatherDisplayable(use_fb=True)
 
             else:
                 # Overlays are just dynamic displayables
@@ -1191,12 +1210,7 @@ init -25 python in mas_island_event:
                             {
                                 mas_weather.PRECIP_TYPE_DEF: img_map["n"]
                             }
-                        ),
-                        # sunset=MASWeatherMap(
-                        #     {
-                        #         mas_weather.PRECIP_TYPE_DEF: img_map["s"]
-                        #     }
-                        # )
+                        )
                     ),
                     speed=overlay_speed_map.get(overlay_name, 1.0)
                 )
@@ -1597,6 +1611,8 @@ init -25 python in mas_island_event:
         """
         global SHIMEJI_CHANCE
 
+        enable_o31_deco = persistent._mas_o31_in_o31_mode and not is_winter_weather()
+
         def _reset_parallax_disp(disp):
             # Just in case we always remove all decals and readd them as needed
             disp.clear_decals()
@@ -1621,7 +1637,7 @@ init -25 python in mas_island_event:
 
         # Add all unlocked decals for islands 1
         isld_1_decals = ["decal_bookshelf", "decal_bushes", "decal_house", "decal_glitch"]
-        if not persistent._mas_o31_in_o31_mode:# O31 has a different tree
+        if not enable_o31_deco:# O31 has a different tree
             isld_1_decals.append("decal_tree")
 
         island_disp_map["island_1"].add_decals(
@@ -1633,7 +1649,8 @@ init -25 python in mas_island_event:
         )
 
         # Now add all unlocked O31 decals
-        if persistent._mas_o31_in_o31_mode:
+        if enable_o31_deco:
+            # Basic decals
             isld_to_decals_map = {
                 "island_0": ("decal_skull",),
                 "island_1": (
@@ -1644,7 +1661,6 @@ init -25 python in mas_island_event:
                     "decal_pumpkins",
                     "decal_webs"
                 ),
-                "island_4": ("decal_bloodfall",),
                 "island_5": ("decal_gravestones",)
             }
             for isld, decals in isld_to_decals_map.iteritems():
@@ -1653,18 +1669,20 @@ init -25 python in mas_island_event:
                 )
 
             # The tree has extra logic
-            if store.mas_current_background.isFltDay():
+            if store.mas_current_background.isFltDay() or not is_cloudy_weather():
                 if random.random() < 0.5:
                     haunted_tree = "decal_haunted_tree_0"
-
                 else:
                     haunted_tree = "decal_haunted_tree_1"
-
             else:
                 haunted_tree = "decal_haunted_tree_2"
 
             if _is_unlocked(haunted_tree):
                 island_disp_map["island_1"].add_decals(decal_disp_map[haunted_tree])
+
+            # The bloodfall has extra condition
+            if store.mas_current_background.isFltNight() and _is_unlocked("decal_bloodfall"):
+                island_disp_map["island_4"].add_decals(decal_disp_map["decal_bloodfall"])
 
         if _is_unlocked("other_shimeji") and random.random() <= SHIMEJI_CHANCE:
             shimeji_disp = other_disp_map["other_shimeji"]
@@ -1681,7 +1699,6 @@ init -25 python in mas_island_event:
         sub_displayables.sort(key=lambda sprite: sprite.z, reverse=True)
 
         # Now add overlays (they are always last)
-        # TODO: vignette
         if store.mas_is_raining:
             sub_displayables.append(overlay_disp_map["overlay_rain"])
             if store.mas_globals.show_lightning:
@@ -1689,6 +1706,10 @@ init -25 python in mas_island_event:
 
         elif store.mas_is_snowing:
             sub_displayables.append(overlay_disp_map["overlay_snow"])
+
+        # NOTE: Vignette is above EVERYTHING else and works even during the snow
+        if persistent._mas_o31_in_o31_mode:
+            sub_displayables.append(overlay_disp_map["overlay_vignette"])
 
         return ParallaxBackground(*sub_displayables)
 
