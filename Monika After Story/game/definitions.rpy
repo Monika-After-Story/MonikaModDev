@@ -346,6 +346,8 @@ python early:
 
     class MASAudioData(unicode):
         """
+        NOTE: This is temporal plaster-fix to renpy, use on your own risk,
+            this class and all support for it will be completely gone with r8
         NOTE: This DOES NOT support saving in persistent (pickling),
             and it might be unsafe to do so.
 
