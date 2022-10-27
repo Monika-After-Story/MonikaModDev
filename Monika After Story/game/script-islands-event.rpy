@@ -524,7 +524,7 @@ init -20 python in mas_island_event:
             y=46,
             z=200,
             function=None,
-            on_click=True
+            on_click="mas_island_distant_islands"
         )
     )
     IslandsDataDefinition(
@@ -545,7 +545,7 @@ init -20 python in mas_island_event:
             x=484,
             y=54,
             z=220,
-            on_click=True
+            on_click="mas_island_distant_islands"
         )
     )
 
@@ -618,7 +618,7 @@ init -20 python in mas_island_event:
             x=213,
             y=0,
             z=1,
-            on_click=True
+            on_click="mas_island_bloodfall"
         )
     )
     IslandsDataDefinition(
@@ -696,7 +696,7 @@ init -20 python in mas_island_event:
             x=123,
             y=17,
             z=1,
-            on_click=True
+            on_click="mas_island_gravestones"
         )
     )
     IslandsDataDefinition(
@@ -707,7 +707,7 @@ init -20 python in mas_island_event:
             x=253,
             y=63,
             z=2,
-            on_click=True
+            on_click="mas_island_pumpkins"
         )
     )
     IslandsDataDefinition(
@@ -718,7 +718,7 @@ init -20 python in mas_island_event:
             x=178,
             y=59,
             z=15,
-            on_click=True
+            on_click="mas_island_pumpkins"
         )
     )
     IslandsDataDefinition(
@@ -740,7 +740,7 @@ init -20 python in mas_island_event:
             x=187,
             y=-99,
             z=5,
-            on_click=True
+            # on_click=True
         )
     )
 
@@ -2172,6 +2172,9 @@ label mas_islands(
 
 
 label mas_island_upsidedownisland:
+    if persistent._mas_o31_in_o31_mode and random.random() < 0.3:
+        jump mas_island_spooky_ambience
+
     m "Oh, that."
     m "I guess you're wondering why that island is upside down, right?"
     m "Well...I was about to fix it until I took another good look at it."
@@ -2525,6 +2528,54 @@ label mas_island_bookshelf2:
         m "Maybe I should add a table underneath the Cherry Blossom tree."
         m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
         m "That'd be wonderful~"
+
+    return
+
+label mas_island_distant_islands:
+    if persistent._mas_o31_in_o31_mode:
+        jump mas_island_spooky_ambience
+
+    return
+
+label mas_island_spooky_ambience:
+    m "{i}It was a dark and stormy night...{/i}"
+    m "Ehehe~ This is the perfect time of year for spooky stories, isn't it?"
+    m "If you're in the mood, we should enjoy some together."
+    m "Although, I don't mind just enjoying the ambience with you for now."
+
+    return
+
+label mas_island_bloodfall:
+    m "I'm pretty proud of the waterfall there. It was already looking pretty surreal being upside-down."
+    m "All I really had to do was change the value of the water to #641F21, and..."
+    $ _history_list.pop()
+    m "Wait, I don't want to ruin the magic for you!{w=0.2} Forget I said that, please!"
+
+    return
+
+label mas_island_pumpkins:
+    m "There's nothing that reminds me of Halloween quite as much as pumpkins."
+    m "I thought it would be so cozy to have a bunch of them around my reading nook."
+    m "It's a bit chilly in the rain, but don't you think it would be nice to put on some sweaters and snuggle up together?"
+    m "Maybe I could make some flavored coffee to enhance the mood even more."
+
+    return
+
+label mas_island_gravestones:
+    if mas_safeToRefDokis():
+        m "Ehehe...I'm not sure if those decorations are entirely tasteful."
+        m "I was thinking, though...{w=0.2}Halloween is a time when some cultures honor the dead."
+        m "Sure, there are a lot of spooky stories about the dead rising, or ghosts haunting people..."
+        m "But there's a side of this holiday about remembering, isn't there?"
+        m "I suppose I just thought I shouldn't leave them out."
+
+    else:
+        m "What?"
+        m "...{w=0.2}What tombstones? {w-0.2}I'm not sure what you're talking about."
+        m "Are you...{w=0.2}pfff--"
+        m "Ahaha!"
+        m "Sorry, I couldn't resist."
+        m "It would be pretty spooky if those three were still haunting our happy ending, wouldn't it?"
 
     return
 
