@@ -132,40 +132,40 @@ image mas_islands_lightning_overlay:
         repeat
 
 
-## Base room
-# Day images
-image living_room_day = mas_island_event._get_room_sprite("d", False)
-image living_room_day_rain = mas_island_event._get_room_sprite("d_r", False)
-image living_room_day_overcast = "living_room_day_rain"
-image living_room_day_snow = mas_island_event._get_room_sprite("d_s", False)
-# Night images
-image living_room_night = mas_island_event._get_room_sprite("n", False)
-image living_room_night_rain = mas_island_event._get_room_sprite("n_r", False)
-image living_room_night_overcast = "living_room_night_rain"
-image living_room_night_snow = mas_island_event._get_room_sprite("n_s", False)
-# Sunset images
-image living_room_ss = mas_island_event._apply_flt_on_room_sprite("living_room_day", mas_sprites.FLT_SUNSET)
-image living_room_ss_rain = mas_island_event._apply_flt_on_room_sprite("living_room_day_rain", mas_sprites.FLT_SUNSET)
-image living_room_ss_overcast = mas_island_event._apply_flt_on_room_sprite("living_room_day_overcast", mas_sprites.FLT_SUNSET)
-image living_room_ss_snow = mas_island_event._apply_flt_on_room_sprite("living_room_day_snow", mas_sprites.FLT_SUNSET)
+# ## Base room
+# # Day images
+# image living_room_day = mas_island_event._get_room_sprite("d", False)
+# image living_room_day_rain = mas_island_event._get_room_sprite("d_r", False)
+# image living_room_day_overcast = "living_room_day_rain"
+# image living_room_day_snow = mas_island_event._get_room_sprite("d_s", False)
+# # Night images
+# image living_room_night = mas_island_event._get_room_sprite("n", False)
+# image living_room_night_rain = mas_island_event._get_room_sprite("n_r", False)
+# image living_room_night_overcast = "living_room_night_rain"
+# image living_room_night_snow = mas_island_event._get_room_sprite("n_s", False)
+# # Sunset images
+# image living_room_ss = mas_island_event._apply_flt_on_room_sprite("living_room_day", mas_sprites.FLT_SUNSET)
+# image living_room_ss_rain = mas_island_event._apply_flt_on_room_sprite("living_room_day_rain", mas_sprites.FLT_SUNSET)
+# image living_room_ss_overcast = mas_island_event._apply_flt_on_room_sprite("living_room_day_overcast", mas_sprites.FLT_SUNSET)
+# image living_room_ss_snow = mas_island_event._apply_flt_on_room_sprite("living_room_day_snow", mas_sprites.FLT_SUNSET)
 
 
-## Lit room
-# Day images
-image living_room_lit_day = "living_room_day"
-image living_room_lit_day_rain = "living_room_day_rain"
-image living_room_lit_day_overcast = "living_room_day_overcast"
-image living_room_lit_day_snow = "living_room_day_snow"
-# Night images
-image living_room_lit_night = mas_island_event._get_room_sprite("n", True)
-image living_room_lit_night_rain = mas_island_event._get_room_sprite("n_r", True)
-image living_room_lit_night_overcast = "living_room_lit_night_rain"
-image living_room_lit_night_snow = mas_island_event._get_room_sprite("n_s", True)
-# Sunset images
-image living_room_lit_ss = "living_room_ss"
-image living_room_lit_ss_rain = "living_room_ss_rain"
-image living_room_lit_ss_overcast = "living_room_ss_overcast"
-image living_room_lit_ss_snow = "living_room_ss_snow"
+# ## Lit room
+# # Day images
+# image living_room_lit_day = "living_room_day"
+# image living_room_lit_day_rain = "living_room_day_rain"
+# image living_room_lit_day_overcast = "living_room_day_overcast"
+# image living_room_lit_day_snow = "living_room_day_snow"
+# # Night images
+# image living_room_lit_night = mas_island_event._get_room_sprite("n", True)
+# image living_room_lit_night_rain = mas_island_event._get_room_sprite("n_r", True)
+# image living_room_lit_night_overcast = "living_room_lit_night_rain"
+# image living_room_lit_night_snow = mas_island_event._get_room_sprite("n_s", True)
+# # Sunset images
+# image living_room_lit_ss = "living_room_ss"
+# image living_room_lit_ss_rain = "living_room_ss_rain"
+# image living_room_lit_ss_overcast = "living_room_ss_overcast"
+# image living_room_lit_ss_snow = "living_room_ss_snow"
 
 
 # # # Image defination
@@ -315,8 +315,9 @@ init -20 python in mas_island_event:
 
             OUT:
                 IslandsDataDefinition
+                or None
             """
-            return cls._data_map[id_]
+            return cls._data_map.get(id_, None)
 
         @classmethod
         def getDefaultUnlocks(cls):
@@ -758,24 +759,24 @@ init -20 python in mas_island_event:
             on_click="mas_island_shimeji"
         )
     )
-    IslandsDataDefinition(
-        "other_isly",
-        filenames=("clear", "rain", "snow")
-    )
+    # IslandsDataDefinition(
+    #     "other_isly",
+    #     filenames=("clear", "rain", "snow")
+    # )
 
-    # Interior
-    IslandsDataDefinition(
-        "interior_room",
-        filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
-    )
-    IslandsDataDefinition(
-        "interior_room_lit",
-        filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
-    )
-    IslandsDataDefinition(
-        "interior_tablechair",
-        filenames=("chair", "shadow", "table")
-    )
+    # # Interior
+    # IslandsDataDefinition(
+    #     "interior_room",
+    #     filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
+    # )
+    # IslandsDataDefinition(
+    #     "interior_room_lit",
+    #     filenames=("d", "d_r", "d_s", "n", "n_r", "n_s")
+    # )
+    # IslandsDataDefinition(
+    #     "interior_tablechair",
+    #     filenames=("chair", "shadow", "table")
+    # )
 
     # BGs
     IslandsDataDefinition(
@@ -1029,7 +1030,7 @@ init -25 python in mas_island_event:
             mas_utils.mas_log.error(err_msg.format("Missing package"))
             return False
 
-        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=None)#mas_ics.ISLAND_PKG_CHKSUM)# FIXME: undo this
+        pkg_data = islands_station.unpackPackage(pkg, pkg_slip=mas_ics.ISLAND_PKG_CHKSUM)
 
         if not pkg_data:
             mas_utils.mas_log.error(err_msg.format("Bad package"))
@@ -1074,9 +1075,10 @@ init -25 python in mas_island_event:
 
                 # Audio is being loaded right away
                 isly_data = IslandsDataDefinition.getDataFor("other_isly")
-                for fn, fp in isly_data.fp_map.iteritems():
-                    audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
-                    setattr(store.audio, "isld_isly_" + fn, audio_data)
+                if isly_data:
+                    for fn, fp in isly_data.fp_map.iteritems():
+                        audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
+                        setattr(store.audio, "isld_isly_" + fn, audio_data)
 
         except Exception as e:
             # mas_utils.writelog(err_msg.format(e))
@@ -1841,9 +1843,6 @@ init -1 python in mas_island_event:
             exit_pp=_living_room_exit
         )
 
-    register_room(LIVING_ROOM_ID)
-    register_room(LIVING_ROOM_LIT_ID)
-
 
 init 5 python:
     addEvent(
@@ -1926,169 +1925,169 @@ label mas_monika_islands_progress:
 
     return
 
-default persistent._mas_pm_likes_islands = None
+# default persistent._mas_pm_likes_islands = None
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_monika_islands_final_reveal"
-        ),
-        restartBlacklist=True
-    )
+# init 5 python:
+#     addEvent(
+#         Event(
+#             persistent.event_database,
+#             eventlabel="mas_monika_islands_final_reveal"
+#         ),
+#         restartBlacklist=True
+#     )
 
-label mas_monika_islands_final_reveal:
-    python:
-        renpy.dynamic("islands_disp")
-        mas_island_event._final_unlocks()
-        islands_disp = mas_island_event.get_islands_displayable(False, False)
+# label mas_monika_islands_final_reveal:
+#     python:
+#         renpy.dynamic("islands_disp")
+#         mas_island_event._final_unlocks()
+#         islands_disp = mas_island_event.get_islands_displayable(False, False)
 
-    m 4sub "I'm so excited to finally show you my work!"
+#     m 4sub "I'm so excited to finally show you my work!"
 
-    if mas_getCurrentBackgroundId() != "spaceroom":
-        m 7eua "Let's return to the classroom for the best view."
-        call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True)
+#     if mas_getCurrentBackgroundId() != "spaceroom":
+#         m 7eua "Let's return to the classroom for the best view."
+#         call mas_background_change(mas_background_def, skip_leadin=True, skip_outro=True)
 
-    m 1eua "Now let me turn off the light.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
+#     m 1eua "Now let me turn off the light.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
-    window hide
-    call .islands_scene
-    window auto
+#     window hide
+#     call .islands_scene
+#     window auto
 
-    m "..."
-    m "I'm surprised it actually worked, ahaha!~"
-    m "You know, after spending so much time working on this..."
-    m "It feels so satisfying not only being able to see the result myself..."
-    m "But also being able to show it to you, [mas_get_player_nickname()]."
-    m "I'm sure you had been wondering what was behind that bug on the central island~"
-    m "It's a small house for us to spend time in, we can go there any time now, just ask."
+#     m "..."
+#     m "I'm surprised it actually worked, ahaha!~"
+#     m "You know, after spending so much time working on this..."
+#     m "It feels so satisfying not only being able to see the result myself..."
+#     m "But also being able to show it to you, [mas_get_player_nickname()]."
+#     m "I'm sure you had been wondering what was behind that bug on the central island~"
+#     m "It's a small house for us to spend time in, we can go there any time now, just ask."
 
-    if mas_background.getUnlockedBGCount() == 1:
-        m "I know staying in this empty classroom can feel tiresome sometimes."
-        m "So it's nice to get more places to visit."
+#     if mas_background.getUnlockedBGCount() == 1:
+#         m "I know staying in this empty classroom can feel tiresome sometimes."
+#         m "So it's nice to get more places to visit."
 
-    else:
-        m "Even with all the other places we have, it's always nice to get new surroundings."
+#     else:
+#         m "Even with all the other places we have, it's always nice to get new surroundings."
 
-    m "Now, why don't we go inside, [player]?"
+#     m "Now, why don't we go inside, [player]?"
 
-    window hide
-    call .zoom_in
-    window auto
+#     window hide
+#     call .zoom_in
+#     window auto
 
-    python hide:
-        bg = mas_getBackground(mas_island_event.LIVING_ROOM_ID)
-        if bg:
-            mas_changeBackground(bg)
-        mas_island_event.stop_music()
+#     python hide:
+#         bg = mas_getBackground(mas_island_event.LIVING_ROOM_ID)
+#         if bg:
+#             mas_changeBackground(bg)
+#         mas_island_event.stop_music()
 
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 4hub")
+#     call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 4hub")
 
-    m "Tada!~"
-    m 2eua "So, [player]..."
-    m 3eka "Your opinion is {i}really{/i} important to me."
+#     m "Tada!~"
+#     m 2eua "So, [player]..."
+#     m 3eka "Your opinion is {i}really{/i} important to me."
 
-    call .ask_opinion
+#     call .ask_opinion
 
-    return
+#     return
 
-label mas_monika_islands_final_reveal.islands_scene:
-    $ mas_RaiseShield_core()
-    $ mas_OVLHide()
-    $ mas_hotkeys.no_window_hiding = True
-    $ mas_play_song(None)
-    scene black with dissolve
+# label mas_monika_islands_final_reveal.islands_scene:
+#     $ mas_RaiseShield_core()
+#     $ mas_OVLHide()
+#     $ mas_hotkeys.no_window_hiding = True
+#     $ mas_play_song(None)
+#     scene black with dissolve
 
-    $ mas_island_event.play_music()
+#     $ mas_island_event.play_music()
 
-    # I'd love to split the lines properly, but renpy doesn't allow that, so have this cursed thing instead
-    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_1(
-        delay=mas_island_event.REVEAL_ANIM_DELAY,
-        move_time=mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY
-    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
-    $ renpy.pause(mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
+#     # I'd love to split the lines properly, but renpy doesn't allow that, so have this cursed thing instead
+#     show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_1(
+#         delay=mas_island_event.REVEAL_ANIM_DELAY,
+#         move_time=mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY
+#     ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+#     $ renpy.pause(mas_island_event.REVEAL_ANIM_1_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
 
-    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_2(
-        delay=mas_island_event.REVEAL_ANIM_DELAY,
-        move_time=mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_ANIM_DELAY
-    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
-    $ renpy.pause(mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
+#     show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_2(
+#         delay=mas_island_event.REVEAL_ANIM_DELAY,
+#         move_time=mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_ANIM_DELAY
+#     ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+#     $ renpy.pause(mas_island_event.REVEAL_ANIM_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME - mas_island_event.REVEAL_FADEIN_TIME, hard=True)
 
-    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_3(
-        delay=mas_island_event.REVEAL_ANIM_DELAY,
-        move_time=mas_island_event.REVEAL_ANIM_3_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY,
-        zoom_time=mas_island_event.REVEAL_ANIM_3_2_DURATION
-    ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
-    $ renpy.pause(mas_island_event.REVEAL_ANIM_3_1_DURATION + mas_island_event.REVEAL_ANIM_3_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME, hard=True)
+#     show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_3(
+#         delay=mas_island_event.REVEAL_ANIM_DELAY,
+#         move_time=mas_island_event.REVEAL_ANIM_3_1_DURATION - mas_island_event.REVEAL_ANIM_DELAY,
+#         zoom_time=mas_island_event.REVEAL_ANIM_3_2_DURATION
+#     ) zorder mas_island_event.DEF_SCREEN_ZORDER with mas_island_event.REVEAL_FADE_TRANSITION
+#     $ renpy.pause(mas_island_event.REVEAL_ANIM_3_1_DURATION + mas_island_event.REVEAL_ANIM_3_2_DURATION - mas_island_event.REVEAL_TRANSITION_TIME, hard=True)
 
-    $ renpy.pause(mas_island_event.REVEAL_OVERVIEW_DURATION, hard=True)
-    $ mas_hotkeys.no_window_hiding = False
-    $ mas_OVLShow()
-    $ mas_DropShield_core()
-    $ mas_RaiseShield_dlg()
+#     $ renpy.pause(mas_island_event.REVEAL_OVERVIEW_DURATION, hard=True)
+#     $ mas_hotkeys.no_window_hiding = False
+#     $ mas_OVLShow()
+#     $ mas_DropShield_core()
+#     $ mas_RaiseShield_dlg()
 
-    return
+#     return
 
-label mas_monika_islands_final_reveal.zoom_in:
-    show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_4(
-        delay=0.0,
-        zoom_time=mas_island_event.REVEAL_ANIM_4_DURATION
-    ) zorder mas_island_event.DEF_SCREEN_ZORDER
-    $ renpy.pause(mas_island_event.REVEAL_ANIM_4_DURATION - mas_island_event.REVEAL_FADEOUT_TIME, hard=True)
-    scene black with mas_island_event.REVEAL_DISSOLVE_TRANSITION
+# label mas_monika_islands_final_reveal.zoom_in:
+#     show expression islands_disp as islands_disp at mas_islands_final_reveal_trans_4(
+#         delay=0.0,
+#         zoom_time=mas_island_event.REVEAL_ANIM_4_DURATION
+#     ) zorder mas_island_event.DEF_SCREEN_ZORDER
+#     $ renpy.pause(mas_island_event.REVEAL_ANIM_4_DURATION - mas_island_event.REVEAL_FADEOUT_TIME, hard=True)
+#     scene black with mas_island_event.REVEAL_DISSOLVE_TRANSITION
 
-    return
+#     return
 
-label mas_monika_islands_final_reveal.ask_opinion:
-    m 1eksdla "What do you think?~{nw}"
-    $ _history_list.pop()
-    menu:
-        m "What do you think?~{fast}"
+# label mas_monika_islands_final_reveal.ask_opinion:
+#     m 1eksdla "What do you think?~{nw}"
+#     $ _history_list.pop()
+#     menu:
+#         m "What do you think?~{fast}"
 
-        "It's not too bad.":
-            $ persistent._mas_pm_likes_islands = False
-            $ mas_loseAffectionFraction(min_amount=50, modifier=1.0)
-            $ mas_lockEVL("mas_monika_islands", "EVE")
-            m 2ekd "Oh...{w=0.3}{nw}"
-            extend 2lkc "I guess it's not perfect..."
-            m 2dktpc "But after all that time I've spent working for a place for us, {w=0.1}{nw}"
-            extend 2fktud "you could at least pretend to care."
+#         "It's not too bad.":
+#             $ persistent._mas_pm_likes_islands = False
+#             $ mas_loseAffectionFraction(min_amount=50, modifier=1.0)
+#             $ mas_lockEVL("mas_monika_islands", "EVE")
+#             m 2ekd "Oh...{w=0.3}{nw}"
+#             extend 2lkc "I guess it's not perfect..."
+#             m 2dktpc "But after all that time I've spent working for a place for us, {w=0.1}{nw}"
+#             extend 2fktud "you could at least pretend to care."
 
-            if persistent._mas_pm_cares_island_progress is False:
-                $ mas_loseAffectionFraction(min_amount=50, modifier=0.5)
-                m 2dktsc "..."
-                m 2gftpc "Although, what did I expect...{w=0.3}{nw}"
-                extend 2eftud "you have said you don't care before."
-                m 2dstdc "Forget, {w=0.3}{nw}"
-                extend 2mstdc "this was a waste of time. {w=0.3}{nw}"
-                extend 2tsc "For both of us."
+#             if persistent._mas_pm_cares_island_progress is False:
+#                 $ mas_loseAffectionFraction(min_amount=50, modifier=0.5)
+#                 m 2dktsc "..."
+#                 m 2gftpc "Although, what did I expect...{w=0.3}{nw}"
+#                 extend 2eftud "you have said you don't care before."
+#                 m 2dstdc "Forget, {w=0.3}{nw}"
+#                 extend 2mstdc "this was a waste of time. {w=0.3}{nw}"
+#                 extend 2tsc "For both of us."
 
-            else:
-                m 2dktsc "It hurts, [player]... {w=0.3}It really, {w=0.1}{i}really{/i} hurts."
-                m 2fftdd "You know what? {w=0.1}Forget. {w=0.3}{nw}"
-                extend 2mftdc "It was a mistake from the start."
+#             else:
+#                 m 2dktsc "It hurts, [player]... {w=0.3}It really, {w=0.1}{i}really{/i} hurts."
+#                 m 2fftdd "You know what? {w=0.1}Forget. {w=0.3}{nw}"
+#                 extend 2mftdc "It was a mistake from the start."
 
-            # TODO: reference monika_sweatercurse?
+#             # TODO: reference monika_sweatercurse?
 
-        "You did an amazing job!":
-            $ persistent._mas_pm_likes_islands = True
-            $ mas_gainAffection(10, bypass=True)
-            m 1wuo "Really? {w=0.3}{nw}"
-            extend 2suo "You can't imagine how much that means to me, [player]!"
-            m 2fktpa "I'm so, {w=0.1}{i}so{/i} glad you liked it."
+#         "You did an amazing job!":
+#             $ persistent._mas_pm_likes_islands = True
+#             $ mas_gainAffection(10, bypass=True)
+#             m 1wuo "Really? {w=0.3}{nw}"
+#             extend 2suo "You can't imagine how much that means to me, [player]!"
+#             m 2fktpa "I'm so, {w=0.1}{i}so{/i} glad you liked it."
 
-            if persistent._mas_pm_cares_island_progress is False:
-                $ mas_gainAffection(5, bypass=True)
-                m 3rktdc "You've got me a bit worried before when you said you don't care about our islands..."
-                m 1eka "It makes me incredibly happy you've changed your mind."
+#             if persistent._mas_pm_cares_island_progress is False:
+#                 $ mas_gainAffection(5, bypass=True)
+#                 m 3rktdc "You've got me a bit worried before when you said you don't care about our islands..."
+#                 m 1eka "It makes me incredibly happy you've changed your mind."
 
-            elif persistent._mas_pm_cares_island_progress:
-                $ mas_gainAffection(5, bypass=True)
-                m 3fktda "It's only because of your everlasting love and support I was able to finish this."
+#             elif persistent._mas_pm_cares_island_progress:
+#                 $ mas_gainAffection(5, bypass=True)
+#                 m 3fktda "It's only because of your everlasting love and support I was able to finish this."
 
-            m 3hublb "Thanks for being my inspiration, [mas_get_player_nickname()]~"
+#             m 3hublb "Thanks for being my inspiration, [mas_get_player_nickname()]~"
 
-    return
+#     return
 
 
 label mas_islands(
