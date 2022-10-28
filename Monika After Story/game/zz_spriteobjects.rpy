@@ -535,13 +535,14 @@ init -2 python in mas_sprites:
         outfit_mode = kwargs.get("outfit_mode", False)
 
         if outfit_mode:
-            # swap to bun braid if found. if not, dont wear acs.
+            # swap to echo_downshort hair if found, if not, hair_down
             downshort = store.mas_sprites.get_sprite(
                 store.mas_sprites.SP_HAIR,
                 "echo_downshort"
             )
             _moni_chr.change_hair(downshort if downshort is not None else store.mas_hair_down)
 
+        # remove promise ring so it can't cli[ thru gloves
         _acs_remove_if_found(_moni_chr, "promisering")
 
 
@@ -549,7 +550,7 @@ init -2 python in mas_sprites:
         """
         Exit prog point for hatana 2b
         """
-        # NOTE: this prog point is chika specific. See above.
+        # re-wear promise ring if applicable
         if store.persistent._mas_acs_enable_promisering:
             _moni_chr.wear_acs(store.mas_acs_promisering)
 
