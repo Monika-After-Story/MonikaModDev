@@ -669,6 +669,9 @@ init -900 python:
                 renpy.save_persistent()
                 numnum, numnum_del = __mas__backupAndDelete(p_savedir, "persistent")
 
+            except:
+                raise
+
             finally:
                 persistent._mas_is_backup = is_pers_backup
                 renpy.save_persistent()
