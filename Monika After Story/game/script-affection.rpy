@@ -2617,7 +2617,7 @@ init python:
 
         mas_loseAffection(change)
 
-    def _mas_shatterAffection():
+    def _mas_shatterAffection(current_evlabel=None):
         """
         Sets affection to the lowest value
         """
@@ -2625,7 +2625,7 @@ init python:
         if curr_aff <= -101.0:
             return
 
-        mas_loseAffection(curr_aff+101.0)
+        mas_loseAffection(curr_aff+101.0, current_evlabel=current_evlabel)
 
     def _mas_doFreshStart():
         """
@@ -3720,4 +3720,13 @@ Monika
 
  Monika
 """)
+    )
+
+    MASPoem(
+        poem_id="ff_broke_spacetime_fabric",
+        category="ff",
+        prompt="",
+        title=_("???"),
+        text=store.mas_time.generate_poem(),
+        author="???"
     )

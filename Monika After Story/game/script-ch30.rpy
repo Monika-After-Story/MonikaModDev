@@ -1139,7 +1139,6 @@ init 999 python in mas_reset:
         """
         Runs reset code for affection
         """
-        # Give the bonus
         store.mas_affection._withdraw_aff()
 
 
@@ -1395,6 +1394,22 @@ init 999 python in mas_reset:
             store.mas_delete_all_chrs()
 
 
+    def _tt_reset():
+        """
+        Runs reset code for tt event
+        """
+        if (
+            mas_TTDetected()
+            or (
+                store.mas_time.has_broken_spacetime_fabric()
+                and not store.mas_isBelowZero()
+            )
+        ):
+            # this will tell the player their data is corrupted
+            # and hopefully they will revert
+            store.MASEventList.push("mas_broke_spacetime_fabric")
+
+
     def final():
         """
         Runs reset code that should run after everythign else
@@ -1409,6 +1424,8 @@ init 999 python in mas_reset:
             #Let's also push the event to get rid of the thermos too
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
                 store.queueEvent("mas_consumables_remove_thermos")
+
+        _tt_reset()
 
         # clean up the event list of baka events
         # ALWAYS LAST
@@ -1753,6 +1770,11 @@ label ch30_autoload:
             persistent._mas_load_in_finalfarewell_mode = True
             persistent._mas_finalfarewell_poem_id = "ff_affection"
 
+        elif mas_time.has_broken_spacetime_fabric():
+            persistent._mas_load_in_finalfarewell_mode = True
+            persistent._mas_finalfarewell_poem_id = "ff_broke_spacetime_fabric"
+            play_song(songs.FP_KAZOO_COVER, fadein=10.0, set_per=True)
+
 
     #If we should go into FF mode, we do.
     if persistent._mas_load_in_finalfarewell_mode:
@@ -2092,6 +2114,10 @@ label ch30_visual_skip:
     # else:
     #     $ config.allow_skipping = False
 
+    if _mas_ntp.is_major_desync():
+        $ store.mas_globals.tt_detected = True
+        $ store.MASEventList.push("mas_broke_spacetime_fabric")
+
     # check for outstanding threads
     if store.mas_dockstat.abort_gen_promise:
         $ store.mas_dockstat.abortGenPromise()
@@ -2100,8 +2126,8 @@ label ch30_visual_skip:
         jump ch30_post_mid_loop_eval
 
     #Do the weather thing
-#    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
-#        call spaceroom(dissolve_masks=True)
+    # if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
+    #     call spaceroom(dissolve_masks=True)
 
     # check reoccuring checks
     $ now_check = datetime.datetime.now()

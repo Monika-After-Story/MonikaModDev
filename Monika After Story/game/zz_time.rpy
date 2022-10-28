@@ -30,7 +30,7 @@ python early:
             IN:
                 dt - datetime to generate new datetime with
 
-            RETURNS: new datetime object with same time as previous but 
+            RETURNS: new datetime object with same time as previous but
                 tzinfo set to an instance of this MASLocalTz
             """
             mas_tz = MASLocalTz.create()
@@ -85,3 +85,238 @@ python early:
             """
             cls._tz_cache = None
             return MASLocalTz.create()
+
+
+python early in mas_time:
+    import time
+    import threading
+    import random
+
+    import store
+
+    class __Desync(object):
+        NONE = 0
+        MAJOR = 1
+        MINOR = 2
+        SYSTEM = 4
+
+    class MASUptimeSyncValidator(object, store.NoRollback):
+        """
+        Validates uptime using clock
+        """
+        __SOFT_LIM = 3.3
+        __HARD_LIM = 3720.0
+
+        __slots__ = (
+            "__log_obj",
+            "__last_proc_clock",
+            "__last_os_clock",
+            "__start_ts",
+            "__uptime",
+            "__desync",
+            "__desyncs",
+            "__min_desync_count",
+            "__last_min_desync",
+            "__th",
+        )
+
+        def __init__(self, log=None):
+            """
+            Constructor:
+
+            IN:
+                log - the log object to use for logging purposes
+            """
+            self.__log_obj = log
+
+            self.__last_proc_clock = 0.0
+            self.__last_os_clock = 0.0
+
+            self.__start_ts = 0.0
+            self.__uptime = 0.0
+
+            self.__desync = __Desync.NONE
+            self.__desyncs = []
+            self.__min_desync_count = 0
+            self.__last_min_desync = 0.0
+
+            self.__th = None
+
+        def __log(self, kind, *args, **kwargs):
+            """
+            Logs a message of severity kind
+
+            IN:
+                kind - the message kind
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            if self.__log_obj:
+                fn = getattr(self.__log_obj, kind, None)
+                if fn:
+                    fn(*args, **kwargs)
+
+        def __log_warning(self, *args, **kwargs):
+            """
+            Logs a warning
+
+            IN:
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            self.__log("warning", *args, **kwargs)
+
+        def __log_error(self, *args, **kwargs):
+            """
+            Logs an error
+
+            IN:
+                *args - args to pass to the log method
+                *kwargs - kwargs to pass to the log method
+            """
+            self.__log("error", *args, **kwargs)
+
+        def __start(self):
+            """
+            Starts the validator loop
+            """
+            self.__start_ts = time.time()
+            while True:
+                wait_time = float(random.randint(3, 7))
+                self.__last_proc_clock = time.clock()
+                self.__last_os_clock = time.time()
+
+                time.sleep(wait_time)
+
+                proc_change = time.clock() - self.__last_proc_clock
+                os_change = time.time() - self.__last_os_clock
+
+                proc_diff = proc_change - wait_time
+                abs_proc_diff = abs(proc_diff)
+                os_diff = os_change - wait_time
+                abs_os_diff = abs(os_diff)
+
+                self.__uptime += (proc_change if proc_change > 0.0 else wait_time)
+
+                # This is the worst that can happen
+                if (
+                    (abs_os_diff > self.__HARD_LIM and abs_proc_diff < self.__HARD_LIM)
+                    or (abs_os_diff > self.__SOFT_LIM and self.__min_desync_count >= 3)
+                ):
+                    self.__desync |= __Desync.MAJOR
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Major uptime desync. POSSIBLE CORRUPTION: {} | {}".format(proc_diff, os_diff))
+                    return
+
+                # This is probably okay and we can handle smol shifts
+                elif abs_os_diff > self.__SOFT_LIM:
+                    if abs_proc_diff <= self.__SOFT_LIM:
+                        if self.__uptime - self.__last_min_desync < 3600.0:
+                            self.__min_desync_count += 1
+                        self.__last_min_desync = self.__uptime
+
+                    self.__desync |= __Desync.MINOR
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Minor uptime desync. POSSIBLE CORRUPTION: {} | {}".format(proc_diff, os_diff))
+                    return
+
+                # This should never happen, reporting just in case, but probably would be terrible, too
+                elif abs_proc_diff > self.__SOFT_LIM:
+                    self.__desync |= __Desync.SYSTEM
+                    self.__desyncs.append(os_diff)
+                    self.__log_warning("Process desync. POSSIBLE SYSTEM ISSUES: {} | {}".format(proc_diff, os_diff))
+
+                # Reset the counter if it's safe
+                if (
+                    self.__min_desync_count
+                    and self.__uptime - self.__last_min_desync > 10800.0
+                ):
+                    self.__min_desync_count -= 1
+
+        def _get_desyncs(self):
+            """
+            Returns a list of all desync gaps
+
+            OUT:
+                list[float]
+            """
+            return list(self.__desyncs)
+
+        def _get_uptime(se_Desynclf):
+            """
+            Returns current update since launch
+            """
+            return self.__uptime
+
+        def __is_desync(self, kind):
+            """
+            Returns a boolean indicating if there was a desync
+
+            OUT:
+                bool
+            """
+            return (self.__desync & kind) != 0
+
+        def is_major_desync(self):
+            """
+            Checks if there was AT LEAST a major desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.MAJOR)
+
+        def is_minor_desync(self):
+            """
+            Checks if there was AT LEAST a minor desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.MINOR)
+
+        def is_system_desync(self):
+            """
+            Checks if there was AT LEAST a system desync
+
+            OUT:
+                bool
+            """
+            return self.__is_desync(__Desync.SYSTEM)
+
+        def start(self):
+            """
+            Starts the validator by invoking its logic in a thread
+            """
+            self.__th = th = threading.Thread(target=self.__start)
+            th.daemon = True
+            th.start()
+
+
+    def enable_tt_ff_mode():
+        """
+        Enables tt ff mode, hopefully to force people to never ever change clock
+        """
+        store.persistent._mas_pm_has_went_back_in_time = True
+        store._mas_shatterAffection(current_evlabel="[invalid time, possible data corruption]")
+        store.mas_noWayout()
+
+    def has_broken_spacetime_fabric():
+        """
+        Check if the player has fooked up with time
+        """
+        return (
+            store.mas_seenEvent("mas_broke_spacetime_fabric")
+            or store.mas_getEVL_shown_count("mas_broke_spacetime_fabric")
+        )
+
+    def generate_poem(line_len_range=(4, 31), lines_number_range=(17, 26)):
+        """
+        Generates a psedo random poem for tt ff
+        """
+        lines = [
+            store.glitchtext(random.randint(*line_len_range))
+            for i in range(random.randint(*lines_number_range))
+        ]
+        lines.append("\n ???\n")
+        return "\n ".join(lines)

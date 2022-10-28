@@ -356,3 +356,9 @@ init python:
         store.hkb_button.music_enabled = True
         store.songs.enabled = True
         mas_calDropOverlayShield()
+
+    def mas_noWayout():
+        """
+        No escape
+        """
+        config.keymap["console"] = []

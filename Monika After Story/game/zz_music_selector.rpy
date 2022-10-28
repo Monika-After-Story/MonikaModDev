@@ -34,6 +34,7 @@ init -1 python in songs:
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
     MONIKA_LULLABY = "Monika's Lullaby"
     NO_SONG = "No Music"
+    KAZOO_COVER = "Your Reality (Kazoo Cover)"
 
     # SONG FILEPATHS
     FP_PIANO_COVER = "mod_assets/bgm/runereality.ogg"
@@ -51,6 +52,7 @@ init -1 python in songs:
     FP_YR_EUROBEAT = "<loop 1.414>mod_assets/bgm/eurobeatreality.ogg"
     FP_MONIKA_LULLABY = "<loop 0.01>mod_assets/bgm/Monika's Lullaby.ogg"
     FP_THIRTY_MIN_OF_SILENCE = "<silence 1800.0>"
+    FP_KAZOO_COVER = "mod_assets/bgm/kazoo.ogg"
     FP_NO_SONG = None
 
 
@@ -177,6 +179,7 @@ init -1 python in songs:
             # Shoutout to TheAloofPotato for this wonderful eurobeat version!
             music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
 
+            # music_choices.append((KAZOO_COVER, FP_KAZOO_COVER))
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((MY_FEELS, FP_MY_FEELS))
             music_choices.append((MY_CONF, FP_MY_CONF))

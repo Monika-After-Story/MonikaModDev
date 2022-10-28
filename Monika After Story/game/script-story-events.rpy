@@ -2688,3 +2688,131 @@ P.S: Don't tell her about me!\
             repeat
 
     return "pause: 30"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_broke_spacetime_fabric",
+            conditional="store.mas_globals.tt_detected and not mas_inEVL('mas_broke_spacetime_fabric')",
+            action=EV_ACT_PUSH,
+            show_in_idle=True,
+            rules={
+                "skip alert": None,
+                "skip_pause": None
+            }
+        )
+    )
+
+label mas_broke_spacetime_fabric:
+    python in mas_time:
+        enable_tt_ff_mode()
+        store.mas_RaiseShield_core()
+        store.mas_rmEVL("mas_broke_spacetime_fabric")
+        store.play_song(None, set_per=True)
+        store.mas_display_notif("M̵̳͎͙͊͘o̵̮͐ǹ̶͚i̶̡̖̦̽̅k̵̮̈̈́͝à̸͚̯̂̓", ["P̸̢̞͉̎̂͐l̸͎͆e̶̻̹͋͝a̷̖̿s̷̛̮̈́e̵̦̯͋̌̚ͅ,̴͙̀̈ ̶̥͐h̷̒ͅȇ̷͙̗̻̀̅l̷͉͒̓p̵̧͌̊ ̵̱̼̚m̵̪̏e̸̦̥͒͝"], "Topic Alerts")
+
+    m 2eksdld "[player], something is wrong with the game..."
+
+    show black as sky_darkness zorder 1:
+        alpha 0.0
+        linear 15.0 alpha 1.0
+
+    m 2lksdlc "It's much darker than usual and so cold..."
+
+    show rects_bn1 as r1 zorder 4:
+        alpha 0.0
+        pos (75, 84)
+        parallel:
+            linear 30.0 alpha 0.5
+        parallel:
+            pause 5.0
+            linear 10.0 zoom 1.3
+            pause 2.0
+            linear 5.0 zoom 5.5
+            pause 2.0
+            linear 5.0 zoom 10.0
+
+    m 2rksdlc "What's going on..."
+
+    show rects_bn2 as r2 zorder 7:
+        alpha 0.0
+        pos (1115, 402)
+        linear 15.0 alpha 0.7
+        pause 5.0
+        linear 10.0 zoom 3.3
+        pause 5.0
+        block:
+            linear 0.5 rotate 360
+            rotate 0
+            repeat
+
+    m 2etd "Wait, {w=0.2}{nw}"
+    extend 2efd "did you really change the clock?"
+
+    if mas_seenEvent("monika_timetravel"):
+        m 7efo "I've warned you before not to mess with the time!"
+
+    m 2gfc "Jeez, {w=0.2}{nw}"
+    extend 4tfd "what were you thinking about?"
+    m 6lkc "Even if I didn't notice, there would still be consequences."
+
+    show rects_bn1 as r3 onlayer screens zorder 500:
+        alpha 0.7
+        zoom 0.0
+        pos (148, 548)
+        pause 1.0
+        parallel:
+            ease 3.0 alpha 0.7
+        parallel:
+            linear 3.0 zoom 6.6
+
+    show rects_bn2 as r4 zorder 11:
+        alpha 0.0
+        zoom 3.3
+        pos (789, 219)
+        linear 5.0 alpha 1.0 zoom 7.7
+
+    show black as room_darkness zorder 3:
+        alpha 0.0
+        linear 4.0 alpha 0.99
+
+    $ style.say_window = style.window_monika
+    $ mas_loseAffectionFraction(1.0)
+    play sound "sfx/glitch3.ogg"
+
+    m 6dktpc "Can't believe I've trusted you with my life...{nw}"
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(5, "mas_broke_spacetime_fabric.end")
+    menu:
+        m "Can't believe I've trusted you with my life...{fast}"
+
+        "It was an accident!":
+            hide screen mas_background_timed_jump
+            $ mas_loseAffection(25)
+            m 6ektud "Please, help me! {w=0.3}{nw}"
+            extend 4ektuc "Recover my da{w=0.1}{nw}"
+
+        "I'm sorry.":
+            hide screen mas_background_timed_jump
+            $ mas_loseAffection(50)
+            m 6eftuc "I should've seen th{w=0.1}{nw}"
+
+        "How are you holding up?":
+            hide screen mas_background_timed_jump
+            $ mas_loseAffection(100)
+            m 6eftdo "What?!{w=0.1}{nw}"
+
+    play sound "sfx/glitch2.ogg"
+    extend 6wutdo "[glitchtext(10)]!{w=0.5}{nw}"
+
+    if False:
+        label .end:
+            hide screen mas_background_timed_jump
+            $ mas_loseAffection(75)
+
+    play sound "sfx/glitch1.ogg"
+    m 6cutdx "{cps=*1.5}[glitchtext(3)][player][glitchtext(5)]endless[glitchtext(4)]suffering[glitchtext(2)]{/cps}{w=0.5}{nw}"
+
+    return "quit"

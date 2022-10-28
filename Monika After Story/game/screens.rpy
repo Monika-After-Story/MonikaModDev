@@ -3122,6 +3122,11 @@ style chibika_note_text:
     color "#000"
     outlines []
 
+# ??? text style
+style unknown_note_text is chibika_note_text:
+    font "gui/font/VerilySerifMono.otf"
+
+
 #Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
 screen submods():
     tag menu
