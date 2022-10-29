@@ -8,7 +8,7 @@ label sayori_name_scare:
     python:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
-        play_song(FP_SAYO_NARA, set_per=True)
+        mas_play_song(FP_SAYO_NARA, set_per=True)
         store.mas_globals.show_sayori_lightning = True
     return
 
@@ -61,7 +61,7 @@ label natsuki_name_scare(playing_okayev=False):
         $ renpy.music.play(adjusted_t5c, fadein=2.0, tight=True)
     else:
         stop music
-        $ play_song("<from 11>" + scary_t5c)
+        $ mas_play_song("<from 11>" + scary_t5c)
 
     # play with me scene setup
     scene black
@@ -122,7 +122,7 @@ label natsuki_name_scare(playing_okayev=False):
         $ renpy.music.play(adjusted_okayev, fadein=2.0, tight=True)
     else:
         stop music
-        $ play_song(store.songs.current_track)
+        $ mas_play_song(store.songs.current_track)
 
     return
 
@@ -240,7 +240,7 @@ label mas_ghost_monika:
 
     python:
         #plays music from ghost menu.
-        play_song(audio.ghostmenu)
+        mas_play_song(audio.ghostmenu)
 
     show noise zorder 11:
         alpha 0.5

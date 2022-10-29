@@ -1295,7 +1295,7 @@ label mas_o31_lingerie:
     #Cut the music for the blackout
     python:
         curr_song = songs.current_track
-        play_song(None)
+        mas_play_song(None)
         mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts")
 
     scene black
@@ -1351,9 +1351,9 @@ label mas_o31_lingerie_end:
 
         # restart song/sounds that were playing before event
         if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
-            play_song(curr_song, 1.0)
+            mas_play_song(curr_song, 1.0)
         else:
-            play_song(None, 1.0)
+            mas_play_song(None, 1.0)
 
     return "no_unlock"
 
@@ -3375,7 +3375,7 @@ label monika_aiwfc_song:
 
     call mas_timed_text_events_prep
 
-    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
+    $ mas_play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"

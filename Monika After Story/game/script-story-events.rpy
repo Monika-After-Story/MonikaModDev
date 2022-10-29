@@ -2611,8 +2611,8 @@ label mas_islands_reset:
 
             play sound "sfx/glitch3.ogg"
             python:
-                mas_island_event._resetProgression()
-                mas_island_event.startProgression()
+                mas_island_event._reset_progression()
+                mas_island_event.start_progression()
 
             m 3hua "And it's done!"
             m 1eua "Now I've got a fresh, new canvas."
