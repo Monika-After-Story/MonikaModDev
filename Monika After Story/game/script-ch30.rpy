@@ -1395,6 +1395,17 @@ init 999 python in mas_reset:
             store.mas_delete_all_chrs()
 
 
+    @ch30_reset(-560)
+    def backups():
+        """
+        Runs reset for backup code
+        """
+        if persistent._mas_is_backup:
+            store.MASEventList.push("mas_backup_restored")
+            mas_utils.mas_log.info("Detected a restored backup")
+            persistent._mas_is_backup = False
+
+
     def final():
         """
         Runs reset code that should run after everythign else

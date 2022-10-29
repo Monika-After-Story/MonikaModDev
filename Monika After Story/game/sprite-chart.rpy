@@ -3141,7 +3141,7 @@ init -3 python:
                 startup=False
             ):
             """
-            Changes both clothes and hair. also sets the persisten forced vars
+            Changes both clothes and hair. also sets the persistent forced vars
             to by_user, if its not None
 
             IN:
