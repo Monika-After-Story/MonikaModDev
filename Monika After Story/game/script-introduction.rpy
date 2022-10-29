@@ -10,7 +10,7 @@ label introduction:
     if persistent.monika_kill is None:
         $ persistent.monika_kill = False
 
-    $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
+    $ mas_play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
         m 6dfc "[player]..."

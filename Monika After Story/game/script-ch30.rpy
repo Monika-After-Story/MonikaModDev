@@ -1036,7 +1036,7 @@ init 999 python in mas_reset:
         ## accessory hotfixes
         # mainly to re add accessories that may have been removed for some reason
         # this is likely to occur in crashes / reloads
-        if persistent._mas_acs_enable_promisering:
+        if persistent._mas_acs_enable_promisering and not store.monika_chr.is_wearing_clothes_with_exprop("hide-ring"):
             # TODO: need to be able to add a different promise ring
             store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
 
@@ -1361,7 +1361,7 @@ init 999 python in mas_reset:
         Runs reset code for islands
         """
         # Did Monika make any progress on the islands?
-        mas_island_event.advanceProgression()
+        mas_island_event.advance_progression()
 
 
     @ch30_reset(-580)
@@ -1384,6 +1384,26 @@ init 999 python in mas_reset:
             ):
                 store.mas_after_bath_cleanup_change_outfit()
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
+
+    @ch30_reset(-560)
+    def chr_removal():
+        """
+        Remove .chr files in the characters folder
+        """
+        # Only cleanup after the intro has been seen
+        if renpy.seen_label("introduction"):
+            store.mas_delete_all_chrs()
+
+
+    @ch30_reset(-560)
+    def backups():
+        """
+        Runs reset for backup code
+        """
+        if persistent._mas_is_backup:
+            store.MASEventList.push("mas_backup_restored")
+            mas_utils.mas_log.info("Detected a restored backup")
+            persistent._mas_is_backup = False
 
 
     def final():
@@ -2398,7 +2418,7 @@ label ch30_day:
             persistent._mas_d25_started_upset = True
 
         # Once per day Monika does stuff on the islands
-        store.mas_island_event.advanceProgression()
+        store.mas_island_event.advance_progression()
 
         # Give the bonus
         mas_affection._withdraw_aff()

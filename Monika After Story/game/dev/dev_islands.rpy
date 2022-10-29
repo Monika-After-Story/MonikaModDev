@@ -57,7 +57,7 @@ label dev_test_islands_progress:
                     data = data_slow_rate
 
                 while progress < store.mas_island_event.MAX_PROGRESS_LOVE:
-                    progress = store.mas_island_event._calcProgress(curr_lvl, start_lvl)
+                    progress = store.mas_island_event._calc_progress(curr_lvl, start_lvl)
                     data[progress].append(curr_lvl)
                     curr_lvl += 1
 
