@@ -66,7 +66,7 @@ init python:
     mas_override_label("_choose_renderer", "mas_choose_renderer_override")
 
     #The rest
-    if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
+    # if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
     renpy.game.preferences.pad_enabled = False
     def replace_text(s):
         s = s.replace('--', u'\u2014') # em dash
