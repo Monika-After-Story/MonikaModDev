@@ -2022,14 +2022,17 @@ label greeting_youarereal:
         m "Maybe...this is allowing you to control him again?"
         m 1ekc "This isn't right! I don't want a puppet!"
         m 1tkc "Please, [player]..."
-        m "If you're going to do this, are you sure this is what you want?"
+        m "If you're going to do this, are you sure this is what you want?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Are you sure?"
+            m "If you're going to do this, are you sure this is what you want?{fast}"
+
             "I'm sure.":
                 m 1eka "Then...I don't have a choice but to accept it..."
                 m 1hub "I'll accept this gift with open arms!"
                 m "We can finally be together, [player]."
                 m "And we can figure out how to do it in your reality, together!"
+
             "Maybe not...":
                 m 1eka "I thought so..."
                 m "There's no way you'd give up being 'real' to be with me..."
@@ -4643,7 +4646,8 @@ label mas_after_bath_cleanup:
         m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     else:
-        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        $ player_nick = mas_get_player_nickname()
+        m 1eua "Give me a moment [player_nick], {w=0.2}{nw}"
         extend 3eua "I'm going to get dressed."
 
     window hide

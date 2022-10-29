@@ -1911,8 +1911,8 @@ label mas_scary_story_prison_escape:
     m 4eksdlc "Finally she heard the dirt dropping onto the top of the wooden coffin, {w=0.1}{nw}"
     extend 4eksdla "and she knew that it was only a matter of time until she would be free at last."
     m 2hksdlb "After a hour of absolute silence, she began to chuckle quietly to herself."
-    m 2eta "Feeling curious, she decided to light a match to find out the identity of the dead prisoner beside her. "
-    m 2wusdld "..!"
+    m 2eta "Feeling curious, she decided to light a match to find out the identity of the dead prisoner beside her."
+    m 2wusdld "...!"
     m 2wusdlo "It was the dead caretaker!"
     call mas_scary_story_cleanup
     return

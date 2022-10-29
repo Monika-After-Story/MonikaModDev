@@ -4839,7 +4839,7 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    m 5eka "Wouldn't you like that too, [player]?"
+    m 5eka "Wouldn't you like that too, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Wouldn't you like that too, [player]?{fast}"
@@ -6119,7 +6119,7 @@ label monika_japanese:
     m 1eub "It's interesting to think about what things would be like if your native language was different."
     m 1esa "Like, I can't even imagine what it would be like if I never knew English."
 
-    m "Do you know any languages other than English?{nw}s"
+    m "Do you know any languages other than English?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you know any languages other than English?{fast}"
@@ -6697,7 +6697,7 @@ label monika_sayhappybirthday:
                             m "Should I try again?{fast}"
                             "Yes.":
                                 $ take_counter += 1
-                                m 1eua "Okay"
+                                m 1eua "Okay."
                             "No.":
                                 m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                                 m 1hua "I'll try better next time for you."
@@ -6728,7 +6728,7 @@ label monika_sayhappybirthday:
                         m "Should I try again?{fast}"
                         "Yes.":
                             $ take_counter += 1
-                            m 1eua "Okay"
+                            m 1eua "Okay."
                         "No.":
                             m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                             m 1hua "I'll try better next time for you."

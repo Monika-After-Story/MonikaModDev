@@ -1255,6 +1255,7 @@ label mas_crashed_long_qs:
     # start off in the dark
     pause 5.0
     m "[player]?{w=0.3} Is that you?{nw}"
+    $ _history_list.pop()
     $ mas_disable_quit()
     $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
