@@ -374,8 +374,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.11.1
-label v0_12_11_1(version="v0_12_11_1"):
+# 0.12.12
+label v0_12_12(version="v0_12_12"):
     python hide:
         isld_p_data = persistent._mas_islands_unlocks
         if isld_p_data is not None:
