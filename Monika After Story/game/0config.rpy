@@ -17,7 +17,7 @@ python early:
     renpy.config.version = "0.12.12"
 
     #Triple space suffix to avoid potential issues with same names in window title
-    config.window_title = "Monika After Story   "
+    config.window_title = _("Monika After Story   ")
 
     ## Save directory ##############################################################
     ##

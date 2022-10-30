@@ -8265,13 +8265,13 @@ init -1 python in mas_randchat:
 
     ## slider map for displaying
     SLIDER_MAP_DISP = {
-        NEVER: "Never",
-        RARELY: "Rarely",
-        OCCASIONALLY: "Occasionally",
-        LESS_OFTEN: "Less Often",
-        NORMAL: "Normal",
-        OFTEN: "Often",
-        VERY_OFTEN: "Very Often"
+        NEVER: _("Never"),
+        RARELY: _("Rarely"),
+        OCCASIONALLY: _("Occasionally"),
+        LESS_OFTEN: _("Less Often"),
+        NORMAL: _("Normal"),
+        OFTEN: _("Often"),
+        VERY_OFTEN: _("Very Often")
     }
 
     # current frequency times
