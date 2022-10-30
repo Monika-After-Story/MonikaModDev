@@ -11,12 +11,12 @@ init -1 python:
         "Sensitive mode removes content that may be disturbing, offensive, "
         " or considered tasteless."
     )
-    layout.MAS_TT_UNSTABLE = (
+    layout.MAS_TT_UNSTABLE = _(
         "Unstable mode downloads updates from the experimental unstable "
         "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
     )
-    layout.MAS_TT_UNSTABLE_DISABLED = (
+    layout.MAS_TT_UNSTABLE_DISABLED = _(
         "Unstable cannot be disabled until the next stable release."
     )
     layout.MAS_TT_REPEAT = _(
@@ -31,12 +31,12 @@ init -1 python:
     layout.MAS_TT_G_NOTIF = _(
         "Enables notifications for the selected group."
     )
-    layout.MAS_TT_ACTV_WND = (
+    layout.MAS_TT_ACTV_WND = _(
         "Enabling this will allow Monika to see your active window "
         "and offer some comments based on what you're doing."
     )
 
-    _TXT_FINISHED_UPDATING = (
+    _TXT_FINISHED_UPDATING = _(
         "The updates have been installed. Please reopen Monika After Story.\n\n"
         "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
         "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
@@ -51,7 +51,7 @@ init -2 python in mas_layout:
     QUIT_YES = _("Please don't close the game on me!")
     QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
     QUIT = _("Leaving without saying goodbye, [player]?")
-    UNSTABLE = (
+    UNSTABLE = _(
         "WARNING: Enabling unstable mode will download updates from the "
         "experimental unstable branch. "
         "THIS IS NOT EASILY REVERSIBLE. "
@@ -570,7 +570,7 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt=_("Nevermind"), return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
@@ -900,7 +900,15 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Just Monika") action If(
+                persistent.playername,
+                true=Start(),
+                false=Show(
+                    screen="name_input",
+                    message=_("Please enter your name"),
+                    ok_action=Function(FinishEnterName)
+                )
+            )
 
         else:
 
@@ -915,7 +923,14 @@ screen navigation():
             textbutton _("End Replay") action EndReplay(confirm=True)
 
         elif not main_menu:
-            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+            textbutton _("Main Menu") action [
+                NullAction(),
+                Show(
+                    screen="dialog",
+                    message=_("No need to go back there.\nYou'll just end up back here so don't worry."),
+                    ok_action=Hide("dialog")
+                )
+            ]
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
@@ -1288,12 +1303,16 @@ screen load():
 init python:
     def FileActionMod(name, page=None, **kwargs):
         if renpy.current_screen().screen_name[0] == "save":
-            return Show(screen="dialog", message="There's no point in saving anymore.\nDon't worry, I'm not going anywhere.", ok_action=Hide("dialog"))
+            return Show(
+                screen="dialog",
+                message=_("There's no point in saving anymore.\nDon't worry, I'm not going anywhere."),
+                ok_action=Hide("dialog")
+            )
 
 
 screen file_slots(title):
 
-    default page_name_value = FilePageNameInputValue()
+    default page_name_value = FilePageNameInputValue(pattern=_("Page {}"))
 
     use game_menu(title):
 
@@ -1829,7 +1848,7 @@ style slider_pref_vbox is pref_vbox
 screen notif_settings():
     tag menu
 
-    use game_menu(("Alerts"), scroll="viewport"):
+    use game_menu(_("Alerts"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1872,7 +1891,7 @@ screen notif_settings():
 screen hot_keys():
     tag menu
 
-    use game_menu(("Hotkeys"), scroll="viewport"):
+    use game_menu(_("Hotkeys"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1923,7 +1942,7 @@ screen hot_keys():
                     text _("Shift-M")
 
     # there are lesser used hotkeys in Help that aren't needed here
-    text "Click 'Help' for the complete list.":
+    text _("Click 'Help' for the complete list."):
         xalign 1.0 yalign 0.0
         xoffset -10
         style "main_menu_version"
@@ -2189,7 +2208,7 @@ screen name_input(message, ok_action):
                 style "confirm_prompt"
                 xalign 0.5
 
-            input default "" value VariableInputValue("player") length 12 allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+            input default "" value VariableInputValue("player") length 12 allow letters_only
 
             hbox:
                 xalign 0.5
@@ -2999,8 +3018,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done",
-    default_button_prompt="Nevermind",
+    selected_button_prompt=_("Done"),
+    default_button_prompt=_("Nevermind"),
     return_all=False
 ):
     default buttons_data = {
@@ -3126,7 +3145,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods")):
+    use game_menu(_("Submods")):
 
         default tooltip = Tooltip("")
 
@@ -3151,10 +3170,10 @@ screen submods():
                             text_text_align 0.0
 
                         if submod.coauthors:
-                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
+                            $ authors = _("v{0}{{space=20}}by {1}, {2}").format(submod.version, submod.author, ", ".join(submod.coauthors))
 
                         else:
-                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+                            $ authors = _("v{0}{{space=20}}by {1}").format(submod.version, submod.author)
 
                         text "[authors]":
                             yanchor 0
