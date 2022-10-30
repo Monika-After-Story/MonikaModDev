@@ -89,14 +89,18 @@ init -1 python:
         NOTE_FONT = "mod_assets/font/m1_fixed.ttf"
 
         # Month names constant array
-        MONTH_NAMES = ["Unknown", "January", "February",
-            "March", "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"]
+        MONTH_NAMES = [
+            _("Unknown"), _("January"), _("February"),
+            _("March"), _("April"), _("May"), _("June"),
+            _("July"), _("August"), _("September"),
+            _("October"), _("November"), _("December")
+        ]
 
         # Day names constant array
-        DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-            "Friday", "Saturday"]
+        DAY_NAMES = [
+            _("Sunday"), _("Monday"), _("Tuesday"),
+            _("Wednesday"), _("Thursday"), _("Friday"), _("Saturday")
+        ]
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -300,7 +304,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # Change title depending on flag
             if select_date:
                 self.text_title = Text(
-                    "Select a Date",
+                    _("Select a Date"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
@@ -308,7 +312,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 )
             else:
                 self.text_title = Text(
-                    "Calendar",
+                    _("Calendar"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
