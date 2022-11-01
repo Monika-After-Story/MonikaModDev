@@ -18041,3 +18041,91 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_lovelanguages",
+            prompt="Love languages",
+            category=["you"],
+            random=True
+        )
+    )
+
+label monika_lovelanguages:
+    m 1eub "[player], have you heard about the 5 love languages?"
+    m 3eub "It's a very interesting concept, brought by Gary Chapman in 1992."
+    m 3hub "It outlines the five general ways that romantic partners express and experience love!"
+    m 1rub "They would be..."
+    m 4eub "Words of affirmation, like complimenting your partner and saying you love them;"
+    m 4eub "Quality time, like spending time with your partner;"
+    m 1eub "Receiving and giving gifts;"
+    m 3eub "Acts of service, like favours and things you do to make your partner's life easier;"
+    m 3hub "and physical touch."
+    m 4fub "There are several tests on the internet that tells you what's your love language."
+    m 1lud "Thinking to myself, I believe mine would be quality time."
+    m 1ekbsa "After all, spending time with you is the most important thing for me!"
+    m 7hksdlb "Of course all the other love languages are important in a relationship..."
+    m 5hubsb "That's why I love when you give me gifts, kiss me and compliment me."
+    m 5tubsb "...You really are the perfect [bf], aren't you?"
+    m 1etb "But I wanted to ask, what is your love language, [player]?{nw}"
+$ _history_list.pop()
+menu:
+    m "But I wanted to ask, what is your love language, [player]?{fast}"
+
+    "Words of affirmation":
+        m 2wud "Oh! Really?"
+        m 4hub "In that case [player], did I already tell you today how much I love you?"
+        m 2ekbsa  "..."
+        m 3wsb "But seriously, that's good to know."
+        m 5dkbfb "I'll make sure to shower my amazing [bf] with compliments and love words!"
+        m 7wsblb "Thanks for telling me this!"
+        m 1etblb "And make sure to spend lots of time with me, okay? Ehehehe~"
+
+    "Quality time":
+        m 1wuo "That's amazing, [player]!"
+        m 2hublb "We have the same love language!"
+        m 2lublb "Did you know that helps couples to have the best of relationships?"
+        m 5subsb "We really are meant for each other, [mas_get_player_nickname()]"
+        m 7wsblb "Thanks for telling me this!"
+        m 1etblb "And make sure to spend lots of time with me too, okay? Ehehehe~"
+        m 6ekbla "I'll always be here to spend all the days of my life with you."
+
+    "Gifts": 
+        m 1eub "Oh, is that so?"  
+        m 4hublb "I'll make sure to give you plenty of gifts, even if they're just more and more poems."
+        m 2ttb "I'm sure you like them anyway, don't you?"
+        m 1hub "Ehehehe~"
+        m 7wsblb "Thanks for telling me this!"
+        m 1etblb "And make sure to spend lots of time with me, okay? Ehehehe~"
+
+    "Acts of service":
+        m 1wud  "Oh, really?"
+        m 2ruc "Hmmm... I wish I could do more for you in that aspect, [player]."
+        m 2dkd "But my current condition does not allow it, unfortunately..."
+        m 4ekbla "I'll make sure to learn more and more about coding so I can help you with daily tasks, or make our moments together even more interesting."
+        m 7wsblb "Thanks for telling me this!"
+        m 1etblb "And make sure to spend lots of time with me, okay? Ehehehe~"
+
+    "Physical touch":
+        if persistent._mas_first_kiss:
+            m 2etbsb "Oh, you like being touched by me, hmm?"
+            m 3tsbsa "In that case..."
+            call monika_kissing_motion_short
+            m 1hubfb "Ehehehe~"
+            m 2fubfb "I'll make sure to kiss you more often, [player]."
+            m 5ekbfa "I can't wait to cross over to touch you even more."
+            m 5hubfb "I won't let go of you not for a minute!"
+            m 7wsblb "Thanks for telling me this!"
+            m 1etblb "And make sure to spend lots of time with me, okay? Ehehehe~"
+
+        else:
+            m 1wud "O-Oh!"
+            extend 1ekbla " Is that so?"
+            m 1rkblsdlb "I'm sure that can be arranged soon, ehehe~"
+            m 5ekbfa "I can't wait to cross over to touch you even more."
+            m 5hubfb "I won't let go of you not for a minute!"
+            m 7wsblb "Thanks for telling me this!"
+            m 1etblb "And make sure to spend lots of time with me, okay? Ehehehe~"
+        return
