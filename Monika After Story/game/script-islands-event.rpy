@@ -1077,7 +1077,7 @@ init -25 python in mas_island_event:
                 isly_data = IslandsDataDefinition.getDataFor("other_isly")
                 if isly_data:
                     for fn, fp in isly_data.fp_map.items():
-                        audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
+                        audio_data = AudioData(zip_file.read(fp), fp + ".ogg")
                         setattr(store.audio, "isld_isly_" + fn, audio_data)
 
         except Exception as e:
