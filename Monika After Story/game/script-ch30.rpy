@@ -940,7 +940,7 @@ init 999 python in mas_reset:
         else:
             store.mas_lockGame("nou")
 
-        for game_name, game_startlabel in game_unlock_db.iteritems():
+        for game_name, game_startlabel in game_unlock_db.items():
             # unlock if we've seen the label
             if store.mas_getEVL_shown_count(game_startlabel) > 0:
                 store.mas_unlockGame(game_name)
