@@ -2724,7 +2724,7 @@ init python:
         # This must be called first
         mas_affection._absence_decay_aff()
 
-        if persistent._mas_long_absence:
+        if persistent._mas_long_absence or persistent._mas_is_backup:
             return
 
         time_difference = persistent._mas_absence_time

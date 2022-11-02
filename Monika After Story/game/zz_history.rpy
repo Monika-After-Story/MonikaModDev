@@ -1119,6 +1119,7 @@ init -810 python:
 
             # actions / mas
             "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
+            "_mas_pm_snitched_on_chibika": "pm.actions.mas.snitched_on_chibika",
 
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
@@ -1160,6 +1161,7 @@ init -810 python:
             "_mas_pm_a_hater": "pm.likes.monika.not",
             "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
             "_mas_pm_cares_island_progress": "pm.likes.monika.island.progress",
+            # "_mas_pm_likes_islands": "pm.likes.monika.island.result",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",

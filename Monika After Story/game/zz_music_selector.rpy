@@ -1047,7 +1047,7 @@ init python:
             songs.setUserVolume(songs.music_volume, "music")
 
 
-    def play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
+    def mas_play_song(song, fadein=0.0, loop=True, set_per=False, fadeout=0.0, if_changed=False):
         """
         literally just plays a song onto the music channel
         Also sets the currentt track
@@ -1087,6 +1087,9 @@ init python:
         if set_per:
             persistent.current_track = song
 
+    @mas_utils.deprecated(use_instead="mas_play_song")
+    def play_song(*args, **kwargs):
+        mas_play_song(*args, **kwargs)
 
     def mas_startup_song():
         """
@@ -1095,7 +1098,7 @@ init python:
         Meant for usage in startup processes.
         """
         if persistent.current_track is not None:
-            play_song(persistent.current_track, if_changed=True)
+            mas_play_song(persistent.current_track, if_changed=True)
 
 
     def select_music():
@@ -1112,7 +1115,7 @@ init python:
 
             # workaround to handle new context
             if selected_track != songs.current_track:
-                play_song(selected_track, set_per=True)
+                mas_play_song(selected_track, set_per=True)
 
             # unwanted interactions are no longer unwanted
             if store.mas_globals.dlg_workflow:

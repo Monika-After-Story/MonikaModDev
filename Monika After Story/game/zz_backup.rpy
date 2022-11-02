@@ -17,6 +17,8 @@ default persistent._mas_incompat_per_rpy_files_found = False
 # only set if the user entered the incompat flow at all
 default persistent._mas_incompat_per_entered = False
 
+default persistent._mas_is_backup = False
+
 python early in mas_per_check:
     import __main__
     import renpy.compat.pickle as pickle
@@ -127,7 +129,7 @@ python early in mas_per_check:
         Checks if a persistent version can work with the current version
 
         IN:
-            per_version - the persisten version to check
+            per_version - the persistent version to check
             cur_version - the current version to check.
 
         RETURNS: True if the per version can work with the current version
@@ -531,10 +533,10 @@ init -900 python:
                 # we only accept persistents with the correct number scheme
                 filenumbers.append(num)
 
-        if len(filenumbers) > 0:
-            return sorted(filenumbers)
+        if filenumbers:
+            filenumbers.sort()
 
-        return []
+        return filenumbers
 
 
     def __mas__backupAndDelete(loaddir, org_fname, savedir=None, numnum=None):
@@ -564,7 +566,7 @@ init -900 python:
         RETURNS:
             tuple of the following format:
             [0]: numbernumber we just made
-            [1]: numbernumber we delted (None means no deltion)
+            [1]: numbernumber we deleted (None means no deletion)
         """
         if savedir is None:
             savedir = loaddir
@@ -592,7 +594,7 @@ init -900 python:
 
         # now do the iterative backup system
         numbernumber_del = None
-        if len(numberlist) <= 0:
+        if not numberlist:
             numbernumber = __mas__numnum.format(0)
 
         elif 99 in numberlist:
@@ -658,13 +660,23 @@ init -900 python:
         """
         try:
             p_savedir = os.path.normcase(renpy.config.savedir + "/")
-            p_name = "persistent"
-            numnum, numnum_del = __mas__backupAndDelete(p_savedir, p_name)
-            cal_name = "db.mcal"
-            __mas__backupAndDelete(p_savedir, cal_name, numnum=numnum)
+            is_pers_backup = persistent._mas_is_backup
+
+            try:
+                persistent._mas_is_backup = True
+                renpy.save_persistent()
+                numnum, numnum_del = __mas__backupAndDelete(p_savedir, "persistent")
+
+            finally:
+                persistent._mas_is_backup = is_pers_backup
+                renpy.save_persistent()
+
+            __mas__backupAndDelete(p_savedir, "db.mcal", numnum=numnum)
 
         except Exception as e:
-            store.mas_utils.mas_log.error(str(e))
+            store.mas_utils.mas_log.error(
+                "persistent/calendar data backup failed: {}".format(e)
+            )
 
 
     def __mas__memoryCleanup():

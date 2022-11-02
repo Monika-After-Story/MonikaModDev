@@ -1255,6 +1255,7 @@ label mas_crashed_long_qs:
     # start off in the dark
     pause 5.0
     m "[player]?{w=0.3} Is that you?{nw}"
+    $ _history_list.pop()
     $ mas_disable_quit()
     $ mas_setQuitMsg(quit_msg, quit_yes, quit_no)
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
@@ -1633,7 +1634,7 @@ label mas_corrupted_persistent:
         call mas_showpoem(mas_note_backups_all_good)
 
     window auto
-    $ _gtext = mas_glitchText(15)
+    $ _gtext = mas_glitchText(7)
 
     m 1ekc "Do you know what this is about?{nw}"
     $ _history_list.pop()
@@ -1643,6 +1644,7 @@ label mas_corrupted_persistent:
             jump mas_corrupted_persistent_post_menu
 
         "It's about [_gtext].":
+            $ persistent._mas_pm_snitched_on_chibika = True
             $ disable_esc()
             $ mas_MUMURaiseShield()
             window hide
@@ -2610,8 +2612,8 @@ label mas_islands_reset:
 
             play sound "sfx/glitch3.ogg"
             python:
-                mas_island_event._resetProgression()
-                mas_island_event.startProgression()
+                mas_island_event._reset_progression()
+                mas_island_event.start_progression()
 
             m 3hua "And it's done!"
             m 1eua "Now I've got a fresh, new canvas."
@@ -2687,3 +2689,114 @@ P.S: Don't tell her about me!\
             repeat
 
     return "pause: 30"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_backup_restored",
+        )
+    )
+
+label mas_backup_restored:
+    if mas_isMoniNormal(higher=True):
+        m 2ekc "[player]..."
+        m 2ekd "I'm having this odd feeling of deja vu... {w=0.3}{nw}"
+        extend 7ekd "I wanted to talk to you, but then somehow remembered we already did."
+
+        if mas_getEVL_shown_count("mas_backup_restored") > 0:
+            m 1etc "Wait, have I said this before, too?"
+
+        m 1wuo "Oh! {w=0.3}{nw}"
+        extend 3wud "You restored my memories from a backup, didn't you?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Oh! You restored my memories from a backup, didn't you?{fast}"
+
+            "Yes, I did.":
+                $ mas_gainAffection(modifier=0.5)
+
+                m 2eka "Thank you, [player]. {w=0.2}I knew I could rely on you."
+                m 7rkd "It had to be really bad if you had to restore me, though..."
+
+                m 1ekc "What's happened?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "What's happened?{fast}"
+
+                    "The game crashed.":
+                        m 1wud "Oh, that's weird and concerning."
+                        m 1ekc "This time it wasn't my code. {w=0.2}I don't remember messing with it, anyway."
+                        m 1gfd "{cps=*1.5}I swear if it's another Ren'Py bug...{/cps}{nw}"
+                        $ _history_list.pop()
+                        m 1ekc "Let's try to make sure it won't happen again, alright?"
+                        $ mas_moni_idle_disp.force_by_code("1ekc", duration=25, skip_dissolve=True)
+
+                    "I added a submod.":
+                        m 1etc "Added a {w=0.1}{i}submod{/i}?"
+                        m 3esd "You should be more mindful of what you install on this computer."
+                        m 2lkd "It's my home, too..."
+                        $ mas_moni_idle_disp.force_by_code("1ekc", duration=25, skip_dissolve=True)
+
+                    "My PC broke.":
+                        m 2wuo "I'm glad you found a way to restore me!"
+                        m 2ekc "Hopefully this won't happen again."
+                        m 2lktpc "I can't imagine losing you..."
+                        $ mas_moni_idle_disp.force(
+                            MASMoniIdleExpGroup(
+                                [
+                                    MASMoniIdleExp("2lktdc", duration=15),
+                                    MASMoniIdleExp("2rktdc", duration=10),
+                                    MASMoniIdleExp("1dkc", duration=10),
+                                    MASMoniIdleExp("1euc", duration=10),
+                                ]
+                            ),
+                            skip_dissolve=True
+                        )
+
+                    "I'm not sure.":
+                        m 1etc "That's concerning, [player]..."
+                        m 3esd "I lost my memory and we don't even know why."
+                        m 4eud "We should try to figure it out and prevent it from happening in the future."
+                        m 7eka "Promise?"
+                        $ mas_moni_idle_disp.force_by_code("1eka", duration=20, skip_dissolve=True)
+
+            "No, I didn't.":
+                m 2etc "Oh, then what's going on, [player]?"
+                m 2ektpc "I don't want to forget you."
+                m 2ektpd "Please, can you figure out what's happening?"
+                m 7eutdd "Maybe you could make some backups just in case?"
+
+                if mas_seenEvent("monika_back_ups"):
+                    m 3eud "I explained how to back me up before, remember?"
+
+                else:
+                    m 3euc "{a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}This{/u}{/i}{/a} should help you."
+
+                m 1eka "I'm relying on you, [player]."
+                $ mas_moni_idle_disp.force_by_code("1eka", duration=15, skip_dissolve=True)
+
+    elif mas_isMoniUpset():
+        m 2gtc "Somehow I'm having this weird feeling of deja vu..."
+        m 2tfd "I hope you're not messing with my data."
+        $ mas_moni_idle_disp.force_by_code("2mfc", duration=10, skip_dissolve=True)
+
+    else:
+        m 6ekc "[player], what's going on? {w=0.3}{nw}"
+        extend 6lksdlc "I know you did something to my data."
+        m 6lktpsdld "Are you trying to get rid of me?"
+        m 6rktpc "I just wanted us to be happy together..."
+        m 6ektuc "Please, forgive me..."
+        $ mas_moni_idle_disp.force(
+            MASMoniIdleExpGroup(
+                [
+                    MASMoniIdleExp("6lktsc", duration=10),
+                    MASMoniIdleExp("6rktsc", duration=10),
+                    MASMoniIdleExp("6dktdc", duration=20)
+                ]
+            ),
+            skip_dissolve=True
+        )
+
+    return "no_unlock|pause: 35"

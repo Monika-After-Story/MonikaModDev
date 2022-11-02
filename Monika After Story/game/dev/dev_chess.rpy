@@ -50,6 +50,7 @@ label dev_chess_moves_test:
             $ starting_fen = "8/8/8/8/3k4/8/3q4/K7 b - - 0 1"
 
     m "Casual rules?{nw}"
+    $ _history_list.pop()
     menu:
         m "Casual rules?{fast}"
 

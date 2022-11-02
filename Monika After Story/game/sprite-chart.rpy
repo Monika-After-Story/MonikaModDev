@@ -382,9 +382,14 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a clothing item is lingerie
 
-    # Value: ignored
-    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
     EXP_C_WET = "wet"
+    # v: ignored
+    # marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+
+    EXP_C_HIDE_RING = "hide-ring"
+    # v: ignored
+    # marks clothes that hides the promise ring
+    # TODO: migrate to an acs (glove) exp prop once implemented
 
     # --- default exprops ---
 
@@ -3123,7 +3128,7 @@ init -3 python:
                 startup=False
             ):
             """
-            Changes both clothes and hair. also sets the persisten forced vars
+            Changes both clothes and hair. also sets the persistent forced vars
             to by_user, if its not None
 
             IN:

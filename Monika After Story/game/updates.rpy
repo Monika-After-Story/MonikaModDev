@@ -380,10 +380,28 @@ label v0_13_0(version="v0_13_0"):
         pass
     return
 
-# 0.12.11.1
-label v0_12_11_1(version="v0_12_11_1"):
+# 0.12.12
+label v0_12_12(version="v0_12_12"):
     python hide:
-        pass
+        isld_p_data = persistent._mas_islands_unlocks
+        if isld_p_data is not None:
+            isld_p_data["other_shimeji"] = isld_p_data.pop("obj_shimeji", False)
+
+            for k in ("decal_ghost_", "decal_haunted_tree_"):
+                for i in "012":
+                    isld_p_data[k + i] = False
+
+            for k in (
+                "decal_bloodfall",
+                "decal_gravestones",
+                "decal_jack",
+                "decal_pumpkins",
+                "decal_skull",
+                "decal_webs"
+            ):
+                isld_p_data[k] = False
+
+            isld_p_data["overlay_vignette"] = True
 
     return
 
@@ -3244,11 +3262,11 @@ label mas_lupd_v0_12_3_1:
     python:
         # Unlock for people who has seen the event before
         if seen_event("mas_monika_islands"):
-            mas_island_event.startProgression()
+            mas_island_event.start_progression()
             # Technically it's impossible to have this as 0,
             # So it'll mean the islands were unlocked prior to the revamp
             persistent._mas_islands_start_lvl = 0
-            mas_island_event.advanceProgression()
+            mas_island_event.advance_progression()
 
     return
 

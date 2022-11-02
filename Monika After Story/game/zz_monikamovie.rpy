@@ -285,7 +285,7 @@ label mas_monikamovie:
         $ watchingMovie = False
         $ timer.seconds = 0
         $ MovieOverlayHideButtons()
-        $ play_song(store.songs.selected_track)
+        $ mas_play_song(store.songs.selected_track)
         show monika 1esa
         jump ch30_loop
 

@@ -12,7 +12,7 @@ label zz_mas_poemgame_actone:
     call mas_poem_minigame_actone(show_monika=True,trans_fast=True) from _call_mpg_one
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     call spaceroom(scene_change=True)
     m "Hi [player]!"
@@ -37,7 +37,7 @@ label zz_mas_poemgame_acttwo:
     call mas_poem_minigame_acttwo(show_monika=True,trans_fast=True) from _call_mpg_two
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     call spaceroom(scene_change=True)
     m "Hi [player]!"
@@ -61,7 +61,7 @@ label zz_mas_poemgame_actthr:
     call mas_poem_minigame_actthree(trans_fast=True) from _call_mpg_three
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     call spaceroom(scene_change=True)
 
@@ -79,7 +79,7 @@ label zz_mas_poemgame_actthrm:
     call mas_poem_minigame_actthree(trans_fast=True,hop_monika=True,gather_words=True) from _call_mpg_threem
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ _sel_words = testvalues
     call spaceroom(scene_change=True)
@@ -112,7 +112,7 @@ label zz_mas_poemgame_actonept:
     call mas_poem_minigame_actone(trans_fast=True,gather_words=True) from _call_mpg_onept
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ _sel_words = testvalues.pop("words")
     call spaceroom(scene_change=True)
@@ -167,7 +167,7 @@ label zz_mas_poemgame_dg:
 
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ _sel_words = testvalues
     call spaceroom(scene_change=True)
@@ -220,7 +220,7 @@ label zz_mas_poemgame_bgm:
 
     $ testvalues = _return
     $ HKBShowButtons()
-    # $ play_song(store.songs.current_track)
+    # $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ _winner = testvalues[0]
     $ _pts = testvalues[1]
@@ -273,7 +273,7 @@ label zz_mas_poemgame_oneg:
 
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     call spaceroom(scene_change=True)
     m "Hi [player]!"
@@ -318,7 +318,7 @@ label zz_mas_poemgame_oc:
 
     $ testvalues = _return
     $ HKBShowButtons()
-    $ play_song(store.songs.current_track)
+    $ mas_play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ _sel_words = testvalues.pop("words")
     call spaceroom(scene_change=True)
