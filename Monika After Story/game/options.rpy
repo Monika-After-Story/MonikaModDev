@@ -124,16 +124,16 @@ init python:
     ##This tells Renpy to build an updater file
     build.include_update = True
 
-    ## This is the archive of data for your mod
-    #build.archive(build.name, "all")
+    ## Define the archives to use
+    build.archive("scripts", "all")
 
     ## These files will be included in the package
     # Add mod assets
     build.classify("game/mod_assets/**", "all")
     build.classify("game/gui/**", "all")
     # Add scripts in the game folder
-    # build.classify("game/*.rpy", "all") # Optional, includes source
-    build.classify("game/*.rpyc", "all")
+    # build.classify("game/*.rpy", "scripts")# Optional, includes source
+    build.classify("game/*.rpyc", "scripts")
     # Add python packages
     build.classify("game/python-packages/**", "all")
     # Add README
@@ -151,7 +151,6 @@ init python:
     build.classify("log/**", None)
     build.classify("*.log", None)
 
-    build.classify("game/mod_assets/api_keys.json", None)
     build.classify("**.pem", None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
