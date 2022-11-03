@@ -494,8 +494,22 @@ init -980 python in mas_api_keys:
             # null key is not counted
             return
 
-        # clear newlines
-        new_key = clean_key(new_key)
+        try:
+            # clear newlines
+            new_key = clean_key(new_key.decode("utf-8"))
+
+        except UnicodeDecodeError as e:
+            # log the error
+            store.mas_utils.mas_log.error("Failed to decode API key: {}".format(e))
+
+            # show message box
+            store.renpy.show_screen(
+                "dialog",
+                message="Failed to decode API key.",
+                ok_action=store.Hide("dialog")
+            )
+            # can't get a clean key, return here
+            return
 
         # on change
         onchange_rv = _run_on_change(feature, new_key)
