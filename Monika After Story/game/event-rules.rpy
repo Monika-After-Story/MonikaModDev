@@ -16,7 +16,8 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
-    EV_RULE_PROBABILITY = "rule_probability"
+    EV_RULE_WEIGHT = "rule_weight"
+    EV_RULE_PROBABILITY = EV_RULE_WEIGHT#"rule_probability"
     EV_RULE_RP_TIMEDELTA = "rp_timedelta"
 
 
@@ -761,63 +762,78 @@ init -1 python:
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
 
-    class MASProbabilityRule(object):
+    class MASWeightRule(object):
         """
         Static class used to create probability rules.
 
-        Probability rules are just integers that determine the probability of something being selected.
+        Probability rules are just integers that determine the weight of something being selected.
 
-
-        Probabilities must be greater than 1
+        Weights must be greater than 1
 
         This value is designed to be used with mas_utils.weightedChoice, and acts essentially akin to duplicating
         the choice `probability` times in the list
         """
-        DEF_PROBABILITY = 1
+        DEF_WEIGHT = 1
 
-        @staticmethod
-        def create_rule(probability, ev=None):
+        @classmethod
+        def create_rule(cls, weight, ev=None):
             """
             IN:
-                probability - the probability to set.
-                    If None is passed in, we use the default probability value.
-                    NOTE: If it is below 1 probability, is is set to 1
+                weight - the weight to set.
+                    If None is passed in, we use the default weight value.
+                    NOTE: If it is below 1 weight, is is set to 1
 
                 ev - Event to add this rule to. This will replace existing
                     rules of the same key.
                     (Default: None)
             """
-            if probability is None:
-                probability = MASProbabilityRule.DEF_PROBABILITY
+            if weight is None:
+                weight = cls.DEF_WEIGHT
 
-            elif probability < 1:
-                probability = 1
+            elif weight < 1:
+                weight = 1
 
-            if not store.mas_ev_data_ver._verify_int(probability, allow_none=False):
+            if not store.mas_ev_data_ver._verify_int(weight, allow_none=False):
                 raise Exception(
-                    "'{0}' is not a valid in probability".format(probability)
+                    "'{0}' is not a valid weight".format(weight)
                 )
 
-            rule = {EV_RULE_PROBABILITY: probability}
+            rule = {EV_RULE_WEIGHT: weight}
 
             if ev:
                 ev.rules.update(rule)
 
             return rule
 
-
-        @staticmethod
-        def get_probability(ev):
+        @classmethod
+        def get_weight(cls, ev):
             """
-            Gets the probability of the given event.
+            Gets the weight of the given event.
 
             IN:
-                ev - event to get probability of
+                ev - event to get weight of
 
             OUT:
-                The probability of the given event, or def if no ProbilityRule is found
+                The weight of the given event, or def if no ProbilityRule is found
             """
-            return ev.rules.get(EV_RULE_PROBABILITY, MASProbabilityRule.DEF_PROBABILITY)
+            return ev.rules.get(EV_RULE_WEIGHT, cls.DEF_WEIGHT)
+
+
+    @store.mas_utils.deprecated(use_instead="MASWeightRule")
+    class MASProbabilityRule(object):
+        """
+        Deprecated version, use MASWeightRule
+        """
+        @staticmethod
+        @store.mas_utils.deprecated(use_instead="MASWeightRule.create_rule")
+        def create_rule(*args, **kwargs):
+            return MASWeightRule.create_rule(*args, **kwargs)
+
+        @staticmethod
+        @store.mas_utils.deprecated(use_instead="MASWeightRule.get_weight")
+        def get_probability(*args, **kwargs):
+            return MASWeightRule.get_weight(*args, **kwargs)
+
 
     class MASTimedeltaRepeatRule(object):
         """
