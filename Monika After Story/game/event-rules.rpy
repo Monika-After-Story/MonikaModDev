@@ -5,6 +5,8 @@
 
 init -1 python:
     import datetime
+    import random
+
     import store.mas_utils as mas_utils
 
     # special constants for rule type identifiers for the rule dict on Event class
@@ -375,7 +377,7 @@ init -1 python:
         Each rule is defined by a skip_visual boolean and a special random chance.
         skip_visual is used to store if the greeting should be executed without
         executing the normal visual setup, this is useful for special greetings
-        random_chance is used to define the 1 in random_chance chance that this
+        random_chance is used to define the chance that this
         greeting can be called
         """
 
@@ -383,7 +385,7 @@ init -1 python:
         def create_rule(
                 ev=None,
                 skip_visual=False,
-                random_chance=0,
+                random_chance=None,
                 setup_label=None,
                 override_type=False,
                 forced_exp=None
@@ -395,10 +397,10 @@ init -1 python:
                 skip_visual - A boolean stating wheter we should skip visual
                     initialization
                     (Default: False)
-                random_chance - An int used to determine 1 in random_chance
+                random_chance - A float used to determine
                     special chance for this greeting to appear
-                    If 0, we ignore this property
-                    (Default: 0)
+                    If None, we ignore this property
+                    (Default: None)
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
@@ -409,17 +411,38 @@ init -1 python:
                     for the first spaceroom render
                     (Default: None)
 
-            RETURNS:
+            OUT:
                 a dict containing the specified rules
-            """
 
+            RAISES:
+                ValueError - on invalid input
+            """
             # random_chance can't be negative
-            if random_chance < 0:
-                raise Exception("random_chance can't be negative")
+            if random_chance is not None:
+                if isinstance(random_chance, float):
+                    if not 0.0 <= random_chance <= 1.0:
+                        raise ValueError(
+                            "Invalid value for random_chance: {}".format(random_chance)
+                        )
+
+                else:
+                    mas_utils.report_deprecation(
+                        "Using 'int' for 'random_chance' in 'MASGreetingRule'",
+                        use_instead="float",
+                        use_instead_msg_fmt="Use '{use_instead}' in range [0.0, 1.0] instead."
+                    )
+                    if random_chance < 0:
+                        raise ValueError("random_chance can't be negative")
+
+                    elif random_chance == 0:
+                        random_chance = None
+
+                    else:
+                        random_chance = 1.0 / float(random_chance)
 
             # setup_label must exist
             if setup_label is not None and not renpy.has_label(setup_label):
-                raise Exception("'{0}' does not exist.".format(setup_label))
+                raise ValueError("'{0}' does not exist.".format(setup_label))
 
             # return the tuple inside a dict
             rule = {
@@ -461,16 +484,16 @@ init -1 python:
             # unpack the tuple for easy access
             random_chance = rule[1]
 
-            if random_chance == 0:
-                # 0 chance, return default
+            if random_chance is None:
+                # No rng, return default
                 return defval
 
-            # check if random_chance is less than 0 return False
-            if random_chance <= 0:
+            # Check if random_chance is invalid
+            if not 0.0 <= random_chance <= 1.0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
-            return renpy.random.randint(1,random_chance) == 1
+            return random.random() <= random_chance
 
         @staticmethod
         def should_override_type(ev=None, rule=None):
