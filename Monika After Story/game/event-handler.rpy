@@ -2406,7 +2406,7 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
-    @store.mas_utils.deprecated("mas_hideEVL", should_raise=True)
+    @store.mas_utils.deprecated(use_instead="mas_hideEVL", should_raise=True)
     def hideEventLabel(
             eventlabel,
             lock=False,
@@ -2434,7 +2434,7 @@ init python:
         #       (DEfault: evhand.event_database)
         mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
-    @store.mas_utils.deprecated("mas_hideEvent")
+    @store.mas_utils.deprecated(use_instead="mas_hideEvent")
     def hideEvent(
             event,
             lock=False,
@@ -2582,7 +2582,7 @@ init python:
         """
         mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
 
-    @store.mas_utils.deprecated("mas_lockEvent", should_raise=True)
+    @store.mas_utils.deprecated(use_instead="mas_lockEvent", should_raise=True)
     def lockEvent(ev):
         """
         NOTE: DEPRECATED
@@ -2593,7 +2593,7 @@ init python:
         """
         mas_lockEvent(ev)
 
-    @store.mas_utils.deprecated("mas_lockEventLabel", should_raise=True)
+    @store.mas_utils.deprecated(use_instead="mas_lockEventLabel", should_raise=True)
     def lockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         NOTE: DEPRECATED
@@ -2627,7 +2627,7 @@ init python:
         evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
-    @store.mas_utils.deprecated("MASEventList.push")
+    @store.mas_utils.deprecated(use_instead="MASEventList.push")
     def pushEvent(event_label, skipeval=False, notify=False):
         """
         This pushes high priority or time sensitive events onto the top of
@@ -2648,7 +2648,7 @@ init python:
         MASEventList.push(event_label, skipeval, notify)
 
 
-    @store.mas_utils.deprecated("MASEventList.queue")
+    @store.mas_utils.deprecated(use_instead="MASEventList.queue")
     def queueEvent(event_label, notify=False):
         """
         This adds low priority or order-sensitive events onto the bottom of
@@ -2667,7 +2667,7 @@ init python:
         MASEventList.queue(event_label, notify)
 
 
-    @store.mas_utils.deprecated("mas_unlockEvent", should_raise=True)
+    @store.mas_utils.deprecated(use_instead="mas_unlockEvent", should_raise=True)
     def unlockEvent(ev):
         """
         NOTE: DEPRECATED
@@ -2678,7 +2678,7 @@ init python:
         """
         mas_unlockEvent(ev)
 
-    @store.mas_utils.deprecated("mas_unlockEventLabel")
+    @store.mas_utils.deprecated(use_instead="mas_unlockEventLabel")
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         NOTE: DEPRECATED
@@ -2761,7 +2761,7 @@ init python:
         return evhand._isPresent(ev)
 
 
-    @store.mas_utils.deprecated("MASEventList.pop", should_raise=True)
+    @store.mas_utils.deprecated(use_instead="MASEventList.pop", should_raise=True)
     def popEvent(remove=True):
         """
         DO NOT USE.

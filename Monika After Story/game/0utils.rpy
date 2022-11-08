@@ -462,7 +462,7 @@ python early in mas_utils:
             print("[WARNING]: " + msg, file=sys.stderr)
             mas_log.warning(msg)
 
-    def deprecated(*report_args, **report_kws):
+    def deprecated(**report_kws):
         """
         Decorator that marks functions and classes as deprecated
 
@@ -499,7 +499,7 @@ python early in mas_utils:
                 """
                 Wrapper around the deprecated function/class
                 """
-                report_deprecation(callable_, *report_args, **report_kws)
+                report_deprecation(callable_, **report_kws)
 
                 return callable_(*args, **kwargs)
 
