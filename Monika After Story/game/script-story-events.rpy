@@ -990,7 +990,7 @@ label mas_unlock_hangman:
         m 1eksdla "I thought that you might be getting bored with NOU..."
 
     else:
-        m 1lksdla "Since haven't seemed too interested in playing with me yet, I thought maybe you just like different types of games..."
+        m 1lksdla "Since you haven't seemed to be too interested in playing with me yet, I thought maybe you just like different types of games..."
 
     m 1hua "Soooo~"
     m 1hub "I made Hangman!"
