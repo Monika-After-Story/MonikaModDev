@@ -5379,10 +5379,22 @@ init -100 python in mas_utils:
 
 
     def sanitize_filename(s):
-        sane = s
+        """
+        Sanitizes a filename by removing characters that might have special
+        meaning on certain platforms.
+
+        IN:
+            s:
+                String to sanitize.
+
+        OUT:
+            str:
+                Sanitized string, stripped of special characters.
+        """
+
         for c in '<>:"/\\|?*':
-            sane = sane.replace(c, "")
-        return sane
+            s = s.replace(c, "")
+        return s
 
 
 init -985 python:
