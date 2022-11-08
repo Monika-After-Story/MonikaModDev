@@ -433,11 +433,9 @@ python early in mas_utils:
             deprecated = deprecated.capitalize()
 
         else:
-            module = getattr(deprecated, "__module__", None)
+            module = getattr(deprecated, "__module__", "")
             if module:
                 module += "."
-            else:
-                module = ""
 
             name = getattr(deprecated, "__name__", None)
             if not name:
