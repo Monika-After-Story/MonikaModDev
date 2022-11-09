@@ -370,7 +370,7 @@ python early in mas_utils:
 
     from store import mas_logging
 
-    
+
     def init_mas_log():
         """
         Initializes the MAS log, or gets it if its already init.
@@ -490,7 +490,7 @@ python early in mas_utils:
         mas_log.debug("".join(traceback.format_stack()))
 
 
-    class IsolatedFlexProp(object):
+    class IsolatedFlexProp(python_object):
         """
         class that supports flexible attributes.
         all attributes that are set are stored in a
@@ -747,4 +747,3 @@ python early in mas_utils:
             return int(value)
         except:
             return default
-
