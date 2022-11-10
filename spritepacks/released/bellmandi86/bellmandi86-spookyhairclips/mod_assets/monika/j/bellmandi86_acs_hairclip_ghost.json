@@ -26,5 +26,6 @@
             "If there's something strange in your neighborhood..."
         ]
     },
-    "giftname": "ghosthairclip"
+    "giftname": "ghosthairclip",
+    "use_folders": true
 }
