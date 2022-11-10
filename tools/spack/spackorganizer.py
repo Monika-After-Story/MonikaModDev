@@ -88,11 +88,11 @@ def conv(
     for spack_conv, json_file in conv_data:
 
         if json_file:
-            json_desc = "Updating JSON: {0}".format(os.path.split(json_file)[1])
+            json_desc = os.path.split(json_file)[1]
         else:
-            json_desc = "Found no JSON to update"
+            json_desc = "No JSON to update"
 
-        print("\t{0} --> {1}".format(spack_conv.src_spack.img_sit, json_desc))
+        print("\t{0} | JSON: {1}".format(spack_conv.src_spack.img_sit, json_desc))
 
     print()
     print("Using git mv to move: {0}".format(use_git))
