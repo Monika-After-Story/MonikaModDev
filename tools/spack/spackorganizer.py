@@ -105,7 +105,7 @@ def conv(
     # apply conversion
     print("Converting...")
     for spack_conv, json_file in conv_data:
-        print("\t{0}...".format(spack.img_sit), end="")
+        print("\t{0}...".format(spack_conv.src_spack.img_sit), end="")
         SpackWriter.apply_conversion(
             loaded_spacks.ma_folder_path,
             spack_conv,
