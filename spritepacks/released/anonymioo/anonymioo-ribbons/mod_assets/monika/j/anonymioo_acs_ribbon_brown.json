@@ -18,5 +18,6 @@
         "thumb": "anonymioo_ribbon_brown",
         "group": "ribbon"
     },
-    "giftname": "brownribbon"
+    "giftname": "brownribbon",
+    "use_folders": true
 }

@@ -25,5 +25,6 @@
             "A classic with a twist!"
         ]
     },
-    "giftname": "gradientribbon"
+    "giftname": "gradientribbon",
+    "use_folders": true
 }

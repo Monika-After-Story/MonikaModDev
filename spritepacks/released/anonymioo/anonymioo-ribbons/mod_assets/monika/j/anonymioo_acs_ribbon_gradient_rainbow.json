@@ -26,5 +26,6 @@
             "Such lively colors!"
         ]
     },
-    "giftname": "rainbowgradientribbon"
+    "giftname": "rainbowgradientribbon",
+    "use_folders": true
 }
