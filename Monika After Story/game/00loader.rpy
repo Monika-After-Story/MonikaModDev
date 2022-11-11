@@ -102,35 +102,51 @@ python early in _mas_root:
     import store
 
 
-    __DM_KEY = "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT"
-    __DM_VALUE = "Yes, I will regret this!"
+    __ENV_KEY = "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT_OR_SACRIFICE_CHILDREN"
+    __DM_ENV_VALUE = "Yes, I will regret this! Enable DM!"
+    __CNSL_ENV_VALUE = "Yes, I will regret this! Enable CNSL!"
 
-    __dm_cache: bool|None = None
 
+    def __get_env_var(key: str) -> str|None:
+        """
+        Gets value  of an env variable
+        """
+        return os.environ.get(key, None)
 
     def is_dm_enabled() -> bool:
         """
-        Checks if dm is enabled, caches the result
+        Checks if dm is enabled
         """
-        global __dm_cache
-        if __dm_cache is None:
-            __dm_cache = os.environ.get(__DM_KEY, None) == __DM_VALUE
+        return __get_env_var(__ENV_KEY) == __DM_ENV_VALUE
 
-        return __dm_cache
+    def _is_cnsl_enabled() -> bool:
+        """
+        Checks if cnsl is enabled
+        """
+        return __get_env_var(__ENV_KEY) == __CNSL_ENV_VALUE
+
+    def __set_dev_pm_var():
+        store.persistent._mas_pm_used_dm = True
 
     def __dm_enabled_cb():
         """
         Callback on dm enabling
         """
-        store.persistent._mas_pm_used_dm = True
         renpy.config.developer = True
+        renpy.config.console = True
+        __set_dev_pm_var()
 
     def __dm_disabled_cb():
         """
         Callback on dm disabling
         """
         renpy.config.developer = False
-        renpy.config.console = False
+        if _is_cnsl_enabled():
+            renpy.config.console = True
+            __set_dev_pm_var()
+
+        else:
+            renpy.config.console = False
 
     def handle_dm() -> bool:
         if is_dm_enabled():
