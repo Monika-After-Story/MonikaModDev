@@ -1,8 +1,5 @@
 define persistent.demo = False
 
-define config.developer = False
-# define persistent.steam = "steamapps" in config.basedir.lower()
-
 
 python early:
     # We want these to be available globally, please don't remove
