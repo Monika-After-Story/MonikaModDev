@@ -3674,7 +3674,7 @@ init 5 python:
 label monika_favbook:
     m 1euc "My favorite book? There's a lot of books I like."
     m 3eua "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
-    m 2lksdla "Maybe, {i}The Metamorphosis{/i}? It's probably a bit too depressing to call it my favorite."
+    m 2lksdla "Maybe, {i}The Metamorphosis{/i} by Franz Kafka? It's probably a bit too depressing to call it my favorite."
     m 3sub "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
     m 1hub "I think you'd really love reading it!"
     return
