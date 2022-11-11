@@ -10314,6 +10314,10 @@ init 5 python:
 
 label monika_metamorphosis:
     m 1eua "Hey [player], have you ever read {i}The Metamorphosis{/i}?"
+
+    if renpy.seen_label('monika_pygmalion'):
+        m "I'm talking about a novel, not a collection of poems."
+
     m 4eub "It's a psychological novella that narrates the story of Gregor Samsa, who one morning wakes up and finds himself transformed into a huge insect!"
     m 4euc "The plot revolves around his daily life as he tries to get used to his new body."
     m 7eua "What's interesting about the story is that it places a lot of emphasis on the absurd or irrational."
@@ -11882,6 +11886,10 @@ init 5 python:
 
 label monika_pygmalion:
     m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
+
+    if renpy.seen_label('monika_metamorphosis'):
+        m "I'm not talking about the novel I mentioned.{w=0.5} I'm talking about a collection of poems, they simply happen to have same name."
+
     m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
     m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
