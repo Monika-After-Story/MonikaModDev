@@ -14,7 +14,7 @@ init -1000 python in mas_submod_utils:
     import re
     import os
     import json
-    # import sys
+    import sys
     # import traceback
     from urllib.parse import urlparse
     from typing import Literal
@@ -162,7 +162,7 @@ init -1000 python in mas_submod_utils:
                 )
             )
 
-    def _load_module(name: str):
+    def _include_module(name: str):
         """
         Loads the module at the given path
 
@@ -183,9 +183,9 @@ init -1000 python in mas_submod_utils:
         # Log
         _log_inited_submods()
         # Verify installed dependencies
-        Submod._runDependencyCheck()
+        Submod._checkDependencies()
         # Finally load submods
-        Submod._runLoadingLogic()
+        Submod._loadModules()
 
 
     class SubmodError(Exception):
@@ -511,13 +511,13 @@ init -1000 python in mas_submod_utils:
             return True
 
         @classmethod
-        def _runDependencyCheck(cls):
+        def _checkDependencies(cls):
             """
             Checks to see if all the submods dependencies are met
             """
             for submod in cls._getSubmods():
                 try:
-                    submod._checkDependencies()
+                    submod.__checkDependencies()
 
                 except SubmodError as e:
                     submod_log.error(e)
@@ -539,7 +539,7 @@ init -1000 python in mas_submod_utils:
                 # Let's remove this submod as it cannot be loaded
                 cls._submod_map.pop(submod.name, None)
 
-        def _checkDependencies(self):
+        def __checkDependencies(self):
             """
             Checks to see if the dependencies for this submod are met
 
@@ -585,27 +585,39 @@ init -1000 python in mas_submod_utils:
                     )
 
         @classmethod
-        def _runLoadingLogic(cls):
+        def _loadModules(cls):
             """
+            SHOULD NEVER BE CALLED DIRECTLY
+
             Loads modules for every submod
             """
             submods = cls._getSubmods()
             submods.sort(key=lambda s: s.priority)
 
             for submod in submods:
-                submod._loadModules()
+                submod.__loadModules()
 
-        def _loadModules(self):
+        def __loadModules(self):
             """
-            Loads modules of this submod, should never be called directly
+            SHOULD NEVER BE CALLED DIRECTLY
+
+            Loads modules of this submod and adds local py-packs
+                to the global scope to be importable
 
             RAISES:
                 SubmodError - on module failure
             """
+            pypacks = os.path.join(
+                config.gamedir, self.directory, "python-packages"
+            )
+            if os.path.exists(pypacks):
+                # renpy.loader.add_python_directory(pypacks)
+                sys.path.append(pypacks)
+
             for mod_name in self.modules:
                 full_mod_name = f"{self.directory}/{mod_name}"
                 try:
-                    _load_module(full_mod_name)
+                    _include_module(full_mod_name)
 
                 except Exception as e:
                     # We can't abort loading at this point
