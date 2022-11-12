@@ -263,7 +263,7 @@ label warningscreen:
 
 label after_load:
     $ config.allow_skipping = False
-    $ _dismiss_pause = config.developer
+    $ _dismiss_pause = store._mas_root.is_dm_enabled()
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
     #Check if the save has been tampered with

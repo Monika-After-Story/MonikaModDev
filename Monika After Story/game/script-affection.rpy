@@ -852,7 +852,7 @@ init -900 python in mas_affection:
         __set_pers_data(__encode_data(*curr_data))
 
     def _set_aff(value, reason):
-        if store.config.developer:
+        if store._mas_root.is_dm_enabled():
             __set_aff(value, reason)
 
     def save_aff():
@@ -2731,7 +2731,7 @@ init python:
         # we skip this for devs since we sometimes use older
         # persistents and only apply after 1 week
         if (
-            not config.developer
+            not store._mas_root.is_dm_enabled()
             and not store.mas_globals.returned_home_this_sesh
             and time_difference >= datetime.timedelta(weeks=1)
         ):

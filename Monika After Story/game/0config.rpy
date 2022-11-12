@@ -132,9 +132,9 @@ init -1200 python:
     renpy.config.autosave_slots = 0
     renpy.config.layers = ["master", "transient", "minigames", "screens", "overlay", "front"]
     renpy.config.image_cache_size = 64
-    renpy.config.debug_image_cache = config.developer
+    renpy.config.debug_image_cache = False
     renpy.config.predict_statements = 5
-    renpy.config.rollback_enabled = config.developer
+    renpy.config.rollback_enabled = False
     renpy.config.menu_clear_layers = ["front"]
     renpy.config.gl_test_image = "white"
 

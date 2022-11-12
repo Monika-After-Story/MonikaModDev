@@ -13,7 +13,7 @@ label start:
     $ chapter = 0
 
     #If they quit during a pause, we have to set _dismiss_pause to false again (I hate this hack)
-    $ _dismiss_pause = config.developer
+    $ _dismiss_pause = store._mas_root.is_dm_enabled()
 
     # Each of the girls' names before the MC learns their name throughout ch0.
     $ s_name = "Sayori"

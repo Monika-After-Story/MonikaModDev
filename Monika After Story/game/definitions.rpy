@@ -7497,7 +7497,7 @@ define n = DynamicCharacter('n_name', image='natsuki', what_prefix='"', what_suf
 define y = DynamicCharacter('y_name', image='yuri', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 define ny = Character('Nat & Yuri', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
-define _dismiss_pause = config.developer
+define _dismiss_pause = store._mas_root.is_dm_enabled()
 
 default persistent.playername = ""
 default player = persistent.playername

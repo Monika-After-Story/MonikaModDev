@@ -475,7 +475,7 @@ init python:
                         when mouse is clicked after an interaction ends.
         """
         # skip check
-        # if config.skipping and not config.developer:
+        # if config.skipping and not store._mas_root.is_dm_enabled():
         #     persistent.tried_skip = True
         #     config.skipping = False
         #     config.allow_skipping = False
@@ -645,7 +645,7 @@ init python:
         2 - text speed enabled if affection above happy
         3 - text speed disabled otherwise
         """
-        if config.developer and not ignoredev:
+        if store._mas_root.is_dm_enabled() and not ignoredev:
             mas_enableTextSpeed()
 
         elif (
@@ -1587,9 +1587,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 label ch30_main:
     $ mas_skip_visuals = False
     $ m.display_args["callback"] = slow_nodismiss
-    $ m.what_args["slow_abortable"] = config.developer
+    $ m.what_args["slow_abortable"] = store._mas_root.is_dm_enabled()
     $ quick_menu = True
-    if not config.developer:
+    if not store._mas_root.is_dm_enabled():
         $ style.say_dialogue = style.default_monika
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
@@ -1679,9 +1679,9 @@ label ch30_autoload:
         import store.evhand as evhand
 
         m.display_args["callback"] = slow_nodismiss
-        m.what_args["slow_abortable"] = config.developer
+        m.what_args["slow_abortable"] = store._mas_root.is_dm_enabled()
 
-        if not config.developer:
+        if not store._mas_root.is_dm_enabled():
             config.allow_skipping = False
 
         mas_resetTextSpeed()
