@@ -1,8 +1,14 @@
 python early in _mas_loader:
     import os
     import glob
+    import sys
     from heapq import merge as heapq_merge
+    from importlib.util import (
+        spec_from_file_location,
+        module_from_spec
+    )
     from collections.abc import Iterator
+    from types import ModuleType
 
     import store
 
@@ -154,6 +160,39 @@ python early in _mas_loader:
                 continue
 
             scripts.pop(i)
+
+    def import_from_path(name: str, path: str, *, is_global: bool = False) -> ModuleType:
+        """
+        Dynamically imports a module from the given relative path
+
+        Example:
+            my_module = import_from_path("my_module", "some/path/my_module.py")
+            my_module.hello_world()
+
+        IN:
+            name - str, the name to import the mode as
+            path - str, relative path to the module (relative to gamedir)
+            is_global - bool, whether or not add the module to 'sys.modules'
+                (Default: False)
+
+        OUT:
+            the module object
+
+        RAISES:
+            ModuleNotFoundError - if failed to find the module
+        """
+        path = os.path.join(renpy.gamedir, path)
+        spec = spec_from_file_location(name, path)
+        if spec is None:
+            raise ModuleNotFoundError(f"Failed to dynamically import '{path}' as '{name}', not found")
+        module = module_from_spec(spec)
+
+        if global_import:
+            sys.modules[name] = module
+
+        spec.loader.exec_module(module)
+
+        return module
 
     def handle_scripts():
         if not store._mas_root.is_dm_enabled():
