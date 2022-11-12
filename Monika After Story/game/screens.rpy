@@ -3151,7 +3151,7 @@ screen submods():
                 xfill True
                 xmaximum 1000
 
-                for submod in sorted(store.mas_submod_utils.Submod.getSubmods(), key=lambda x: x.name):
+                for submod in sorted(store.mas_submod_utils.Submod._getSubmods(), key=lambda x: x.name):
                     vbox:
                         xfill True
                         xmaximum 1000

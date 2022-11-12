@@ -18,6 +18,7 @@ init -1000 python in mas_submod_utils:
     # import traceback
     from urllib.parse import urlparse
     from typing import Literal
+    # from collections.abc import Iterator
 
     import store
     from store import (
@@ -128,7 +129,7 @@ init -1000 python in mas_submod_utils:
             submod_dir = os.path.relpath(
                 os.path.dirname(header_path),
                 start=config.gamedir
-            )
+            ).replace("\\", "/")
             submod_obj = Submod(directory=submod_dir, **header_json)
 
         except (SubmodError, TypeError) as e:# TypeError is for extra/invalid args
@@ -156,21 +157,36 @@ init -1000 python in mas_submod_utils:
                 "INSTALLED SUBMODS:\n{}".format(
                     ",\n".join(
                         f"    '{submod.name}' v{submod.version}"
-                        for submod in Submod.getSubmods()
+                        for submod in Submod._getSubmods()
                     )
                 )
             )
+
+    def _load_module(name: str):
+        """
+        Loads the module at the given path
+
+        IN:
+            name - str, name of the module
+
+        RAISES:
+            Can raise any kind of error due to renpy not using proper typing
+            use with care
+        """
+        renpy.load_module(name)
 
     def _load_submods():
         """
         Loads submods
         """
-        # Load
+        # Init submods
         _init_submods()
         # Log
         _log_inited_submods()
-        # Run dependency checks
-        # Submod._checkDependencies()
+        # Verify installed dependencies
+        Submod._runDependencyCheck()
+        # Finally load submods
+        Submod._runLoadingLogic()
 
 
     class SubmodError(Exception):
@@ -278,6 +294,13 @@ init -1000 python in mas_submod_utils:
             if not self.AN_REGEXP.match(author):
                 raise SubmodError(f"Invalid author '{author}' for submod '{name}'")
 
+            # A submod without any modules doesn't make sense
+            if not modules:
+                raise SubmodError(f"Submod '{name}' was defined without any modules.")
+            for m in modules:
+                if not isinstance(m, str):
+                    raise SubmodError(f"Invalid module '{m}' for submod '{name}'")
+
             if not isinstance(description, str):
                 raise SubmodError(f"Invalid description '{description}' for submod '{name}'")
 
@@ -343,7 +366,7 @@ init -1000 python in mas_submod_utils:
             self.name = name
             self.version = version
             self.directory = directory
-            self.modules = modules
+            self.modules = tuple(sorted(modules))
             self.description = description
             self.dependencies = dependencies
             self.settings_pane = settings_pane
@@ -355,15 +378,11 @@ init -1000 python in mas_submod_utils:
             #Now we add these to our maps
             self._submod_map[name] = self
 
-            #NOTE: We check for things having updated later so all update scripts get called together
-            if name not in persistent._mas_submod_version_data:
-                persistent._mas_submod_version_data[name] = version
-
         def __repr__(self) -> str:
             """
             Representation of this object
             """
-            return f"<Submod: ({self.name} v{self.version} by {self.author})>"
+            return f"<Submod: ('{self.name}' v{self.version} by {self.author})>"
 
         def getVersionNumberList(self) -> list[int]:
             """
@@ -374,7 +393,7 @@ init -1000 python in mas_submod_utils:
             """
             return list(self._parseVersions(self.version))
 
-        def hasUpdated(self) -> bool:
+        def _hasUpdated(self) -> bool:
             """
             Checks if this submod instance was updated (version number has incremented)
 
@@ -404,9 +423,9 @@ init -1000 python in mas_submod_utils:
                 persistent._mas_submod_version_data[self.name] = Submod.FB_VERS_STR
                 return False
 
-            return self.checkVersions(old_vers) > 0
+            return self._checkVersions(old_vers) > 0
 
-        def updateFrom(self, version: str):
+        def _updateFrom(self, version: str):
             """
             Updates the submod, starting at the given start version
 
@@ -421,7 +440,7 @@ init -1000 python in mas_submod_utils:
                     renpy.call_in_new_context(updateTo, updateTo)
                 version = self.version_updates[version]
 
-        def checkVersions(self, comparative_vers: list[int]) -> Literal[-1, 0, 1]:
+        def _checkVersions(self, comparative_vers: list[int]) -> Literal[-1, 0, 1]:
             """
             Generic version checker for submods
 
@@ -445,10 +464,10 @@ init -1000 python in mas_submod_utils:
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in cls.getSubmods():
+            for submod in cls._getSubmods():
                 #If it has updated, we need to call their update scripts and adjust the version data value
-                if submod.hasUpdated():
-                    submod.updateFrom(
+                if submod._hasUpdated():
+                    submod._updateFrom(
                         "{0}_{1}_v{2}".format(
                             submod.author,
                             submod.name,
@@ -493,51 +512,107 @@ init -1000 python in mas_submod_utils:
             return True
 
         @classmethod
-        def _checkDependencies(cls):
+        def _runDependencyCheck(cls):
             """
-            Checks to see if the submod dependencies are met
+            Checks to see if all the submods dependencies are met
+            """
+            for submod in cls._getSubmods():
+                try:
+                    submod._checkDependencies()
+
+                except SubmodError as e:
+                    submod_log.error(e)
+
+                except Exception as e:
+                    submod_log.critical(
+                        f"Dependency check failed for submod '{submod.name}'",
+                        exc_info=True
+                    )
+
+                else:
+                    # No error means we passed
+                    #NOTE: We check for things having updated later so all update scripts get called together
+                    if submod.name not in persistent._mas_submod_version_data:
+                        persistent._mas_submod_version_data[submod.name] = submod.version
+                    continue
+
+                # If we're here, we failed for any reason
+                # Let's remove this submod as it cannot be loaded
+                cls._submod_map.pop(submod.name, None)
+
+        def _checkDependencies(self):
+            """
+            Checks to see if the dependencies for this submod are met
 
             RAISES:
-                SubmodError
+                SubmodError - on dependency check fail
             """
-            for submod in cls.getSubmods():
-                for dependency, minmax_version_tuple in submod.dependencies.items():
-                    dependency_submod = Submod._getSubmod(dependency)
+            for dependency_name, minmax_version_tuple in self.dependencies.items():
+                dependency_submod = self._getSubmod(dependency_name)
 
-                    if dependency_submod is not None:
-                        #Now we need to split our minmax
-                        minimum_version, maximum_version = minmax_version_tuple
+                if dependency_submod is not None:
+                    #Now we need to split our minmax
+                    minimum_version, maximum_version = minmax_version_tuple
 
-                        #First, check the minimum version. If we get -1, we're out of date
-                        if (
-                            minimum_version
-                            and dependency_submod.checkVersions(cls._parseVersions(minimum_version)) < 0
-                        ):
-                            raise SubmodError(
-                                "Submod '{}' is out of date. Version '{}' is required for '{}'. Installed version is '{}'".format(
-                                    dependency_submod.name, minimum_version, submod.name, dependency_submod.version
-                                )
-                            )
-
-                        #If we have a maximum version, we should check if we're above it.
-                        #If we get 1, this is incompatible and we should crash to avoid other ones
-                        elif (
-                            maximum_version
-                            and dependency_submod.checkVersions(cls._parseVersions(maximum_version)) > 0
-                        ):
-                            raise SubmodError(
-                                "Submod '{}' is incompatible with '{}'. Version '{}' is compatible. Installed version is '{}'".format(
-                                    dependency_submod.name, submod.name, maximum_version, dependency_submod.version
-                                )
-                            )
-
-                    #Submod wasn't installed at all
-                    else:
+                    #First, check the minimum version. If we get -1, we're out of date
+                    if (
+                        minimum_version
+                        and dependency_submod._checkVersions(self._parseVersions(minimum_version)) < 0
+                    ):
                         raise SubmodError(
-                            "Submod '{}' is not installed and is required for '{}'".format(
-                                dependency, submod.name
+                            "Submod '{}' is out of date. Version '{}' is required for '{}'. Installed version is '{}'".format(
+                                dependency_submod.name, minimum_version, self.name, dependency_submod.version
                             )
                         )
+
+                    #If we have a maximum version, we should check if we're above it.
+                    #If we get 1, this is incompatible and we should crash to avoid other ones
+                    elif (
+                        maximum_version
+                        and dependency_submod._checkVersions(self._parseVersions(maximum_version)) > 0
+                    ):
+                        raise SubmodError(
+                            "Submod '{}' is incompatible with '{}'. Version '{}' is compatible. Installed version is '{}'".format(
+                                dependency_submod.name, self.name, maximum_version, dependency_submod.version
+                            )
+                        )
+
+                #Submod wasn't installed at all
+                else:
+                    raise SubmodError(
+                        "Submod '{}' is not installed and is required for '{}'".format(
+                            dependency_name, self.name
+                        )
+                    )
+
+        @classmethod
+        def _runLoadingLogic(cls):
+            """
+            Loads modules for every submod
+            """
+            for submod in cls._getSubmods():
+                submod._loadModules()
+
+        def _loadModules(self):
+            """
+            Loads modules of this submod, should never be called directly
+
+            RAISES:
+                SubmodError - on module failure
+            """
+            for mod_name in self.modules:
+                full_mod_name = f"{self.directory}/{mod_name}"
+                try:
+                    _load_module(full_mod_name)
+
+                except Exception as e:
+                    # We can't abort loading at this point
+                    # but ignoring doesn't sit right with me
+                    # it can cause more issues down the pipeline
+                    msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e}"
+                    submod_log.critical(msg)
+                    raise SubmodError(msg) from e
+
 
         @classmethod
         def hasSubmods(cls) -> bool:
@@ -564,7 +639,7 @@ init -1000 python in mas_submod_utils:
             return cls._submod_map.get(name)
 
         @classmethod
-        def getSubmods(cls) -> list[Submod]:
+        def _getSubmods(cls) -> list[Submod]:
             """
             Returns all the submods
 
@@ -592,7 +667,7 @@ init -1000 python in mas_submod_utils:
         submod = Submod._getSubmod(name)
 
         if submod and version:
-            return submod.checkVersions(version) >= 0
+            return submod._checkVersions(version) >= 0
         return bool(submod)
 
     def getSubmodDirectory(name: str) -> str|None:
