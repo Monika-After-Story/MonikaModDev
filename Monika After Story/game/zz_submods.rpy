@@ -589,7 +589,10 @@ init -1000 python in mas_submod_utils:
             """
             Loads modules for every submod
             """
-            for submod in cls._getSubmods():
+            submods = cls._getSubmods()
+            submods.sort(key=lambda s: s.priority)
+
+            for submod in submods:
                 submod._loadModules()
 
         def _loadModules(self):
