@@ -170,10 +170,9 @@ init -1000 python in mas_submod_utils:
             name - str, name of the module
 
         RAISES:
-            Can raise any kind of error due to renpy not using proper typing
-            use with care
+            IncludeModuleError
         """
-        renpy.load_module(name)
+        store._mas_loader.include_module(name)
 
     def _load_submods():
         """

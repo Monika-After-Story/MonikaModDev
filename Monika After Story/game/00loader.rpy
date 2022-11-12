@@ -1,6 +1,7 @@
 python early in _mas_loader:
     import os
     import glob
+    from heapq import merge as heapq_merge
     from collections.abc import Iterator
 
     import store
@@ -23,6 +24,17 @@ python early in _mas_loader:
     ))
 
     __DISB_EXT = ".disabled"
+
+
+    class IncludeModuleError(Exception):
+        """
+        Custom exception used by include_module
+        """
+        def __init__(self, msg: str):
+            self.msg = msg
+
+        def __str__(self):
+            return self.msg
 
 
     def _sanitise_path(path: str) -> str:
@@ -55,6 +67,59 @@ python early in _mas_loader:
 
             if ext and ext[1:] in __RS_EXTS:
                 yield fn
+
+    def include_module(name: str):
+        """
+        Fine, I'll do it myself (c)
+        Includes a module to load down the pipeline
+
+        IN:
+            name - str, name of the moduleto include
+
+        RAISES:
+            IncludeModuleError - in case we failed to include the module for any reason
+        """
+        if not renpy.is_init_phase():
+            raise IncludeModuleError("Can't include module when init phase is over")
+
+        if (script := renpy.game.script) is None:
+            raise IncludeModuleError("Script hasn't been initialised yet, can't include module")
+
+        if not (module_initcode := script.load_module(name)):
+            # Loaded, but the module is empty, can quit here
+            return
+
+        # renpy doesn't sort nodes for some reason
+        module_initcode.sort(key=lambda i: i[0])
+
+        ctx = renpy.game.context()
+        current_node_name = ctx.current
+        current_node_id = None
+        current_node_prio = None
+
+        # Thanks to renpy, we have to iter thru all the nodes to figure out where we are now
+        for idx, (prio, node) in enumerate(script.initcode):
+            if current_node_name == node.name:
+                current_node_id = idx
+                current_node_prio = prio
+                break
+
+        if current_node_id is None or current_node_prio is None:
+            raise IncludeModuleError("Failed to include module: couldn't find current AST node")
+
+        if module_initcode[0][0] < current_node_prio:
+            raise IncludeModuleError(
+                (
+                    f"Module '{name}' contains nodes with priority lower than the node that loads it "
+                    f"(got {module_initcode[0][0]}, expected {current_node_prio} or higher)"
+                )
+            )
+
+        merge_id = current_node_id + 1
+        current_tail = script.initcode[merge_id:]
+        new_tail = heapq_merge(current_tail, module_initcode, key=lambda i: i[0])
+
+        script.initcode[merge_id:] = list(new_tail)
 
     def _disable_unrecognised_scripts():
         """
