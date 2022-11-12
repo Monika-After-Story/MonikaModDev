@@ -138,7 +138,11 @@ init -991 python in mas_submod_utils:
             return
 
         try:
-            submod_obj = Submod(**header_json)
+            submod_dir = os.path.relpath(
+                os.path.dirname(header_path),
+                start=config.gamedir
+            )
+            submod_obj = Submod(directory=submod_dir, **header_json)
 
         except (SubmodError, TypeError) as e:# TypeError is for extra/invalid args
             submod_log.error(
@@ -193,6 +197,7 @@ init -991 python in mas_submod_utils:
             author: str,
             name: str,
             version: str,
+            directory: str,
             modules: tuple[str, ...],
             description: str = "",
             dependencies: dict[str, tuple[str, str]]|None = None,
@@ -212,6 +217,8 @@ init -991 python in mas_submod_utils:
 
                 version - version number in format SPECIFICALLY like so: `1.2.3`
                     (You can add more or less as need be, but splits MUST be made using periods)
+
+                directory - str, the relative path to the submod directory
 
                 modules - list of modules of this submod
 
@@ -326,6 +333,7 @@ init -991 python in mas_submod_utils:
             self.author = author
             self.name = name
             self.version = version
+            self.directory = directory
             self.modules = modules
             self.description = description
             self.dependencies = dependencies
