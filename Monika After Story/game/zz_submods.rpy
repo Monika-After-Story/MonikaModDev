@@ -702,9 +702,10 @@ init -1000 python in mas_submod_utils:
 
 
 #START: Function Plugins
-init -980 python in mas_submod_utils:
+init -999 python in mas_submod_utils:
     import inspect
     import store
+    from store._mas_loader import import_from_path as require
 
     #Store the current label for use elsewhere
     current_label = None
@@ -716,9 +717,6 @@ init -980 python in mas_submod_utils:
 
     #Default priority
     DEF_PRIORITY = 0
-
-    #Priority for jumps and calls
-    JUMP_CALL_PRIORITY = 999
 
     PRIORITY_SORT_KEY = lambda x: x[1][2]
 

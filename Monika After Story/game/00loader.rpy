@@ -164,6 +164,7 @@ python early in _mas_loader:
     def import_from_path(name: str, path: str, *, is_global: bool = False) -> ModuleType:
         """
         Dynamically imports a module from the given relative path
+        This is like Nodejs 'require'
 
         Example:
             my_module = import_from_path("my_module", "some/path/my_module.py")
