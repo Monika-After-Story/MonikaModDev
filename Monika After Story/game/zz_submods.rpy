@@ -337,6 +337,7 @@ init -991 python in mas_submod_utils:
 init -980 python in mas_submod_utils:
     import inspect
     import store
+    from store import mas_utils
 
     #Store the current label for use elsewhere
     current_label = None
@@ -355,7 +356,7 @@ init -980 python in mas_submod_utils:
     PRIORITY_SORT_KEY = lambda x: x[1][2]
 
     #START: Decorator Function
-    def functionplugin(_label, _args=[], auto_error_handling=True, priority=0):
+    def functionplugin(_label, _args=(), auto_error_handling=True, priority=0):
         """
         Decorator function to register a plugin
 
@@ -403,15 +404,17 @@ init -980 python in mas_submod_utils:
             else:
                 store.__run(_action, getArgs(key, _action))
 
-    def registerFunction(key, _function, args=[], auto_error_handling=True, priority=DEF_PRIORITY):
+    def registerFunction(key, _function, args=(), auto_error_handling=True, priority=DEF_PRIORITY):
         """
         Registers a function to the function_plugins dict
 
         NOTE: Does NOT allow overwriting of existing functions in the dict
         NOTE: Function must be callable
         NOTE: Functions run when a label matching the key for the function is:
-        called, jumped, or fallen through to.
-        Or if plugged into a function, when a function by the name of the key calls getAndRunFunctions
+            called, jumped, or fallen through to.
+            Or if plugged into a function, when a function by the name of the key calls getAndRunFunctions
+        NOTE: If you need to provide args/kwargs to the function,
+            wrap it into functools.partial
 
         IN:
             key - key to add the function to.
@@ -419,8 +422,6 @@ init -980 python in mas_submod_utils:
                 NOTE: Function names only work if the function contains a getAndRunFunctions call.
                     Without it, it does nothing.
             _function - function to register
-            args - list of args (must be in order) to pass to the function
-                (Default: [])
             auto_error_handling - whether or function plugins should ignore errors in functions
                 (Set this to False for functions which call or jump)
             priority - Order priority to run functions
@@ -438,10 +439,17 @@ init -980 python in mas_submod_utils:
             store.mas_utils.mas_log.error("{0} is not callable".format(_function.__name__))
             return False
 
-        #Too many args
-        elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
-            return False
+        # TODO: remove args entirely in r8
+        if args:
+            mas_utils.report_deprecation(
+                "parameter 'args' in 'registerFunction'",
+                use_instead="functools.partial",
+                use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+            )
+            #Too many args
+            if len(args) > len(inspect.getargspec(_function).args):
+                store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
+                return False
 
         #Check for overrides
         key = __getOverrideLabel(key)
@@ -478,7 +486,11 @@ init -980 python in mas_submod_utils:
 
         return func_dict.get(_function)[0]
 
-    def setArgs(key, _function, args=[]):
+    @mas_utils.deprecated(
+        use_instead="functools.partial",
+        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+    )
+    def setArgs(key, _function, args=()):
         """
         Sets args for the given function at the key
 
