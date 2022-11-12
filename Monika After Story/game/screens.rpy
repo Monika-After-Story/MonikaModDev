@@ -3177,7 +3177,7 @@ screen submods():
                         if submod.description:
                             text submod.description text_align 0.0
 
-                    if submod.settings_pane:
+                    if submod.settings_pane and renpy.has_screen(submod.settings_pane):
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
 
     text tooltip.value:
