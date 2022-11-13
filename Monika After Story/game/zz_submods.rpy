@@ -356,7 +356,7 @@ init -980 python in mas_submod_utils:
     PRIORITY_SORT_KEY = lambda x: x[1][2]
 
     #START: Decorator Function
-    def functionplugin(_label, _args=(), auto_error_handling=True, priority=0):
+    def functionplugin(_label, _args=None, auto_error_handling=True, priority=0):
         """
         Decorator function to register a plugin
 
@@ -397,14 +397,14 @@ init -980 python in mas_submod_utils:
         for _action, data_tuple in sorted_plugins:
             if data_tuple[1]:
                 try:
-                    store.__run(_action, getArgs(key, _action))
+                    store.__run(_action, __getArgs(key, _action))
                 except Exception as ex:
                     store.mas_utils.mas_log.error("function {0} failed because {1}".format(_action.__name__, ex))
 
             else:
-                store.__run(_action, getArgs(key, _action))
+                store.__run(_action, __getArgs(key, _action))
 
-    def registerFunction(key, _function, args=(), auto_error_handling=True, priority=DEF_PRIORITY):
+    def registerFunction(key, _function, args=None, auto_error_handling=True, priority=DEF_PRIORITY):
         """
         Registers a function to the function_plugins dict
 
@@ -440,7 +440,10 @@ init -980 python in mas_submod_utils:
             return False
 
         # TODO: remove args entirely in r8
-        if args:
+        if args is None:
+            args = ()
+
+        else:
             mas_utils.report_deprecation(
                 "parameter 'args' in 'registerFunction'",
                 use_instead="functools.partial",
@@ -465,8 +468,9 @@ init -980 python in mas_submod_utils:
         function_plugins[key][_function] = (args, auto_error_handling, priority)
         return True
 
-    def getArgs(key, _function):
+    def __getArgs(key, _function):
         """
+        TODO: remove this with r8
         Gets args for the given function at the given key
 
         IN:
@@ -490,14 +494,31 @@ init -980 python in mas_submod_utils:
         use_instead="functools.partial",
         use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
     )
-    def setArgs(key, _function, args=()):
+    def getArgs(key, _function):
+        """
+        Gets args for the given function at the given key
+
+        IN:
+            key - key to retrieve the function from
+            _function - function to retrieve args from
+
+        OUT:
+            list of args if the function is present
+            If function is not present, None is returned
+        """
+        return __getArgs(key, _function)
+
+    @mas_utils.deprecated(
+        use_instead="functools.partial",
+        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+    )
+    def setArgs(key, _function, args=None):
         """
         Sets args for the given function at the key
 
         IN:
             key - key that the function's function dict is stored in
             _function - function to set the args
-            args - list of args (must be in order) to pass to the function (Default: [])
 
         OUT:
             boolean:
@@ -513,8 +534,11 @@ init -980 python in mas_submod_utils:
             return False
 
         #Function not in dict
-        elif _function not in func_dict:
+        if _function not in func_dict:
             return False
+
+        if args is None:
+            args = ()
 
         #Too many args provided
         elif len(args) > len(inspect.getargspec(_function).args):
