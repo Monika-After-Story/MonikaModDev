@@ -25,7 +25,8 @@ init -1000 python in mas_submod_utils:
         config,
         persistent,
         mas_utils,
-        mas_logging
+        mas_logging,
+        _mas_loader
     )
 
 
@@ -77,6 +78,7 @@ init -1000 python in mas_submod_utils:
         """
         This does extra processing on header, like setting default values
         if optional parameters not present
+        TODO: We should really use pydantic here
 
         IN:
             header_json - dict, the parsed submod json
@@ -172,7 +174,7 @@ init -1000 python in mas_submod_utils:
         RAISES:
             IncludeModuleError
         """
-        store._mas_loader.include_module(name)
+        _mas_loader.include_module(name)
 
     def _load_submods():
         """
@@ -218,6 +220,7 @@ init -1000 python in mas_submod_utils:
 
         def __init__(
             self,
+            *,
             author: str,
             name: str,
             version: str,
@@ -287,18 +290,18 @@ init -1000 python in mas_submod_utils:
                 raise SubmodError(f"Invalid version number '{version}' for submod '{name}'")
 
             #Make sure author and name are proper label names
-            if not self.AN_REGEXP.match(name):
+            if not isinstance(name, str) or not self.AN_REGEXP.match(name):
                 raise SubmodError(f"Submod name '{name}' is invalid")
 
-            if not self.AN_REGEXP.match(author):
+            if not isinstance(author, str) or not self.AN_REGEXP.match(author):
                 raise SubmodError(f"Invalid author '{author}' for submod '{name}'")
 
             # A submod without any modules doesn't make sense
             if not modules:
                 raise SubmodError(f"Submod '{name}' was defined without any modules.")
-            for m in modules:
-                if not isinstance(m, str):
-                    raise SubmodError(f"Invalid module '{m}' for submod '{name}'")
+
+            if not _mas_loader.do_modules_exist(*(f"{directory}/{m}" for m in modules)):
+                raise SubmodError(f"Submod '{name}' uses a module that doesn't exist")
 
             if not isinstance(description, str):
                 raise SubmodError(f"Invalid description '{description}' for submod '{name}'")
@@ -620,13 +623,12 @@ init -1000 python in mas_submod_utils:
                     _include_module(full_mod_name)
 
                 except Exception as e:
-                    # We can't abort loading at this point
-                    # but ignoring doesn't sit right with me
+                    # We can't abort loading at this point,
+                    # and ignoring doesn't sit right with me
                     # it can cause more issues down the pipeline
                     msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e}"
                     submod_log.critical(msg)
                     raise SubmodError(msg) from e
-
 
         @classmethod
         def hasSubmods(cls) -> bool:

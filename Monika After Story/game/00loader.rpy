@@ -11,6 +11,7 @@ python early in _mas_loader:
     from types import ModuleType
 
     import store
+    from renpy.game import script as renpy_script
 
 
     __EXCEPTIONS = frozenset((
@@ -74,10 +75,35 @@ python early in _mas_loader:
             if ext and ext[1:] in __RS_EXTS:
                 yield fn
 
+    def do_modules_exist(*modules: str, is_any: bool = False) -> bool:
+        """
+        Checks if all or any of the modules were defined
+        NOTE: This doesn't validate if the modules are
+            loadable or valid at all
+
+        IN:
+            *modules - str, the modules to find
+            is_any - bool, check if any given module exists
+                instead of all
+                (Default: False)
+
+        OUT:
+            bool
+        """
+        modules = set(modules)
+
+        for n, p in renpy_script.module_files:
+            if n in modules:
+                modules.remove(n)
+                if is_any or not modules:
+                    return True
+
+        return False
+
     def include_module(name: str):
         """
         Fine, I'll do it myself (c)
-        Includes a module to load down the pipeline
+        Includes a module to load down the init pipeline
 
         IN:
             name - str, name of the moduleto include
@@ -88,12 +114,13 @@ python early in _mas_loader:
         if not renpy.is_init_phase():
             raise IncludeModuleError("Can't include module when init phase is over")
 
-        if (script := renpy.game.script) is None:
-            raise IncludeModuleError("Script hasn't been initialised yet, can't include module")
+        try:
+            if not (module_initcode := renpy_script.load_module(name)):
+                # Loaded, but the module is empty, can quit here
+                return
 
-        if not (module_initcode := script.load_module(name)):
-            # Loaded, but the module is empty, can quit here
-            return
+        except Exception as e:
+            raise IncludeModuleError(f"Failed to include module: {e}") from e
 
         # renpy doesn't sort nodes for some reason
         module_initcode.sort(key=lambda i: i[0])
@@ -104,13 +131,13 @@ python early in _mas_loader:
         current_node_prio = None
 
         # Thanks to renpy, we have to iter thru all the nodes to figure out where we are now
-        for idx, (prio, node) in enumerate(script.initcode):
+        for idx, (prio, node) in enumerate(renpy_script.initcode):
             if current_node_name == node.name:
                 current_node_id = idx
                 current_node_prio = prio
                 break
 
-        if current_node_id is None or current_node_prio is None:
+        else:
             raise IncludeModuleError("Failed to include module: couldn't find current AST node")
 
         if module_initcode[0][0] < current_node_prio:
@@ -122,10 +149,10 @@ python early in _mas_loader:
             )
 
         merge_id = current_node_id + 1
-        current_tail = script.initcode[merge_id:]
+        current_tail = renpy_script.initcode[merge_id:]
         new_tail = heapq_merge(current_tail, module_initcode, key=lambda i: i[0])
 
-        script.initcode[merge_id:] = list(new_tail)
+        renpy_script.initcode[merge_id:] = list(new_tail)
 
     def _disable_unrecognised_scripts():
         """
@@ -148,7 +175,7 @@ python early in _mas_loader:
         """
         Iterates over unrecognised scripts and unloads them
         """
-        scripts = renpy.game.script.script_files
+        scripts = renpy_script.script_files
 
         for i in range(len(scripts)-1, -1, -1):
             name, path = scripts[i]
