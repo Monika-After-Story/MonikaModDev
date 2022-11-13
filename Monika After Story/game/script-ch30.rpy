@@ -9,7 +9,6 @@ default persistent.monika_kill = None
 # Whether or not you launched the mod before
 default persistent.first_run = True
 default persistent.rejected_monika = None
-default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_in_intro_flow = False
 
@@ -307,6 +306,16 @@ define MAS_PRONOUN_GENDER_MAP = {
     "hero": {"M": "hero", "F": "heroine", "X": "hero"}
 }
 
+init 1 python:
+    currentuser = mas_get_user()
+    # name changes if necessary
+    if not currentuser:
+        currentuser = persistent.playername
+    if not persistent.mcname:
+        persistent.mcname = currentuser
+
+    mcname = persistent.mcname
+
 init python:
     import subprocess
     import os
@@ -315,37 +324,6 @@ init python:
     import store.songs as songs
     import store.hkb_button as hkb_button
     import store.mas_globals as mas_globals
-    process_list = []
-    currentuser = None # start if with no currentuser
-    if renpy.windows:
-        try:
-            process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
-        except:
-            pass
-        try:
-            for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
-                user = os.environ.get(name)
-                if user:
-                    currentuser = user
-        except:
-            pass
-
-    try:
-        renpy.file("../characters/monika.chr")
-        initial_monika_file_check = True
-    except:
-        #Monika will mention that you don't have a char file in ch30_main instead
-        pass
-
-
-    # name changes if necessary
-    if not currentuser or len(currentuser) == 0:
-        currentuser = persistent.playername
-    if not persistent.mcname or len(persistent.mcname) == 0:
-        persistent.mcname = currentuser
-        mcname = currentuser
-    else:
-        mcname = persistent.mcname
 
     # we need a new music channel for background audio (like rain!)
     # this uses the amb (ambient) mixer.
@@ -380,7 +358,7 @@ init python:
         renpy.jump("mas_pick_a_game")
 
 
-    def mas_getuser():
+    def mas_get_user():
         """
         Attempts to get the current user
 
