@@ -103,7 +103,7 @@ init -1000 python in mas_submod_utils:
         @pydantic.validator("modules")
         def validate_modules(cls, value, values):
             if not value:
-                raise ValueError(f"Submod must define modules.")
+                raise ValueError("Submod must define modules.")
 
             # IMPORTANT: Sort in alpha
             value = tuple(sorted(value))
@@ -137,7 +137,7 @@ init -1000 python in mas_submod_utils:
         def validate_version_updates(cls, value, values):
             if value:
                 try:
-                    update_label = _get_update_label_name(values["author"], values["name"], values["version"])
+                    update_label = _generate_update_label(values["author"], values["name"], values["version"])
 
                 except KeyError:
                     # This means that one of the other fields has failed, so we can't parse this one either
@@ -168,8 +168,10 @@ init -1000 python in mas_submod_utils:
                     url = urlparse(value)
                     if url.scheme != "https":
                         submod_log.warning(f"Submod '{name}' doesn't use https scheme in its repository link")
+
                     if url.netloc != "github.com":
                         submod_log.warning(f"Submod '{name}' uses unknown repository hosting. Consider switching to GitHub.com")
+
                     elif (
                         url.path.count("/") != 2
                         or url.params
@@ -220,7 +222,7 @@ init -1000 python in mas_submod_utils:
 
         return True
 
-    def _get_update_label_name(author: str, name: str, version: str) -> str:
+    def _generate_update_label(author: str, name: str, version: str) -> str:
         """
         Creates an update label name from submod info
 
@@ -280,7 +282,7 @@ init -1000 python in mas_submod_utils:
 
     def _process_submod_header(raw_header: dict, header_path: str) -> _SubmodSchema|None:
         """
-        This does extra processing on header, validation, or setting default values
+        This does extra processing on header, validation, and setting default values
 
         IN:
             raw_header - dict, the parsed submod json
@@ -796,7 +798,7 @@ init -1000 python in mas_submod_utils:
         @classmethod
         def _iterSubmods(cls) -> Iterator[_Submod]:
             """
-            Returns all the submods
+            Returns an iterator over the submods
 
             OUT:
                 iterator of Submod objects
@@ -806,7 +808,7 @@ init -1000 python in mas_submod_utils:
         @classmethod
         def _getSubmods(cls) -> list[_Submod]:
             """
-            Returns all the submods
+            Returns a list of the submods
 
             OUT:
                 list of Submod objects
