@@ -3,7 +3,7 @@ init -999:
 
 init 10 python in mas_submod_utils:
     #Run updates if need be
-    Submod._checkUpdates()
+    _Submod._checkUpdates()
 
 init -999 python in mas_submod_utils:
     # Init submods
@@ -17,6 +17,7 @@ init -1000 python in mas_submod_utils:
     import sys
     from urllib.parse import urlparse
     from typing import Literal, Optional
+    from collections.abc import Iterator
 
     import pydantic
 
@@ -104,7 +105,7 @@ init -1000 python in mas_submod_utils:
             if not value:
                 raise ValueError(f"Submod must define modules.")
 
-            # Sort in alpha
+            # IMPORTANT: Sort in alpha
             value = tuple(sorted(value))
 
             submod_dir = values.get("directory", None)
@@ -338,7 +339,7 @@ init -1000 python in mas_submod_utils:
             return
 
         try:
-            submod_obj = Submod(**header)
+            submod_obj = _Submod(**header)
 
         except SubmodError as e:
             submod_log.error(
@@ -360,12 +361,12 @@ init -1000 python in mas_submod_utils:
             _init_submod(fn)
 
     def _log_inited_submods():
-        if Submod.hasSubmods():
+        if _Submod.hasSubmods():
             submod_log.info(
                 "INITED SUBMODS:\n{}".format(
                     ",\n".join(
                         f"    '{submod.name}' v{submod.version}"
-                        for submod in Submod._getSubmods()
+                        for submod in _Submod._iterSubmods()
                     )
                 )
             )
@@ -389,11 +390,11 @@ init -1000 python in mas_submod_utils:
         # Init submods
         _init_submods()
         # Verify installed dependencies
-        Submod._checkDependencies()
+        _Submod._checkDependencies()
         # Log
         _log_inited_submods()
         # Finally load submods
-        Submod._loadModules()
+        _Submod._loadModules()
 
 
     class SubmodError(Exception):
@@ -403,7 +404,7 @@ init -1000 python in mas_submod_utils:
         def __str__(self):
             return self.msg
 
-    class Submod(object):
+    class _Submod(object):
         """
         Submod class
 
@@ -482,6 +483,9 @@ init -1000 python in mas_submod_utils:
                 repository - link to the submod repository
 
                 priority - submod loading priority. Must be within -999 and 999
+
+            RAISES:
+                SubmodError
             """
             #First make sure this name us unique
             if name in self._submod_map:
@@ -490,21 +494,69 @@ init -1000 python in mas_submod_utils:
                 )
 
             #With verification done, let's make the object
-            self.author = author
-            self.name = name
-            self.version = version
-            self.directory = directory
-            self.modules = modules
-            self.description = description
-            self.dependencies = dependencies
-            self.settings_pane = settings_pane
-            self.version_updates = version_updates
-            self.coauthors = coauthors
-            self.repository = repository
-            self.priority = priority
+            self._author = author
+            self._name = name
+            self._version = version
+            self._directory = directory
+            self._modules = modules
+            self._description = description
+            self._dependencies = dependencies
+            self._settings_pane = settings_pane
+            self._version_updates = version_updates
+            self._coauthors = coauthors
+            self._repository = repository
+            self._priority = priority
 
             #Now we add these to our maps
             self._submod_map[name] = self
+
+        @property
+        def author(self):
+            return self._author
+
+        @property
+        def name(self):
+            return self._name
+
+        @property
+        def version(self):
+            return self._version
+
+        @property
+        def directory(self):
+            return self._directory
+
+        @property
+        def modules(self):
+            return self._modules
+
+        @property
+        def description(self):
+            return self._description
+
+        @property
+        def dependencies(self):
+            return self._dependencies
+
+        @property
+        def settings_pane(self):
+            return self._settings_pane
+
+        @property
+        def version_updates(self):
+            return self._version_updates
+
+        @property
+        def coauthors(self):
+            return self._coauthors
+
+        @property
+        def repository(self):
+            return self._repository
+
+        @property
+        def priority(self):
+            return self._priority
 
         def __repr__(self) -> str:
             """
@@ -533,7 +585,7 @@ init -1000 python in mas_submod_utils:
             old_vers = persistent._mas_submod_version_data.get(self.name, None)
 
             #If we don't have an old vers, we're installing for the first time and aren't updating at all
-            if not old_vers:
+            if old_vers is None:
                 return False
 
             try:
@@ -548,7 +600,7 @@ init -1000 python in mas_submod_utils:
                     ),
                     exc_info=True
                 )
-                persistent._mas_submod_version_data[self.name] = Submod.FB_VERS_STR
+                persistent._mas_submod_version_data[self.name] = self.FB_VERS_STR
                 return False
 
             return self._checkVersions(old_vers) > 0
@@ -592,14 +644,14 @@ init -1000 python in mas_submod_utils:
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in cls._getSubmods():
+            for submod in cls._iterSubmods():
                 #If it has updated, we need to call their update scripts and adjust the version data value
                 if submod._hasUpdated():
                     submod._updateFrom(
                         "{0}_{1}_v{2}".format(
                             submod.author,
                             submod.name,
-                            persistent._mas_submod_version_data.get(submod.name, Submod.FB_VERS_STR).replace('.', '_')
+                            persistent._mas_submod_version_data.get(submod.name, cls.FB_VERS_STR).replace('.', '_')
                         ).lower().replace(' ', '_')
                     )
 
@@ -616,12 +668,8 @@ init -1000 python in mas_submod_utils:
                     submod.__checkDependencies()
 
                 except SubmodError as e:
-                    submod_log.error(e)
-
-                except Exception as e:
-                    submod_log.critical(
-                        f"Dependency check failed for submod '{submod.name}'",
-                        exc_info=True
+                    submod_log.error(
+                        f"Dependency check failed for submod '{submod.name}':\n    {e}"
                     )
 
                 else:
@@ -655,8 +703,8 @@ init -1000 python in mas_submod_utils:
                         and dependency_submod._checkVersions(_parse_version(minimum_version)) < 0
                     ):
                         raise SubmodError(
-                            "Submod '{}' is out of date. Version '{}' is required for '{}'. Installed version is '{}'".format(
-                                dependency_submod.name, minimum_version, self.name, dependency_submod.version
+                            "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
+                                dependency_submod.name, minimum_version, dependency_submod.version
                             )
                         )
 
@@ -667,17 +715,15 @@ init -1000 python in mas_submod_utils:
                         and dependency_submod._checkVersions(_parse_version(maximum_version)) > 0
                     ):
                         raise SubmodError(
-                            "Submod '{}' is incompatible with '{}'. Version '{}' is compatible. Installed version is '{}'".format(
-                                dependency_submod.name, self.name, maximum_version, dependency_submod.version
+                            "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
+                                dependency_submod.name, maximum_version, dependency_submod.version
                             )
                         )
 
                 #Submod wasn't installed at all
                 else:
                     raise SubmodError(
-                        "Submod '{}' is not installed and is required for '{}'".format(
-                            dependency_name, self.name
-                        )
+                        f"Dependency '{dependency_name}' is not installed and is required"
                     )
 
         @classmethod
@@ -734,7 +780,7 @@ init -1000 python in mas_submod_utils:
             return bool(cls._submod_map)
 
         @classmethod
-        def _getSubmod(cls, name: str) -> Submod|None:
+        def _getSubmod(cls, name: str) -> _Submod|None:
             """
             Gets the submod with the name provided
 
@@ -745,10 +791,20 @@ init -1000 python in mas_submod_utils:
                 Submod object representing the submod by name if installed and registered
                 None if not found
             """
-            return cls._submod_map.get(name)
+            return cls._submod_map.get(name, None)
 
         @classmethod
-        def _getSubmods(cls) -> list[Submod]:
+        def _iterSubmods(cls) -> Iterator[_Submod]:
+            """
+            Returns all the submods
+
+            OUT:
+                iterator of Submod objects
+            """
+            return iter(cls._submod_map.values())
+
+        @classmethod
+        def _getSubmods(cls) -> list[_Submod]:
             """
             Returns all the submods
 
@@ -773,7 +829,7 @@ init -1000 python in mas_submod_utils:
                 - True if submod with name is installed
                 - False otherwise
         """
-        submod = Submod._getSubmod(name)
+        submod = _Submod._getSubmod(name)
 
         if submod and version:
             return submod._checkVersions(version) >= 0
@@ -790,7 +846,7 @@ init -1000 python in mas_submod_utils:
             str - relative path to the submod
             None - no submod with the given name was found
         """
-        if (submod := Submod._getSubmod(name)) is None:
+        if (submod := _Submod._getSubmod(name)) is None:
             return None
 
         return submod.directory

@@ -857,7 +857,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils.Submod.hasSubmods():
+        if store.mas_submod_utils._Submod.hasSubmods():
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -919,7 +919,7 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils.Submod.hasSubmods():
+        if store.mas_submod_utils._Submod.hasSubmods():
             textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
@@ -3140,6 +3140,7 @@ screen submods():
     use game_menu(("Submods")):
 
         default tooltip = Tooltip("")
+        default submods = sorted(store.mas_submod_utils._Submod._getSubmods(), key=lambda x: x.name)
 
         viewport id "scrollme":
             scrollbars "vertical"
@@ -3151,7 +3152,7 @@ screen submods():
                 xfill True
                 xmaximum 1000
 
-                for submod in sorted(store.mas_submod_utils.Submod._getSubmods(), key=lambda x: x.name):
+                for submod in submods:
                     vbox:
                         xfill True
                         xmaximum 1000
