@@ -15158,7 +15158,7 @@ init 5 python:
             eventlabel="monika_physicalmedia",
             category=['media'],
             prompt="Physical media",
-            action=EV_ACT_RANDOM
+            random=True
         )
     )
 
