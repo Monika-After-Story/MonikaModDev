@@ -1388,4 +1388,4 @@ label mas_compliment_forget:
         m "I won't forget this! I could never!"
         m 4ekb "I{w=0.2} love..{w=0.2} you~!"
         m "And I'll never forget you."
-    return "love"
+        return "love"
