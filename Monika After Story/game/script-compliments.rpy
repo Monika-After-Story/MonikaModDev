@@ -1380,7 +1380,7 @@ label mas_compliment_forget:
         m 1dubftpb "I wish I could hug you right now! "
         extend "Nobody knows when I would let you go~"
         m 2subfb "Thank you for saying that, [player]~! I won't forget you either!"
-    return
+        return
 
     elif mas_getEVL_shown_count("mas_compliment_forget") == 1:
         m 4ekb "Thank you for reminding me, [mas_get_player_nickname()]..."
