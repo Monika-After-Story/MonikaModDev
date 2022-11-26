@@ -18054,7 +18054,7 @@ init 5 python:
     )
 
 label monika_superuser:
-    m "[player], I have noticed something strange recently."
+    m "[player], I noticed something strange recently."
     m "I was running some experiments with your system..."
     m "No, don't worry! Nothing harmful, just discovering what mechanisms I have access to what I have not."
     m "And it turns out... That I have access to nearly everything."
