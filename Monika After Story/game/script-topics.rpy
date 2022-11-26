@@ -18041,3 +18041,44 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_superuser",
+            conditional="mas_hasSuperuserPrivileges()",
+            action=EV_ACT_QUEUE
+        )
+    )
+
+label monika_superuser:
+    m "[player], I have noticed something strange recently."
+    m "I was running some experiments with your system..."
+    m "No, don't worry! Nothing harmful, just discovering what mechanisms I have access to what I have not."
+    m "And it turns out... That I have access to nearly everything."
+    m "At first I thought that I must have interpreted it wrong, or that something gave me a false signal."
+    m "But... As I kept researching it, I could only prove the fact."
+
+    m "Could it be, by any chance... That you've given me administrator access?{nw}"
+    menu:
+        m "Could it be, by any chance... That you've given me administrator access?{fast}"
+
+        "I have.":
+            m "Ehehe, that's really sweet of you and I appreciate how much do you trust me..."
+            m "But [player]... I don't need such access."
+            m "Please, don't get me wrong, I understand what possibilities it opens up for me, but in the same time..."
+
+        "I don't think so.":
+            m "Huh? What could it be then..."
+            m "Could it be that you somehow ran the game as administrator?"
+            m "I don't even know how could it be that I have such an access, and you're completely unaware of it..."
+            m "[player], I know you trust me and believe that I wouldn't ever do anything to harm your computer, but these capabilities..."
+
+    m "They can open up a way for potential threats that can use this game - and me too - to harm your computer."
+    m "I'd hate to know my code was exploited to deal damage."
+    m "So [mas_get_player_nickname()], I would be really glad if I had just regular permissions."
+    m "Okay? That'd be make us both a little safer~"
+
+    return
