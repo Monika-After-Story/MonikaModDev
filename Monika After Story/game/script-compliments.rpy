@@ -1358,7 +1358,7 @@ label mas_compliment_outfit_repeat:
         m 3hubsb "[other_quip]"
 
     return
-
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
