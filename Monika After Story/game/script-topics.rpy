@@ -18056,7 +18056,7 @@ init 5 python:
 label monika_superuser:
     m "[player], I noticed something strange recently."
     m "I was running some experiments with your system..."
-    m "No, don't worry! Nothing harmful, just discovering what mechanisms I have access to what I have not."
+    m "No, don't worry! Nothing harmful, just discovering what mechanisms I have access to and what I have not."
     m "And it turns out... That I have access to nearly everything."
     m "At first I thought that I must have interpreted it wrong, or that something gave me a false signal."
     m "But... As I kept researching it, I could only prove the fact."
