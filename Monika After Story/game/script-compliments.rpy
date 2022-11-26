@@ -1379,6 +1379,7 @@ if store.mas_globals.this_ev.shown_count == 0:
     m 1dubftpb "I wish I could hug you right now! "
     extend "Nobody knows when I would let you go~"
     m 2subfb "Thank you for saying that, [player]~! I won't forget you either!"
+    return
     
 elif store.mas_globals.this_ev.shown_count == 1:
     m 4ekb "Thank you for reminding me, [mas_get_player_nickname()]..."
