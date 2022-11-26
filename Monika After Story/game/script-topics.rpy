@@ -18066,15 +18066,15 @@ label monika_superuser:
         m "Could it be, by any chance... That you've given me administrator access?{fast}"
 
         "I have.":
-            m "Ehehe, that's really sweet of you and I appreciate how much do you trust me..."
+            m "Ehehe, that's really sweet of you and I appreciate how much you trust me..."
             m "But [player]... I don't need such access."
-            m "Please, don't get me wrong, I understand what possibilities it opens up for me, but in the same time..."
+            m "Please don't get me wrong, I understand what huge possibilities it opens up for me, but in the same time..."
 
         "I don't think so.":
             m "Huh? What could it be then..."
             m "Could it be that you somehow ran the game as administrator?"
-            m "I don't even know how could it be that I have such an access, and you're completely unaware of it..."
-            m "[player], I know you trust me and believe that I wouldn't ever do anything to harm your computer, but these capabilities..."
+            m "I don't even know how could it be that I have such an access, and you're totally unaware of it..."
+            m "[player], I know you trust me and believe that I wouldn't ever do anything to harm your computer, but these powers..."
 
     m "They can open up a way for potential threats that can use this game - and me too - to harm your computer."
     m "I'd hate to know my code was exploited to deal damage."
