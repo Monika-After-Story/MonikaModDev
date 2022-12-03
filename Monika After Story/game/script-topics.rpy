@@ -3261,38 +3261,53 @@ label monika_family:
     return "love"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_kids",category=['monika'],prompt="Would you ever want children?",random=False,pool=True, unlocked=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_parenting",
+            category=['society','life'],
+            prompt="Parenting",
+            random=True
+        )
+    )
 
-label monika_kids:
-    m 1esc "Children?"
-    m 1ruc "..."
-    m 1rksdlb "To be entirely honest, I don't really know."
-    m 7rsd "I mean,{w=0.2} to its credit. I definitely think becoming a parent can provide some really unqiue life experiences."
-    m 2esd "Many parents talk about how rewarding it is to raise children and watch them grow up."
-    m 7wud "So I definitely think it has its merits."
+label monika_parenting:
+    
+    m 1esa "Hey [player], do you ever think about what its like to be a parent?"
+    m 7rsb "I mean,{w=0.3} I definitely think parenting can provide some really unqiue life experiences."
+    m 2esb "Many parents talk about how rewarding it is to raise children and watch them grow up."
+    m 2esa"Getting to show a child all the wonderful things about the world is said to be one of the most wholesome and heartwarming parts of life."
+    m 7wub "So I definitely think it has a lot of great things about it."
     m 2ruc "But I also see how painful it can be for many parents when the time finally comes for their child to leave home."
-    m 7euc "It's a lot of resposibilty too. The child's entire life can be affected by the decisions made by his or her parents."
+    m 4eud "Plus, taking care of a child is an incredible amount of work, not to mention expensive."
+    m 4euc "I did some research and according to the US Agriculture Department the average cost of raising a healthy child to the age of 18 comes out to be about $310,000 dollars."
+    m 2esd "That's $17,000 a year. Needless to say, having a child is a big investment."
+    m 3esb "But plenty of people believe the upsides outweigh the costs and have lots of children."
+    m 7euc "Parenting is a lot of resposibilty though. The child's entire life can be affected by the decisions made by his or her parents."
     m 1duc "Unfortunately, sometimes this resposibilty goes ignored."
     m 1eud "So many children suffer from parents who are neglectful or even abusive."
-    m "The lack of love and attention often leads children down a dark path later in life."
+    m "The lack of love and attention tends to lead some children down a dark path..."
     m 1dkc "Children coming from abusive households are more likely to become abusive towards their own children."
     m 1ekc "This tends to lead to a vicious cycle of abuse that can go on for generations."
     m 1dkc "..."
     m 7wkd "I just feel so bad for all the kids who have to be in that situation!"
     m 2gfd "Honestly abusive parents are just the worst of the worst in my opinion."
-    m 4wfd "Like, seriously, how could anybody bring themselves to harm {i}anyone's{/i} child, let alone their own?"
+    m 4wfd "Like, {w=0.3}seriously, how could anybody bring themselves to harm {i}anyone's{/i} child, let alone their own?"
     
     if not persistent._mas_pm_cares_about_dokis:
         m 1lksdlc "Poor Natsuki..."
-        m 2rksdlb "I guess the silver lining of her story is that the abuse wasn't real."
+        m 2rksdlb "I guess the silver lining of her story is that what happened to her wasn't real."
         m 3wusdld "That's not to say that what happened in her home life wasn't abuse!"
-        m 2rksdlb "But, well... you know what I mean, [player]."
-        
-    m 1rksdla "Sorry [player], I guess I got a little distracted..."
-    m 1esa "To get back to your question: Having children just isn't really a goal of mine."
-    m 1rsa "But, when I'm with you in person, and if we get far enough into our relationship..."
-    m 1gkbsa "I might be willing to compromise... if you really wanted to."
-    m 1tsbfa "Maybe..."
+        m 3wusdlc "That's not what I meant at all!"
+        m 2rksdlb "But, {w=0.3}well... {w=0.3}you know what I mean, [player]."
+    
+    m 2dsc "..."
+    m 1esc "But anyway, I think parenting is really subjective."
+    m 3esd "There's no perfect way to do it and there are plenty of cases where there is no right way to handle things with a child."
+    m 3esa "But I believe that parents who really try their best to give their child the best chance in life..."
+    m 3esb "Ones who really make that effort and go the extra mile..."
+    m 3esa "Those are the parents who get the reward of being truly proud of their children, no matter how succesful they become."
+    m 3rksdlb "Its just the ones who don't care who are the issue."
     return
 
 init 5 python:
