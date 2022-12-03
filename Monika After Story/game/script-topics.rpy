@@ -3276,7 +3276,7 @@ label monika_parenting:
     m 1esa "Hey [player], do you ever think about what its like to be a parent?"
     m 7rsb "I mean,{w=0.3} I definitely think parenting can provide some really unqiue life experiences."
     m 2esb "Many parents talk about how rewarding it is to raise children and watch them grow up."
-    m 2esa"Getting to show a child all the wonderful things about the world is said to be one of the most wholesome and heartwarming parts of life."
+    m 2esa "Getting to show a child all the wonderful things about the world is said to be one of the most wholesome and heartwarming parts of life."
     m 7wub "So I definitely think it has a lot of great things about it."
     m 2ruc "But I also see how painful it can be for many parents when the time finally comes for their child to leave home."
     m 4eud "Plus, taking care of a child is an incredible amount of work, not to mention expensive."
