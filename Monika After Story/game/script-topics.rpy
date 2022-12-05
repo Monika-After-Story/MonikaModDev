@@ -3683,6 +3683,66 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_gifted",
+            category=['society','life'],
+            prompt="Gifted Kids",
+            random=True
+        )
+    )
+
+label monika_gifted:
+    m 1eub "Hey [player], have you ever heard of 'gifted kids'?"
+    m 1eua "Its a fairly common term used to describe children and adults who have advanced learning capabilities."
+    m 2eua "Gifted children are characterized as having very large vocabularies and advanced sentence structure for their age."
+    m 3eub "They often also have a great memory and incredible imaginations allowing them to experience vivid daydreams, as well as heightened empathy."
+    m 3eua "With such talent these children very often excell in school, especially in areas that are of particular interest to them."
+    m 4wub "Many of them are even able to ace difficult tests without ever having to study!"
+    m 1etb "Now you might be thinking, being gifted sounds like a dream come true! Imagine, going through high school never having to study!"
+    m 1esc "But the truth is being gifted is both a blessing and a curse."
+    m 2esc "Since they never learn how to study early on in their school careers, when entering college many gifted individuals experience a sort of 'wall'. "
+    m 3esc "College often provides a level of difficulty where their giftedness just isn't enough to succeed."
+    m 4esd "The only way to succeed in such advanced classes is to dedicate hours to studying and memorizing the material."
+    m 2dkc "Unfortunately, because most gifted kids never learned how to study, they begin to fail."
+    m 1ekc "Some even drop out of prestigious colleges they dedicated much of their lives trying to get in to!"
+    m 4wud "Imagine, spending your entire life up until that point being told that you're smarter than all of your peers. Taking all the advanced classes and still outperforming students above your grade level."
+    m 1rud "Just to flunk out of college..."
+    m 2esc "For a lot of gifted individuals their giftedness outshines most of their other traits. They aren't known as anything other than 'the smart kid'."
+    m 3esc "Eventually, 'the smart kid' becomes their entire identity. It's all they are, as far as they're concerned."
+    m 3etc "So what happens to a 'gifted kid' when they aren't feeling very 'gifted' anymore?"
+    m 5rkc "I imagine you'd feel like a complete failure."
+    m 7ekd "Its not their fault either, its not like they could have forced themselves to study things they already completely understood."
+    m 4ekc "It completely defeats the point of studying and just becomes a waste of time."
+    m 1esd "I guess what I'm trying to say is, its a very difficult problem to deal with."
+    m 1esa "Anyway, I'm kind of curious, and don't worry I won't judge you regardless of your answer."
+    m 1esb "Are you  identified as gifted, [player]?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you identified as gifted, [player]?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_is_gifted = True
+            m 1hsb "That's amazing [player]!"
+            m 1rksdla "Sorry if what I said came across as a little disheartening."
+            m 3lsb "But I think its important that you don't fall into the trap of feeling obligated to 'live up to your potential' all the time."
+            m 1eua "As long as you're happy and doing what you love, that's all you should feel you need to acomplish."
+            m 7eub "Don't get me wrong! If you aspire to change the world, go for it!"
+            m 1eka "Just know, you aren't wasting anything by being who you want to be."
+
+        "No.":
+            $ persistent._mas_pm_is_gifted = False
+            m 2eka "That's completely fine [player]."
+            m 1eub "Trust me, you don't have to have any sort of lucky 'gift' to be intelligent and successful."
+            m 3hua "Plus, you're more able to pick up a life skill that might be even more important than raw intelligence:"
+            m 7hub "Work ethic!"
+            m 7eua "So don't be jealous of gifted people. You already have all the gifts you need to make an impact on the world."
+
+    m 5eubsb "Gifted or not, you're amazing and I will always love you, [player]."
+    m 5eubsa "Never forget it~"
+    return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_natsuki",
             category=['club members'],
             prompt="Natsuki's death",
