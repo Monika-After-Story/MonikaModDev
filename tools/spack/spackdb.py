@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass, field
 from collections import defaultdict
+from enum import Enum
+from typing import Optional
 
 from spack.spack import SpackType, SpackStructureType, Spack
 from spack.spackjson import SpackJSONDB
@@ -9,6 +11,9 @@ from spack.spackjson import SpackJSONDB
 
 def _defaultdict_maker():
     return defaultdict(dict)
+
+def _defaultdict_str():
+    return defaultdict(str)
 
 
 @dataclass
@@ -23,6 +28,9 @@ class SpackDBFilterCriteria():
     # structure types to filter by
     struct_types: list[SpackStructureType] = None
 
+    # list of metadata ids to filter by - use only when needed
+    metadata_ids: list[int] = None
+
     @staticmethod
     def copy(filter_criteria: "SpackDBFilterCriteria") -> "SpackDBFilterCriteria":
         """
@@ -36,8 +44,25 @@ class SpackDBFilterCriteria():
             new_criteria.ids = list(filter_criteria.ids)
         if filter_criteria.struct_types:
             new_criteria.struct_types = list(filter_criteria.struct_types)
+        if filter_criteria.metadata_ids:
+            new_criteria.metadata_ids = list(filter_criteria.metadata_ids)
 
         return new_criteria
+
+
+class SpackDBLevel(Enum):
+    Spack = 0
+    MetadataID = 1
+    ImgSit = 2
+    SpackStructureType = 3
+    SpackType = 4
+
+
+# DB type aliases
+SpackMetadataDB = dict[int, Spack]
+SpackImgDB = dict[str, SpackMetadataDB]
+SpackStructureDB = dict[SpackStructureType, SpackImgDB]
+SpackTypeDB = defaultdict[SpackType, SpackStructureDB]
 
 
 @dataclass
@@ -47,101 +72,133 @@ class SpackDB():
     """
 
     # spacks organized by type
-    spacks_by_type: defaultdict[SpackType, dict[str, dict[SpackStructureType, Spack]]] = field(default_factory=_defaultdict_maker)
+    # type -> Structure type -> img_sit -> metadata id: spack
+    spacks_by_type: SpackTypeDB = field(default_factory=_defaultdict_maker)
+
+    # spacks organized to get prefix data
+    # spack: prefix if necessary
+    spack_prefix_db: dict[Spack, str] = field(default_factory=dict)
 
     # spack jsons
-    spacks_json = SpackJSONDB = SpackJSONDB()
-
-    def __getitem__(self, item) -> dict[str, dict[SpackStructureType, Spack]]:
-        if item not in SpackType.enums():
-            raise ValueError("invalid spack type - {0}".format(item))
-
-        return self.spacks_by_type[item]
+    spacks_json: SpackJSONDB = SpackJSONDB()
 
     def __len__(self):
-        count = 0
-        for spack_type in SpackType.enums():
-            count += len(self[spack_type])
-        return count
+        return len(self.spack_prefix_db)
 
-    def add(self, spack: Spack) -> 'SpackDB':
+    def add(
+            self,
+            spack: Spack,
+            path_prefix: str = ""
+    ) -> 'SpackDB':
         """
         Adds a spack to this DB
         :param spack: spack to add
+        :param path_prefix: path prefix if this is not in root dir
         :returns: self for chaining
         """
-        spacks_dict = self[spack.spack_type]
-        existing_spacks = spacks_dict.get(spack.img_sit, None)
-
-        if existing_spacks:
-            existing_spack = existing_spacks.get(spack.structure_type)
-
-            if existing_spack:
-                existing_spack.merge(spack)
-
-            else:
-                # add new one
-                existing_spacks[spack.structure_type] = spack
+        # first check in prefix DB for existence
+        if spack in self.spack_prefix_db:
+            # spack already exists - merge (hash checking should all main vars)
+            self._get(spack.spack_type, spack.structure_type, spack.img_sit, spack._metadata_id).merge(spack)
 
         else:
-            # not existing, create new one
-            spacks_dict[spack.img_sit] = {
-                spack.structure_type: spack
-            }
+            # not existing, create new one.
+            spacks_dict = self.spacks_by_type[spack.spack_type]
+
+            # check for matching structure
+            structure_spacks = spacks_dict.get(spack.structure_type, None)
+            if not structure_spacks:
+                structure_spacks = {}
+                spacks_dict[spack.structure_type] = structure_spacks
+
+            # check for matching img sit
+            img_spacks = structure_spacks.get(spack.img_sit, None)
+            if not img_spacks:
+                img_spacks = {}
+                structure_spacks[spack.img_sit] = img_spacks
+
+            # no new structure created here - no need to check for existence first
+            img_spacks[spack._metadata_id] = spack
+
+            # lastly add to prefix map
+            self.spack_prefix_db[spack] = path_prefix
 
         return self
 
-    def get(
+    def _filter_pass(self, db_list: list[dict], ids_to_filter: Optional[list]) -> list:
+        """
+        given a list of dbs, and a list of keys for data in those dbs, generate a list of the data in the list of dbs
+        that matches the list of keys.
+        :param db_list: list of dbs to filter
+        :param ids_to_filter: list of keys of data to keep. If none, all data is kept, so this is basically flattened
+        :returns: list of data, filtered if needed
+        """
+        output = []
+        if ids_to_filter:
+            for db in db_list:
+                for id in ids_to_filter:
+                    data = db.get(id)
+                    if data:
+                        output.append(data)
+        else:
+            for db in db_list:
+                output.extend(db.values())
+
+        return output
+
+    def _get(
             self,
-            types: list[SpackType] = None,
-            ids: list[str] = None,
-            struct_types: list[SpackStructureType] = None,
-            filter_criteria: SpackDBFilterCriteria = None
-    ) -> list[Spack]:
+            spack_type: SpackType,
+            structure_type: SpackStructureType,
+            img_sit: str,
+            metadata_id: int = 0
+    ) -> Optional[Spack]:
+        """
+        Gets a single item from the main spack DB - always use this to retrieve a single item.
+        :param spack_type: SpackType of spack to get
+        :param structure_type: SpackStructureType of spack to get
+        :param img_sit: img_sit of spack to get
+        :param metadata_id: metadata id of spack to get. Defaults to 0
+        :returns: spack, or None if could not get
+        """
+        return self.spacks_by_type.get(spack_type, {}).get(structure_type, {}).get(img_sit, {}).get(metadata_id, None)
+
+    def get(self, filter_criteria: SpackDBFilterCriteria = None) -> list[Spack]:
         """
         Gets all spacks that pass a specific set of filter criteria. No criteria set will get all spacks in a list.
-        :param types: list of types of spack to get
-        :param ids: list of ids of the spack to get
-        :param struct_types: list of structure types to get
-        :param filter_criteria: pass to use objectified filter criteria instead. Takes prioritty.
+        :param filter_criteria: critera to filter spacks with
         :returns: list of spacks
         """
         if filter_criteria:
             types = filter_criteria.types
             ids = filter_criteria.ids
             struct_types = filter_criteria.struct_types
+            metadata_ids = filter_criteria.metadata_ids
+        else:
+            types = None
+            ids = None
+            struct_types = None
+            metadata_ids = None
 
-        # defaul types
+        # default types
         if not types:
             types = self.get_types()
 
-        # get base pop of spack ID structures
-        spack_id_structs = [self[spack_type] for spack_type in types]
+        # get structure dbs
+        struct_dbs = [
+            self.spacks_by_type[spack_type]
+            for spack_type in types
+        ]
 
-        # apply ID filter
-        spack_structures = []
-        for spack_id_struct in spack_id_structs:
-            if ids:
-                for id in ids:
-                    spack_structs_from_id = spack_id_struct.get(id)
-                    if spack_structs_from_id:
-                        spack_structures.append(spack_structs_from_id)
-            else:
-                spack_structures.extend(list(spack_id_struct.values()))
+        # get img_sit dbs
+        img_sit_dbs: list[SpackImgDB] = self._filter_pass(struct_dbs, struct_types)
 
-        # apply struct type filter
-        spacks = []
-        for spack_struct in spack_structures:
-            if struct_types:
-                for struct_type in struct_types:
-                    spack = spack_struct.get(struct_type)
-                    if spack:
-                        spacks.append(spack)
+        # get metadata dbs
+        metadata_dbs: list[SpackMetadataDB] = self._filter_pass(img_sit_dbs, ids)
 
-            else:
-                spacks.extend(list(spack_struct.values()))
-
-        return spacks
+        # now get data
+        data: list[Spack] = self._filter_pass(metadata_dbs, metadata_ids)
+        return data
 
     def get_types(self) -> list[SpackType]:
         """
@@ -151,11 +208,11 @@ class SpackDB():
         return [
             spack_type
             for spack_type in SpackType.enums()
-            if len(self[spack_type]) > 0
+            if len(self.spacks_by_type[spack_type]) > 0
         ]
 
     def has_jsons(self) -> bool:
         """
         Checks if we have json data
         """
-        return len(self.SpackJSONDB) > 0
+        return len(self.spacks_json) > 0

@@ -95,6 +95,12 @@ class SpackLoader():
         return None, None
 
     @classmethod
+    def scan(cls, file_path: str) -> SpackDB:
+        """
+        scans folders for spacks and puts them in the DB -
+        """
+
+    @classmethod
     def _try_process_spack(cls, file_path: str, file_name: str) -> Optional[Spack]:
         """
         Tries to process the given file (or directory) into its associated spack.
@@ -148,7 +154,7 @@ class SpackLoader():
 
                 parsed_sub_files.append(sub_file)
 
-        return Spack(file_name, SpackStructureType.FOLDER, parsed_sub_files, spack_type)
+        return Spack(file_name, SpackStructureType.FOLDER, spack_type, file_list=parsed_sub_files)
 
     @classmethod
     def _try_process_spack_old(cls, file_name: str) -> Optional[Spack]:
@@ -161,7 +167,7 @@ class SpackLoader():
         # determine if spack
         spack_type, img_sit = cls.parse_file_old(file_name)
         if spack_type and img_sit:
-            return Spack(img_sit, SpackStructureType.FILES, [file_name], spack_type)
+            return Spack(img_sit, SpackStructureType.FILES, spack_type, file_list=[file_name])
 
         return None
 

@@ -3,7 +3,7 @@ import os
 import re
 
 from typing import Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 
@@ -509,11 +509,15 @@ class Spack():
     # how this spack is organized
     structure_type: SpackStructureType
 
-    # list of files associated with this spack
-    file_list: list
-
     # the type of spack this is
     spack_type: SpackType
+
+    # list of files associated with this spack
+    file_list: list = field(default_factory=list)
+
+    # special unique ID -> provide if necessary for uniqueness, otherwise, defaults to 0
+    # this is considered in hashing and equality checks
+    _metadata_id: int = 0
 
     def __eq__(self, other: "Spack") -> bool:
         """
@@ -523,6 +527,7 @@ class Spack():
             self.spack_type == other.spack_type
             and self.structure_type == other.structure_type
             and self.img_sit == other.img_sit
+            and self._metadata_id == other._metadata_id
         )
 
     def __ne__(self, other) -> bool:
@@ -531,6 +536,9 @@ class Spack():
         """
         return not self.__eq__(other)
 
+    def __hash__(self):
+        return hash(self.img_sit + str(self.structure_type) + str(self.spack_type) + str(self._metadata_id))
+
     def as_img_sit_type(self) -> tuple[str, int]:
         """
         This spack as a img sit type tuple.
@@ -538,14 +546,16 @@ class Spack():
         return (self.img_sit, self.spack_type.json_type_value)
 
     @staticmethod
-    def menustr(spack: "Spack"):
+    def menustr(spack: "Spack") -> str:
         """
         Converts spack into menuable string
+        :returns: menuable string
         """
         return "|".join([
             spack.spack_type.dir_name.capitalize(),
             "N" if spack.structure_type == SpackStructureType.FOLDER else "O",
-            spack.img_sit
+            spack.img_sit,
+            ("# " + str(spack._metadata_id)) if spack._metadata_id > 0 else ""
         ])
 
     def menu_file_list(self) -> list[str]:
@@ -560,7 +570,6 @@ class Spack():
             ]
 
         return list(self.file_list)
-
 
     def merge(self, other: "Spack"):
         """
@@ -676,8 +685,8 @@ class SpackConversion():
             Spack(
                 src_spack.img_sit,
                 SpackStructureType.FILES if converting_to_old else SpackStructureType.FOLDER,
-                conv_file_list,
-                src_spack.spack_type
+                src_spack.spack_type,
+                conv_file_list
             ),
             conv_name_mapping
         )

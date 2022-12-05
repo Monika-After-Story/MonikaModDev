@@ -326,16 +326,17 @@ def run():
             ma_folder = new_ma_folder
 
     else:
-        ma_folder = input("enter path to mod assets folder: ")
+        ma_folder = input("enter path to scan: ")
         if not ma_folder:
             return
-
 
     # verify existence + mod assets
     ma_folder = os.path.normcase(ma_folder)
 
+    # TODO - do scan
+
     if not os.access(ma_folder, os.F_OK):
-        print("Could not find path: {0}".format(ma_folder))
+        print("Could not find access folder: {0}".format(ma_folder))
         menutils.e_pause()
         return
 
