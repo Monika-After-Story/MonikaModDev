@@ -980,7 +980,7 @@ label mas_unlock_hangman:
     if store.mas_games._total_games_played() > 49:
         m 3eub "Since you seem to love playing with me so much, I figured you might like to play other games with me as well!"
 
-    elif renpy.seen_label('game_pong') and not renpy.seen_label('mas_reaction_gift_noudeck'):
+    elif renpy.seen_label('game_pong') and not renpy.seen_label('mas_nou'):
         m 1eksdla "I thought that you might be getting bored with Pong..."
 
     elif renpy.seen_label('game_pong') and renpy.seen_label('mas_nou'):
