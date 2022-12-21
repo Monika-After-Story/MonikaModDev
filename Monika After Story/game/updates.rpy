@@ -374,6 +374,24 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.13
+label v0_12_13(version="v0_12_13"):
+    python hide:
+        isld_p_data = persistent._mas_islands_unlocks
+        if isld_p_data is not None:
+            keys = (
+                "decal_bookshelf_lantern",
+                "decal_circle_garland",
+                "decal_hanging_lantern",
+                "decal_rectangle_garland",
+                "decal_tree_lights",
+                "decal_wreath"
+            )
+            for k in keys:
+                isld_p_data[k] = False
+
+    return
+
 # 0.12.12
 label v0_12_12(version="v0_12_12"):
     python hide:
@@ -2084,8 +2102,8 @@ label v0_10_2(version="v0_10_2"):
 label v0_10_1(version="v0_10_1"):
     #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
     if datetime.date.today() < mas_monika_birthday:
-       $ persistent._mas_bday_no_time_spent = True
-       $ persistent._mas_bday_no_recognize = True
+        $ persistent._mas_bday_no_time_spent = True
+        $ persistent._mas_bday_no_recognize = True
 
     #Fix all of the topics which are now having actions undone (conditional updates)
     python:
