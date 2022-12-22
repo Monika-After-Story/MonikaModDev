@@ -15814,7 +15814,7 @@ label monika_using_pcs_healthily:
     m 2hksdlb "...Keep your keyboard and mouse within easy reach, though!"
     m 4eub "Of course, lighting is important too! {w=0.3}{nw}"
     extend 2eua "Try to keep the room well-lit, but not so much that light is glaring off the screen."
-    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches. "
+    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches."
     m 2eud "Since it's important to stay hydrated too, you could always fetch some fresh water while you're up from your desk."
     m 4eksdlc "Above all else, if you ever start to feel unwell, just stop what you're doing, rest, and then make sure everything is okay before you continue. "
     m 4eua "...And that's about it."
