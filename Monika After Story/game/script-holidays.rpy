@@ -1116,7 +1116,7 @@ label greeting_o31_briaryoung_shuchiin_academy_uniform:
 
     m 2hub "Welcome back!"
     m 2eub "Well, what do you think?"
-    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+    m 7tuu "I thought instead of being president, I could be the secretary for today..."
 
     if mas_isMoniAff(higher=True):
         m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
