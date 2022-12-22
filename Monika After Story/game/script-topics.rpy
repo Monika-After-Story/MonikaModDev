@@ -12472,7 +12472,7 @@ label monika_player_appearance:
                         "I don't want to talk about it.":
                             $ persistent._mas_pm_no_hair_no_talk = True
 
-                            m 1ekd "I understand, [player]"
+                            m 1ekd "I understand, [player]."
                             m 1eka "I want you to know that I don't care how much hair you have, you'll always be beautiful to me."
                             m "If you ever feel insecure or feel like talking about it, I'm always here to listen."
 
