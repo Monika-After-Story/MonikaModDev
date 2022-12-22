@@ -374,6 +374,79 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.12.13
+label v0_12_13(version="v0_12_13"):
+    python hide:
+        # 922 nts fix
+        m_bday_nts = mas_getEV("mas_bday_postbday_notimespent")
+        m_bday_hbd = mas_getEV("mas_bday_pool_happy_bday")
+        today = datetime.date.today()
+        curr_year = today.year
+        corr_end_date = mas_monika_birthday+datetime.timedelta(days=8)
+
+        # people with invalid dates will have year mismatches
+        if m_bday_nts.start_date.year != m_bday_nts.end_date.year:
+            # remove this event if in ev list in this case
+            # as it's possible this could trigger after the 1/6 reset if the dates are bad
+            mas_rmallEVL("mas_bday_postbday_notimespent")
+
+            # if we have seen the ev this year or it's past 922 + 8 days the dates should be set to the next year
+            if today > corr_end_date or (m_bday_nts.last_seen and m_bday_nts.last_seen.year == curr_year):
+                mas_setEVLPropValues(
+                    "mas_bday_postbday_notimespent",
+                    start_date = datetime.datetime.combine(mas_monika_birthday.replace(year=curr_year+1)+datetime.timedelta(days=1), datetime.time(hour=1)),
+                    end_date = mas_monika_birthday.replace(year=curr_year+1)+datetime.timedelta(days=8)
+                )
+
+            # if we haven't seen the ev this year and it's prior to the push forward date
+            # the dates should be this year
+            else:
+                mas_setEVLPropValues(
+                    "mas_bday_postbday_notimespent",
+                    start_date = datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1)),
+                    end_date = mas_monika_birthday+datetime.timedelta(days=8)
+                )
+
+        # for people who have valid years it's still possible the initial update
+        # never ran if they haven't updated in a long time so we'll run that initial
+        # update correctly this time, ensuring we have the correct dates
+        else:
+            mas_setEVLPropValues(
+                "mas_bday_postbday_notimespent",
+                start_date=datetime.datetime.combine(mas_monika_birthday.replace(year=m_bday_nts.end_date.year)+datetime.timedelta(days=1), datetime.time(hour=1))
+            )
+
+        # similar issue here, end_date could be before the start_date, so we correct
+        if today <= mas_monika_birthday:
+            mas_setEVLPropValues(
+                "mas_bday_pool_happy_bday",
+                start_date=mas_monika_birthday,
+                end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+            )
+
+        else:
+            mas_setEVLPropValues(
+                "mas_bday_pool_happy_bday",
+                start_date=mas_monika_birthday.replace(year=curr_year+1),
+                end_date=datetime.datetime.combine(mas_monika_birthday.replace(year=curr_year+1)+datetime.timedelta(days=1), datetime.time(hour=1))
+            )
+
+        # island d25 deco update
+        isld_p_data = persistent._mas_islands_unlocks
+        if isld_p_data is not None:
+            keys = (
+                "decal_bookshelf_lantern",
+                "decal_circle_garland",
+                "decal_hanging_lantern",
+                "decal_rectangle_garland",
+                "decal_tree_lights",
+                "decal_wreath"
+            )
+            for k in keys:
+                isld_p_data[k] = False
+
+    return
+
 # 0.12.12
 label v0_12_12(version="v0_12_12"):
     python hide:
@@ -452,15 +525,16 @@ label v0_12_8_1(version="v0_12_8_1"):
             conditional="mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_spent_time_with_wrapup')"
         )
 
-        mas_setEVLPropValues(
-            "mas_bday_pool_happy_bday",
-            end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
-        )
+        # next 2 entries could cause incorrect years to be set and have been corrected in the update for 0_12_13
+        #mas_setEVLPropValues(
+        #    "mas_bday_pool_happy_bday",
+        #    end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        #)
 
-        mas_setEVLPropValues(
-            "mas_bday_postbday_notimespent",
-            start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
-        )
+        #mas_setEVLPropValues(
+        #    "mas_bday_postbday_notimespent",
+        #    start_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(days=1), datetime.time(hour=1))
+        #)
 
         # transfer history vars
         # only overwrite if not set.
@@ -2084,8 +2158,8 @@ label v0_10_2(version="v0_10_2"):
 label v0_10_1(version="v0_10_1"):
     #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
     if datetime.date.today() < mas_monika_birthday:
-       $ persistent._mas_bday_no_time_spent = True
-       $ persistent._mas_bday_no_recognize = True
+        $ persistent._mas_bday_no_time_spent = True
+        $ persistent._mas_bday_no_recognize = True
 
     #Fix all of the topics which are now having actions undone (conditional updates)
     python:
