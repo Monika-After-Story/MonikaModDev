@@ -11751,7 +11751,7 @@ label monika_justice:
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"
                         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                        m 5hubfa "Ehehe, You're so cute, [player]~"
+                        m 5hubfa "Ehehe, you're so cute, [player]~"
 
                     else:
                         m 1euc "..."
