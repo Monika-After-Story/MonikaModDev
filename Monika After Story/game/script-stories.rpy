@@ -1889,7 +1889,7 @@ label mas_scary_story_prison_escape:
     m 7eua "Over time, she became good friends with one of the prison caretakers."
     m 3esc "His job was to bury any prisoners who died in a graveyard just outside the prison walls."
     m 3esd "Whenever a prisoner died, the caretaker rang a bell which was heard by all of the inmates."
-    m 3esc "Next, he got the body and put it in a casket, and then entered his office to fill out the death certificate before returning to the nail the casket lid shut."
+    m 3esc "Next, he got the body and put it in a casket, and then entered his office to fill out the death certificate before returning to nail the casket lid shut."
     m 3esd "Finally, he put it on a wagon to take to the graveyard and bury it."
     m 1euc "Knowing this routine, the woman devised an escape plan and shared it with the caretaker..."
     m 1eud "The next time the bell rang, the woman would leave her cell and sneak into the dark room where the coffins were kept."
