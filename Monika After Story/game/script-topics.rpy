@@ -2359,7 +2359,26 @@ label monika_rain_holdme:
 
         call monika_holdme_end
         # small affection increase so people don't farm affection with this one.
-        $ mas_gainAffection(modifier=0.25)
+        python:
+            # Monika likes being held for long periods of time, the longer the better
+            # We COULD use elapsed_time for this, but as it's a common var, we shouldn't
+            # in case it is being used by something else, so:
+            # TODO: zero-out, `del`, or `None`-ify elapsed_time when done with it in `monika_holdme_reactions`
+            # we have to use it anyways tho because calculating this ourselves can lead to inflated numbers in
+            # some scenarios
+            if elapsed_time <= datetime.timedelta(minutes=10):
+                mod = 0.25
+            elif elapsed_time <= datetime.timedelta(minutes=30):
+                mod = 0.45
+            elif elapsed_time <= datetime.timedelta(minutes=60):
+                mod = 0.65
+            elif elapsed_time <= datetime.timedelta(minutes=100):
+                mod = 0.75
+            elif elapsed_time <= datetime.timedelta(minutes=150):
+                mod = 0.85
+            else:
+                mod = 1.0
+            mas_gainAffection(modifier=mod)
 
     else:
         # no affection loss here, doesn't make sense to have it
