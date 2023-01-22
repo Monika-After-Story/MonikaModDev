@@ -37,7 +37,7 @@ init -1000 python in mas_submod_utils:
     HEADER_VERSION = 1
 
     HEADER_GLOB = "**/header.json"
-    SUBMOD_DIR = "Submods"
+    SUBMODS_DIR = "Submods"
 
     SANE_STR_PATTERN = re.compile(r'^[a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
 
@@ -52,7 +52,7 @@ init -1000 python in mas_submod_utils:
         author: str
         name: str
         version: str
-        directory: str# NOTE: this isn't part of the json
+        directory: str# NOTE: this isn't part of the json, will be added dynamically during loading
         modules: tuple[str, ...]
         description: str = ""
         dependencies: dict[str, tuple[str, str]] = {}# pydantic handles mut args
@@ -358,7 +358,7 @@ init -1000 python in mas_submod_utils:
         """
         Scans and inits submods
         """
-        search_path = os.path.join(config.gamedir, SUBMOD_DIR, HEADER_GLOB)
+        search_path = os.path.join(config.gamedir, SUBMODS_DIR, HEADER_GLOB)
         for fn in glob.iglob(search_path, recursive=True):
             _init_submod(fn)
 
@@ -669,10 +669,20 @@ init -1000 python in mas_submod_utils:
                 try:
                     submod.__checkDependencies()
 
-                except SubmodError as e:
-                    submod_log.error(
-                        f"Dependency check failed for submod '{submod.name}':\n    {e}"
-                    )
+                # Technically there should only be SubmodError
+                # but let's make it extra safe and instead catch broad Exception
+                except Exception as e:
+                    if isinstance(e, SubmodError):
+                        submod_log.error(
+                            f"Dependency check failed for submod '{submod.name}':\n    {e}"
+                        )
+                    else:
+                        submod_log.critical(
+                            f"Critical error while validating dependencies for submod '{submod.name}':\n    {e}"
+                        )
+                    # If we're here, we failed for any reason
+                    # Let's remove this submod as it cannot be loaded
+                    cls._submod_map.pop(submod.name, None)
 
                 else:
                     # No error means we passed
@@ -680,10 +690,6 @@ init -1000 python in mas_submod_utils:
                     if submod.name not in persistent._mas_submod_version_data:
                         persistent._mas_submod_version_data[submod.name] = submod.version
                     continue
-
-                # If we're here, we failed for any reason
-                # Let's remove this submod as it cannot be loaded
-                cls._submod_map.pop(submod.name, None)
 
         def __checkDependencies(self):
             """
@@ -755,6 +761,7 @@ init -1000 python in mas_submod_utils:
                 config.gamedir, self.directory, "python-packages"
             )
             if os.path.exists(pypacks):
+                # TODO: should we dynamically expand path like this?
                 # renpy.loader.add_python_directory(pypacks)
                 sys.path.append(pypacks)
 
@@ -833,9 +840,13 @@ init -1000 python in mas_submod_utils:
         """
         submod = _Submod._getSubmod(name)
 
-        if submod and version:
+        if submod is None:
+            return False
+
+        if version:
             return submod._checkVersions(version) >= 0
-        return bool(submod)
+
+        return True
 
     def getSubmodDirectory(name: str) -> str|None:
         """
