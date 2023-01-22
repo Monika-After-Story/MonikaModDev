@@ -2,6 +2,7 @@ python early in _mas_loader:
     import os
     import glob
     import sys
+    from itertools import chain
     from heapq import merge as heapq_merge
     from importlib.util import (
         spec_from_file_location,
@@ -21,13 +22,15 @@ python early in _mas_loader:
         "scripts.rpa"
     ))
 
-    __GLOB_PATTERN = "**/*.rp[aey]*"
+    __GLOB_PATTERN_0 = "**/*.rp[aey]*"
+    __GLOB_PATTERN_1 = "**/*_ren.py"
 
     __RS_EXTS = frozenset((
         "rpa",
         "rpe",
         "rpy",
-        "rpyc"
+        "rpyc",
+        "py"
     ))
 
     __DISB_EXT = ".disabled"
@@ -59,8 +62,10 @@ python early in _mas_loader:
         Returns an iterator over found unrecognised scripts
         """
         gamedir = renpy.config.gamedir
-        pattern = os.path.join(gamedir, __GLOB_PATTERN)
-        file_names = glob.iglob(pattern, recursive=True)
+        file_names = chain(
+            glob.iglob(os.path.join(gamedir, __GLOB_PATTERN_0), recursive=True),
+            glob.iglob(os.path.join(gamedir, __GLOB_PATTERN_1), recursive=True)
+        )
 
         for fn in file_names:
             rel_fn = fn.partition(gamedir)[-1]
