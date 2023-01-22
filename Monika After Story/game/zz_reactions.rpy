@@ -1810,7 +1810,7 @@ label mas_reaction_christmascookies:
         m 3eksdla "You can give me more after I finish these, okay?"
 
     else:
-        if mas_consumable_christmascookies.enabled():
+        if mas_consumable_christmascookies.enabled() and mas_consumable_christmascookies.hasServing():
             m 1wuo "...another batch of Christmas cookies!"
             m 3wuo "That's a whole lot of cookies, [player]!"
             m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
@@ -1866,7 +1866,7 @@ label mas_reaction_candycane:
         m 1eka "You can save them for later, alright?"
 
     else:
-        if mas_consumable_candycane.enabled():
+        if mas_consumable_candycane.enabled() and mas_consumable_candycane.hasServing():
             m 3hua "More candy canes!"
             m 3hub "Thanks [player]!"
 

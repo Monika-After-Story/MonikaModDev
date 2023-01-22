@@ -24,7 +24,7 @@ init -900 python in mas_ics:
 
     # NOTE: these checksums are BEFORE b64 encoding
 
-    ISLAND_PKG_CHKSUM = "291e6b7b436e4a9910e6062bc5ef6170bd9d4268a2cda344e2f13b86be85df6e"
+    ISLAND_PKG_CHKSUM = "4cff576537c3403985088589fbdfaa10a575c21f13ed3fbd3282ac9697f47cfb"
 
     #################################### O31 ##################################
     # cg folder
