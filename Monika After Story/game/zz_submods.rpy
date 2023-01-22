@@ -169,17 +169,17 @@ init -1000 python in mas_submod_utils:
                     if url.scheme != "https":
                         submod_log.warning(f"Submod '{name}' doesn't use https scheme in its repository link")
 
-                    if url.netloc != "github.com":
-                        submod_log.warning(f"Submod '{name}' uses unknown repository hosting. Consider switching to GitHub.com")
-
-                    elif (
-                        url.path.count("/") != 2
-                        or url.params
-                        or url.query
-                        or url.fragmnent
-                    ):
-                        # Only for github
-                        submod_log.warning(f"Submod '{name}' seems to have invalid link to the repository.")
+                    # After what github has done, not going to promote it
+                    # if url.netloc != "github.com":
+                    #     submod_log.warning(f"Submod '{name}' uses unknown repository hosting. Consider switching to GitHub.com")
+                    # elif (
+                    #     url.path.count("/") != 2
+                    #     or url.params
+                    #     or url.query
+                    #     or url.fragmnent
+                    # ):
+                    #     # Only for github
+                    #     submod_log.warning(f"Submod '{name}' seems to have invalid link to the repository.")
 
             return value
 
