@@ -204,7 +204,7 @@ python early in _mas_loader:
             raise ModuleNotFoundError(f"Failed to dynamically import '{path}' as '{name}', not found")
         module = module_from_spec(spec)
 
-        if global_import:
+        if is_global:
             sys.modules[name] = module
 
         spec.loader.exec_module(module)
