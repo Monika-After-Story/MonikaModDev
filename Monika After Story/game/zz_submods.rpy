@@ -760,8 +760,8 @@ init -1000 python in mas_submod_utils:
             pypacks = os.path.join(
                 config.gamedir, self.directory, "python-packages"
             )
+            # TODO: Not sure if we should dynamically expand path like this?
             if os.path.exists(pypacks):
-                # TODO: should we dynamically expand path like this?
                 # renpy.loader.add_python_directory(pypacks)
                 sys.path.append(pypacks)
 

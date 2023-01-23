@@ -127,34 +127,18 @@ python early in _mas_loader:
         except Exception as e:
             raise IncludeModuleError(f"Failed to include module: {e}") from e
 
-        # renpy doesn't sort nodes for some reason
-        module_initcode.sort(key=lambda i: i[0])
+        # We may not insert elements at or prior the current id!
+        current_id = renpy.game.initcode_ast_id
 
-        ctx = renpy.game.context()
-        current_node_name = ctx.current
-        current_node_id = None
-        current_node_prio = None
-
-        # Thanks to renpy, we have to iter thru all the nodes to figure out where we are now
-        for idx, (prio, node) in enumerate(renpy_script.initcode):
-            if current_node_name == node.name:
-                current_node_id = idx
-                current_node_prio = prio
-                break
-
-        else:
-            raise IncludeModuleError("Failed to include module: couldn't find current AST node")
-
-        if module_initcode[0][0] < current_node_prio:
+        if module_initcode[0][0] < renpy_script.initcode[current_id][0]:
             raise IncludeModuleError(
-                (
-                    f"Module '{name}' contains nodes with priority lower than the node that loads it "
-                    f"(got {module_initcode[0][0]}, expected {current_node_prio} or higher)"
-                )
+                f"Module '{name}' contains nodes with priority lower than the node that loads it"
             )
 
-        merge_id = current_node_id + 1
+        merge_id = current_id + 1
         current_tail = renpy_script.initcode[merge_id:]
+        # Since script initcode and module initcode are both sorted,
+        # we can use heap to merge them
         new_tail = heapq_merge(current_tail, module_initcode, key=lambda i: i[0])
 
         renpy_script.initcode[merge_id:] = list(new_tail)
