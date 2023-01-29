@@ -19,10 +19,10 @@
         "thumb": "historyvariety_sunflower_necklace",
         "group": "necklace",
         "select_dlg": [
-            "You are my Sunshine~"
+            "You are my sunshine~"
         ]
     },
-    "giftname": "historyvariety_sunflower_necklace",
+    "giftname": "sunflower_necklace",
     "arm_split": {
         "default": "0",
         "use_reg_for_l": true

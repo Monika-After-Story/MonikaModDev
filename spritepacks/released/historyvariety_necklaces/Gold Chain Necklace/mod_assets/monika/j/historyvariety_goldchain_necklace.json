@@ -1,0 +1,30 @@
+{
+    "__author": "HistoryVariety",
+    "version": 3,
+    "type": 0,
+    "name": "historyvariety_goldchain_necklace",
+    "img_sit": "historyvariety_goldchain_necklace",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 8,
+    "acs_type": "necklace",
+    "stay_on_start": true,
+    "priority": 8,
+    "dlg_desc": "necklace",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Gold Chain Necklace",
+        "thumb": "historyvariety_goldchain_necklace",
+        "group": "necklace",
+        "select_dlg": [
+            "Oh! Are we going out somewhere, [player]?"
+        ]
+    },
+    "giftname": "goldchain_necklace",
+    "arm_split": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}

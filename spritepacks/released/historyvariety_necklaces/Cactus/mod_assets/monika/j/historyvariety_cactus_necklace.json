@@ -22,7 +22,7 @@
             "Luckily this necklace doesn't have spines!"
         ]
     },
-    "giftname": "historyvariety_cactus_necklace",
+    "giftname": "cactus_necklace",
     "arm_split": {
         "default": "0",
         "use_reg_for_l": true

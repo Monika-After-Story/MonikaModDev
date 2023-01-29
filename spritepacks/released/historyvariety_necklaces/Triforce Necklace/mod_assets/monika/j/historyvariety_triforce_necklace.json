@@ -22,7 +22,7 @@
             "It's dangerous to go alone, take this!"
         ]
     },
-    "giftname": "historyvariety_triforce_necklace",
+    "giftname": "triforce_necklace",
     "arm_split": {
         "default": "0",
         "use_reg_for_l": true

@@ -22,7 +22,7 @@
             "Who's your favorite villager, [player]?"
         ]
     },
-    "giftname": "historyvariety_animalcrossing_necklace",
+    "giftname": "animalcrossing_necklace",
     "arm_split": {
         "default": "0",
         "use_reg_for_l": true
