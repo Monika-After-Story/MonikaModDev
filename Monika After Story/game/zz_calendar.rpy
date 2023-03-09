@@ -89,14 +89,18 @@ init -1 python:
         NOTE_FONT = "mod_assets/font/m1_fixed.ttf"
 
         # Month names constant array
-        MONTH_NAMES = ["Unknown", "January", "February",
-            "March", "April", "May", "June", "July",
-            "August", "September", "October",
-            "November", "December"]
+        MONTH_NAMES = [
+            _("Unknown"), _("January"), _("February"),
+            _("March"), _("April"), _("May"), _("June"),
+            _("July"), _("August"), _("September"),
+            _("October"), _("November"), _("December")
+        ]
 
         # Day names constant array
-        DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-            "Friday", "Saturday"]
+        DAY_NAMES = [
+            _("Sunday"), _("Monday"), _("Tuesday"),
+            _("Wednesday"), _("Thursday"), _("Friday"), _("Saturday")
+        ]
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -218,7 +222,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         EVENT_H = 640
         EVENT_XALIGN = 0.96
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
-        EVENT_RETURN = "< Go back"
+        EVENT_RETURN = _("< Go back")
 
         def __init__(self, select_date=False):
             """
@@ -300,7 +304,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # Change title depending on flag
             if select_date:
                 self.text_title = Text(
-                    "Select a Date",
+                    _("Select a Date"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
@@ -308,7 +312,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 )
             else:
                 self.text_title = Text(
-                    "Calendar",
+                    _("Calendar"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
@@ -723,7 +727,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             said list is a list of Strings to show
             """
 
-            event_list_title = ("Events for the day:", False, True)
+            event_list_title = (_("Events for the day:"), False, True)
 
             # build list
             event_list_items = [(e, False, False) for e in events]
@@ -1126,10 +1130,10 @@ init -1 python in mas_calendar:
             string with the sign
         """
         zodiac_signs = [
-            (1, 19, "capricorn"), (2, 18, "aquarius"), (3, 20, "pisces"), (4, 19, "aries"),
-            (5, 20, "taurus"), (6 ,21, "gemini"), (7, 22, "cancer"), (8, 22, "leo"),
-            (9, 22, "virgo"), (10, 22, "libra"), (11, 22, "scorpio"), (12, 21, "sagittarius"),
-            (12, 31, "capricorn")
+            (1, 19, _("capricorn")), (2, 18, _("aquarius")), (3, 20, _("pisces")), (4, 19, _("aries")),
+            (5, 20, _("taurus")), (6 ,21, _("gemini")), (7, 22, _("cancer")), (8, 22, _("leo")),
+            (9, 22, _("virgo")), (10, 22, _("libra")), (11, 22, _("scorpio")), (12, 21, _("sagittarius")),
+            (12, 31, _("capricorn"))
         ]
         index = bisect.bisect(zodiac_signs, (date.month, date.day))
 

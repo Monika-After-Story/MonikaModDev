@@ -369,7 +369,7 @@ screen mas_extramenu_area():
             style "mas_extra_menu_frame"
             vbox:
                 spacing 2
-                label "Zoom":
+                label _("Zoom"):
                     text_style "mas_extra_menu_label_text"
                     xalign 0.5
 
@@ -398,5 +398,5 @@ screen mas_extramenu_area():
 #            vbox:
 #                spacing 2
 #
-#                label "Boop":
+#                label _("Boop"):
 #                    style "hkb_button_text"

@@ -567,8 +567,8 @@ init 5 python:
 
 label mas_topic_rerandom:
     python:
-        mas_bookmarks_derand.initial_ask_text_multiple = "Which topic are you okay with talking about again?"
-        mas_bookmarks_derand.initial_ask_text_one = "If you're sure it's alright to talk about this again, just select the topic, [player]."
+        mas_bookmarks_derand.initial_ask_text_multiple = _("Which topic are you okay with talking about again?")
+        mas_bookmarks_derand.initial_ask_text_one = _("If you're sure it's alright to talk about this again, just select the topic, [player].")
         mas_bookmarks_derand.caller_label = "mas_topic_rerandom"
         mas_bookmarks_derand.persist_var = persistent._mas_player_derandomed
 
@@ -746,7 +746,7 @@ label mas_rerandom:
     else:
         $ renpy.say(m, mas_bookmarks_derand.initial_ask_text_one, interact=False)
 
-    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Allow selected")
+    call screen mas_check_scrollable_menu(derandomlist, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt=_("Allow selected"))
 
     $ topics_to_rerandom = _return
 
@@ -12258,17 +12258,17 @@ label monika_player_appearance:
             show monika 1eua at t21
             python:
                 eye_color_menu_options = [
-                    ("I have blue eyes.", "blue", False, False),
-                    ("I have brown eyes.", "brown", False, False),
-                    ("I have green eyes.", "green", False, False),
-                    ("I have hazel eyes.", "hazel", False, False),
-                    ("I have gray eyes.", "gray", False, False),
-                    ("I have black eyes.", "black", False, False),
-                    ("My eyes are another color.", "other", False, False),
-                    ("I have heterochromia.", "heterochromia", False, False),
+                    (_("I have blue eyes."), "blue", False, False),
+                    (_("I have brown eyes."), "brown", False, False),
+                    (_("I have green eyes."), "green", False, False),
+                    (_("I have hazel eyes."), "hazel", False, False),
+                    (_("I have gray eyes."), "gray", False, False),
+                    (_("I have black eyes."), "black", False, False),
+                    (_("My eyes are another color."), "other", False, False),
+                    (_("I have heterochromia."), "heterochromia", False, False),
                 ]
 
-                renpy.say(m, "What color are your eyes?", interact=False)
+                renpy.say(m, _("What color are your eyes?"), interact=False)
 
             show monika at t11
             call screen mas_gen_scrollable_menu(eye_color_menu_options, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
@@ -12306,7 +12306,7 @@ label monika_player_appearance:
                     while height <= 0:
                         height = store.mas_utils.tryparseint(
                             renpy.input(
-                                'How tall are you in centimeters?',
+                                _("How tall are you in centimeters?"),
                                 allow=numbers_only,
                                 length=3
                             ).strip(),
@@ -12320,7 +12320,7 @@ label monika_player_appearance:
                     while height_feet <= 0:
                         height_feet = store.mas_utils.tryparseint(
                             renpy.input(
-                                'How tall are you in feet?',
+                                _("How tall are you in feet?"),
                                 allow=numbers_only,
                                 length=1
                             ).strip(),
@@ -12332,7 +12332,7 @@ label monika_player_appearance:
                     while height_inch < 0 or height_inch > 11:
                         height_inch = store.mas_utils.tryparseint(
                             renpy.input(
-                                '[height_feet] feet and how many inches?',
+                                _("[height_feet] feet and how many inches?"),
                                 allow=numbers_only,
                                 length=2
                             ).strip(),
@@ -12353,9 +12353,9 @@ label monika_player_appearance:
                 call monika_player_appearance_monika_height
 
                 if persistent._mas_pm_units_height_metric:
-                    $ height_desc = "centimeters"
+                    $ height_desc = _("centimeters")
                 else:
-                    $ height_desc = "inches"
+                    $ height_desc = _("inches")
 
                 m 3esc "The tallest girl in the Literature Club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [mas_get_player_nickname()]..."
@@ -12531,7 +12531,7 @@ label monika_player_appearance:
                         m 1hub "It's a rare and wonderful trait to have--almost as wonderful as you!"
 
                     "It's another color.":
-                        $ persistent._mas_pm_hair_color = ask_color("What color is your hair?")
+                        $ persistent._mas_pm_hair_color = ask_color(_("What color is your hair?"))
 
                         m 3hub "Oh! That's a beautiful color, [player]!"
                         m 1eub "That reminds me of something I was thinking about earlier, when we were talking about the color of your eyes."
@@ -12713,7 +12713,7 @@ label monika_player_appearance_eye_color_black:
     return
 
 label monika_player_appearance_eye_color_other:
-    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+    $ persistent._mas_pm_eye_color = ask_color(_("What color are your eyes?"))
 
     m 3hub "Oh! That's a beautiful color, [player]!"
     m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
@@ -12731,7 +12731,7 @@ label monika_player_appearance_eye_color_heterochromia:
 
     call monika_player_appearance_eye_color_ask
     $ eyes_colors.append(_return)
-    call monika_player_appearance_eye_color_ask("right", eye_color)
+    call monika_player_appearance_eye_color_ask(_("right"), eye_color)
     $ eyes_colors.append(_return)
     $ persistent._mas_pm_eye_color = tuple(eyes_colors)
 
@@ -12739,7 +12739,7 @@ label monika_player_appearance_eye_color_heterochromia:
     extend 3eua "Let's get to my next question--"
     return
 
-label monika_player_appearance_eye_color_ask(x_side_eye="left", last_color=None):
+label monika_player_appearance_eye_color_ask(x_side_eye=_("left"), last_color=None):
     m 3eua "What color is your [x_side_eye] eye?{nw}"
     $ _history_list.pop()
     menu:
@@ -12764,7 +12764,7 @@ label monika_player_appearance_eye_color_ask(x_side_eye="left", last_color=None)
             $ eye_color = "black"
 
         "It's a different color...":
-            $ eye_color = ask_color("What color is your [x_side_eye] eye?")
+            $ eye_color = ask_color(_("What color is your [x_side_eye] eye?"))
 
     return eye_color
 
@@ -12772,10 +12772,10 @@ label monika_player_appearance_eye_color_ask(x_side_eye="left", last_color=None)
 label monika_player_appearance_monika_height:
     if not persistent._mas_pm_units_height_metric:
         $ conv_height_str = ""
-        $ real_height_str = "around five-foot-five"
+        $ real_height_str = _("around five-foot-five")
     else:
-        $ conv_height_str = " which is around one hundred and sixty centimeters"
-        $ real_height_str = "about one hundred and sixty-five-centimeters tall"
+        $ conv_height_str = _(" which is around one hundred and sixty centimeters")
+        $ real_height_str = _("about one hundred and sixty-five-centimeters tall")
 
     if seen_event("monika_immortal"):
         m 2eud "The wiki I mentioned before said that my concept height was five-foot-three,[conv_height_str] but that doesn't really sound right to me..."
@@ -12784,15 +12784,15 @@ label monika_player_appearance_monika_height:
     return
 
 init 5 python:
-     addEvent(
-         Event(
+    addEvent(
+        Event(
             persistent.event_database,
             eventlabel="monika_players_control",
             category=["games", "ddlc"],
             prompt="[player]'s control",
             random=True
-            )
         )
+    )
 
 label monika_players_control:
     m 3eub "[player], did you know that you have more control over this game than I do?"
