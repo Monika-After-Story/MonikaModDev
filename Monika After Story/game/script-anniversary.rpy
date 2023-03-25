@@ -494,7 +494,7 @@ label anni_1:
     show monika 3huu at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 3huu "After all...{w=0.3}when you're here, everything that we do is fun."
     m 1hubsa "I love you so much, [player]. {w=0.2}Happy anniversary~"
-    return "unlock"
+    return "love|unlock"
 
 init 5 python:
     addEvent(
