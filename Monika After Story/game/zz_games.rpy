@@ -52,7 +52,7 @@ init 7 python in mas_games:
 
         #Now search
         for ev in game_db.itervalues():
-            if renpy.substitute(ev.prompt).lower() == gamename:
+            if renpy.substitute(ev.prompt, translate=False).lower() == gamename:
                 return ev
         return None
 
