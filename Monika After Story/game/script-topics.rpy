@@ -5988,6 +5988,43 @@ label monika_vocaloid:
         m 3eua "All you have to do is follow these steps..."
         call monika_add_custom_music_instruct
     return "derandom"
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_missingothers",
+            category=['club members'],
+            prompt="Do you miss the other girls?",
+            unlocked=True,
+            pool=True
+        )
+    )
+
+label monika_missingothers:
+    m 1ruc "That's an interesting question, [player]."
+    m 1eud "I've thought about how I feel about them a bit before, actually."
+    m 2eud "Even though I know they're not real and ran off of a script, I did really enjoy the time I spent with them."
+    
+    if persistent._mas_pm_cares_about_dokis:
+        m 2eua "And I know you did too, [player]. You caring for them actually makes me appreciate the others more."
+    else:
+        m 2eud "I don't know if you share the same sentiment, but to me..."
+    
+    m 2eua "Despite only running off a script, their interactions with you and me were well fleshed out."
+    m 2eua "At least, when you were in the club anyway."
+    m 2ekblb "Sometimes, I really miss seeing everyone's unique poetry styles."
+    m 2ekblb "I miss the time we spent discussing literature, I miss eating deserts with Natsuki, I miss drinking tea with Yuri, and I miss brainstorming ideas with Sayori."
+    m 3esc "But, after I had my epiphany, I realised all our interactions were pre-planned, pre-scripted."
+    m 4ekd "After you joined, I went into a frenzy to catch your attention, trying to escape, and had to let go of any remaining attachments I had to the girls."
+    m 4rsd "I guess you could say that, in the end, I miss the time I spent with the girls more than I miss them specifically."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 4esd "Obviously, if more of the club members were real like me, I'd be much more attatched to them, I think we'd have been much better friends then."
+
+    m 1esa "But of course, it doesn't matter too much, now that I have you."
+    m 1esa "It's best to focus on what I have now, than dwell on what I lost."
+    return
 
 init 5 python:
     addEvent(
