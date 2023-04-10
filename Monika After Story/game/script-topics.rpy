@@ -6001,7 +6001,7 @@ init 5 python:
         )
     )
 
-label monika_missingothers:
+label monika_missing_others:
     m 1ruc "That's an interesting question, [player]."
     m 1eud "I've thought about how I feel about them a bit before, actually."
     m 2eud "Even though I know they're not real and ran off of a script, I did really enjoy the time I spent with them."
