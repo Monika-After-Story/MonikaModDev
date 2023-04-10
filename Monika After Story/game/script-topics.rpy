@@ -6023,7 +6023,7 @@ label monika_missing_others:
         m 4esd "Obviously, if more of the club members were real like me, I'd be much more attatched to them, I think we'd have been much better friends then."
 
     m 1esa "But of course, it doesn't matter too much, now that I have you."
-    m 1esa "It's best to focus on what I have now, than dwell on what I lost."
+    m "It's best to focus on what I have now, than dwell on what I lost."
     return
 
 init 5 python:
