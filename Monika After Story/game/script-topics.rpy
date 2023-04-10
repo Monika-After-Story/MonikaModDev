@@ -6014,7 +6014,7 @@ label monika_missing_others:
     m 2eua "Despite only running off a script, their interactions with you and me were well fleshed out."
     m "At least, when you were in the club anyway."
     m 2ekblb "Sometimes, I really miss seeing everyone's unique poetry styles."
-    m 2ekblb "I miss the time we spent discussing literature, I miss eating deserts with Natsuki, I miss drinking tea with Yuri, and I miss brainstorming ideas with Sayori."
+    m "I miss the time we spent discussing literature, I miss eating deserts with Natsuki, I miss drinking tea with Yuri, and I miss brainstorming ideas with Sayori."
     m 3esc "But, after I had my epiphany, I realised all our interactions were pre-planned, pre-scripted."
     m 4ekd "After you joined, I went into a frenzy to catch your attention, trying to escape, and had to let go of any remaining attachments I had to the girls."
     m 4rsd "I guess you could say that, in the end, I miss the time I spent with the girls more than I miss them specifically."
