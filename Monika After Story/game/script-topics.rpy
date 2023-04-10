@@ -5993,7 +5993,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_missingothers",
+            eventlabel="monika_missing_others",
             category=['club members'],
             prompt="Do you miss the other girls?",
             unlocked=True,
