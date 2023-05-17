@@ -18041,3 +18041,76 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_upset_apologize",
+            category=['you','monika'],
+            prompt="Something you did upset me.",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_upset_apologize:
+    $ mas_loseAffection()
+    if mas_isMoniBroken():
+        m "...{w=1}Oh."
+        pause 1.0
+        m "Okay."
+        return
+    m 6rkc "...{w=1}Oh."
+    m 5lkc "Was it what I just said?"
+    menu:
+        "It was what you just said.":
+            m 1dkc "Okay."
+            if not mas_isMoniUpset(lower=True):
+                m 1dkd "Thank you for telling me..."  
+            m 2fkd "I promise I won't say something like that again."
+            m 2dkd "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
+            m 3essdld "Also, please remember that you can press the 'X' key if you don't want me to bring something up again."
+
+        "It was a point you made.":
+            m 1dkc "Okay."
+            if not mas_isMoniUpset(lower=True):
+                m 1dssdld "Thank you for telling me..."
+            m 1rud "I wish I could hear your arguments right now."
+            m 7msd "But I guess all I can do is do a bit more research and thinking about what I've said recently."
+            m 3eka "Please remember that you can press the 'X' key if you don't want me to bring something up again!"
+            m 2dkd "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
+
+        "No, it was something you did.":
+            m 1dkc "Okay."
+            if not mas_isMoniUpset(lower=True):
+                m 1dkd "Thank you for telling me..."
+            m 1rud "You know, I really wish our form of communication was less limited, so I could know exactly where I crossed the line..."
+            m 7msd "But I guess all I can do is do some thinking about what I've done recently."
+            m 2fkd "I promise I won't do whatever it is again."
+            m 2dkd "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
+    
+        "No, it was something you said earlier.":
+            m 1dkc "Okay."
+            if not mas_isMoniUpset(lower=True):
+                m 1dkd "Thank you for telling me..." 
+            m 1gkd "I wish I could hear you right now, so I could better tell what was wrong..."
+            m 1dssdld "But I'll do some reflection on what I've told you today, and I promise I won't say something to upset you again."
+            m 2dksdld "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
+            m 3ekd "Also, please remember that you can press the 'X' key if you don't want me to bring something up again."
+    
+    if not mas_isMoniUpset(lower=True):
+        m "And, well... I appreciate the fact that you told this to me."
+        m 4rssdrd "After all, communication is the key to a strong relationship, right?"
+        m 4ekc "Please tell me if I do anything wrong, so I can be the perfect girlfriend for you... Okay?"
+    if not mas_isMoniDis():
+        m 1dsc "I love you, and I would never want you to be unhappy."
+    m 1dsc "I hope you can forgive me..."
+    if not mas_isMoniDis():
+        return "love"
+    else:
+        m 5rkc ".{w=1}.{w=1}.{w=1}"
+        pause 5.0
+        m 2gkc "I... {w=1}think I should give you some space..."
+        m 1fkc "I'm sorry."
+        return "quit"
