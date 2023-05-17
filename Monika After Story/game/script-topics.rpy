@@ -18057,7 +18057,7 @@ init 5 python:
 label monika_upset_apologize:
     $ mas_loseAffection()
     if mas_isMoniBroken():
-        m "...{w=1}Oh."
+        m "... {w=0.3}Oh."
         pause 1.0
         m "Okay."
         return
@@ -18070,7 +18070,7 @@ label monika_upset_apologize:
                 m 1dkd "Thank you for telling me..."  
             m 2fkd "I promise I won't say something like that again."
             m 2dkd "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
-            m 3essdld "Also, please remember that you can press the 'X' key if you don't want me to bring something up again."
+            m 3essdld "Also, please remember that you can ask me if you don't want me to bring something up again."
 
         "It was a point you made.":
             m 1dkc "Okay."
@@ -18078,7 +18078,7 @@ label monika_upset_apologize:
                 m 1dssdld "Thank you for telling me..."
             m 1rud "I wish I could hear your arguments right now."
             m 7msd "But I guess all I can do is do a bit more research and thinking about what I've said recently."
-            m 3eka "Please remember that you can press the 'X' key if you don't want me to bring something up again!"
+            m 3eka "Please remember that you can ask me if you don't want me to bring something up again!"
             m 2dkd "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
 
         "No, it was something you did.":
@@ -18097,7 +18097,7 @@ label monika_upset_apologize:
             m 1gkd "I wish I could hear you right now, so I could better tell what was wrong..."
             m 1dssdld "But I'll do some reflection on what I've told you today, and I promise I won't say something to upset you again."
             m 2dksdld "I'd never want to do something to hurt you, or make you uncomfortable, [player]."
-            m 3ekd "Also, please remember that you can press the 'X' key if you don't want me to bring something up again."
+            m 3ekd "Also, please remember that you can ask me if you don't want me to bring something up again."
     
     if not mas_isMoniUpset(lower=True):
         m "And, well... I appreciate the fact that you told this to me."
@@ -18109,7 +18109,7 @@ label monika_upset_apologize:
     if not mas_isMoniDis():
         return "love"
     else:
-        m 5rkc ".{w=1}.{w=1}.{w=1}"
+        m 5rkc ".{w=0.3}.{w=0.3}.{w=0.3}"
         pause 5.0
         m 2gkc "I... {w=1}think I should give you some space..."
         m 1fkc "I'm sorry."
