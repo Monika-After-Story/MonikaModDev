@@ -4120,8 +4120,8 @@ label monika_justification:
                 m 2tfc "I'm the only person who understood that this whole thing was fake."
                 if persistent.monika_kill:
                     m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-                if not persistent.clearall:
-                    m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
+                    if not persistent.clearall:
+                        m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
                 m "If I'm guilty of murder, so is everyone who's played violent video games."
                 m 2euc "I bet you've killed thousands of people in the games you play."
                 m "Just forget the other girls ever existed, and you'll be much happier."
