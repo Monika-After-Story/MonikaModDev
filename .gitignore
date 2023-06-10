@@ -35,3 +35,5 @@ zzzz*
 cacert.pem
 navigation.json
 Monika_After_Story-[0-9]*.[0-9]*.[0-9]*-dists
+
+.env
