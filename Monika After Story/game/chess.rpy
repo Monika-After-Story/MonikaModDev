@@ -916,8 +916,8 @@ label mas_chess_remenu:
             "color_select": {
                 "options": [
                     ("White", True, False, is_player_white),
-                    ("Black", False, False, is_player_white is False),
-                    ("Let's draw lots!", 0, False, is_player_white is 0) #Is check here specifically for states
+                    ("Black", False, False, is_player_white == False),
+                    ("Let's draw lots!", 0, False, is_player_white == 0) #Is check here specifically for states
                 ],
                 "final_items": [
                     ("Gamemode", "gamemode_select", False, False, 20),

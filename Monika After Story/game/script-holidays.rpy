@@ -31,7 +31,6 @@ init 10 python:
 
         if key is None:
             key = datetime.date.today()
-
         persistent._mas_event_clothes_map[key] = clothes.name
 
         #We also unlock the event clothes selector here
@@ -1350,7 +1349,7 @@ label mas_o31_lingerie_end:
         mas_lockEVL("greeting_o31_lingerie", "GRE")
 
         # restart song/sounds that were playing before event
-        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+        if globals().get("curr_song", -1) != -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
             mas_play_song(curr_song, 1.0)
         else:
             mas_play_song(None, 1.0)
