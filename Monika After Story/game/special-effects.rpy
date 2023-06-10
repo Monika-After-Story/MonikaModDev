@@ -183,7 +183,8 @@ init -500 python in mas_parallax:
 
         @property
         def children(self):
-            return [decal for decal in self._decals if decal != self._base]
+            # Is not here because instance checks are mandatory
+            return [decal for decal in self._decals if decal is not self._base]
 
         @property
         def debug(self):
