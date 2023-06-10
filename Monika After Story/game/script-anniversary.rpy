@@ -640,7 +640,7 @@ label anni_6:
     m 1eka "Since I can't get you a gift yet...{w=0.2}{nw}"
     extend 3hua "you should get yourself a nice treat to eat for the occasion!"
     m 1hubfa "I love you, [player]. Thank you for another wonderful year."
-    return "unlock"
+    return "love|unlock"
 
 init 5 python:
     addEvent(
