@@ -1,0 +1,30 @@
+{
+    "__author": "HistoryVariety",
+    "version": 3,
+    "type": 0,
+    "name": "historyvariety_anchor_necklace",
+    "img_sit": "historyvariety_anchor_necklace",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 8,
+    "acs_type": "necklace",
+    "stay_on_start": true,
+    "priority": 8,
+    "dlg_desc": "necklace",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Anchor Necklace",
+        "thumb": "historyvariety_anchor_necklace",
+        "group": "necklace",
+        "select_dlg": [
+            "You were a strange person in a strange place but, in that moment, you were exactly what I needed..."
+        ]
+    },
+    "giftname": "anchor_necklace",
+    "arm_split": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}
