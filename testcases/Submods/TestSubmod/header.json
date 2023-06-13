@@ -1,0 +1,12 @@
+{
+    "header_version": 1,
+    "author": "Monika After Story",
+    "name": "Test Submod",
+    "description": "This is a test submod to demonstrate the schema structure.",
+    "version": "0.0.1",
+    "modules": [
+        "main",
+        "deps/dep1",
+        "deps/dep2"
+    ]
+}
