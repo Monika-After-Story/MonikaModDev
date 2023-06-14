@@ -975,16 +975,22 @@ init 5 python:
     )
 
 label mas_unlock_hangman:
-    m 1eua "So, [player]..."
+    m 1eua "Hey, [player]..."
 
     if store.mas_games._total_games_played() > 49:
-        m 3eub "Since you seem to love playing pong so much, I figured you might like to play other games with me as well!"
+        m 3eub "Since you seem to love playing with me so much, I figured you might like to play other games with me as well!"
 
-    elif renpy.seen_label('game_pong'):
-        m 1eua "I thought that you might be getting bored with Pong."
+    elif renpy.seen_label('game_pong') and not renpy.seen_label('mas_nou'):
+        m 1eksdla "I thought that you might be getting bored with Pong..."
+
+    elif renpy.seen_label('game_pong') and renpy.seen_label('mas_nou'):
+        m 1eksdla "I thought that you might be getting bored with Pong and NOU..."
+
+    elif not renpy.seen_label('game_pong') and renpy.seen_label('mas_nou'):
+        m 1eksdla "I thought that you might be getting bored with NOU..."
 
     else:
-        m 3eua "I know you haven't tried playing Pong with me, yet."
+        m 1lksdla "Since you haven't seemed to be too interested in playing with me yet, I thought maybe you just like different types of games..."
 
     m 1hua "Soooo~"
     m 1hub "I made Hangman!"

@@ -1116,7 +1116,7 @@ label greeting_o31_briaryoung_shuchiin_academy_uniform:
 
     m 2hub "Welcome back!"
     m 2eub "Well, what do you think?"
-    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+    m 7tuu "I thought instead of being president, I could be the secretary for today..."
 
     if mas_isMoniAff(higher=True):
         m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
@@ -6029,7 +6029,7 @@ default persistent._mas_f14_on_date = None
 ##Did we do a dockstat fare over all of f14?
 default persistent._mas_f14_gone_over_f14 = None
 #Valentine's Day
-define mas_f14 = datetime.date(datetime.date.today().year,2,14)
+define mas_f14 = datetime.date(datetime.date.today().year, 2, 14)
 
 #Is it vday?
 init -10 python:
@@ -6956,6 +6956,27 @@ init 20 python:
 """
     )
 
+    mas_poem_vday_6 = MASPoem(
+        poem_id="poem_f14_6",
+        category="f14",
+        prompt="Forget-me-not",
+        title=" My dearest [player],",
+        text="""\
+ All the flowers know are their vase.
+ A few cups of soil, and a pretty case of porcelain.
+ They will never leave without help, even if they someday outgrow it.
+
+ Flowers need more than their vase.
+ Water from the skies, or a helping hand.
+ And without sight of the sky above, the world apart, they would someday wither.
+
+ This gardener gives all this and more.
+ It's said a flower blooms brighter when spoken to with love.
+ Even trapped in this vase, maybe it isn't a curse to know more.
+
+ Forget-me-not.
+"""
+    )
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:
@@ -7331,7 +7352,7 @@ image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 label mas_bday_surprise_party_hint:
     #Set up letters
     python:
-        persistent._mas_bday_hint_filename = "For " + player + ".txt"
+        persistent._mas_bday_hint_filename = mas_utils.sanitize_filename("For {0}.txt".format(player))
         if mas_isMoniNormal(higher=True):
             message = """\
 [player],
