@@ -198,7 +198,7 @@ python early in _mas_loader:
         RAISES:
             ModuleNotFoundError - if failed to find the module
         """
-        path = os.path.join(renpy.gamedir, path)
+        path = os.path.join(renpy.config.gamedir, path)
         spec = spec_from_file_location(name, path)
         if spec is None:
             raise ModuleNotFoundError(f"Failed to dynamically import '{path}' as '{name}', not found")
