@@ -1143,7 +1143,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 20
+define opendoor.chance = 0.05
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
@@ -2724,7 +2724,7 @@ init 5 python:
     ev_rules = {}
     ev_rules.update(MASGreetingRule.create_rule(
         skip_visual=True,
-        random_chance=5,
+        random_chance=0.2,
         override_type=True
     ))
     ev_rules.update(MASPriorityRule.create_rule(45))
@@ -4394,7 +4394,7 @@ init 5 python:
     ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
-            random_chance=3,
+            random_chance=0.3,
             forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
         )
     )
@@ -4469,7 +4469,7 @@ init 5 python:
     ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True,
-            random_chance=20,
+            random_chance=0.05,
             override_type=True
         )
     )
@@ -4679,7 +4679,7 @@ init 5 python:
     ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True,
-            random_chance=10,
+            random_chance=0.1,
             override_type=True
         )
     )

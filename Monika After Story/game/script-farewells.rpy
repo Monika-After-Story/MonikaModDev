@@ -158,7 +158,7 @@ init -1 python in mas_farewells:
 
                 # add to pool
                 fare_pool.append((
-                    ev, store.MASProbabilityRule.get_probability(ev)
+                    ev, store.MASWeightRule.get_weight(ev)
                 ))
 
         # not having a greeting to show means no greeting.
@@ -866,7 +866,7 @@ label bye_illseeyou:
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
-    rules.update(MASProbabilityRule.create_rule(6))
+    rules.update(MASWeightRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -899,7 +899,7 @@ label bye_haveagoodday:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
-    rules.update(MASProbabilityRule.create_rule(6))
+    rules.update(MASWeightRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
@@ -935,7 +935,7 @@ label bye_enjoyyourafternoon:
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
-    rules.update(MASProbabilityRule.create_rule(6))
+    rules.update(MASWeightRule.create_rule(6))
     addEvent(
         Event(
             persistent.farewell_database,
