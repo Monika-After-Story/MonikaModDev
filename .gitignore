@@ -40,3 +40,6 @@ Monika_After_Story-[0-9]*.[0-9]*.[0-9]*-dists
 # Development
 .env
 Monika After Story/game/Submods
+
+# Other
+*.disabled
