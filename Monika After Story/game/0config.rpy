@@ -35,7 +35,8 @@ python early:
 
     renpy.config.save_directory = "Monika After Story"
 
-    ### R7+ Config Var adjustments
+    ### R8+ Config Var adjustments
+
     ## 7.4.11
     renpy.config.mouse_focus_clickthrough = True
     ##7.3.3
@@ -157,3 +158,8 @@ define config.window_hide_transition = dissolve_textbox
 
 init python:
     config.per_frame_screens.append("_trace_screen")
+
+init -1099 python:
+    ## 8.1 Disable syncing
+    ## NOTE: MUST BE AFTER INIT -1100
+    renpy.config.has_sync = False
