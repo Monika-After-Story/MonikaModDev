@@ -362,6 +362,7 @@ init -980 python in mas_submod_utils:
 
         The same as registerFunction. See its doc for parameter details
         """
+        # TODO: functools.wraps
         def wrap(_function):
             registerFunction(
                 _label,
@@ -393,6 +394,7 @@ init -980 python in mas_submod_utils:
             return
 
         #Firstly, let's get our sorted list
+        # TODO: use insort instead of sorting every time we run things
         sorted_plugins = __prioritySort(key)
         for _action, data_tuple in sorted_plugins:
             if data_tuple[1]:
