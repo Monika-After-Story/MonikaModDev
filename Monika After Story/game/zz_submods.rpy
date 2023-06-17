@@ -483,12 +483,14 @@ init -980 python in mas_submod_utils:
         """
         global function_plugins
 
-        func_dict = function_plugins.get(key)
+        try:
+            return function_plugins[key][_function][0]
 
-        if not func_dict:
-            return
-
-        return func_dict.get(_function)[0]
+        except KeyError:
+            # Unknown key/function
+            # We do not handle index error as that shouldn't be possible
+            # and means there's a bug in the system
+            return None
 
     @mas_utils.deprecated(
         use_instead="functools.partial",
