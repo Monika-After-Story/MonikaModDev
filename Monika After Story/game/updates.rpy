@@ -5,7 +5,7 @@
 #   persistent._seen_ever
 #   persistent.version_number
 
-define persistent._mas_zz_lupd_ex_v = []
+default persistent._mas_zz_lupd_ex_v = []
 
 # preeverything stuff
 init -10 python:
