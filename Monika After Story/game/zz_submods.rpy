@@ -284,7 +284,7 @@ init -1000 python in mas_submod_utils:
 
         return header_json
 
-    def _process_submod_header(raw_header: dict, header_path: str) -> _SubmodSchema|None:
+    def _process_submod_header(raw_header: dict, header_path: str) -> dict|None:
         """
         This does extra processing on header, validation, and setting default values
 
