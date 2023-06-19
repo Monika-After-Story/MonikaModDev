@@ -3163,22 +3163,33 @@ screen submods():
                             text_text_align 0.0
 
                         if submod.coauthors:
-                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
+                            $ details = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
                         else:
-                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+                            $ details = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
 
-                        text "[authors]":
+                        text "[details]":
                             yanchor 0
                             xalign 0
                             text_align 0.0
                             layout "greedy"
                             style "main_menu_version"
 
+                        if store.mas_submod_utils._SubmodSettings.is_submod_enabled(submod):
+                            textbutton _("Disable submod"):
+                                style "mas_button_simple"
+                                action Function(store.mas_submod_utils._SubmodSettings.disable_submod, submod)
+
+                        else:
+                            textbutton _("Enable submod"):
+                                style "mas_button_simple"
+                                action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
+
                         if submod.description:
                             text submod.description text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
+                        # FIXME: use the use statement?
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
 
     text tooltip.value:

@@ -1,5 +1,6 @@
-init -999:
+init -1000:
     default persistent._mas_submod_version_data = dict()
+    default persistent._mas_submod_settings = dict()
 
 init 10 python in mas_submod_utils:
     #Run updates if need be
@@ -16,7 +17,10 @@ init -1000 python in mas_submod_utils:
     import json
     import sys
     from urllib.parse import urlparse
-    from typing import Literal, Optional
+    from typing import (
+        Literal,
+        Optional
+    )
     from collections.abc import Iterator
 
     import pydantic
@@ -306,7 +310,7 @@ init -1000 python in mas_submod_utils:
             errors = e.errors()
             base_msg = (
                 f"Failed to load submod from {_fmt_path(header_path)}:\n"
-                f"    {len(errors)} error(-s) occured:\n"
+                f"    {len(errors)} error(s) occured:\n"
             )
             err_msg = "\n".join(
                 (
@@ -405,6 +409,98 @@ init -1000 python in mas_submod_utils:
 
         def __str__(self):
             return self.msg
+
+    class _SubmodSettings():
+        """
+        Static class for managing submod settings
+        """
+        SETTING_IS_SUBMOD_ENABLED = "is_enabled"
+
+        @classmethod
+        def _create_setting(cls, submod: _Submod, key: str, default) -> bool:
+            """
+            Defines a submod setting (including intermediate keys) with
+            the given default value
+
+            IN:
+                submod - the submod object
+                key - the setting unique key
+                default - the default value of the setting
+
+            OUT:
+                bool - True if created, False if not
+            """
+            if persistent._mas_submod_settings is None:
+                persistent._mas_submod_settings = {}
+
+            setings = persistent._mas_submod_settings
+
+            if submod.name not in setings:
+                setings[submod.name] = {}
+
+            if key not in setings[submod.name]:
+                setings[submod.name][key] = default
+                return True
+
+            return False
+
+        @classmethod
+        def _get_setting(cls, submod: _Submod, key: str, default):
+            """
+            Returns a setting for a submod
+
+            IN:
+                submod - the submod object
+                key - the setting unique key
+                default - the default value of the setting (if doesn't exist)
+
+            OUT:
+                setting value
+            """
+            try:
+                return persistent._mas_submod_settings[submod.name][key]
+
+            except KeyError:
+                cls._create_setting(submod, key, default)
+                return default
+
+        @classmethod
+        def _set_setting(cls, submod: _Submod, key: str, value) -> None:
+            """
+            Sets a setting for a submod
+
+            IN:
+                submod - the submod object
+                key - the setting unique key
+                value - the setting value
+            """
+            try:
+                persistent._mas_submod_settings[submod.name][key] = value
+
+            except KeyError:
+                cls._create_setting(submod, key, value)
+
+        @classmethod
+        def is_submod_enabled(cls, submod: _Submod) -> bool:
+            return cls._get_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+
+        @classmethod
+        def enable_submod(cls, submod: _Submod):
+            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+
+        @classmethod
+        def disable_submod(cls, submod: _Submod):
+            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+
+        @classmethod
+        def toggle_submod(cls, submod: _Submod) -> bool:
+            if cls.is_submod_enabled(submod):
+                cls.disable_submod(submod)
+                return False
+
+            cls.enable_submod(submod)
+            return True
+
 
     class _Submod(object):
         """
