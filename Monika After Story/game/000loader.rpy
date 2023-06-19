@@ -232,7 +232,7 @@ python early in _mas_root:
 
     def __get_env_var(key: str) -> str|None:
         """
-        Gets value  of an env variable
+        Gets value of an env variable
         """
         return os.environ.get(key, None)
 
@@ -248,7 +248,7 @@ python early in _mas_root:
         """
         return __get_env_var(__ENV_KEY) == __CNSL_ENV_VALUE
 
-    def __set_dev_pm_var():
+    def __mark_dm():
         store.persistent._mas_pm_used_dm = True
 
     def __dm_enabled_cb():
@@ -256,17 +256,19 @@ python early in _mas_root:
         Callback on dm enabling
         """
         renpy.config.developer = True
+        renpy.config.early_developer = True
         renpy.config.console = True
-        __set_dev_pm_var()
+        __mark_dm()
 
     def __dm_disabled_cb():
         """
         Callback on dm disabling
         """
         renpy.config.developer = False
+        renpy.config.early_developer = False
         if _is_cnsl_enabled():
             renpy.config.console = True
-            __set_dev_pm_var()
+            __mark_dm()
 
         else:
             renpy.config.console = False
