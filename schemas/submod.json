@@ -1,0 +1,100 @@
+{
+    "title": "_SubmodSchema",
+    "description": "Schema for validating submod json",
+    "type": "object",
+    "properties": {
+        "header_version": {
+            "title": "Header Version",
+            "type": "integer"
+        },
+        "author": {
+            "title": "Author",
+            "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
+            "type": "string"
+        },
+        "directory": {
+            "title": "Directory",
+            "type": "string"
+        },
+        "modules": {
+            "title": "Modules",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "description": {
+            "title": "Description",
+            "default": "",
+            "type": "string"
+        },
+        "dependencies": {
+            "title": "Dependencies",
+            "default": {},
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "settings_pane": {
+            "title": "Settings Pane",
+            "default": "",
+            "type": "string"
+        },
+        "version_updates": {
+            "title": "Version Updates",
+            "default": {},
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "coauthors": {
+            "title": "Coauthors",
+            "default": [],
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$"
+            }
+        },
+        "repository": {
+            "title": "Repository",
+            "default": "",
+            "type": "string"
+        },
+        "priority": {
+            "title": "Priority",
+            "default": 0,
+            "minimum": -999,
+            "maximum": 999,
+            "type": "integer"
+        }
+    },
+    "required": [
+        "header_version",
+        "author",
+        "name",
+        "version",
+        "modules"
+    ]
+}

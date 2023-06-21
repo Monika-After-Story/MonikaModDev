@@ -24,6 +24,7 @@ init -1000 python in mas_submod_utils:
     from collections.abc import Iterator
 
     import pydantic
+    from pydantic import conlist as constrained_list, constr as constrained_str
 
     import store
     from store import (
@@ -43,7 +44,8 @@ init -1000 python in mas_submod_utils:
     HEADER_GLOB = "**/header.json"
     SUBMODS_DIR = "Submods"
 
-    SANE_STR_PATTERN = re.compile(r'^[a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+    # String must start with an alpha/underscore character, and can contain only alphanumerics and underscores
+    LABEL_SAFE_NAME = re.compile(r'^[a-zA-Z_][ 0-9a-zA-Z_]*$')
 
 
     class _SubmodSchema(pydantic.BaseModel):
@@ -53,18 +55,18 @@ init -1000 python in mas_submod_utils:
         # NOTE: JSON specific:
         header_version: int
         # NOTE: Submod specific:
-        author: str
-        name: str
+        author: constrained_str(regex=LABEL_SAFE_NAME)
+        name: constrained_str(regex=LABEL_SAFE_NAME)
         version: str
-        directory: str# NOTE: this isn't part of the json, will be added dynamically during loading
+        directory: str # NOTE: this isn't part of the json, will be added dynamically during loading
         modules: tuple[str, ...]
         description: str = ""
         dependencies: dict[str, tuple[str, str]] = {}# pydantic handles mut args
         settings_pane: str = ""
         version_updates: dict[str, str] = {}# pydantic handles mut args
-        coauthors: tuple[str, ...] = ()
+        coauthors: constrained_list(constrained_str(regex=LABEL_SAFE_NAME)) = []
         repository: str = ""
-        priority: int = 0
+        priority: pydantic.conint(ge=-999, le=999) = 0
 
         @pydantic.validator("header_version")
         def validate_header_version(cls, value):
@@ -80,20 +82,6 @@ init -1000 python in mas_submod_utils:
                 raise ValueError(
                     f"Submod header version {value} is unknown (expected {HEADER_VERSION})"
                 )
-
-            return value
-
-        @pydantic.validator("author")
-        def validate_author(cls, value):
-            if re.match(SANE_STR_PATTERN, value) is None:
-                raise ValueError(f"Submod author '{value}' is invalid")
-
-            return value
-
-        @pydantic.validator("name")
-        def validate_name(cls, value):
-            if re.match(SANE_STR_PATTERN, value) is None:
-                raise ValueError(f"Submod name '{value}' is invalid")
 
             return value
 
@@ -158,13 +146,6 @@ init -1000 python in mas_submod_utils:
 
             return value
 
-        @pydantic.validator("coauthors", each_item=True)
-        def validate_coauthors(cls, value):
-            if re.match(SANE_STR_PATTERN, value) is None:
-                raise ValueError(f"Submod co-author '{value}' is invalid")
-
-            return value
-
         @pydantic.validator("repository")
         def validate_repository(cls, value, values):
             if value:
@@ -186,14 +167,6 @@ init -1000 python in mas_submod_utils:
                     #     submod_log.warning(f"Submod '{name}' seems to have invalid link to the repository.")
 
             return value
-
-        @pydantic.validator("priority")
-        def validate_priority(cls, value):
-            if not (-999 <= value <= 999):
-                raise ValueError(f"Submod priority {value} is out of bounds (expected a number within [-999, 999])")
-
-            return value
-
 
     def _parse_version(version: str) -> tuple[int, ...]:
         """
