@@ -1,5 +1,7 @@
 # mas can import paradigm.
-
+# TODO: This will need to be migrated to use the builtin renpy certifi/ssl packages
+# Likewise, we should migrate dynamic imports to use our new `require()` function to keep consistent.
+# Additionally, let's look into seeing if we can simplify this, I feel like this is a bit overcomplicated for an ssl/certifi import.
 init -1500 python in mas_can_import:
     # set importables
 
@@ -35,12 +37,12 @@ init -1505 python in mas_can_import:
                 running or is completed.
                 - once the update is completed, all appropriate vars will be
                     set automatically.
-            3. call `get_cert_update` to get the returned value from the 
+            3. call `get_cert_update` to get the returned value from the
                 cert update promise.
             4. call `reset_cert_update` to cleanup the cert updater thread.
                 this must be called before doing another cert update.
 
-        Auto (startup) cert updating happens once every 6 months. 
+        Auto (startup) cert updating happens once every 6 months.
         """
 
         def __init__(self):
@@ -90,7 +92,7 @@ init -1505 python in mas_can_import:
 
         def start_cert_update(self, force=False):
             """
-            Starts the cert update process. 
+            Starts the cert update process.
 
             NOTE: will NOT start the process if the updater is currently
                 running. The promise is still returned though.
@@ -154,7 +156,7 @@ init -1505 python in mas_can_import:
                 if self.is_cert_update_running():
                     # cert thread not done - assume thread is running and will
                     # finish later
-                    return 
+                    return
 
                 # reset cert update so we can start the thread
                 self.reset_cert_update()
@@ -308,9 +310,9 @@ init -1510 python in mas_can_import:
     class MASImport(object):
         """
         Wrapper around import checks for MAS-based imports.
-        All conditional imports should extend this class and implement all 
+        All conditional imports should extend this class and implement all
         required functions.
-        Use this before actually running a third-party import. 
+        Use this before actually running a third-party import.
         All functionality that relies on third-party imports should be capable
         of being turned off.
         """
@@ -323,7 +325,7 @@ init -1510 python in mas_can_import:
             IN:
                 module_name - the name of the module to import
                 set_sys - pass True to allow this to overwrite the sys modules.
-                    This should only be used in cases where you need to 
+                    This should only be used in cases where you need to
                     override a system (aka built-in) module.
                     (Default: False)
             """
@@ -397,7 +399,7 @@ init -1510 python in mas_can_import:
             Runs if an ImportError is encountered. The import will always
             be disabled and an import error is logged after this runs.
 
-            If you need to run additional behavior or set other vars on a 
+            If you need to run additional behavior or set other vars on a
             failed import, override this function.
 
             For more info, see `load`.
@@ -409,7 +411,7 @@ init -1510 python in mas_can_import:
 
         def load(self):
             """
-            Loads the import and checks that it works. This is called 
+            Loads the import and checks that it works. This is called
             sometime before init level -1000.
 
             This will call `import_try` and mark the this import as enabled if
