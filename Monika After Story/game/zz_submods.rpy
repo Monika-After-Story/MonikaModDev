@@ -819,6 +819,9 @@ init -1000 python in mas_submod_utils:
             RAISES:
                 SubmodError - on module failure
             """
+            if not _SubmodSettings.is_submod_enabled(self):
+                return
+
             pypacks = os.path.join(
                 config.gamedir, self.directory, "python-packages"
             )
@@ -838,6 +841,8 @@ init -1000 python in mas_submod_utils:
                     # it can cause more issues down the pipeline
                     msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e}"
                     submod_log.critical(msg)
+                    # Disable broken submod so the user can boot the game next time
+                    _SubmodSettings.disable_submod(self)
                     raise SubmodError(msg) from e
 
         @classmethod
