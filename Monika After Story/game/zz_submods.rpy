@@ -738,42 +738,39 @@ init -1000 python in mas_submod_utils:
             for dependency_name, minmax_version_tuple in self.dependencies.items():
                 dependency_submod = self._getSubmod(dependency_name)
 
-                # TODO: Reduce code nesting
-                if dependency_submod is not None:
-                    #Now we need to split our minmax
-                    minimum_version, maximum_version = minmax_version_tuple
-
-                    #First, check the minimum version. If we get -1, we're out of date
-                    if (
-                        minimum_version
-                        and dependency_submod._checkVersions(_parse_version(minimum_version)) < 0
-                    ):
-                        raise SubmodError(
-                            "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
-                                dependency_submod.name,
-                                minimum_version,
-                                dependency_submod.version
-                            )
-                        )
-
-                    #If we have a maximum version, we should check if we're above it.
-                    #If we get 1, this is incompatible and we should crash to avoid other ones
-                    elif (
-                        maximum_version
-                        and dependency_submod._checkVersions(_parse_version(maximum_version)) > 0
-                    ):
-                        raise SubmodError(
-                            "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
-                                dependency_submod.name,
-                                maximum_version,
-                                dependency_submod.version
-                            )
-                        )
-
-                #Submod wasn't installed at all
-                else:
+                if dependency_submod is None:
                     raise SubmodError(
                         f"Dependency '{dependency_name}' is not installed and is required"
+                    )
+
+                #Now we need to split our minmax
+                minimum_version, maximum_version = minmax_version_tuple
+
+                #First, check the minimum version. If we get -1, we're out of date
+                if (
+                    minimum_version
+                    and dependency_submod._checkVersions(_parse_version(minimum_version)) < 0
+                ):
+                    raise SubmodError(
+                        "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
+                            dependency_submod.name,
+                            minimum_version,
+                            dependency_submod.version
+                        )
+                    )
+
+                #If we have a maximum version, we should check if we're above it.
+                #If we get 1, this is incompatible and we should crash to avoid other ones
+                elif (
+                    maximum_version
+                    and dependency_submod._checkVersions(_parse_version(maximum_version)) > 0
+                ):
+                    raise SubmodError(
+                        "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
+                            dependency_submod.name,
+                            maximum_version,
+                            dependency_submod.version
+                        )
                     )
 
         def __checkOS(self):
