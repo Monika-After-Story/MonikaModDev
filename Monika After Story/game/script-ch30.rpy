@@ -891,7 +891,7 @@ init 999 python in mas_reset:
         if not persistent._mas_pm_has_rpy:
             if store.mas_hasRPYFiles():
                 if not store.mas_inEVL("monika_rpy_files"):
-                    store.queueEvent("monika_rpy_files")
+                    store.mas_queueEvent("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
@@ -977,7 +977,7 @@ init 999 python in mas_reset:
                     )
                 )
         ):
-            store.pushEvent("mas_change_to_def",skipeval=True)
+            store.mas_pushEvent("mas_change_to_def",skipeval=True)
 
         # lock special events clothe selector if not wearing special outfit
         if not store.mas_hasSpecialOutfit():
@@ -1185,7 +1185,7 @@ init 999 python in mas_reset:
 
         # end label for file reacts
         if persistent._mas_filereacts_just_reacted:
-            store.queueEvent("mas_reaction_end")
+            store.mas_queueEvent("mas_reaction_end")
 
         # If the map isn't empty and it's past the last reacted date, let's
         # empty it now
@@ -1369,7 +1369,7 @@ init 999 python in mas_reset:
 
             #Let's also push the event to get rid of the thermos too
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
-                store.queueEvent("mas_consumables_remove_thermos")
+                store.mas_queueEvent("mas_consumables_remove_thermos")
 
         # clean up the event list of baka events
         # ALWAYS LAST
