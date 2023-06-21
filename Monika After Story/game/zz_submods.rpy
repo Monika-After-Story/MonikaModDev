@@ -16,6 +16,7 @@ init -1000 python in mas_submod_utils:
     import os
     import json
     import sys
+    import platform
     from urllib.parse import urlparse
     from typing import (
         Literal,
@@ -71,6 +72,8 @@ init -1000 python in mas_submod_utils:
         coauthors: constrained_list(constrained_str(regex=LABEL_SAFE_NAME)) = []
         repository: str = ""
         priority: constrained_int(ge=-999, le=999) = 0
+        required_os: frozenset[str] = frozenset()
+        blacklist_os: frozenset[str] = frozenset()
 
         @pydantic.validator("header_version")
         def validate_header_version(cls, value):
@@ -171,6 +174,23 @@ init -1000 python in mas_submod_utils:
                     #     submod_log.warning(f"Submod '{name}' seems to have invalid link to the repository.")
 
             return value
+
+        @pydantic.validator("required_os")
+        def validate_required_os(cls, value):
+            # NOTE: Not so much validator as normaliser to lowercase
+            return frozenset(v.lower() for v in value)
+
+        @pydantic.validator("blacklist_os")
+        def validate_blacklist_os(cls, value, values):
+            # NOTE: This checks both required_os and blacklist_os
+            required_os = values["required_os"]
+            if (common := (value & required_os)):
+                raise ValueError(
+                    f"Submod has common value(s) in required_os and blacklist_os which is an error: {', '.join(common)}"
+                )
+
+            # Also normalise
+            return frozenset(v.lower() for v in value)
 
     def _parse_version(version: str) -> tuple[int, ...]:
         """
@@ -372,8 +392,10 @@ init -1000 python in mas_submod_utils:
         """
         # Init submods
         _init_submods()
+        # Verify we can run all the submods
+        _Submod._checkSubmodsSupportOS()
         # Verify installed dependencies
-        _Submod._checkDependencies()
+        _Submod._checkSubmodsDependencies()
         # Log
         _log_inited_submods()
         # Finally load submods
@@ -500,47 +522,33 @@ init -1000 python in mas_submod_utils:
         #The fallback version string, used in case we don't have valid data
         FB_VERS_STR = "0.0.0"
 
+        # Cache this for init
+        ALLOWED_ATTRS = frozenset(
+            k for k in _SubmodSchema.__fields__.keys()
+            if not k.startswith("_")
+        )
+
         _submod_map = dict()
 
         def __init__(
             self,
-            *,
-            author: str,
-            name: str,
-            version: str,
-            directory: str,
-            modules: tuple[str, ...],
-            description: str,
-            dependencies: dict[str, tuple[str, str]],
-            settings_pane: str,
-            version_updates: dict[str, str],
-            coauthors: tuple[str, ...],
-            repository: str,
-            priority: int,
+            **kwargs
         ):
             """
             Submod object constructor
 
             IN:
                 author - str, author name.
-
                 name - str, submod name
-
                 version - str, version number in format SPECIFICALLY like so: `1.2.3`
                     (You can add more or less numbers as need be, but splits MUST be made using periods)
-
                 directory - str, the relative path to the submod directory
-
                 modules - list of modules of this submod
-
                 description - a short description for the submod
-
                 dependencies - dictionary in the following structure: {"name": ("minimum_version", "maximum_version")}
                     corresponding to the needed submod name and version required
                     NOTE: versions must be passed in the same way as the version property is done
-
                 settings_pane - str, representing the screen for this submod's settings
-
                 version_updates - dict of the format {"old_version_update_label_name": "new_version_update_label_name"}
                     NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submods
                     NOTE: capital letters will be forced to lower and spaces will be replaced with underscores
@@ -552,12 +560,11 @@ init -1000 python in mas_submod_utils:
 
                     becomes:
                         label monikaafterstory_example_submod_v1_2_3(version="v1_2_3")
-
                 coauthors - tuple of co-authors of this submod
-
                 repository - link to the submod repository
-
                 priority - submod loading priority. Must be within -999 and 999
+                required_os - set of OS that are required for the submod to work
+                blacklist_os - set of OS that the submod does not support
 
             RAISES:
                 SubmodError
@@ -568,70 +575,26 @@ init -1000 python in mas_submod_utils:
                     f"Submod '{name}' has been installed twice. Please, uninstall the duplicate."
                 )
 
-            #With verification done, let's make the object
-            self._author = author
-            self._name = name
-            self._version = version
-            self._directory = directory
-            self._modules = modules
-            self._description = description
-            self._dependencies = dependencies
-            self._settings_pane = settings_pane
-            self._version_updates = version_updates
-            self._coauthors = coauthors
-            self._repository = repository
-            self._priority = priority
+            for k, v in kwargs.items():
+                if k not in ALLOWED_ATTRSЖ
+                    raise SubmodError(
+                        f"Submod '{name}' got unexpected parameter: {k}."
+                    )
+                setattr(self, f"_{k}", v)
 
             #Now we add these to our maps
             self._submod_map[name] = self
 
-        @property
-        def author(self):
-            return self._author
+        def __getattr__(self, attr):
+            """
+            Implements read-only attribute access
+            """
+            if not attr.startswith("_"):
+                return super().__getattribute__(f"_{attr}")
 
-        @property
-        def name(self):
-            return self._name
-
-        @property
-        def version(self):
-            return self._version
-
-        @property
-        def directory(self):
-            return self._directory
-
-        @property
-        def modules(self):
-            return self._modules
-
-        @property
-        def description(self):
-            return self._description
-
-        @property
-        def dependencies(self):
-            return self._dependencies
-
-        @property
-        def settings_pane(self):
-            return self._settings_pane
-
-        @property
-        def version_updates(self):
-            return self._version_updates
-
-        @property
-        def coauthors(self):
-            return self._coauthors
-
-        @property
-        def repository(self):
-            return self._repository
-
-        @property
-        def priority(self):
-            return self._priority
+            raise AttributeError(
+                f"'{type(self).__name__}' object has no attribute '{attr}'"
+            ) from None
 
         def __repr__(self) -> str:
             """
@@ -734,7 +697,7 @@ init -1000 python in mas_submod_utils:
                 persistent._mas_submod_version_data[submod.name] = submod.version
 
         @classmethod
-        def _checkDependencies(cls):
+        def _checkSubmodsDependencies(cls):
             """
             Checks to see if all the submods dependencies are met
             """
@@ -751,7 +714,8 @@ init -1000 python in mas_submod_utils:
                         )
                     else:
                         submod_log.critical(
-                            f"Critical error while validating dependencies for submod '{submod.name}':\n    {e}"
+                            f"Critical error while validating dependencies for submod '{submod.name}'",
+                            exc_info=True
                         )
                     # If we're here, we failed for any reason
                     # Let's remove this submod as it cannot be loaded
@@ -774,6 +738,7 @@ init -1000 python in mas_submod_utils:
             for dependency_name, minmax_version_tuple in self.dependencies.items():
                 dependency_submod = self._getSubmod(dependency_name)
 
+                # TODO: Reduce code nesting
                 if dependency_submod is not None:
                     #Now we need to split our minmax
                     minimum_version, maximum_version = minmax_version_tuple
@@ -785,7 +750,9 @@ init -1000 python in mas_submod_utils:
                     ):
                         raise SubmodError(
                             "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
-                                dependency_submod.name, minimum_version, dependency_submod.version
+                                dependency_submod.name,
+                                minimum_version,
+                                dependency_submod.version
                             )
                         )
 
@@ -797,7 +764,9 @@ init -1000 python in mas_submod_utils:
                     ):
                         raise SubmodError(
                             "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
-                                dependency_submod.name, maximum_version, dependency_submod.version
+                                dependency_submod.name,
+                                maximum_version,
+                                dependency_submod.version
                             )
                         )
 
@@ -806,6 +775,42 @@ init -1000 python in mas_submod_utils:
                     raise SubmodError(
                         f"Dependency '{dependency_name}' is not installed and is required"
                     )
+
+        def __checkOS(self):
+            """
+            Checks if this submod supports user OS
+            """
+            current_os = platform.system().lower()
+            # NOTE: It's possible not to be able to detect OS
+            if not current_os:
+                return
+
+            req_os = self.required_os
+            blacklist_os = self.blacklist_os
+
+            if (
+                (req_os and current_os not in req_os)
+                or (blacklist_os and current_os in blacklist_os)
+            ):
+                raise SubmodError(
+                    f"Submod '{self.name}' does not support current operating system."
+                )
+
+        @classmethod
+        def _checkSubmodsSupportOS(cls):
+            """
+            Checks to see if all the submods support user OS
+            """
+            for submod in cls._getSubmods():
+                try:
+                    submod.__checkOS()
+
+                except SubmodError as e:
+                    # Submod cannot be loaded
+                    submod_log.error(
+                        f"OS check for submod '{submod.name}' failed:\n    {e}"
+                    )
+                    cls._submod_map.pop(submod.name, None)
 
         @classmethod
         def _loadSubmods(cls):
