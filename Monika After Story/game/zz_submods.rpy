@@ -696,38 +696,6 @@ init -1000 python in mas_submod_utils:
                 #Even if this hasn't updated, we should adjust its value to reflect the correct version
                 persistent._mas_submod_version_data[submod.name] = submod.version
 
-        @classmethod
-        def _checkSubmodsDependencies(cls):
-            """
-            Checks to see if all the submods dependencies are met
-            """
-            for submod in cls._getSubmods():
-                try:
-                    submod.__checkDependencies()
-
-                # Technically there should only be SubmodError
-                # but let's make it extra safe and instead catch broad Exception
-                except Exception as e:
-                    if isinstance(e, SubmodError):
-                        submod_log.error(
-                            f"Dependency check failed for submod '{submod.name}':\n    {e}"
-                        )
-                    else:
-                        submod_log.critical(
-                            f"Critical error while validating dependencies for submod '{submod.name}'",
-                            exc_info=True
-                        )
-                    # If we're here, we failed for any reason
-                    # Let's remove this submod as it cannot be loaded
-                    cls._submod_map.pop(submod.name, None)
-
-                else:
-                    # No error means we passed
-                    #NOTE: We check for things having updated later so all update scripts get called together
-                    if submod.name not in persistent._mas_submod_version_data:
-                        persistent._mas_submod_version_data[submod.name] = submod.version
-                    continue
-
         def __checkDependencies(self):
             """
             Checks to see if the dependencies for this submod are met
@@ -773,6 +741,38 @@ init -1000 python in mas_submod_utils:
                         )
                     )
 
+        @classmethod
+        def _checkSubmodsDependencies(cls):
+            """
+            Checks to see if all the submods dependencies are met
+            """
+            for submod in cls._getSubmods():
+                try:
+                    submod.__checkDependencies()
+
+                # Technically there should only be SubmodError
+                # but let's make it extra safe and instead catch broad Exception
+                except Exception as e:
+                    if isinstance(e, SubmodError):
+                        submod_log.error(
+                            f"Dependency check failed for submod '{submod.name}':\n    {e}"
+                        )
+                    else:
+                        submod_log.critical(
+                            f"Critical error while validating dependencies for submod '{submod.name}'",
+                            exc_info=True
+                        )
+                    # If we're here, we failed for any reason
+                    # Let's remove this submod as it cannot be loaded
+                    cls._submod_map.pop(submod.name, None)
+
+                else:
+                    # No error means we passed
+                    #NOTE: We check for things having updated later so all update scripts get called together
+                    if submod.name not in persistent._mas_submod_version_data:
+                        persistent._mas_submod_version_data[submod.name] = submod.version
+                    continue
+
         def __checkOS(self):
             """
             Checks if this submod supports user OS
@@ -809,19 +809,6 @@ init -1000 python in mas_submod_utils:
                     )
                     cls._submod_map.pop(submod.name, None)
 
-        @classmethod
-        def _loadSubmods(cls):
-            """
-            SHOULD NEVER BE CALLED DIRECTLY
-
-            Loads modules for every submod
-            """
-            submods = cls._getSubmods()
-            submods.sort(key=lambda s: s.priority)
-
-            for submod in submods:
-                submod.__load()
-
         def __load(self):
             """
             SHOULD NEVER BE CALLED DIRECTLY
@@ -852,6 +839,19 @@ init -1000 python in mas_submod_utils:
                     msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e}"
                     submod_log.critical(msg)
                     raise SubmodError(msg) from e
+
+        @classmethod
+        def _loadSubmods(cls):
+            """
+            SHOULD NEVER BE CALLED DIRECTLY
+
+            Loads modules for every submod
+            """
+            submods = cls._getSubmods()
+            submods.sort(key=lambda s: s.priority)
+
+            for submod in submods:
+                submod.__load()
 
         @classmethod
         def hasSubmods(cls) -> bool:
