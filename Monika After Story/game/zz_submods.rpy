@@ -62,7 +62,7 @@ init -1000 python in mas_submod_utils:
         author: constrained_str(regex=LABEL_SAFE_NAME)
         name: constrained_str(regex=LABEL_SAFE_NAME)
         version: str
-        directory: str # NOTE: this isn't part of the json, will be added dynamically during loading
+        _directory: str # NOTE: this isn't part of the json, will be added dynamically during loading
         modules: tuple[str, ...]
         description: str = ""
         dependencies: dict[str, tuple[str, str]] = {}# pydantic handles mut args
@@ -104,7 +104,7 @@ init -1000 python in mas_submod_utils:
             # IMPORTANT: Sort in alpha
             value = tuple(sorted(value))
 
-            submod_dir = values.get("directory", None)
+            submod_dir = values.get("_directory", None)
             if (
                 submod_dir is not None
                 and not _mas_loader.do_modules_exist(*(f"{submod_dir}/{m}" for m in value))
@@ -278,7 +278,7 @@ init -1000 python in mas_submod_utils:
             os.path.dirname(header_path),
             start=config.gamedir
         ).replace("\\", "/")
-        raw_header["directory"] = submod_dir
+        raw_header["_directory"] = submod_dir
 
         try:
             model = _SubmodSchema(**raw_header)
