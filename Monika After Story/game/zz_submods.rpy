@@ -373,7 +373,7 @@ init -1000 python in mas_submod_utils:
         # Log
         _log_inited_submods()
         # Finally load submods
-        _Submod._loadModules()
+        _Submod._loadSubmods()
 
 
     class SubmodError(Exception):
@@ -804,7 +804,7 @@ init -1000 python in mas_submod_utils:
                     )
 
         @classmethod
-        def _loadModules(cls):
+        def _loadSubmods(cls):
             """
             SHOULD NEVER BE CALLED DIRECTLY
 
@@ -814,9 +814,9 @@ init -1000 python in mas_submod_utils:
             submods.sort(key=lambda s: s.priority)
 
             for submod in submods:
-                submod.__loadModules()
+                submod.__load()
 
-        def __loadModules(self):
+        def __load(self):
             """
             SHOULD NEVER BE CALLED DIRECTLY
 
