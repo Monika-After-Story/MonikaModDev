@@ -24,7 +24,11 @@ init -1000 python in mas_submod_utils:
     from collections.abc import Iterator
 
     import pydantic
-    from pydantic import conlist as constrained_list, constr as constrained_str
+    from pydantic import (
+        conlist as constrained_list,
+        constr as constrained_str,
+        conint as constrained_int
+    )
 
     import store
     from store import (
@@ -66,7 +70,7 @@ init -1000 python in mas_submod_utils:
         version_updates: dict[str, str] = {}# pydantic handles mut args
         coauthors: constrained_list(constrained_str(regex=LABEL_SAFE_NAME)) = []
         repository: str = ""
-        priority: pydantic.conint(ge=-999, le=999) = 0
+        priority: constrained_int(ge=-999, le=999) = 0
 
         @pydantic.validator("header_version")
         def validate_header_version(cls, value):
