@@ -281,7 +281,7 @@ init -1000 python in mas_submod_utils:
 
         return header_json
 
-    def _process_submod_header(raw_header: dict, header_path: str) -> dict|None:
+    def _parse_submod_header(raw_header: dict, header_path: str) -> dict|None:
         """
         This does extra processing on header, validation, and setting default values
 
@@ -327,7 +327,7 @@ init -1000 python in mas_submod_utils:
 
         return header
 
-    def _init_submod(header_path: str):
+    def _try_init_submod(header_path: str):
         """
         Reads a submod json header at the given path,
         validates and and tries to init the submod
@@ -338,7 +338,7 @@ init -1000 python in mas_submod_utils:
         if not (raw_header := _read_submod_header(header_path)):
             return
 
-        if not (header := _process_submod_header(raw_header, header_path)):
+        if not (header := _parse_submod_header(raw_header, header_path)):
             return
 
         try:
@@ -361,7 +361,7 @@ init -1000 python in mas_submod_utils:
         """
         search_path = os.path.join(config.gamedir, SUBMODS_DIR, HEADER_GLOB)
         for fn in glob.iglob(search_path, recursive=True):
-            _init_submod(fn)
+            _try_init_submod(fn)
 
     def _log_inited_submods():
         if _Submod.hasSubmods():
