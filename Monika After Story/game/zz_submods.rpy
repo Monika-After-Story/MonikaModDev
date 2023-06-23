@@ -16,7 +16,6 @@ init -1000 python in mas_submod_utils:
     import os
     import json
     import sys
-    import platform
     from urllib.parse import urlparse
     from typing import (
         Literal,
@@ -51,6 +50,18 @@ init -1000 python in mas_submod_utils:
 
     # String must start with an alpha/underscore character, and can contain only alphanumerics and underscores
     LABEL_SAFE_NAME = re.compile(r'^[a-zA-Z_][ 0-9a-zA-Z_]*$')
+
+    if renpy.windows:
+        PLATFORM = "windows"
+
+    elif renpy.linux:
+        PLATFORM = "linux"
+
+    elif renpy.macintosh:
+        PLATFORM = "darwin"
+
+    else:
+        PLATFORM = ""
 
 
     class _SubmodSchema(pydantic.BaseModel):
@@ -777,16 +788,13 @@ init -1000 python in mas_submod_utils:
             """
             Checks if this submod supports user OS
             """
-            current_os = platform.system().lower()
-            # NOTE: It's possible not to be able to detect OS
-            if not current_os:
-                return
-
+            current_os = PLATFORM
             req_os = self.required_os
             blacklist_os = self.blacklist_os
 
             if (
-                (req_os and current_os not in req_os)
+                not current_os
+                or (req_os and current_os not in req_os)
                 or (blacklist_os and current_os in blacklist_os)
             ):
                 raise SubmodError(
