@@ -3186,7 +3186,7 @@ screen submods():
                                 action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
 
                         if submod.description:
-                            text submod.description text_align 0.0
+                            text submod.description.replace("[", "[[").replace("{", "{{") text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
                         # FIXME: use the use statement?

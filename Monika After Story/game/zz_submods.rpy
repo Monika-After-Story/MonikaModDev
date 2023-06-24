@@ -22,12 +22,13 @@ init -1000 python in mas_submod_utils:
         Optional
     )
     from collections.abc import Iterator
-
+    from enum import Enum
     import pydantic
     from pydantic import (
         conlist as constrained_list,
         constr as constrained_str,
-        conint as constrained_int
+        conint as constrained_int,
+        Field
     )
 
     import store
@@ -51,17 +52,26 @@ init -1000 python in mas_submod_utils:
     # String must start with an alpha/underscore character, and can contain only alphanumerics and underscores
     LABEL_SAFE_NAME = re.compile(r'^[a-zA-Z_][ 0-9a-zA-Z_]*$')
 
+    class Platform(str, Enum):
+        """
+        Enum for representing OS platforms that are supported by MAS
+        """
+        unknown = ""
+        windows = "windows"
+        linux = "linux"
+        macintosh = "darwin"
+
     if renpy.windows:
-        PLATFORM = "windows"
+        PLATFORM = Platform.windows
 
     elif renpy.linux:
-        PLATFORM = "linux"
+        PLATFORM = Platform.linux
 
     elif renpy.macintosh:
-        PLATFORM = "darwin"
+        PLATFORM = Platform.macintosh
 
     else:
-        PLATFORM = ""
+        PLATFORM = Platform.unknown
 
 
     class _SubmodSchema(pydantic.BaseModel):
@@ -71,20 +81,73 @@ init -1000 python in mas_submod_utils:
         # NOTE: JSON specific:
         header_version: int
         # NOTE: Submod specific:
-        author: constrained_str(regex=LABEL_SAFE_NAME)
-        name: constrained_str(regex=LABEL_SAFE_NAME)
-        version: str
+        author: constrained_str(regex=LABEL_SAFE_NAME) = Field(
+            description="Name of the submod author."
+        )
+        name: constrained_str(regex=LABEL_SAFE_NAME) = Field(
+            description="Name of the submod. Must be unique."
+        )
+        version: constrained_str(regex=r'^[0-9]+(\.[0-9]+)*$') = Field(
+            description="A version number following the semantic versioning format (https://semver.org/)"
+        )
         _directory: str # NOTE: this isn't part of the json, will be added dynamically during loading
-        modules: tuple[str, ...]
-        description: str = ""
-        dependencies: dict[str, tuple[str, str]] = {}# pydantic handles mut args
-        settings_pane: str = ""
-        version_updates: dict[str, str] = {}# pydantic handles mut args
-        coauthors: constrained_list(constrained_str(regex=LABEL_SAFE_NAME)) = []
-        repository: str = ""
-        priority: constrained_int(ge=-999, le=999) = 0
-        required_os: frozenset[str] = frozenset()
-        blacklist_os: frozenset[str] = frozenset()
+        modules: constrained_list(constrained_str(regex=r'^(?!.*\\)(?!\/)(?!.*\.rpy.*$).*[^\/]$'), min_items=1) = Field(
+            description=(
+                "List of modules of this submod. Must be non-empty, all modules must exist, forwardslashes must be used instead of backslashes, "
+                "paths must also not start with a slash, nor end in one, likewise it must not end in .rpy* or a slash"
+            )
+        )
+        description: str = Field(
+            default="",
+            description="A short description for the submod. Does not support interpolation."
+        )
+        dependencies: dict[str, tuple[str, str]] = Field(
+            default={},
+            description=(
+                "Dictionary in the following structure: {'name': ('minimum_version', 'maximum_version')} "
+                "corresponding to the needed submod name and version required "
+                "NOTE: versions must be passed in the same way as the version property is done"
+            )
+        ) # pydantic handles mut args
+        settings_pane: str = Field(
+            default="",
+            description="String referring to the screen used for the submod's settings"
+        )
+        version_updates: dict[str, str] = Field(
+            default={},
+            description=(
+                "Dictionary of the format {'old_version_update_label_name': 'new_version_update_label_name'} "
+                "NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submods "
+                "NOTE: capital letters will be forced to lower and spaces will be replaced with underscores "
+                "NOTE: Update labels MUST accept a version parameter, defaulted to the version of the label "
+                "For example: "
+                "    author name: MonikaAfterStory, "
+                "    submod name: Example Submod "
+                "    submod vers: 1.2.3 "
+                "becomes: "
+                "    label monikaafterstory_example_submod_v1_2_3(version='v1_2_3') "
+            )
+        )# pydantic handles mut args
+        coauthors: constrained_list(constrained_str(regex=LABEL_SAFE_NAME)) = Field(
+            default=[],
+            description="List of co-authors who helped work on this submod."
+        )
+        repository: str = Field(
+            default="",
+            description="Link to the submod git repository"
+        )
+        priority: constrained_int(ge=-999, le=999) = Field(
+            default=0,
+            description="Submod loading priority. Must be within -999 and 999"
+        )
+        required_os: list[Platform] = Field(
+            default=frozenset(),
+            description="Set of OS that are supported by the submod"
+        )
+        blacklist_os: list[Platform] = Field(
+            default=frozenset(),
+            description="Set of OS that the submod does not support"
+        )
 
         @pydantic.validator("header_version")
         def validate_header_version(cls, value):
@@ -580,6 +643,7 @@ init -1000 python in mas_submod_utils:
             RAISES:
                 SubmodError
             """
+            name = kwargs["name"]
             #First make sure this name us unique
             if name in self._submod_map:
                 raise SubmodError(
@@ -587,7 +651,7 @@ init -1000 python in mas_submod_utils:
                 )
 
             for k, v in kwargs.items():
-                if k not in ALLOWED_ATTRSЖ
+                if k not in _Submod.ALLOWED_ATTRS:
                     raise SubmodError(
                         f"Submod '{name}' got unexpected parameter: {k}."
                     )
