@@ -651,11 +651,13 @@ init -1000 python in mas_submod_utils:
                 )
 
             for k, v in kwargs.items():
-                if k not in _Submod.ALLOWED_ATTRS:
+                if k not in self.ALLOWED_ATTRS:
                     raise SubmodError(
                         f"Submod '{name}' got unexpected parameter: {k}."
                     )
-                setattr(self, f"_{k}", v)
+                if not k.startswith("_"):
+                    k = f"_{k}"
+                setattr(self, k, v)
 
             #Now we add these to our maps
             self._submod_map[name] = self
