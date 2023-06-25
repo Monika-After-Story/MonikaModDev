@@ -90,7 +90,7 @@ init -1000 python in mas_submod_utils:
         version: constrained_str(regex=r'^[0-9]+(\.[0-9]+)*$') = Field(
             description="A version number following the semantic versioning format (https://semver.org/)"
         )
-        _directory: str # NOTE: this isn't part of the json, will be added dynamically during loading
+        directory: str# NOTE: this isn't part of the json, will be added dynamically during loading
         modules: constrained_list(constrained_str(regex=r'^(?!.*\\)(?!\/)(?!.*\.rpy.*$).*[^\/]$'), min_items=1) = Field(
             description=(
                 "List of modules of this submod. Must be non-empty, all modules must exist, forwardslashes must be used instead of backslashes, "
@@ -181,7 +181,7 @@ init -1000 python in mas_submod_utils:
             # IMPORTANT: Sort in alpha
             value = tuple(sorted(value))
 
-            submod_dir = values.get("_directory", None)
+            submod_dir = values.get("directory", None)
             if (
                 submod_dir is not None
                 and not _mas_loader.do_modules_exist(*(f"{submod_dir}/{m}" for m in value))
@@ -372,7 +372,7 @@ init -1000 python in mas_submod_utils:
             os.path.dirname(header_path),
             start=config.gamedir
         ).replace("\\", "/")
-        raw_header["_directory"] = submod_dir
+        raw_header["directory"] = submod_dir
 
         try:
             model = _SubmodSchema(**raw_header)
@@ -563,7 +563,7 @@ init -1000 python in mas_submod_utils:
 
         @classmethod
         def disable_submod(cls, submod: _Submod):
-            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, False)
 
         @classmethod
         def toggle_submod(cls, submod: _Submod) -> bool:
@@ -599,7 +599,6 @@ init -1000 python in mas_submod_utils:
         # Cache this for init
         ALLOWED_ATTRS = frozenset(
             k for k in _SubmodSchema.__fields__.keys()
-            if not k.startswith("_")
         )
 
         _submod_map = dict()
@@ -611,40 +610,11 @@ init -1000 python in mas_submod_utils:
             """
             Submod object constructor
 
-            IN:
-                author - str, author name.
-                name - str, submod name
-                version - str, version number in format SPECIFICALLY like so: `1.2.3`
-                    (You can add more or less numbers as need be, but splits MUST be made using periods)
-                directory - str, the relative path to the submod directory
-                modules - list of modules of this submod
-                description - a short description for the submod
-                dependencies - dictionary in the following structure: {"name": ("minimum_version", "maximum_version")}
-                    corresponding to the needed submod name and version required
-                    NOTE: versions must be passed in the same way as the version property is done
-                settings_pane - str, representing the screen for this submod's settings
-                version_updates - dict of the format {"old_version_update_label_name": "new_version_update_label_name"}
-                    NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submods
-                    NOTE: capital letters will be forced to lower and spaces will be replaced with underscores
-                    NOTE: Update labels MUST accept a version parameter, defaulted to the version of the label
-                    For example:
-                        author name: MonikaAfterStory,
-                        submod name: Example Submod
-                        submod vers: 1.2.3
-
-                    becomes:
-                        label monikaafterstory_example_submod_v1_2_3(version="v1_2_3")
-                coauthors - tuple of co-authors of this submod
-                repository - link to the submod repository
-                priority - submod loading priority. Must be within -999 and 999
-                required_os - set of OS that are required for the submod to work
-                blacklist_os - set of OS that the submod does not support
-
             RAISES:
                 SubmodError
             """
             name = kwargs["name"]
-            #First make sure this name us unique
+
             if name in self._submod_map:
                 raise SubmodError(
                     f"Submod '{name}' has been installed twice. Please, uninstall the duplicate."
@@ -659,7 +629,6 @@ init -1000 python in mas_submod_utils:
                     k = f"_{k}"
                 setattr(self, k, v)
 
-            #Now we add these to our maps
             self._submod_map[name] = self
 
         def __getattr__(self, attr):
@@ -667,7 +636,7 @@ init -1000 python in mas_submod_utils:
             Implements read-only attribute access
             """
             if not attr.startswith("_"):
-                return super().__getattribute__(f"_{attr}")
+                return self.__getattribute__(f"_{attr}")
 
             raise AttributeError(
                 f"'{type(self).__name__}' object has no attribute '{attr}'"

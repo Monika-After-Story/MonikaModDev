@@ -3157,7 +3157,7 @@ screen submods():
                         xfill True
                         xmaximum 1000
 
-                        label submod.name:
+                        label "[submod.name]":
                             yanchor 0
                             xalign 0
                             text_text_align 0.0
@@ -3186,7 +3186,11 @@ screen submods():
                                 action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
 
                         if submod.description:
-                            text submod.description.replace("[", "[[").replace("{", "{{") text_align 0.0
+                            text "[submod.description]":
+                                # TODO: are we sure we don't want to allow substitute?
+                                # To allow, use recursive interpolation: !i
+                                substitute False
+                                text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
                         # FIXME: use the use statement?
