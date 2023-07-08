@@ -61,7 +61,6 @@ init 50 python:
             "",
             sep="\n"
         ),
-        lambda: print("#"*5, "END MAS LINT HOOKS", "#"*5)
     ]
 
 init python:
