@@ -58,10 +58,10 @@ jobs:
       - name: Download base MAS
       #  if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
-          wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
+          # wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
           mkdir mas0105
-          unzip mas.zip -d mas0105
-          rm mas0105/game/scripts.rpa
+          # unzip mas.zip -d mas0105
+          # rm mas0105/game/scripts.rpa
 
       # copy over gh files to base
       - name: copy source over
