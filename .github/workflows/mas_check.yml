@@ -18,11 +18,14 @@ jobs:
   build:
     name: ci_build
 
+    environment: ci
+
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
 
     env:
       SDL_AUDIODRIVER: dummy # handles ALSA issues
+      I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT_OR_SACRIFICE_CHILDREN: ${{ secrets.DEV_MODE }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
