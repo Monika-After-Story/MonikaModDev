@@ -12,7 +12,7 @@ python early in mas_unittests:
         result = _runner.run(test_suite)
 
         if not result.wasSuccessful():
-            renpy.renpy.lint.error_reported = True
+            renpy.lint.error_reported = True
             print("Unit tests failed.")
             # Ensure a non-zero exit code because lint hook failures don't cause lint to error.
             sys.exit(1)
