@@ -751,7 +751,7 @@ init -2 python in mas_unittests:
                 self.assertIsNone(actual.get(self.pose4, "test"))
 
             with self.subTest("mpm type 1, no props, l_default, pose5 should be the same as pose 3"):
-                self.assertEqual(pose3, actual.get(self.pose5, "test"))
+                self.assertEqual(self.pose3, actual.get(self.pose5, "test"))
 
             with self.subTest("mpm type 1, no props, l_default, pose6 should be none"):
                 self.assertIsNone(actual.get(self.pose6, "test"))
@@ -1433,9 +1433,9 @@ init -2 python in mas_unittests:
         def test_mpm_type_2_valid_3_4_6(self):
             test_data = {
                 self.prop_mpm_type: store.MASPoseMap.MPM_TYPE_AS,
-                self.prop_p3: as_zero,
-                self.prop_p4: as_star,
-                self.prop_p6: as_one,
+                self.prop_p3: self.as_zero,
+                self.prop_p4: self.as_star,
+                self.prop_p6: self.as_one,
             }
             log = []
             actual = store.MASPoseMap.fromJSON(test_data, log, 0)
