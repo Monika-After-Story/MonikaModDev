@@ -74,11 +74,9 @@ jobs:
       # lint renpy
       - name: rpy lint
         run: |
+          set -e
           cd renpy
-          output=$(./renpy.sh "../mas0105/" lint --error-code)
-          exit_code=$?
-          echo -e "${output}" | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
-          if [ $exit_code ]; then exit $exit_code; fi
+          ./renpy.sh "../mas0105/" lint --error-code | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
       # distribute
       - name: rpy distribute
