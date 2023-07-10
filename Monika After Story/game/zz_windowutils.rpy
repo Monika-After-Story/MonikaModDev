@@ -38,7 +38,7 @@ init -10 python in mas_windowreacts:
 
 init python in mas_windowutils:
     import os
-
+    import re
     import store
     from store import mas_utils
     #The initial setup
@@ -605,6 +605,23 @@ init python in mas_windowutils:
         """
         return getMousePosRelative()[1] == -1
 
+    def evaluateInWindowHandle(regexp, active_window_handle: str) -> bool:
+        """
+        Checks if the active window handle has a match for the given regexp.
+        Does not return the match, just true or false if at least 1 match exists
+
+        IN:
+            regexp:
+                Regex pattern to identify the window
+
+            active_window_handle:
+                String representing the handle of the active window
+
+        OUT:
+            bool indicating if the active window handle matches the regexp
+        """
+        return bool(re.findall(regexp, active_window_handle))
+
     #Fallback functions because Mac
     def return_true():
         """
@@ -786,7 +803,7 @@ init python:
         if active_window_handle is None:
             active_window_handle = mas_getActiveWindowHandle()
 
-        return bool(re.findall(regexp, active_window_handle))
+        return evaluateInWindowHandle(regexp, active_window_handle)
 
     def mas_clearNotifs():
         """
