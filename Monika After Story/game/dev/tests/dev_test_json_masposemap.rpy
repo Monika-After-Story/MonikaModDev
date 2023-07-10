@@ -1,6 +1,6 @@
 init -2 python in mas_unittests:
     # TODO: Fix these tests
-    # @testclass
+    @testclass
     class JSONMASPoseMapTester(unittest.TestCase):
         prop_mpm_type = "mpm_type"
         prop_default = "default"
