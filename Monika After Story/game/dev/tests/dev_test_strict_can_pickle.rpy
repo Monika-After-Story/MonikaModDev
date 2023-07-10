@@ -102,6 +102,7 @@ init 1 python in mas_unittests:
                     store.mas_ev_data_ver._strict_can_pickle(datetime.datetime.now(self.FakeTzInfo()))
                 )
 
+            with self.subTest("datetime, time - with tzinfo: time"):
                 self.assertEqual(
                     self.cannot_pickle,
                     store.mas_ev_data_ver._strict_can_pickle(datetime.time(tzinfo=self.FakeTzInfo()))
