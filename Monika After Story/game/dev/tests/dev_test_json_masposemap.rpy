@@ -1348,7 +1348,7 @@ init -2 python in mas_unittests:
             with self.subTest("mpm type 2, no props, default, l_default, test_data should be empty dict"):
                 self.assertEqual({}, test_data)
 
-            with self.subTest("mpm type 2, no props, default, l_default, log length should be 1"):
+            with self.subTest("mpm type 2, no props, default, l_default, log length should be 0"):
                 self.assertEqual(0, len(log))
 
         def test_mpm_type_2_extra_props(self):
@@ -1555,7 +1555,7 @@ init -2 python in mas_unittests:
             with self.subTest("mpm type 2, valid all, defaults, test_data should be empty dict"):
                 self.assertEqual({}, test_data)
 
-            with self.subTest("mpm type 2, valid all, defaults, log length should be 2"):
+            with self.subTest("mpm type 2, valid all, defaults, log length should be 0"):
                 self.assertEqual(0, len(log))
 
         def test_mpm_type_2_one_invalid_defaults(self):
@@ -1662,7 +1662,7 @@ init -2 python in mas_unittests:
             with self.subTest("mpm type 4, no props, test_data should be empty dict"):
                 self.assertEqual({}, test_data)
 
-            with self.subTest("mpm type 4, no props, log length should be 1"):
+            with self.subTest("mpm type 4, no props, log length should be 2"):
                 self.assertEqual(2, len(log))
 
         def test_mpm_type_4_no_props_default(self):
@@ -1844,7 +1844,7 @@ init -2 python in mas_unittests:
             with self.subTest("mpm type 4, no props, default, l_default, test_data should be empty dict"):
                 self.assertEqual({}, test_data)
 
-            with self.subTest("mpm type 4, no props, default, l_default, log length should be 1"):
+            with self.subTest("mpm type 4, no props, default, l_default, log length should be 0"):
                 self.assertEqual(0, len(log))
 
         def test_mpm_type_4_extra_props(self):
@@ -2006,7 +2006,7 @@ init -2 python in mas_unittests:
             with self.subTest("mpm type 4, valid all, no defaults, test_data should be empty dict"):
                 self.assertEqual({}, test_data)
 
-            with self.subTest("mpm type 4, valid all, no defaults, log length should be 0"):
+            with self.subTest("mpm type 4, valid all, no defaults, log length should be 2"):
                 self.assertEqual(2, len(log))
 
         def test_mpm_type_4_valid_all_defaults(self):
