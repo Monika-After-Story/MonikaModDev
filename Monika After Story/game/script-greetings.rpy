@@ -3038,9 +3038,12 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
+        window show
         m "If you don't mind me asking, was there something in particular that happened?" nointeract
 
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
@@ -3237,7 +3240,6 @@ label greeting_back_from_work:
                 m 2ekc "I wish I could be there to give you a hug right now."
                 m 2eka "I'm just glad you came to see me... {w=0.5}I'll do my best to comfort you."
 
-        m 2ekc "If you don't mind talking about it, what happened today?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -3251,8 +3253,12 @@ label greeting_back_from_work:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
+        window show
+        m "If you don't mind talking about it, what happened today?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
