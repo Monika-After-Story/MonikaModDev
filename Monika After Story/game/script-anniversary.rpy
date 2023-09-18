@@ -208,6 +208,8 @@ init 10 python in mas_anni:
         "anni_3",
         "anni_4",
         "anni_5",
+        "anni_6",
+        "anni_7",
         "anni_10",
         "anni_20",
         "anni_50",
@@ -306,6 +308,8 @@ init 10 python in mas_anni:
         _month_adjuster(anni_db["anni_3"], new_start_dt, 36, fullday)
         _month_adjuster(anni_db["anni_4"], new_start_dt, 48, fullday)
         _month_adjuster(anni_db["anni_5"], new_start_dt, 60, fullday)
+        _month_adjuster(anni_db["anni_6"], new_start_dt, 6*12, fullday)
+        _month_adjuster(anni_db["anni_7"], new_start_dt, 7*12, fullday)
         _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
         _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
         _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
