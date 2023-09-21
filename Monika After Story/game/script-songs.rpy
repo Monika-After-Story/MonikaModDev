@@ -2078,6 +2078,30 @@ label mas_song_on_the_front_porch:
     extend 5dkbsu "simply wonderful~"
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_songs_database,
+            eventlabel="mas_song_tiptoe_through_the_tulips",
+            prompt="Tiptoe Through the Tulips",
+            category=[store.mas_songs.TYPE_SHORT],
+            random=True,
+            aff_range=(mas_aff.NORMAL None)
+        ),
+        code="SNG"
+    )
+
+label monika__somg_tiptoe_through_the_tulips:
+    m 1dud "{i}~Tiptoe through the window~{/i}"
+    m 3hub "{i}~By the window, that is where I'll be~{/i}"
+    m 1ekblb "{i}~Come tiptoe through the tulips with me~{/i}"
+    m 1hsblb "{i}~Oh,{w=0.5} tiptoe from the garden~{/i}"
+    m 3sublb "{i}~By the garden of the willow tree~{/i}"
+    m 3tublb "{i}~And tiptoe through the tulips with me~{/i}"
+    show monika 5rublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+    m 5rublb "Maybe someday we could go to a field of flowers and have a picnic."
+    m 5hublu "Ehehe~"
+
 
 ################################ NON-DB SONGS############################################
 # Below is for songs that are not a part of the actual songs db and don't
