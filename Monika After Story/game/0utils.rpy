@@ -372,7 +372,7 @@ python early in mas_utils:
 
     from store import mas_logging
 
-    
+
     def init_mas_log():
         """
         Initializes the MAS log, or gets it if its already init.
@@ -390,8 +390,79 @@ python early in mas_utils:
 
     mas_log = init_mas_log()
 
+    # Keep all warnings
+    _deprecation_warnings = set()
 
-    def deprecated(use_instead=None, should_raise=False):
+    def report_deprecation(
+        deprecated,
+        use_instead="",
+        should_raise=False,
+        deprecated_msg_fmt="{deprecated} is deprecated.",
+        use_instead_msg_fmt="Use '{use_instead}' instead."
+    ):
+        """
+        A unified function to report deprecation
+
+        IN:
+            deprecated - the object that was deprecated or a str explaining what
+                was deprecated
+                Examples:
+                    report_deprecation("parameter 'mode'")
+                    report_deprecation(some_func)
+                    report_deprecation(DeprecatedClassExample)
+            use_instead - str, the name of the function/class to use instead
+                or just a message
+            should_raise - bool, whether we raise an exception or just log the error
+            deprecated_msg_fmt - str, formatter string used to report the deprecated object
+                NOTE: MUST accept the 'deprecated' keyword and only it
+            use_instead_msg_fmt - str, formatter string used to report the object to use instead
+                of the deprecated one
+                NOTE: MUST accept the 'use_instead' keyword and only it
+                Examples:
+                    report_deprecation(
+                        "using 'int's",
+                        use_instead="floats"
+                        deprecated_msg_fmt="{deprecated} is no longer supported",
+                        use_instead_msg_fmt="The function now accepts {use_instead}."
+                    )
+
+        RAISES:
+            DeprecationWarning - if should_raise is True
+        """
+        if isinstance(deprecated, basestring):
+            deprecated = deprecated.capitalize()
+
+        else:
+            module = getattr(deprecated, "__module__", "")
+            if module:
+                module += "."
+
+            name = getattr(deprecated, "__name__", None)
+            if not name:
+                name = str(deprecated)
+
+            deprecated = "'{}{}'".format(module, name)
+
+        msg_start = deprecated_msg_fmt.format(deprecated=deprecated)
+
+        if use_instead:
+            msg_end = " " + use_instead_msg_fmt.format(use_instead=use_instead)
+
+        else:
+            msg_end = ""
+
+        msg = msg_start + msg_end
+
+        _deprecation_warnings.add(msg)
+
+        if should_raise:
+            raise DeprecationWarning(msg)
+
+        else:
+            print("[WARNING]: " + msg, file=sys.stderr)
+            mas_log.warning(msg)
+
+    def deprecated(**report_kws):
         """
         Decorator that marks functions and classes as deprecated
 
@@ -401,11 +472,16 @@ python early in mas_utils:
             will be reported in the main log (mas_log.txt) and stderr
         NOTE: if we were allowed to raise, we RAISE a DeprecationWarning intead
 
-        You can access all the reports via __all_warnings__
+        You can access all the reports via mas_utils._deprecation_warnings
 
         IN:
-            use_instead - string with the name of the function/class to use instead
-            should_raise - whether we raise an exception or just log the error
+            use_instead - string, the name of the function/class to use instead
+            should_raise - bool, whether we raise an exception or just log the error
+            deprecated_msg_fmt - string, a custom formater for the message (see report_deprecation)
+            use_instead_msg_fmt - string, a custom formater for the message (see report_deprecation)
+
+        RAISES:
+            DeprecationWarning - if should_raise is True
         """
         def decorator(callable_):
             """
@@ -423,34 +499,7 @@ python early in mas_utils:
                 """
                 Wrapper around the deprecated function/class
                 """
-                msg = "'{module}{name}' is deprecated.{use_instead_text}"
-
-                if hasattr(callable_, "__module__") and callable_.__module__:
-                    module = callable_.__module__ + "."
-                else:
-                    module = ""
-
-                name = callable_.__name__
-
-                if not use_instead:
-                    use_instead_text = ""
-                else:
-                    use_instead_text = " Use '{0}' instead.".format(use_instead)
-
-                msg = msg.format(
-                    module=module,
-                    name=name,
-                    use_instead_text=use_instead_text
-                )
-
-                deprecated.__all_warnings__.add(msg)
-
-                if should_raise:
-                    raise DeprecationWarning(msg)
-
-                else:
-                    print("[WARNING]: " + msg, file=sys.stderr)
-                    mas_log.warning(msg)
+                report_deprecation(callable_, **report_kws)
 
                 return callable_(*args, **kwargs)
 
@@ -458,8 +507,7 @@ python early in mas_utils:
 
         return decorator
 
-    # Keep all warnings
-    deprecated.__all_warnings__ = set()
+    deprecated.__all_warnings__ = _deprecation_warnings
 
     # mac logging
     class MASMacLog(renpy.renpy.log.LogFile):
@@ -682,7 +730,7 @@ python early in mas_utils:
     class IsolatedFlexProp(object):
         """
         class that supports flexible attributes.
-        all attributes that are set are stored in a 
+        all attributes that are set are stored in a
         separate internal structure. Supports a few additional behaviors
         because of this.
 
@@ -936,4 +984,3 @@ python early in mas_utils:
             return int(value)
         except:
             return default
-
