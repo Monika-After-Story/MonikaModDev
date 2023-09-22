@@ -5811,6 +5811,8 @@ init -3 python:
                 leaves, False if not
             hl_map - MASHighlightMap object where keys are defined by the given
                 posemap. Value determined by extending classes.
+            use_folders - True if the sprites are organized using the new-style
+                (folder-based) structure
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5844,7 +5846,8 @@ init -3 python:
                 ex_props=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_data=None
+                hl_data=None,
+                use_folders=True
             ):
             """
             MASAccessory constructor
@@ -5904,6 +5907,9 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, no highlights at all
                     (Default: None)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASAccessoryBase, self).__init__(
                 name,
@@ -5923,6 +5929,7 @@ init -3 python:
             self.acs_type = acs_type
             self.mux_type = mux_type
             self.keep_on_desk = keep_on_desk
+            self.use_folders = use_folders
 
             if dlg_data is not None and len(dlg_data) == 2:
                 self.dlg_desc, self.dlg_plur = dlg_data
@@ -6030,7 +6037,8 @@ init -3 python:
                 ex_props=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_data=None
+                hl_data=None,
+                use_folders=True,
         ):
             """
             Constructor.
@@ -6089,6 +6097,9 @@ init -3 python:
                         if None, then no mapped highlights
                     if None, then no highlights at all
                     (Default: None)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASAccessory, self).__init__(
                 self.ASO_REG,
@@ -6106,7 +6117,8 @@ init -3 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                hl_data
+                hl_data,
+                use_folders
             )
 
         def __repr__(self):
@@ -6141,6 +6153,27 @@ init -3 python:
                 for hlc in mfm.unique_values()
             ]
 
+        def _build_img_str_prefix(self, prefix):
+            """
+            Builds img string prefix to use for loadstrs
+
+            IN:
+                prefix - prefix to build with
+
+            RETURNS: img string prefix to use
+            """
+            if self.use_folders:
+                return prefix + [
+                    self.img_sit,
+                    "/",
+                ]
+
+            return prefix + [
+                store.mas_sprites.PREFIX_ACS,
+                self.img_sit,
+                store.mas_sprites.ART_DLM,
+            ]
+
         def build_loadstrs(self, prefix):
             """
             See MASSpriteBase.build_loadstrs
@@ -6150,12 +6183,7 @@ init -3 python:
             # loop over MASPoseMap for pose ids
             for poseid in self.pose_map.unique_values():
                 # generate new img str
-                new_img = prefix + [
-                    store.mas_sprites.PREFIX_ACS,
-                    self.img_sit,
-                    store.mas_sprites.ART_DLM,
-                    poseid,
-                ]
+                new_img = self._build_img_str_prefix(prefix) + [poseid]
 
                 # add the image
                 loadstrs.append(new_img + [store.mas_sprites.FILE_EXT])
@@ -6257,7 +6285,8 @@ init -3 python:
                 arm_split=None,
                 dlg_data=None,
                 keep_on_desk=False,
-                hl_data=None
+                hl_data=None,
+                use_folders=True
             ):
             """
             MASSplitAccessory constructor
@@ -6321,6 +6350,9 @@ init -3 python:
                         None means no highlight for this pose
                     if None, then no highlights at all
                     (Default: None)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
             """
             super(MASSplitAccessory, self).__init__(
                 self.ASO_SPLIT,
@@ -6338,7 +6370,8 @@ init -3 python:
                 ex_props,
                 dlg_data,
                 keep_on_desk,
-                MASSplitAccessory._prepare_hl_data(hl_data)
+                MASSplitAccessory._prepare_hl_data(hl_data),
+                use_folders
             )
 
             self.arm_split = arm_split
@@ -6417,12 +6450,7 @@ init -3 python:
             for poseid in self.pose_map.unique_values():
 
                 # generate new img str
-                new_img = prefix + [
-                    store.mas_sprites.PREFIX_ACS,
-                    self.img_sit,
-                    store.mas_sprites.ART_DLM,
-                    poseid,
-                ]
+                new_img = self._build_img_str_prefix(prefix) + [poseid]
 
                 # check layers
                 for armcode in self.get_arm_split_code(poseid):
@@ -6800,11 +6828,16 @@ init -3 python:
                         NOTE: can be multiple of this format
                     "<lean>|mid" - mid hair for a leaning type
                         NOTE: can be multiple of this format
+                    (replace keys with numeric keys if using numeric layer ids)
                 values:
                     MASFilterMap objects
             mpm_mid - MASPoseMap for mid hair layer.
                 Determines if the mid layer should be used for a pose.
                 This is the enable/disable type
+            use_folders - True if the sprites are organized using the new-style
+                (folder-based) structure
+            use_numeric_layer_ids - True if the sprites should use numeric ids for
+                layers (back=0, mid=5, front=10)
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -6812,7 +6845,14 @@ init -3 python:
             Use an empty string to
         """
 
+        LAYER_BACK = "0"
+        LAYER_MID = "5"
+        LAYER_FRONT = "10"
+
         __MHM_KEYS = store.mas_sprites._genLK(("front", "back", "mid"))
+        __MHM_KEYS_NUM = store.mas_sprites._genLK(
+            (LAYER_FRONT, LAYER_BACK, LAYER_MID)
+        )
 
         def __init__(self,
                 name,
@@ -6826,7 +6866,9 @@ init -3 python:
                 split=None,
                 ex_props=None,
                 hl_data=None,
-                mpm_mid=None
+                mpm_mid=None,
+                use_folders=True,
+                use_numeric_layer_ids=True
             ):
             """
             MASHair constructor
@@ -6871,6 +6913,12 @@ init -3 python:
                     Determines if a mid layer should be used for a pose.
                     Should be enable/disable type or else we crash
                     (Default: None)
+                use_folders - determines if sprites are organized using new-style
+                    (folder-based) structure
+                    (Default: True)
+                use_numeric_layer_ids - determines if sprites should use numeric
+                    layer ids for layers (back=0, mid=5, front=10)
+                    (Default: True)
             """
             super(MASHair, self).__init__(
                 name,
@@ -6898,6 +6946,8 @@ init -3 python:
 
             self.split = split
             self.mpm_mid = mpm_mid
+            self.use_folders = use_folders
+            self.use_numeric_layer_ids = use_numeric_layer_ids
 
         def __repr__(self):
             return "<Hair: {0}>".format(self.name)
@@ -6931,12 +6981,13 @@ init -3 python:
             ]
 
         @classmethod
-        def _prepare_hl_data(cls, hl_data):
+        def _prepare_hl_data(cls, hl_data, use_nli=False):
             """
             Generates hl-ready data for MASSpriteBase
 
             IN:
                 hl_data - hl data. See Constructor for info
+                use_nli - set to True to use numeric layer ids
 
             RETURNS: hl_data to pass into MASSpriteBase
             """
@@ -6946,6 +6997,9 @@ init -3 python:
             hl_def, hl_mapping = hl_data
             if hl_def is None and hl_mapping is None:
                 return None
+
+            if use_nli:
+                return (cls.__MHM_KEYS_NUM, hl_def, hl_mapping)
 
             return (cls.__MHM_KEYS, hl_def, hl_mapping)
 
@@ -6959,6 +7013,13 @@ init -3 python:
             #   we don't have any weirdness going on
             all_split = self.split is None
 
+            # use folder prefix if new style
+            if self.use_folders:
+                prefix = prefix + [
+                    self.img_sit,
+                    "/"
+                ]
+
             # loop over all poses
             for leanpose in store.mas_sprites.ALL_POSES:
 
@@ -6971,64 +7032,130 @@ init -3 python:
                         actual_pose
                         and (all_split or self.split.get(actual_pose, False))
                 ):
-                    # determine lean
-                    islean = "|" in leanpose
-
-                    # generate img string
-                    new_img = list(prefix)
-
-                    # determine starting prefix
-                    if islean:
-                        lean = leanpose.partition("|")[0]
-                        hl_key = lean + "|{0}"
-                        new_img.extend((
-                            store.mas_sprites.PREFIX_HAIR_LEAN,
-                            lean,
-                            store.mas_sprites.ART_DLM
-                        ))
-                    else:
-                        hl_key = "{0}"
-                        new_img.append(store.mas_sprites.PREFIX_HAIR)
-
-                    # add the tag
-                    new_img.append(self.img_sit)
-
-                    # genreate back and front images
-                    back_img = new_img + [store.mas_sprites.BHAIR_SUFFIX]
-                    front_img = new_img + [store.mas_sprites.FHAIR_SUFFIX]
-
-                    # mid images as well
-                    if (
-                            self.mpm_mid is not None
-                            and self.mpm_mid.get(leanpose, False)
-                    ):
-                        mid_img = new_img + [store.mas_sprites.MHAIR_SUFFIX]
-
-                    else:
-                        mid_img = None
-
-                    # add them to list
-                    loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])
-                    loadstrs.append(front_img + [store.mas_sprites.FILE_EXT])
-                    if mid_img is not None:
-                        loadstrs.append(mid_img + [store.mas_sprites.FILE_EXT])
-
-                    # highlights
-                    loadstrs.extend(self.__build_loadstrs_hl(
-                        back_img,
-                        hl_key.format(store.mas_sprites.BHAIR)
-                    ))
-                    loadstrs.extend(self.__build_loadstrs_hl(
-                        front_img,
-                        hl_key.format(store.mas_sprites.FHAIR)
-                    ))
-                    if mid_img is not None:
-                        loadstrs.extend(self.__build_loadstrs_hl(
-                            mid_img,
-                            hl_key.format(store.mas_sprites.MHAIR)
-                        ))
+                    loadstrs.extend(self.build_loadstr(prefix, leanpose))
 
             return loadstrs
+
+        def build_loadstr(self, prefix, leanpose):
+            """
+            Builds loadstr for a single leanpose
+
+            IN:
+                prefix - img prefix
+                leanpose - current leanpose to process
+
+            RETURNS: list of loadstrs for the given leanpose
+            """
+            loadstrs = []
+
+            # determine lean
+            islean = "|" in leanpose
+
+            # generate img string
+            new_img = list(prefix)
+
+            # determine starting prefix
+            if islean:
+                lean = leanpose.partition("|")[0]
+                hl_key = lean + "|{0}"
+
+                if not self.use_folders:
+                    new_img.append(store.mas_sprites.PREFIX_HAIR_LEAN)
+
+                new_img.extend((
+                    lean,
+                    store.mas_sprites.ART_DLM
+                ))
+            else:
+                hl_key = "{0}"
+
+                if not self.use_folders:
+                    new_img.append(store.mas_sprites.PREFIX_HAIR)
+
+            if self.use_folders:
+                # pull hair suffixes, no dash
+                back_sfx, mid_sfx, front_sfx = self._get_hair_keys()
+
+            else:
+                # add the tag
+                new_img.append(self.img_sit)
+
+                # pull hair suffixes
+                back_sfx, mid_sfx, front_sfx = self._get_sfxs()
+
+            # genreate back and front images
+            back_img = new_img + [back_sfx]
+            front_img = new_img + [front_sfx]
+
+            # mid images as well
+            if (
+                    self.mpm_mid is not None
+                    and self.mpm_mid.get(leanpose, False)
+            ):
+                mid_img = new_img + [mid_sfx]
+
+            else:
+                mid_img = None
+
+            # add them to list
+            loadstrs.append(back_img + [store.mas_sprites.FILE_EXT])
+            loadstrs.append(front_img + [store.mas_sprites.FILE_EXT])
+            if mid_img is not None:
+                loadstrs.append(mid_img + [store.mas_sprites.FILE_EXT])
+
+            # get hl keys to use
+            back_hl, mid_hl, front_hl = self._get_hair_keys()
+
+            # highlights
+            loadstrs.extend(self.__build_loadstrs_hl(
+                back_img,
+                hl_key.format(back_hl)
+            ))
+            loadstrs.extend(self.__build_loadstrs_hl(
+                front_img,
+                hl_key.format(front_hl)
+            ))
+            if mid_img is not None:
+                loadstrs.extend(self.__build_loadstrs_hl(
+                    mid_img,
+                    hl_key.format(mid_hl)
+                ))
+
+            return loadstrs
+
+        def _get_sfxs(self):
+            """
+            Gets tuple of suffixes to use in back-to-front order
+
+            RETURNS: tuple of suffixes to use
+            """
+            if self.use_numeric_layer_ids:
+                return (
+                    ART_DLM + self.LAYER_BACK,
+                    ART_DLM + self.LAYER_MID,
+                    ART_DLM + self.LAYER_FRONT,
+                )
+
+            return (
+                store.mas_sprites.BHAIR_SUFFIX,
+                store.mas_sprites.MHAIR_SUFFIX,
+                store.mas_sprites.FHAIR_SUFFIX,
+            )
+
+        def _get_hair_keys(self):
+            """
+            Get tuple of hair keys, in back to front order
+
+            RETURNS: tuple of hair keys to use
+            """
+            if self.use_numeric_layer_ids:
+                return (self.LAYER_BACK, self.LAYER_MID, self.LAYER_FRONT)
+
+            return (
+                store.mas_sprites.BHAIR,
+                store.mas_sprites.MHAIR,
+                store.mas_sprites.FHAIR,
+            )
 
         def format_exprops(self):
             """
@@ -7047,7 +7174,7 @@ init -3 python:
             Gets highlight code
 
             IN:
-                hair_key - the hair key to get hlc for (front/back)
+                hair_key - the hair key to get hlc for
                 lean - type of lean to get hlc for
                 flt - filter to get highlight for
                 defval - the default value to return
@@ -7076,16 +7203,23 @@ init -3 python:
 
             RETURNS: keys used for all MASHighlightMaps for MASHair objects
             """
-            return self.__MHM_KEYS
+            return (
+                self.__MHM_KEYS_NUM
+                if self.use_numeric_layer_ids 
+                else self.__MHM_KEYS
+            )
 
         @classmethod
-        def hl_keys_c(cls):
+        def hl_keys_c(cls, use_nli=False):
             """
             Class method of hl_keys
 
+            IN:
+                use_nli - set to True to use numeric layer ids
+
             RETURNS: tuple of hl keys
             """
-            return cls.__MHM_KEYS
+            return cls.__MHM_KEYS_NUM if use_nli else cls.__MHM_KEYS
 
 
     class MASClothes(MASSpriteFallbackBase):
