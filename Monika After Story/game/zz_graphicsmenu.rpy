@@ -388,5 +388,8 @@ label mas_gmenu_start:
     return
 
 label mas_choose_renderer_override:
-    # if we do this somehow, just quit immediately.
-    jump _quit
+    # This label can be called by renpy when launched in safe mod
+    # (holding shift on windows)
+    # We provide our own renderer menu
+    # and this one should be disabled, so we just return
+    return

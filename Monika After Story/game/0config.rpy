@@ -130,3 +130,8 @@ define config.main_menu_music = audio.t1
 
 define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
+
+# RenPain enables gl tests by default
+# which users might accidentally start by holding shift on startup
+# We don't want this to happen
+define config.performance_test = False
