@@ -111,6 +111,21 @@
 #       - default None
 # }
 #
+# Shared props for ACS and HAIR:
+# {
+#   "use_folders": True means the sprites are organized in the new folder-based
+#       format. False if not.
+#       - optional
+#       - if True, then the sprites should be in a folder whose name matches the
+#           `img_sit` property. The filenames of each sprite should be what 
+#           they were before without the acs/hair prefix and the `img_sit` name.
+#           For example: `h/down/0.png` or `a/ribbon_white/0.png`
+#       - if False, then the sprites should have the appropriate prefix and
+#           naming structure. For example: `h/hair-down-0.png` or
+#           `a/acs-ribbon_white-0.png`
+#       - Default False
+# }
+#
 # HAIR only props:
 # {
 #   "unlock": True will unlock the hair sprite for selecting. False will not.
@@ -121,6 +136,18 @@
 #   "mid_hair_map": {Pose Map object}
 #       - optional
 #       - denotes which poses support the mid hair layer
+#   "use_numeric_layer_ids": True means the sprites use number suffix codes for
+#       each layer instead of strings.
+#       - optional
+#       - if True, then the sprites need to use numeric ids instead of string.
+#           For example, `hair-down-0.png` instead of `hair-down-back.png`.
+#           The mapping between the numeric ids and strings are as follows:
+#           - back = 0
+#           - mid = 5
+#           - front = 10
+#       - if False, then the sprites need to use the string suffixes:
+#           (back, mid, front)
+#       - Default: False
 # }
 #
 # CLOTHES only props:
@@ -736,6 +763,10 @@ init -21 python in mas_sprites_json:
         "giftname": (str, _verify_str),
     }
 
+    OPT_HA_SHARED_PARAM_NAMES = {
+        "use_folders": (bool, _verify_bool),
+    }
+
     OPT_ACS_PARAM_NAMES = {
         # this is handled differently
 #        "rec_layer": None,
@@ -748,6 +779,7 @@ init -21 python in mas_sprites_json:
         "keep_on_desk": (bool, _verify_bool),
     }
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
+    OPT_ACS_PARAM_NAMES.update(OPT_HA_SHARED_PARAM_NAMES)
 
     OPT_HC_SHARED_PARAM_NAMES = {
 #        "fallback": (bool, _verify_bool),
@@ -757,7 +789,9 @@ init -21 python in mas_sprites_json:
         # object-based verification is different
 #        "split": None,
         "unlock": (bool, _verify_bool),
+        "use_numeric_layer_ids": (bool, _verify_bool),
     }
+    OPT_HAIR_PARAM_NAMES.update(OPT_HA_SHARED_PARAM_NAMES)
 
     OPT_CLOTH_PARAM_NAMES = {
         # object-based verificaiton is different
@@ -1394,6 +1428,7 @@ init 189 python in mas_sprites_json:
             - acs_type
             - dlg_desc
             - dlg_plural
+            - use_folders
             - mux_type
             - pose_map
             - giftname
@@ -1427,6 +1462,10 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # default some params if not available
+        if "use_folders" not in save_obj:
+            save_obj["use_folders"] = False
 
         # combine dlg_desc and dlg_plur
         if "dlg_desc" in save_obj:
@@ -1663,6 +1702,8 @@ init 189 python in mas_sprites_json:
 
         Props validated:
             - unlock
+            - use_numeric_layer_ids
+            - use_folders
             - highlight
 
         IN:
@@ -1686,6 +1727,12 @@ init 189 python in mas_sprites_json:
             indent_lvl
         ):
             return False
+
+        # default some params if not available
+        if "use_folders" not in save_obj:
+            save_obj["use_folders"] = False
+        if "use_numeric_layer_ids" not in save_obj:
+            save_obj["use_numeric_layer_ids"] = False
 
         # mid hair map
         if "mid_hair_map" in obj_based:

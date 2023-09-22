@@ -19,5 +19,6 @@
         "thumb": "briaryoung_down_straight_bangs",
         "group": "hair"
     },
-    "unlock": true
+    "unlock": true,
+    "use_folders": true
 }

@@ -21,5 +21,6 @@
             "A starry night..."
         ]
     },
-    "giftname": "starryredskyribbon"
+    "giftname": "starryredskyribbon",
+    "use_folders": true
 }

@@ -35,3 +35,6 @@ Monika After Story/update/updates.json
 zzzz*
 .vscode
 cacert.pem
+venv/
+.idea/
+.toolscache

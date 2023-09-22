@@ -24,5 +24,6 @@
         "select_dlg": [
             "Cute huh?"
         ]
-    }
+    },
+    "use_folders": true
 }

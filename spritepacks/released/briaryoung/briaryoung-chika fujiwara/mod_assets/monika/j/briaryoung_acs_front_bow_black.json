@@ -20,5 +20,6 @@
         "select_dlg": [
             "I still haven't figured out how this bow stays on..."
         ]
-    }
+    },
+    "use_folders": true
 }

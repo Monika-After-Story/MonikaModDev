@@ -25,5 +25,6 @@
             "Quite abstract..."
         ]
     },
-    "giftname": "lowpolygradientribbon"
+    "giftname": "lowpolygradientribbon",
+    "use_folders": true
 }

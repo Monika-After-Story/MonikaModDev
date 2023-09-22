@@ -1,4 +1,4 @@
- {
+{
     "__author": "anonymioo",
     "version": 3,
     "type": 0,
@@ -25,5 +25,6 @@
             "Cute as a button!"
         ]
     },
-    "giftname": "whiteonredpolkadotribbon"
+    "giftname": "whiteonredpolkadotribbon",
+    "use_folders": true
 }

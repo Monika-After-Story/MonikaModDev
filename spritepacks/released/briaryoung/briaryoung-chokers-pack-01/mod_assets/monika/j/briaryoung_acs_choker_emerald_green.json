@@ -23,5 +23,6 @@
     "arm_split": {
         "default": "0",
         "use_reg_for_l": true
-    }
+    },
+    "use_folders": true
 }
