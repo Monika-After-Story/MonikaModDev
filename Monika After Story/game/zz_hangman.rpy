@@ -452,12 +452,6 @@ label mas_hangman_game_loop:
 
             word = word[0]
 
-        # Ensure the word is all lowercase so that both lower and uppercase
-        # letters can be revealed properly (keep og_word to maintain case
-        # after player guesses the letter using just its lowercase variant)
-        og_word = word
-        word = word.lower()
-
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
 #       hm_letters = list()
@@ -651,14 +645,14 @@ label mas_hangman_game_loop:
                 python:
                     if guess in word:
                         for index in range(0,len(word)):
-                            if guess == word[index]:
-                                display_word[index] = og_word[index]
+                            if guess == word[index].lower():
+                                display_word[index] = word[index]
                     else:
                         chances -= 1
                         missed += guess
                         if chances == 0:
                             # show the word you lost
-                            display_word = og_word
+                            display_word = word
 
                     # remove letter from being entered agin
                     avail_letters.remove(guess)
