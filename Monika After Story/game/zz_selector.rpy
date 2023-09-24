@@ -582,7 +582,8 @@ init -20 python:
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
-                select_dlg=None
+                select_dlg=None,
+                min_aff=None
             ):
             """
             MASSelectableClothes constructor
@@ -606,6 +607,9 @@ init -20 python:
                     sprite
                     (after the first time)
                     (Default: None)
+                min_aff - minimum level of affection (as affection constant or
+                    constant name) for this clothing to be displayed in selector
+                    (Default: LOVE)
             """
             if type(_sprite_object) != MASClothes:
                 raise Exception("not a clothes: {0}".format(group))
@@ -621,6 +625,26 @@ init -20 python:
                 select_dlg
             )
 
+            if type(min_aff) is str:
+                store.mas_affection.getAffByName(self.min_aff)
+            self.min_aff = min_aff
+
+        def aff_allows_selection(self):
+            """
+            Checks if this sprite object's min_aff allows this sprite to be
+            displayed in selector. If min_aff is not defined, returns False.
+            Returns True if current affection level is at least min_aff and it
+            is not None.
+            """
+
+            if self.min_aff is None:
+                return False
+
+            return store.mas_affection._isMoniState(
+                mas_curr_affection,
+                self.min_aff,
+                higher=True
+            )
 
         def get_sprobj(self):
             """
@@ -1148,11 +1172,11 @@ init -10 python in mas_selspr:
                     except Exception as e:
                         store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
-                        
+
                         # undo the selection
                         prev_sel = prev_map[prev_cloth.name]
                         prev_sel._core_select() # re-adds the old clothing to select map
-                        prev_sel._send_select_dlg() 
+                        prev_sel._send_select_dlg()
                         new_map.pop(new_cloth.name)
 
                     return # quit early since you can only have 1 clothes
@@ -4033,7 +4057,13 @@ label monika_clothes_select:
             clothes_id_to_add = persistent._mas_event_clothes_map.get(datetime.date.today(), None)
 
             for index in range(len(gifted_clothes)-1, -1, -1):
-                spr_obj = gifted_clothes[index].get_sprobj()
+                clothes = gifted_clothes[index]
+                spr_obj = clothes.get_sprobj()
+
+                # If clothes has min_aff and it matches, do not remove it.
+                if clothes.aff_allows_selection():
+                    continue
+
                 if (
                     spr_obj.name == clothes_id_to_add
                     or (
