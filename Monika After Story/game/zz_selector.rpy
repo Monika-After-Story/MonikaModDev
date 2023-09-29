@@ -959,7 +959,8 @@ init -10 python in mas_selspr:
             visible_when_locked=True,
             hover_dlg=None,
             first_select_dlg=None,
-            select_dlg=None
+            select_dlg=None,
+            min_aff=None
         ):
         """
         Inits the selectable clothes
@@ -979,6 +980,9 @@ init -10 python in mas_selspr:
             select_dlg - list of dialogue to say when the item is selected
                 after the first time
                 (Default: None)
+            min_aff - minimum level of affection (as affection constant or
+                constant name) for this clothing to be displayed in selector
+                (Default: LOVE)
         """
         # no duplicates
         if clothes.name in CLOTH_SEL_MAP:
@@ -994,7 +998,8 @@ init -10 python in mas_selspr:
             visible_when_locked,
             hover_dlg,
             first_select_dlg,
-            select_dlg
+            select_dlg,
+            min_aff
         )
         CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
         store.mas_utils.insert_sort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)

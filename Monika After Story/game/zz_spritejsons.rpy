@@ -2197,6 +2197,9 @@ init 189 python in mas_sprites_json:
 #            ):
 #                return False
 
+        if "min_aff" in select_info:
+            select_info.pop("min_aff")
+
         if "select_dlg" in select_info:
             if not _validate_iterstr(
                 select_info,
