@@ -1073,6 +1073,24 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_christmascookies)
 
+    ### SANSHOKU DANGO
+    ## sanshoku_dango
+    # Sanshoku dango that sits on Monika's desk for her to eat
+    # thanks JMO
+    mas_acs_sanshoku_dango = MASAccessory(
+        "sanshoku_dango",
+        "sanshoku_dango",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="plate",
+        mux_type=store.mas_sprites.DEF_MUX_LD,
+        keep_on_desk=True
+    )
+    store.mas_sprites.init_acs(mas_acs_sanshoku_dango)
+
     ### COFFEE MUG
     ## mug
     # Coffee mug that sits on Monika's desk
