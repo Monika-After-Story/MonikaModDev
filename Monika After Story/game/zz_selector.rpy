@@ -4065,10 +4065,6 @@ label monika_clothes_select:
                 clothes = gifted_clothes[index]
                 spr_obj = clothes.get_sprobj()
 
-                # If clothes has min_aff and it matches, do not remove it.
-                if clothes.aff_allows_selection():
-                    continue
-
                 if (
                     spr_obj.name == clothes_id_to_add
                     or (
