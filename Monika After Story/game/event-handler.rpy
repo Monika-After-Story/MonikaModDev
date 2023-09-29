@@ -205,6 +205,11 @@ init -999 python in mas_ev_data_ver:
 
         return isinstance(val, tuple) and len(val) == 2
 
+    def _verify_aff_const(val, allow_none=True):
+        if val is None:
+            return allow_none
+        aff = store.mas_affection.getAffByName(val)
+        return aff is not None
 
     def _verify_item(val, _type, allow_none=True):
         """
