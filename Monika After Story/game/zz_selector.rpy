@@ -625,8 +625,8 @@ init -20 python:
                 select_dlg
             )
 
-            if type(min_aff) is str:
-                store.mas_affection.getAffByName(self.min_aff)
+            if isinstance(min_aff, basestring):
+                min_aff = store.mas_affection.getAffByName(min_aff)
             self.min_aff = min_aff
 
         def aff_allows_selection(self):
