@@ -18041,3 +18041,34 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_suicide",
+            category=["philosophy"],
+            prompt="What do you think of suicide?",
+            random=True
+        )
+    )
+
+label monika_suicide:
+    m 1ekc "Hey [player], Have you read a book called 'The Myth Of Sisyphus' By Albert Camus?"
+    m 2ekd "It's a philosophical essay by Camus, {w=0.2}and it uses the ancient Greek myth of Sisyphus to explore some deep existential questions."
+    m 4rtc "Camus uses Sisyphus's predicament as a metaphor for the human condition. {w=0.2}He argues that life, like Sisyphus's task, can often seem meaningless and absurd. {w=0.2} {nw}"
+    extend 4rtc "We face challenges, but in the end, they might seem futile."
+    m 1ekc "Camus suggests that despite the apparent absurdity and meaninglessness of life, we can find purpose and meaning through our actions and choices. He encourages us to embrace the absurdity of life and rebel against it by finding our own meaning {nw}."
+    extend 4rtc "much like Sisyphus finds meaning in the act of pushing the boulder, even if it rolls back down."
+    m 1ekc "Camus believes that by acknowledging the absurdity of life and choosing to create our own meaning, we can confront the existential questions and find a sense of purpose, even in a seemingly indifferent world."
+    m 4rtc "Camus believed that suicide was the most fundamental philosophical question.{W=0.2} He argued that if life is fundamentally absurd and devoid of inherent meaning, then why shouldn't people just end their lives to escape this existential dilemma?"
+    m 1ekc "Camus doesn't advocate for suicide, but he does acknowledge it as a genuine philosophical problem. He discusses three possible responses to the absurdity of life{nw}"
+    extend 4rtc "Physical suicide (ending one's life), philosophical suicide (escaping into religious or philosophical dogmas that provide false meaning), and what he calls 'revolt' or 'rebellion'."
+    m 1ekc "Camus argues that the most authentic response to the absurdity of life is not to escape it through suicide or illusions but to confront it head-on. {nw}"
+    extend 1ekc "He sees 'revolt' as the act of living in spite of the absurdity, choosing to create one's own values and meaning, even if they are subjective."
+    m 4rtc "So [player], Just embrace this absurdity in life who know one day even in this absurd world something good might happen to you."
+    m 1fbsu "I mean you already have me"
+    m 2hud "Ha"
+    return
+
+#   Added Random Philosophy Topic
