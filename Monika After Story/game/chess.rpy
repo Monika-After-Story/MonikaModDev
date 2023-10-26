@@ -8,10 +8,19 @@ default persistent._mas_chess_stats = {
     "practice_draws": 0
 }
 
-#Stores the chess difficulty, this is managed via levels and sublevels
-#Key is the level (0-8) - corresponds to stockfish difficulty
-#Value is the sublevel (1-5) - corresponds to stockfish depth
-default persistent._mas_chess_difficulty = (0, 1)
+#Stores the chess difficulty.
+#The difficulty is actually the ELO rating.
+#We set the default value as 850, because ELO 800 is the beginner ELO.
+#The chess community generally believes that:
+#800 = Beginner
+#1200 = Beginner after a few days
+#1700 = Advancer
+#2000 = Master
+#2400 = Grandmaster
+#3000 = Probably the human limit
+#Here we limit Monika's ELO Rating in 200~2500 the range.
+#Considering that many MAS players are just looking for fun, we set the default below the Beginner: 600
+default persistent._mas_chess_elo = 600
 
 # pgn as a string
 default persistent._mas_chess_quicksave = ""
@@ -220,40 +229,35 @@ init python in mas_chess:
 
         return _checkInProgressGame(pgn_game, mth)
 
-    def _increment_chess_difficulty():
+    def _increment_chess_difficulty(modifier = 1):
         """
-        Increments chess difficulty
+        Increments chess difficulty.
+        Monika's strength increases by 32 ELO points each time the player wins the game.
+        If player lose, Monika's strength drops by 40 ELO points.
+        This is because most MAS players are not chess pros.
+        
+        IN:
+            modifier - The multiplication of the increase or decrease in ELO points.
+                       For a feature that possbily will be implemented in the future 
+                    to give extra multipliers based on player performance in a game.
+                    (Default: 1)
         """
-        level, sublevel = store.persistent._mas_chess_difficulty
+        store.persistent._mas_chess_elo = min(store.persistent._mas_chess_elo + 32*modifier, 2500)
 
-        if sublevel == 5 and level < 9:
-            level += 1
-            sublevel = 1
-
-        elif sublevel < 5:
-            sublevel += 1
-
-        else:
-            return
-
-        store.persistent._mas_chess_difficulty = (level, sublevel)
-
-    def _decrement_chess_difficulty():
+    def _decrement_chess_difficulty(modifier = 1):
         """
-        Decrements chess difficulty
+        Decrements chess difficulty.
+        Monika's strength increases by 32 ELO points each time the player wins the game.
+        If player lose, Monika's strength drops by 40 ELO points.
+        This is because most MAS players are not chess pros.
+        
+        IN:
+            modifier - The multiplication of the increase or decrease in ELO points.
+                       For a feature that possbily will be implemented in the future 
+                    to give extra multipliers based on player performance in a game.
+                    (Default: 1)
         """
-        level, sublevel = store.persistent._mas_chess_difficulty
-        if sublevel == 1 and level > 0:
-            level -= 1
-            sublevel = 5
-
-        elif sublevel > 1:
-            sublevel -= 1
-
-        else:
-            return
-
-        store.persistent._mas_chess_difficulty = (level, sublevel)
+        store.persistent._mas_chess_elo = max(store.persistent._mas_chess_elo - 40*modifier, 200)
 
     def _get_player_color(loaded_game):
         """
@@ -480,8 +484,8 @@ init python in mas_chess:
         IN:
             is_player_white - whether or not the player is playing white this game
         """
-        # We need to multiply by 6 (max subvalue is 5) to get correct difficulty from value and subvalue
-        difficulty = store.persistent._mas_chess_difficulty[0] * 6 + store.persistent._mas_chess_difficulty[1]
+        # Use a lerp relation to reflect ELO Points
+        difficulty = (store.persistent._mas_chess_elo / 2500) * 53
         # Use a cubic function to adjust players' points
         p_value_adj = int(round(-((float(difficulty) - 27)**3) / 984))
         m_value_adj = -p_value_adj
@@ -1095,9 +1099,8 @@ label mas_chess_start_chess:
                 call mas_chess_dlg_game_monika_wins_sometimes
                 m 1eua "Anyway..."
 
-        if not is_surrender:
-            #Monika plays a little easier if you didn't just surrender
-            $ mas_chess._decrement_chess_difficulty()
+        #Since you have lost the game, Monika goes easier on you.
+        $ mas_chess._decrement_chess_difficulty()
 
     #Always save in progress games unless they're over
     elif game_result == mas_chess.IS_ONGOING:
@@ -1368,7 +1371,7 @@ label mas_chess_dlg_game_monika_wins_sometimes:
     m 3hua "I bet if you keep practicing, you'll be even better than me someday!"
 
     #If the difficulty is above base level, we'll mention lowering it
-    if persistent._mas_chess_difficulty != (0, 1):
+    if persistent._mas_chess_elo > 200:
         m 3eua "Until then though, I'll try and go a little easier on you."
     return
 
@@ -3376,8 +3379,7 @@ init python:
             Starts Monika's analysis of the board
             """
             self.stockfish.stdin.write("position fen {0}\n".format(self.board.fen()))
-            self.stockfish.stdin.write("go depth {0}\n".format(persistent._mas_chess_difficulty[1]))
-            self.stockfish.stdin.write("go movetime {0}\n".format(self.MONIKA_WAITTIME))
+            self.stockfish.stdin.write("go depth 8\n")
 
         def additional_setup(self):
             """
@@ -3420,7 +3422,7 @@ init python:
                         store.mas_ptod.wx_cmd("import os", local_ctx)
                         renpy.pause(1.0)
                         store.mas_ptod.wx_cmd(
-                            "subprocess.call(['chmod','+x', os.path.normcase(basedir + '/game/mod_assets/games/chess/stockfish_8_{0}_x64')])".format(
+                            "subprocess.call(['chmod','+x', os.path.normcase(basedir + '/game/mod_assets/games/chess/stockfish_15_{0}_x64')])".format(
                                 "linux" if renpy.linux else "macosx"
                             ),
                             local_ctx
@@ -3466,20 +3468,27 @@ init python:
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
                 self.stockfish = open_stockfish(
-                    'mod_assets/games/chess/stockfish_8_windows_x{0}.exe'.format("64" if is_64_bit else "32"),
+                    'mod_assets/games/chess/stockfish_{0}.exe'.format("15_x64" if is_64_bit else "14_32bit"),
                     startupinfo
                 )
 
             elif is_64_bit:
-                fp = "mod_assets/games/chess/stockfish_8_{0}_x64".format("linux" if renpy.linux else "macosx")
+                fp = "mod_assets/games/chess/stockfish_15_{0}_x64".format("linux" if renpy.linux else "macosx")
 
                 os.chmod(config.basedir + "/game/".format(fp), 0755)
                 self.stockfish = open_stockfish(fp)
 
             #Set Monika's parameters
-            self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(persistent._mas_chess_difficulty[0]))
-            self.stockfish.stdin.write("setoption name Contempt value {0}\n".format(self.MONIKA_OPTIMISM))
-            self.stockfish.stdin.write("setoption name Ponder value False\n")
+            #NOTE: The lower ELO limit of Stockfish is 1350, so when the ELO is lower than 1350, we are actually using "Skill Level" to set difficulty.
+            #      We consider Skill Level 6 as ELO 1350. Skill Level is decreased every time the ELO decreases by 160.
+            self.stockfish.stdin.write("uci\n")
+            self.stockfish.stdin.write("setoption name MultiPV value 8\n")
+            if persistent._mas_chess_elo >= 1350:
+                self.stockfish.stdin.write("setoption name UCI_LimitStrength value true\n")
+                self.stockfish.stdin.write("setoption name UCI_Elo value {0}\n".format(persistent._mas_chess_elo))
+            else:
+                skill_level = max(6 - (1350 - persistent._mas_chess_elo) // 160, 0)
+                self.stockfish.stdin.write("setoption name Skill Level value {0}\n".format(skill_level))
 
             #And set up facilities for asynchronous communication
             self.queue = collections.deque()
