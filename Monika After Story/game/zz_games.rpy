@@ -202,7 +202,7 @@ label mas_pick_a_game:
         game_menuitems = sorted([
             (ev.prompt, ev.eventlabel, False, False)
             for ev in mas_games.game_db.itervalues()
-            if mas_isGameUnlocked(renpy.substitute(ev.prompt))
+            if mas_isGameUnlocked(renpy.substitute(ev.prompt, translate=False))
         ], key=lambda x:renpy.substitute(x[0]))
 
         ret_back = ("Nevermind", False, False, False, 20)
