@@ -377,7 +377,8 @@ label v0_3_1(version=version): # 0.3.1
 # 0.12.15
 label v0_12_15(version="v0_12_15"):
     python hide:
-        pass
+        if mas_seenEvent("monika_conventions"):
+            mas_hideEVL("monika_conventions", derandom=True)
     return
 
 # 0.12.13
