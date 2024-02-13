@@ -17915,7 +17915,7 @@ label monika_conventions:
     m 1wuo "It's crazy what people can do when they're passionate about something!"
     m 3eua "I also hear there's a lot of fun activities like idol dance shows, trivia, and other things to do there."
     m 1eubsa "I would love to go to one with you someday, [mas_get_player_nickname()]~"
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
