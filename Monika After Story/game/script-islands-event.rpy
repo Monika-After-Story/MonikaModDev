@@ -1096,7 +1096,7 @@ init -25 python in mas_island_event:
         OUT:
             True upon success, False otherwise
         """
-        err_msg = "Failed to decode isld data: {}.\n"
+        err_msg = "Failed to decode isld data: {}."
 
         pkg = islands_station.getPackage("our_reality")
 

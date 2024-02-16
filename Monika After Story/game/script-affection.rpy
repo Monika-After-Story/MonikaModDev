@@ -2027,11 +2027,11 @@ init python:
         """
         return mas_affection._get_aff()
 
-    @mas_utils.deprecated("_get_current_aff_lose")
+    @mas_utils.deprecated(use_instead="_get_current_aff_lose")
     def _mas_getBadExp():
         return _get_current_aff_lose()
 
-    @mas_utils.deprecated("_get_current_aff_gain")
+    @mas_utils.deprecated(use_instead="_get_current_aff_gain")
     def _mas_getGoodExp():
         return _get_current_aff_gain()
 

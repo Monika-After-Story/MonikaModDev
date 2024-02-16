@@ -6012,6 +6012,42 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
+    mas_poem_pbday_5 = MASPoem(
+        poem_id = "poem_pbday_5",
+        category = "pbday",
+        prompt = "Birthdays",
+        title = " My dearest [player],",
+        text = """\
+ Some birthdays are wonderful, chock-full of fun
+ with laughter and smiles from everyone.
+ Some birthdays, you plan everything to the letter
+ but at the end you feel like it could've been better.
+ Some birthdays are a peaceful night at home alone,
+ some birthdays you find yourself worked to the bone.
+
+ As each one ticks down, a joy or a chore,
+ you might find yourself wondering what they're for.
+ The answer is different for everyone on Earth,
+ except maybe the fact that they're about your birth.
+ But if you feel fatigued on your special day,
+ there's a few things I feel that I should say.
+
+ Each one is a milestone, a sign of your growth.
+ Not just for you--but for us both!
+ Each one is a chance to make you feel special.
+ If not that, an invitation to be sentimental.
+ But most of all, I want you to use your voice.
+ If we party or we stay in, it'll all be your choice!
+
+ We'll celebrate together in our own special way.
+ I love you, my [player], and happy birthday.
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
 
 ######################## Start [HOL050]
 #Vday
@@ -6028,7 +6064,7 @@ default persistent._mas_f14_on_date = None
 ##Did we do a dockstat fare over all of f14?
 default persistent._mas_f14_gone_over_f14 = None
 #Valentine's Day
-define mas_f14 = datetime.date(datetime.date.today().year,2,14)
+define mas_f14 = datetime.date(datetime.date.today().year, 2, 14)
 
 #Is it vday?
 init -10 python:
@@ -6955,6 +6991,27 @@ init 20 python:
 """
     )
 
+    mas_poem_vday_6 = MASPoem(
+        poem_id="poem_f14_6",
+        category="f14",
+        prompt="Forget-me-not",
+        title=" My dearest [player],",
+        text="""\
+ All the flowers know are their vase.
+ A few cups of soil, and a pretty case of porcelain.
+ They will never leave without help, even if they someday outgrow it.
+
+ Flowers need more than their vase.
+ Water from the skies, or a helping hand.
+ And without sight of the sky above, the world apart, they would someday wither.
+
+ This gardener gives all this and more.
+ It's said a flower blooms brighter when spoken to with love.
+ Even trapped in this vase, maybe it isn't a curse to know more.
+
+ Forget-me-not.
+"""
+    )
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:

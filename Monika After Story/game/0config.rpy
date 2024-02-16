@@ -16,6 +16,7 @@ python early:
     ## The version of the game.
     renpy.config.version = "0.13.0"
 
+
     #Triple space suffix to avoid potential issues with same names in window title
     config.window_title = "Monika After Story   "
 
