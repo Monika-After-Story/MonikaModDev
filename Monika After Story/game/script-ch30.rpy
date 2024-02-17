@@ -941,7 +941,7 @@ init 999 python in mas_reset:
         if not persistent._mas_pm_has_rpy:
             if store.mas_hasRPYFiles():
                 if not store.mas_inEVL("monika_rpy_files"):
-                    store.queueEvent("monika_rpy_files")
+                    store.MASEventList.queue("monika_rpy_files")
 
             else:
                 if persistent.current_monikatopic == "monika_rpy_files":
@@ -1027,7 +1027,7 @@ init 999 python in mas_reset:
                     )
                 )
         ):
-            store.pushEvent("mas_change_to_def",skipeval=True)
+            store.MASEventList.push("mas_change_to_def",skipeval=True)
 
         # lock special events clothe selector if not wearing special outfit
         if not store.mas_hasSpecialOutfit():
@@ -1036,9 +1036,9 @@ init 999 python in mas_reset:
         ## accessory hotfixes
         # mainly to re add accessories that may have been removed for some reason
         # this is likely to occur in crashes / reloads
-        if persistent._mas_acs_enable_promisering:
+        if persistent._mas_acs_enable_promisering and not store.monika_chr.is_wearing_clothes_with_exprop("hide-ring"):
             # TODO: need to be able to add a different promise ring
-            store.monika_chr.wear_acs_pst(store.mas_acs_promisering)
+            store.monika_chr.wear_acs(store.mas_acs_promisering)
 
 
     def _sprites_setup():
@@ -1235,7 +1235,7 @@ init 999 python in mas_reset:
 
         # end label for file reacts
         if persistent._mas_filereacts_just_reacted:
-            store.queueEvent("mas_reaction_end")
+            store.MASEventList.queue("mas_reaction_end")
 
         # If the map isn't empty and it's past the last reacted date, let's
         # empty it now
@@ -1361,7 +1361,7 @@ init 999 python in mas_reset:
         Runs reset code for islands
         """
         # Did Monika make any progress on the islands?
-        mas_island_event.advanceProgression()
+        mas_island_event.advance_progression()
 
 
     @ch30_reset(-580)
@@ -1385,6 +1385,26 @@ init 999 python in mas_reset:
                 store.mas_after_bath_cleanup_change_outfit()
                 store.mas_stripEVL("mas_after_bath_cleanup", list_pop=True, remove_dates=True)
 
+    @ch30_reset(-560)
+    def chr_removal():
+        """
+        Remove .chr files in the characters folder
+        """
+        # Only cleanup after the intro has been seen
+        if renpy.seen_label("introduction"):
+            store.mas_delete_all_chrs()
+
+
+    @ch30_reset(-560)
+    def backups():
+        """
+        Runs reset for backup code
+        """
+        if persistent._mas_is_backup:
+            store.MASEventList.push("mas_backup_restored")
+            mas_utils.mas_log.info("Detected a restored backup")
+            persistent._mas_is_backup = False
+
 
     def final():
         """
@@ -1399,7 +1419,7 @@ init 999 python in mas_reset:
 
             #Let's also push the event to get rid of the thermos too
             if not store.mas_inEVL("mas_consumables_remove_thermos"):
-                store.queueEvent("mas_consumables_remove_thermos")
+                store.MASEventList.queue("mas_consumables_remove_thermos")
 
         # clean up the event list of baka events
         # ALWAYS LAST
@@ -2398,7 +2418,7 @@ label ch30_day:
             persistent._mas_d25_started_upset = True
 
         # Once per day Monika does stuff on the islands
-        store.mas_island_event.advanceProgression()
+        store.mas_island_event.advance_progression()
 
         # Give the bonus
         mas_affection._withdraw_aff()

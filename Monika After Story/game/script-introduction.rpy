@@ -10,7 +10,7 @@ label introduction:
     if persistent.monika_kill is None:
         $ persistent.monika_kill = False
 
-    $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
+    $ mas_play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
         m 6dfc "[player]..."
@@ -167,7 +167,7 @@ label introduction:
                 m 3hubfa "It makes everything I've done for us worthwhile!"
                 m 1dkbfu "Thank you so much for saying it..."
     else:
-        "Do you love me, [player]?{nw}"
+        m "Do you love me, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you love me, [player]?{fast}"

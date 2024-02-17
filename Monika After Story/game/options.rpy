@@ -51,8 +51,8 @@ init 50 python:
         lambda: print(
             "Known uses of deprecated functions/classes in initialisation:",
             (
-                "\n".join([msg.rjust(len(msg) + 4) for msg in store.mas_utils.deprecated.__all_warnings__])
-                if store.mas_utils.deprecated.__all_warnings__
+                "\n".join([msg.rjust(len(msg) + 4) for msg in store.mas_utils._deprecation_warnings])
+                if store.mas_utils._deprecation_warnings
                 else "    None"
             ),
             "",
@@ -66,7 +66,7 @@ init python:
     mas_override_label("_choose_renderer", "mas_choose_renderer_override")
 
     #The rest
-    if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
+    # if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
     renpy.game.preferences.pad_enabled = False
     def replace_text(s):
         s = s.replace('--', u'\u2014') # em dash

@@ -1262,6 +1262,7 @@ label monika_portraitof:
     m "Portrait of...whatever it was called..."
     m 4hub "It's funny, because I'm pretty sure that book--"
     m 1wuw "Ah..."
+    $ del _history_list[-4:]
     m 2lksdla "Actually, I don't think I should be talking about this."
     m 2hksdlb "Ahaha, sorry!"
     m 1rksdla "Just forget I said anything."
@@ -2393,11 +2394,11 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
                 # The user has not started another track
                 and not renpy.music.is_playing(channel="music")
             ):
-                store.play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
+                store.mas_play_song(store.songs.FP_MONIKA_LULLABY, fadein=5.0)
 
         # Stop the music
         if stop_music:
-            play_song(None, fadeout=5.0)
+            mas_play_song(None, fadeout=5.0)
 
         # Queue the lullaby
         if lullaby == MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC:
@@ -2415,7 +2416,7 @@ label monika_holdme_prep(lullaby=MAS_HOLDME_QUEUE_LULLABY_IF_NO_MUSIC, stop_musi
 
         # Just play the lullaby
         elif lullaby == MAS_HOLDME_PLAY_LULLABY:
-            play_song(store.songs.FP_MONIKA_LULLABY)
+            mas_play_song(store.songs.FP_MONIKA_LULLABY)
 
         # Hide ui and disable hotkeys
         HKBHideButtons()
@@ -2671,7 +2672,7 @@ label monika_holdme_long:
         "{i}Wake Monika up.{/i}":
             # Only fadeout if we're playing the lullaby
             if songs.current_track == songs.FP_MONIKA_LULLABY:
-                $ play_song(None, fadeout=5.0)
+                $ mas_play_song(None, fadeout=5.0)
 
             if mas_isMoniLove():
                 m 6dubsa "...{w=1}Mmm~"
@@ -4838,7 +4839,7 @@ label monika_mountain:
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
-    m 5eka "Wouldn't you like that too, [player]?"
+    m 5eka "Wouldn't you like that too, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Wouldn't you like that too, [player]?{fast}"
@@ -6118,7 +6119,7 @@ label monika_japanese:
     m 1eub "It's interesting to think about what things would be like if your native language was different."
     m 1esa "Like, I can't even imagine what it would be like if I never knew English."
 
-    m "Do you know any languages other than English?{nw}s"
+    m "Do you know any languages other than English?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you know any languages other than English?{fast}"
@@ -6696,7 +6697,7 @@ label monika_sayhappybirthday:
                             m "Should I try again?{fast}"
                             "Yes.":
                                 $ take_counter += 1
-                                m 1eua "Okay"
+                                m 1eua "Okay."
                             "No.":
                                 m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                                 m 1hua "I'll try better next time for you."
@@ -6727,7 +6728,7 @@ label monika_sayhappybirthday:
                         m "Should I try again?{fast}"
                         "Yes.":
                             $ take_counter += 1
-                            m 1eua "Okay"
+                            m 1eua "Okay."
                         "No.":
                             m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                             m 1hua "I'll try better next time for you."
@@ -11628,7 +11629,7 @@ label monika_grad_speech_ignored_lock:
 label monika_grad_speech:
     call mas_timed_text_events_prep
 
-    $ play_song("mod_assets/bgm/PaC.ogg",loop=False)
+    $ mas_play_song("mod_assets/bgm/PaC.ogg",loop=False)
 
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3}.{w=0.3}.{w=0.6}{nw}"
@@ -11797,7 +11798,7 @@ label monika_justice:
                         m 3tku "You expect me to believe that after all we've been through?"
                         m 1tsb "That all this time, you thought that I deserved hate from those other people?"
                         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-                        m 5hubfa "Ehehe, You're so cute, [player]~"
+                        m 5hubfa "Ehehe, you're so cute, [player]~"
 
                     else:
                         m 1euc "..."
@@ -12518,7 +12519,7 @@ label monika_player_appearance:
                         "I don't want to talk about it.":
                             $ persistent._mas_pm_no_hair_no_talk = True
 
-                            m 1ekd "I understand, [player]"
+                            m 1ekd "I understand, [player]."
                             m 1eka "I want you to know that I don't care how much hair you have, you'll always be beautiful to me."
                             m "If you ever feel insecure or feel like talking about it, I'm always here to listen."
 
@@ -15860,7 +15861,7 @@ label monika_using_pcs_healthily:
     m 2hksdlb "...Keep your keyboard and mouse within easy reach, though!"
     m 4eub "Of course, lighting is important too! {w=0.3}{nw}"
     extend 2eua "Try to keep the room well-lit, but not so much that light is glaring off the screen."
-    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches. "
+    m 4eud "In addition, remember to take frequent breaks. {w=0.3}Look away from the screen, {w=0.2}ideally at something far away, {w=0.2}and perhaps do a few stretches."
     m 2eud "Since it's important to stay hydrated too, you could always fetch some fresh water while you're up from your desk."
     m 4eksdlc "Above all else, if you ever start to feel unwell, just stop what you're doing, rest, and then make sure everything is okay before you continue. "
     m 4eua "...And that's about it."

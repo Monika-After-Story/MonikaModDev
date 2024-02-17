@@ -382,9 +382,14 @@ init -100 python in mas_sprites:
     # v: ignored
     # marks that a clothing item is lingerie
 
-    # Value: ignored
-    # Marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
     EXP_C_WET = "wet"
+    # v: ignored
+    # marks that a clothing item is wet (appropriate for a bath/shower/pool/etc)
+
+    EXP_C_HIDE_RING = "hide-ring"
+    # v: ignored
+    # marks clothes that hides the promise ring
+    # TODO: migrate to an acs (glove) exp prop once implemented
 
     # --- default exprops ---
 
@@ -3136,7 +3141,7 @@ init -3 python:
                 startup=False
             ):
             """
-            Changes both clothes and hair. also sets the persisten forced vars
+            Changes both clothes and hair. also sets the persistent forced vars
             to by_user, if its not None
 
             IN:
@@ -3838,7 +3843,7 @@ init -3 python:
 
         def set_acs(self, acs, wear):
             """
-            Basically a single function so callers don't need to 
+            Basically a single function so callers don't need to
             if-statement-toggle wearing and removal of ACS.
 
             IN:
@@ -3958,7 +3963,7 @@ init -3 python:
                     acs_layer
                 )
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_pre(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre body accessory mode
@@ -3968,7 +3973,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.PRE_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_bbh(self, acs):
             """DEPRECATED
             Wears the given accessory in the post back hair accessory loc
@@ -3978,7 +3983,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BBH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_bfh(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre front hair accesory log
@@ -3988,7 +3993,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BFH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_afh(self, acs):
             """DEPRECATED
             Wears the given accessory in the between front hair and arms
@@ -3999,7 +4004,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.AFH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_mid(self, acs):
             """DEPRECATED
             Wears the given accessory in the mid body acessory mode
@@ -4009,7 +4014,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.MID_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_pst(self, acs):
             """DEPRECATED
             Wears the given accessory in the post body accessory mode
@@ -7591,7 +7596,7 @@ init -3 python:
         Use the functions to modify outfit data as appropriate.
 
         Supports:
-            - preventing ACS from being removed 
+            - preventing ACS from being removed
             - preventing hair or ACS from being worn
         """
 
@@ -7634,7 +7639,7 @@ init -3 python:
         def set_acs_change_all(self, value):
             """
             Enables or disables ALL ACS changing as part of outfit mode
-            
+
             IN:
                 value - pass True to enable, False to disable
             """

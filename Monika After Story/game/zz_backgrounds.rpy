@@ -2643,7 +2643,12 @@ init -10 python:
                         return
 
             if not img_found:
-                raise Exception("No images found for these filters")
+                raise Exception(
+                    "In background '{}' no images found for filters: {}".format(
+                        self.background_id,
+                        ", ".join(flts)
+                    )
+                )
 
 
 #Helper methods and such
@@ -2774,7 +2779,7 @@ init -20 python in mas_background:
 
     def saveMBGData():
         """
-        Saves MASBackground data from weather map into persistent
+        Saves MASBackground data from bg map into persistent
         """
         for mbg_id, mbg_obj in BACKGROUND_MAP.iteritems():
             store.persistent._mas_background_MBGdata[mbg_id] = mbg_obj.toTuple()
@@ -2795,19 +2800,70 @@ init -20 python in mas_background:
 
         IN:
             min_amt_unlocked - minimum number of BGs which should be unlocked to return true
+
         OUT:
             True if we have at least min_amt_unlocked BGs unlocked, False otherwise
         """
-        unlocked_count = 0
-        for mbg_obj in BACKGROUND_MAP.itervalues():
-            unlocked_count += int(mbg_obj.unlocked)
+        return getUnlockedBGCount() >= min_amt_unlocked
 
-            #Now check if we've surpassed the minimum
-            if unlocked_count >= min_amt_unlocked:
-                return True
+    def getBackground(id_):
+        """
+        Returns a bg object
 
+        IN:
+            id_ - str - background id
+
+        OUT:
+            background object
+            or None if not found
+        """
+        return BACKGROUND_MAP.get(id_)
+
+    def _toggleBackgroundUnlock(id_, value):
+        """
+        Locks/unlocks a bg
+
+        IN:
+            id_ - str - background id
+            value - bool - the value for the unlocked field
+        """
+        bg_obj = getBackground(id_)
+        if bg_obj:
+            bg_obj.unlocked = value
+            store.persistent._mas_background_MBGdata[id_] = bg_obj.toTuple()
+
+    def unlockBackground(id_):
+        """
+        Unlocks a bg
+
+        IN:
+            id_ - str - background id
+        """
+        _toggleBackgroundUnlock(id_, True)
+
+    def lockBackground(id_):
+        """
+        Locks a bg
+
+        IN:
+            id_ - str - background id
+        """
+        _toggleBackgroundUnlock(id_, False)
+
+    def isBackgroundUnlocked(id_):
+        """
+        Checks if a background is unlocked
+
+        IN:
+            id_ - str - background id
+
+        OUT:
+            boolean
+        """
+        bg = getBackground(id_)
+        if bg:
+            return bg.unlocked
         return False
-
 
     def log_bg(bg_obj, exc_info=None):
         """
@@ -2908,10 +2964,9 @@ init 800 python:
         """
         if (
             mas_isMoniEnamored(higher=True)
-            and persistent._mas_current_background in store.mas_background.BACKGROUND_MAP
-            and mas_getBackground(persistent._mas_current_background).unlocked
+            and mas_isBackgroundUnlocked(persistent._mas_current_background)
         ):
-            background_to_set = store.mas_background.BACKGROUND_MAP[persistent._mas_current_background]
+            background_to_set = mas_getBackground(persistent._mas_current_background)
             mas_changeBackground(background_to_set, startup=True)
 
             if background_to_set.disable_progressive:
@@ -2949,7 +3004,39 @@ init python:
         OUT:
             MASFilterableBackground if found, None otherwise
         """
-        return store.mas_background.BACKGROUND_MAP.get(background_id, default)
+        bg = mas_background.getBackground(background_id)
+        if bg:
+            return bg
+        return default
+
+    def mas_getCurrentBackgroundId(default=None):
+        """
+        Returns the id of the current background
+
+        IN:
+            default - the fallback value to return
+                (Default: None)
+
+        OUT:
+            string - the bg id
+            or default if not found
+        """
+        curr_bg = mas_current_background
+        if curr_bg:
+            return curr_bg.background_id
+        return default
+
+    def mas_isBackgroundUnlocked(id_):
+        """
+        Checks if a background with the given id is unlocked
+
+        IN:
+            id_ - str - the background id
+
+        OUT:
+            boolean
+        """
+        return mas_background.isBackgroundUnlocked(id_)
 
 #START: Programming points
 init -2 python in mas_background:
@@ -3205,56 +3292,52 @@ label monika_change_background:
     #FALL THROUGH
 
 label monika_change_background_loop:
-
-    show monika 1eua at t21
-
-    $ renpy.say(m, "Where would you like to go?", interact=False)
-
     python:
-        # build menu list
-        import store.mas_background as mas_background
-        import store.mas_moods as mas_moods
+        renpy.dynamic("def_predicate", "predicate", "backgrounds", "final_item")
 
-        # we assume that we will always have more than 1
-        # default should always be at the top
-        backgrounds = [(mas_background_def.prompt, mas_background_def, False, False)]
-
-        #o31 just gets o31 enabled BGs
-        other_backgrounds = list()
+        def_predicate = lambda bg_id, bg_obj: (
+            bg_id != "spaceroom"
+            and bg_obj.unlocked
+            and bg_obj != mas_current_background
+        )
 
         #TODO: I don't really like this, but we limit to only o31 supported bgs during the o31 event
         if persistent._mas_o31_in_o31_mode:
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, mbg_id)
-            ]
+            predicate = lambda bg_id, bg_obj: (
+                def_predicate(bg_id, bg_obj)
+                and mas_doesBackgroundHaveHolidayDeco(MAS_O31_DECO_TAGS, bg_id)
+            )
 
         #D25 supporting bgs
         elif persistent._mas_d25_deco_active:
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, mbg_id)
-            ]
+            predicate = lambda bg_id, bg_obj: (
+                def_predicate(bg_id, bg_obj)
+                and mas_doesBackgroundHaveHolidayDeco(mas_d25_utils.DECO_TAGS, bg_id)
+            )
 
-        #Non holiday specific bg sel
+        #Non holiday specific
         else:
-            # build other backgrounds list
-            other_backgrounds = [
-                (mbg_obj.prompt, mbg_obj, False, False)
-                for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-                if mbg_id != "spaceroom" and mbg_obj.unlocked
-            ]
+            predicate = def_predicate
 
-        # sort other backgrounds list
-        other_backgrounds.sort()
+        backgrounds = [
+            (bg_obj.prompt, bg_obj, False, False)
+            for bg_id, bg_obj in mas_background.BACKGROUND_MAP.iteritems()
+            if predicate(bg_id, bg_obj)
+        ]
+        backgrounds.sort()
 
-        # build full list
-        backgrounds.extend(other_backgrounds)
+        # Default should always be at the top
+        # Only show if
+        #    def is not the current bg
+        #    or no other bgs are available (bad, we shouldn't get here at all in that case)
+        if mas_current_background != mas_background_def or not backgrounds:
+            backgrounds.insert(0, (mas_background_def.prompt, mas_background_def, False, False))
 
-        # now add final quit item
+        # Add final quit item
         final_item = (mas_background.BACKGROUND_RETURN, False, False, False, 20)
+
+    show monika 1eua at t21
+    m "Where would you like to go?" nointeract
 
     # call scrollable pane
     call screen mas_gen_scrollable_menu(backgrounds, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
@@ -3267,6 +3350,7 @@ label monika_change_background_loop:
     if sel_background is False:
         return "prompt"
 
+    # NOTE: Just in casem you shouldn't be able to select the current bg
     if sel_background == mas_current_background:
         m 1hua "We're here right now, silly."
         m "Try again~"

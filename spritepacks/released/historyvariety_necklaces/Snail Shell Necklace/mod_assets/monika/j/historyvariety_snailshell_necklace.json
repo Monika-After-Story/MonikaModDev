@@ -1,0 +1,30 @@
+{
+    "__author": "HistoryVariety",
+    "version": 3,
+    "type": 0,
+    "name": "historyvariety_snailshell_necklace",
+    "img_sit": "historyvariety_snailshell_necklace",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 8,
+    "acs_type": "necklace",
+    "stay_on_start": true,
+    "priority": 8,
+    "dlg_desc": "necklace",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Snail Shell Necklace",
+        "thumb": "historyvariety_snailshell_necklace",
+        "group": "necklace",
+        "select_dlg": [
+            "Perfect for the beach!"
+        ]
+    },
+    "giftname": "snailshell_necklace",
+    "arm_split": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
+}

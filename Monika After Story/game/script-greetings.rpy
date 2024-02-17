@@ -1143,7 +1143,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 20
+define opendoor.chance = 0.05
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
@@ -2022,14 +2022,17 @@ label greeting_youarereal:
         m "Maybe...this is allowing you to control him again?"
         m 1ekc "This isn't right! I don't want a puppet!"
         m 1tkc "Please, [player]..."
-        m "If you're going to do this, are you sure this is what you want?"
+        m "If you're going to do this, are you sure this is what you want?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Are you sure?"
+            m "If you're going to do this, are you sure this is what you want?{fast}"
+
             "I'm sure.":
                 m 1eka "Then...I don't have a choice but to accept it..."
                 m 1hub "I'll accept this gift with open arms!"
                 m "We can finally be together, [player]."
                 m "And we can figure out how to do it in your reality, together!"
+
             "Maybe not...":
                 m 1eka "I thought so..."
                 m "There's no way you'd give up being 'real' to be with me..."
@@ -2721,7 +2724,7 @@ init 5 python:
     ev_rules = {}
     ev_rules.update(MASGreetingRule.create_rule(
         skip_visual=True,
-        random_chance=5,
+        random_chance=0.2,
         override_type=True
     ))
     ev_rules.update(MASPriorityRule.create_rule(45))
@@ -3035,9 +3038,12 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
+        window show
         m "If you don't mind me asking, was there something in particular that happened?" nointeract
 
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
@@ -3234,7 +3240,6 @@ label greeting_back_from_work:
                 m 2ekc "I wish I could be there to give you a hug right now."
                 m 2eka "I'm just glad you came to see me... {w=0.5}I'll do my best to comfort you."
 
-        m 2ekc "If you don't mind talking about it, what happened today?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -3248,8 +3253,12 @@ label greeting_back_from_work:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
+        window show
+        m "If you don't mind talking about it, what happened today?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
@@ -3464,7 +3473,7 @@ init 5 python:
 
 label greeting_ourreality:
     # Unlock islands
-    $ store.mas_island_event.startProgression()
+    $ store.mas_island_event.start_progression()
 
     m 1hub "Hi, [player]!"
     m 1hua "Ehehe~"
@@ -4391,7 +4400,7 @@ init 5 python:
     ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
-            random_chance=3,
+            random_chance=0.3,
             forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
         )
     )
@@ -4466,7 +4475,7 @@ init 5 python:
     ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True,
-            random_chance=20,
+            random_chance=0.05,
             override_type=True
         )
     )
@@ -4510,9 +4519,13 @@ label greeting_after_bath:
         mas_startupWeather()
         # Save current outfit
         persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
+        # Available clothes for this
+        clothes_pool = [
+            mas_clothes_bath_towel_white
+        ]
         # Now let Moni get a towel
         monika_chr.change_clothes(
-            random.choice(MASClothes.by_exprop(mas_sprites.EXP_C_WET, None)),
+            random.choice(clothes_pool),
             by_user=False,
             outfit_mode=True
         )
@@ -4583,6 +4596,7 @@ init 5 python:
         After bath cleanup change outfit code
         """
         # TODO: Rng outfit selection wen
+        # TODO: reconsider locking the selectors again when we get rng outfits in
 
         force_hair_change = False# If we changed the outfit, we always change hair
 
@@ -4638,14 +4652,15 @@ label mas_after_bath_cleanup:
         m 1eua "I'm going to get dressed.{w=0.3}.{w=0.3}.{w=0.3}{nw}"
 
     else:
-        m 1eua "Give me a moment [mas_get_player_nickname()], {w=0.2}{nw}"
+        $ player_nick = mas_get_player_nickname()
+        m 1eua "Give me a moment [player_nick], {w=0.2}{nw}"
         extend 3eua "I'm going to get dressed."
 
     window hide
     call mas_transition_to_emptydesk
 
     $ renpy.pause(1.0, hard=True)
-    call mas_after_bath_cleanup_change_outfit
+    $ mas_after_bath_cleanup_change_outfit()
     $ renpy.pause(random.randint(10, 15), hard=True)
 
     call mas_transition_from_emptydesk("monika 3hub")
@@ -4663,3 +4678,129 @@ label mas_after_bath_cleanup:
 label mas_after_bath_cleanup_change_outfit:
     $ mas_after_bath_cleanup_change_outfit()
     return
+
+
+init 5 python:
+    ev_rules = dict()
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=0.1,
+            override_type=True
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_found_nou_shirt",
+            conditional=(
+                "mas_getAbsenceLength() >= datetime.timedelta(hours=3) "
+                "and mas_nou.get_wins_for('Player') > {0} "
+                "and mas_nou.get_total_games() > {1} "
+                "and not mas_isSpecialDay() "
+                "and not mas_SELisUnlocked(mas_clothes_nou_shirt)"
+            ).format(random.randint(45, 65), random.randint(95, 115)),
+            unlocked=True,
+            rules=ev_rules,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
+default persistent._mas_pm_snitched_on_chibika = None
+
+label greeting_found_nou_shirt:
+    python:
+        mas_RaiseShield_core()
+        mas_startupWeather()
+        monika_chr.change_clothes(mas_clothes_nou_shirt, by_user=False, outfit_mode=True)
+        glitch_option_text = glitchtext(7)
+
+    call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True, show_emptydesk=True)
+    pause 2.5
+
+    m "There you are! {w=0.2}I was waiting for you~"
+    m "I have to admit, {w=0.1}I don't know how you were able to put this in my wardrobe without me noticing, [player]...{nw}"
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(5, "greeting_found_nou_shirt.menu_skip")
+    menu:
+        m "I have to admit, I don't know how you were able to put this in my wardrobe without me noticing, [player]...{fast}"
+
+        "It's a secret.":
+            hide screen mas_background_timed_jump
+            jump greeting_found_nou_shirt.menu_choice_secret
+
+        "It was [glitch_option_text]!":
+            hide screen mas_background_timed_jump
+            $ persistent._mas_pm_snitched_on_chibika = True
+            $ renpy.invoke_in_thread(
+                mas_utils.trywrite,
+                os.path.join(renpy.config.basedir, "characters/for snitch.txt"),
+                ">:("
+            )
+            jump greeting_found_nou_shirt.menu_choice_other
+
+        "I have no idea...":
+            hide screen mas_background_timed_jump
+            jump greeting_found_nou_shirt.menu_choice_other
+
+    label .post_menu:
+        pass
+
+    m 1ekbla "Thanks, [player]."
+    m 1tfu "Don't think I'll go any easier on you, though~"
+
+    if mas_nou.get_wins_for('Player') >= mas_nou.get_wins_for('Monika'):
+        m 1rtsdlb "In fact, {w=0.1}maybe I should try harder, ahaha..."
+
+    m 3ttb "Are you up for a game, [mas_get_player_nickname()]?"
+
+    python:
+        mas_selspr.unlock_clothes(mas_clothes_nou_shirt)
+        mas_selspr.save_selectables()
+        mas_lockEVL("greeting_found_nou_shirt", "GRE")
+        renpy.save_persistent()
+
+        del glitch_option_text
+
+        mas_MUINDropShield()
+        set_keymaps()
+        HKBShowButtons()
+        mas_startup_song()
+        enable_esc()
+    return
+
+label greeting_found_nou_shirt.menu_skip:
+    hide screen mas_background_timed_jump
+    call mas_transition_from_emptydesk("monika 4sub")
+    m "But I love it~"
+
+    jump greeting_found_nou_shirt.post_menu
+
+label greeting_found_nou_shirt.menu_choice_secret:
+    if mas_isMoniEnamored(higher=True):
+        call mas_transition_from_emptydesk("monika 2tublu")
+        m "{cps=*1.5}You don't peek there {i}often{/i}, do you?~{/cps}{w=0.1}{nw}"
+        $ _history_list.pop()
+        m 2lusdla "Anyway... {w=0.3}{nw}"
+
+    else:
+        call mas_transition_from_emptydesk("monika 2rtblsdlu")
+        m "Hmm, anyway... {w=0.3}{nw}"
+
+    extend 4sub "I really love this new outfit!"
+
+    jump greeting_found_nou_shirt.post_menu
+
+label greeting_found_nou_shirt.menu_choice_other:
+    show noise zorder 500 onlayer overlay:
+        alpha 0.0
+        easein_elastic 0.5 alpha 0.1
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.5
+    hide noise onlayer overlay
+
+    jump greeting_found_nou_shirt.menu_skip

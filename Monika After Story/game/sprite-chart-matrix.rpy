@@ -664,7 +664,7 @@ init 1 python in mas_sprites:
         ord_memo = []
         curr_flt = _find_next_fb(flt, memo, ord_memo)
         while not mfwm.has_def(curr_flt):
-            nxt_flt = _find_nxt_fb(curr_flt, memo, ord_memo)
+            nxt_flt = _find_next_fb(curr_flt, memo, ord_memo)
 
             # if filter has not changed, we are done searching.
             if nxt_flt == curr_flt:
@@ -1450,7 +1450,7 @@ init -4 python in mas_sprites:
         """
         img_key, cid, img_base, hl_base = render_key
         if cid == CID_DYNAMIC:
-            # add the img and hl directly 
+            # add the img and hl directly
             if img_base is not None:
                 render_list.append(img_base)
             if hl_base is not None:
@@ -1542,6 +1542,7 @@ init -4 python in mas_sprites:
 
         RETURNS: generated render key
         """
+        # TODO: consider wrapping img_base in renpy.displayable
         # NOTE: no render
         return store.im.MatrixColor(img_base, FILTERS[flt])
 

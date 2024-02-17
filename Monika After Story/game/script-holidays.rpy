@@ -1116,12 +1116,60 @@ label greeting_o31_briaryoung_shuchiin_academy_uniform:
 
     m 2hub "Welcome back!"
     m 2eub "Well, what do you think?"
-    m 7tuu "I thought Instead of being president, I could be the secretary for today..."
+    m 7tuu "I thought instead of being president, I could be the secretary for today..."
 
     if mas_isMoniAff(higher=True):
         m 3rtu "Or maybe even a love detective, but that's probably a waste, I've already found that..."
 
     m 3hua "Ehehe~"
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+
+#2b intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_hatana_2b",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_hatana_2b:
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+    #moni is off-screen
+
+    if persistent._mas_o31_relaunch:
+        m "Almost ready, [player]..."
+        m "I just hope this skirt doesn't self-destruct."
+        m "{cps=*2}Although maybe you do...{/cps}{nw}"
+        $ _history_list.pop()
+        m "Okay, there. {w=0.2}Ready [player]?"
+
+    else:
+        m "Okay there, {w=0.1}I think that's everything."
+        m "Just as long as this skirt doesn't self-destruct...{w=0.3}that'd be really embarrassing!"
+        m "Oh! {w=0.2}I think I hear something..."
+        m "[player]?"
+
+    m "I have a question for you..."
+    m "To be..."
+
+    #show moni now
+    call mas_transition_from_emptydesk("monika 3hub")
+
+    m 3hub "...or not 2B?!"
+    m 1hub "Ahaha!"
+    m 2eka "So, what do you think?"
+    m 2hub "I think it's a really cool costume, thanks again for giving it to me!"
+    m 7rtu "Say [player], have I ever told you there is something calming about you?"
+    m 3euu "Well, I just wanted you to know that. {w=0.2}{nw}"
+    extend 3tuu "Hopefully it never gets wiped from your memory."
+    m 3eud "That reminds me, make sure you back up my data from time to time, I'd do the same for you if I could..."
+    m 1hksdlb "Oh gosh, I'm not even sure what that means, I'm just rambling now, ahaha!"
+
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
@@ -1247,7 +1295,7 @@ label mas_o31_lingerie:
     #Cut the music for the blackout
     python:
         curr_song = songs.current_track
-        play_song(None)
+        mas_play_song(None)
         mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts")
 
     scene black
@@ -1303,9 +1351,9 @@ label mas_o31_lingerie_end:
 
         # restart song/sounds that were playing before event
         if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
-            play_song(curr_song, 1.0)
+            mas_play_song(curr_song, 1.0)
         else:
-            play_song(None, 1.0)
+            mas_play_song(None, 1.0)
 
     return "no_unlock"
 
@@ -3327,7 +3375,7 @@ label monika_aiwfc_song:
 
     call mas_timed_text_events_prep
 
-    $ play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
+    $ mas_play_song("mod_assets/bgm/aiwfc.ogg",loop=False)
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{w=0.09}{/cps}{/i}{nw}"
     m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
     m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
@@ -5965,6 +6013,42 @@ init 20 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
+    mas_poem_pbday_5 = MASPoem(
+        poem_id = "poem_pbday_5",
+        category = "pbday",
+        prompt = "Birthdays",
+        title = " My dearest [player],",
+        text = """\
+ Some birthdays are wonderful, chock-full of fun
+ with laughter and smiles from everyone.
+ Some birthdays, you plan everything to the letter
+ but at the end you feel like it could've been better.
+ Some birthdays are a peaceful night at home alone,
+ some birthdays you find yourself worked to the bone.
+
+ As each one ticks down, a joy or a chore,
+ you might find yourself wondering what they're for.
+ The answer is different for everyone on Earth,
+ except maybe the fact that they're about your birth.
+ But if you feel fatigued on your special day,
+ there's a few things I feel that I should say.
+
+ Each one is a milestone, a sign of your growth.
+ Not just for you--but for us both!
+ Each one is a chance to make you feel special.
+ If not that, an invitation to be sentimental.
+ But most of all, I want you to use your voice.
+ If we party or we stay in, it'll all be your choice!
+
+ We'll celebrate together in our own special way.
+ I love you, my [player], and happy birthday.
+
+ Forever yours,
+ Monika
+"""
+    #" # I need this to keep syntax highlighting on vim
+    )
+
 
 ######################## Start [HOL050]
 #Vday
@@ -5981,7 +6065,7 @@ default persistent._mas_f14_on_date = None
 ##Did we do a dockstat fare over all of f14?
 default persistent._mas_f14_gone_over_f14 = None
 #Valentine's Day
-define mas_f14 = datetime.date(datetime.date.today().year,2,14)
+define mas_f14 = datetime.date(datetime.date.today().year, 2, 14)
 
 #Is it vday?
 init -10 python:
@@ -6908,6 +6992,27 @@ init 20 python:
 """
     )
 
+    mas_poem_vday_6 = MASPoem(
+        poem_id="poem_f14_6",
+        category="f14",
+        prompt="Forget-me-not",
+        title=" My dearest [player],",
+        text="""\
+ All the flowers know are their vase.
+ A few cups of soil, and a pretty case of porcelain.
+ They will never leave without help, even if they someday outgrow it.
+
+ Flowers need more than their vase.
+ Water from the skies, or a helping hand.
+ And without sight of the sky above, the world apart, they would someday wither.
+
+ This gardener gives all this and more.
+ It's said a flower blooms brighter when spoken to with love.
+ Even trapped in this vase, maybe it isn't a curse to know more.
+
+ Forget-me-not.
+"""
+    )
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:
@@ -7283,7 +7388,7 @@ image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 label mas_bday_surprise_party_hint:
     #Set up letters
     python:
-        persistent._mas_bday_hint_filename = "For " + player + ".txt"
+        persistent._mas_bday_hint_filename = mas_utils.sanitize_filename("For {0}.txt".format(player))
         if mas_isMoniNormal(higher=True):
             message = """\
 [player],

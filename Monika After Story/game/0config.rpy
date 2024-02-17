@@ -14,7 +14,7 @@ python early:
     renpy.config.name = "Monika After Story"
 
     ## The version of the game.
-    renpy.config.version = "0.12.11"
+    renpy.config.version = "0.12.15"
 
     #Triple space suffix to avoid potential issues with same names in window title
     config.window_title = "Monika After Story   "
@@ -112,6 +112,12 @@ init -1200 python:
     renpy.config.rollback_enabled = config.developer
     renpy.config.menu_clear_layers = ["front"]
     renpy.config.gl_test_image = "white"
+
+    # Remove extra save location (for whatever reason we do this)
+    # FIXME: Also, this is unsafe since renpy has a thread that
+    # iterates thru this list
+    if len(renpy.loadsave.location.locations) > 1:
+        renpy.loadsave.location.locations.pop()
 
 ################START: INIT TIME CONFIGS
 
