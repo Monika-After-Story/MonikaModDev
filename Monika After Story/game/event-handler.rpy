@@ -2618,7 +2618,7 @@ init python:
         MASEventList.queue(*args, **kwargs)
 
 
-    @store.mas_utils.deprecated("mas_unlockEventLabel")
+    @store.mas_utils.deprecated(use_instead="mas_unlockEventLabel")
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         NOTE: DEPRECATED
