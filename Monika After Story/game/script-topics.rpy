@@ -11480,7 +11480,7 @@ label monika_grad_speech_call:
             #another timed menu checking if you were listening
             show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock_doublecheck")
 
-            label menu_ignored:
+            label .menu_ignored:
                 pass
 
             menu:
