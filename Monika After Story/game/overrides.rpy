@@ -20,6 +20,12 @@ init -10 python:
 ## You'll need a block like this for creator defined screen language
 ## Don't use this unless you know you need it
 python early in mas_overrides:
+    import threading
+
+    import renpy
+    import renpy.savelocation as savelocation
+
+
     def verify_data_override(data, signatures, check_verifying=True):
         """
         Verify the data in a save token.
@@ -30,3 +36,33 @@ python early in mas_overrides:
         return True
 
     renpy.savetoken.verify_data = verify_data_override
+
+    
+    def savelocation_init_override():
+        """
+        Run **SOME** of the stuff savelocation.init runs
+
+        basically we trying to keep saves in the AppData/equivalent folder
+        to make backups/restoring easier.
+
+        The only difference here is that this skips over game savedirs and
+        'extra' save dirs (so just omissions)
+        """
+        savelocation.quit()
+        savelocation.quit_scan_thread = False
+
+        location = savelocation.MultiLocation()
+
+        location.add(savelocation.FileLocation(renpy.config.savedir))
+
+        location.scan()
+
+        renpy.loadsave.location = location
+
+        if not renpy.emscripten:
+            savelocation.scan_thread = threading.Thread(target=savelocation.run_scan_thread)
+            savelocation.scan_thread.start()
+
+    savelocation.init = savelocation_init_override
+
+
