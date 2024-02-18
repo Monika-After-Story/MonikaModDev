@@ -20,4 +20,13 @@ init -10 python:
 ## You'll need a block like this for creator defined screen language
 ## Don't use this unless you know you need it
 python early in mas_overrides:
-    pass
+    def verify_data_override(data, signatures, check_verifying=True):
+        """
+        Verify the data in a save token.
+
+        Originally, this function is used to check against a checksum to verify the persistent should be loaded
+        But because we want to allow anyone be able to migrate and transfer their data, we will just return True
+        """
+        return True
+
+    renpy.savetoken.verify_data = verify_data_override
