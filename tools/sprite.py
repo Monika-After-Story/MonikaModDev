@@ -7,7 +7,7 @@ DRAW_MONIKA_IM = "mas_drawmonika_rk"
 
 draw_function = DRAW_MONIKA_IM
 
-class StaticSprite(object):
+class StaticSprite():
     """
     A static sprite is a sprite that knows its sprite codes and more
 

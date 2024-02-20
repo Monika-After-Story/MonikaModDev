@@ -313,7 +313,7 @@ init -11 python in mas_filereacts:
         """
         return [
             giftname
-            for giftname, react_ev in filereact_map.iteritems()
+            for giftname, react_ev in filereact_map.items()
             if _key in react_ev.rules
         ]
 
@@ -481,7 +481,7 @@ init -11 python in mas_filereacts:
             return []
 
         # put the gifts in the reacted map
-        for c_gift_name, mas_gift in found_map.iteritems():
+        for c_gift_name, mas_gift in found_map.items():
             store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         found_gifts.sort()
@@ -567,7 +567,7 @@ init -11 python in mas_filereacts:
 
         # otherwise check for random deletion
         if _filename is None:
-            _filename = random.choice(_map.keys())
+            _filename = random.choice(tuple(_map.keys()))
 
         file_to_delete = _map.get(_filename, None)
         if file_to_delete is None:
@@ -679,7 +679,7 @@ init -11 python in mas_filereacts:
         IN:
             _map - map to delete all
         """
-        _map_keys = _map.keys()
+        _map_keys = tuple(_map.keys())
         for _key in _map_keys:
             _core_delete(_key, _map)
 
@@ -842,7 +842,7 @@ init python:
                 return (None, None, None, None, None)
 
         elif len(persistent._mas_filereacts_sprite_reacted) > 0:
-            sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
+            sp_data = tuple(persistent._mas_filereacts_sprite_reacted.keys())[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
 
         else:
@@ -922,7 +922,7 @@ init python:
         """
         return sorted([
             _date
-            for _date, giftstat in persistent._mas_filereacts_historic.iteritems()
+            for _date, giftstat in persistent._mas_filereacts_historic.items()
             if giftlabel in giftstat
         ])
 

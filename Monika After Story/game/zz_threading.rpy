@@ -42,7 +42,7 @@ init -2000 python in mas_threading:
 
         def __init__(self,
                 async_fun,
-                async_args=[],
+                async_args=[],# FIXME: mutable obj as default
                 async_kwargs={}
             ):
             """

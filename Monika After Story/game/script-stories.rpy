@@ -100,7 +100,7 @@ init -1 python in mas_stories:
             story_type - story type to get
 
         OUT:
-            list of locked stories for the given story type
+            dict of locked stories for the given story type
         """
         return store.Event.filterEvents(
             story_database,
@@ -123,7 +123,7 @@ init -1 python in mas_stories:
         stories = get_new_stories_for_type(story_type)
 
         #Grab one of the stories
-        story = renpy.random.choice(stories.values())
+        story = renpy.random.choice(tuple(stories.values()))
 
         #Unlock and return its eventlabel
         story.unlocked = True
@@ -173,7 +173,7 @@ label monika_short_stories_menu:
         # build menu list
         stories_menu_items = [
             (story_ev.prompt, story_evl, False, False)
-            for story_evl, story_ev in mas_stories.story_database.iteritems()
+            for story_evl, story_ev in mas_stories.story_database.items()
             if Event._filterEvent(
                 story_ev,
                 pool=False,

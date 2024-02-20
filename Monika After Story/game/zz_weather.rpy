@@ -231,6 +231,7 @@ init -99 python in mas_weather:
         RETURNS: the created image tag
         """
         global old_weather_id
+
         tag = old_weather_tag.format(old_weather_id)
         store.renpy.image(tag, disp)
         OLD_WEATHER_OBJ[old_weather_id] = tag
@@ -259,13 +260,13 @@ init -20 python in mas_weather:
         RETURNS:
             - True or false on whether or not to call spaceroom
         """
+        global weather_change_time
 
         #If the player forced weather or we're not in a background that supports weather, we do nothing
         if force_weather or store.mas_current_background.disable_progressive:
             return False
 
         #Otherwise we do stuff
-        global weather_change_time
         #Set a time for startup
         if not weather_change_time:
             # TODO: make this a function so init can set the weather_change _time and prevent double weather setting
@@ -316,7 +317,7 @@ init -20 python in mas_weather:
         if store.persistent._mas_weather_MWdata is None:
             return
 
-        for mw_id, mw_data in store.persistent._mas_weather_MWdata.iteritems():
+        for mw_id, mw_data in store.persistent._mas_weather_MWdata.items():
             mw_obj = WEATHER_MAP.get(mw_id, None)
             if mw_obj is not None:
                 mw_obj.fromTuple(mw_data)
@@ -326,7 +327,7 @@ init -20 python in mas_weather:
         """
         Saves MASWeather data from weather map into persistent
         """
-        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+        for mw_id, mw_obj in WEATHER_MAP.items():
             store.persistent._mas_weather_MWdata[mw_id] = mw_obj.toTuple()
 
 
@@ -335,7 +336,7 @@ init -20 python in mas_weather:
         Returns number of unlocked weather items
         """
         count = 0
-        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+        for mw_id, mw_obj in WEATHER_MAP.items():
             if mw_obj.unlocked:
                 count += 1
 
@@ -652,21 +653,6 @@ init -50 python:
             """
             self.unlocked = data_tuple[0]
 
-        @store.mas_utils.deprecated(use_instead="get_mask", should_raise=True)
-        def sp_window(self, day):
-            """DEPRECATED
-            Use get_mask instead.
-            This returns whatever get_mask returns.
-            """
-            return self.get_mask()
-
-        @store.mas_utils.deprecated(should_raise=True)
-        def isbg_window(self, day, no_frame):
-            """DEPRECATED
-            Islands are now separate images. See script-islands-event.
-            """
-            return ""
-
         def toTuple(self):
             """
             Converts this MASWeather object into a tuple
@@ -786,7 +772,7 @@ init -50 python:
                     ignored. Values should be MASWeatherMap objects.
             """
             # validate MASWeatherMap objects
-            for wmap in filter_pairs.itervalues():
+            for wmap in filter_pairs.values():
                 if not isinstance(wmap, MASWeatherMap):
                     raise TypeError(
                         "Expected MASWeatherMap object, not {0}".format(
@@ -1004,6 +990,7 @@ init 799 python:
             _weather - weather to set to.
         """
         global mas_current_weather
+
         old_weather = mas_current_weather
         mas_current_weather = _weather
         mas_current_weather.entry(old_weather)
@@ -1142,7 +1129,7 @@ label monika_change_weather:
         # build other weather list
         other_weathers = [
             (mw_obj.prompt, mw_obj, False, False)
-            for mw_id, mw_obj in mas_weather.WEATHER_MAP.iteritems()
+            for mw_id, mw_obj in mas_weather.WEATHER_MAP.items()
             if mw_id != "def" and mw_obj.unlocked
         ]
 

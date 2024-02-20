@@ -69,7 +69,7 @@ label dev_test_islands_progress:
                             k,
                             ", ".join(map(str, v))
                         )
-                        for k, v in data.iteritems()
+                        for k, v in data.items()
                     ]
                 )
 

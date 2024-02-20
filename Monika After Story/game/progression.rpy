@@ -316,20 +316,3 @@ init python in mas_xp:
         )
         if xp_rate < 1:
             xp_rate = 1.0
-
-
-init python:
-    @store.mas_utils.deprecated(should_raise=True)
-    def grant_xp(experience):
-        """DEPRECATED
-        This does not do anything anymore. Around for compatibility
-        purposes
-        """
-        pass
-
-    @store.mas_utils.deprecated(should_raise=True)
-    def get_level():
-        """DEPRECATED
-        This does not do anything anymore. Around for compatibility purposes
-        """
-        return 0

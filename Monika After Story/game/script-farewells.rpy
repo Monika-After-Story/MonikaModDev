@@ -143,7 +143,7 @@ init -1 python in mas_farewells:
             check_time = datetime.datetime.now()
 
         # now filter
-        for ev_label, ev in fare_db.iteritems():
+        for ev_label, ev in fare_db.items():
             if _filterFarewell(
                 ev,
                 curr_priority,
@@ -199,7 +199,7 @@ label mas_farewell_start:
             # build a prompt list
             bye_prompt_list = sorted([
                 (ev.prompt, ev, False, False)
-                for k,ev in bye_pool_events.iteritems()
+                for k,ev in bye_pool_events.items()
             ])
 
             most_used_fare = sorted(bye_pool_events.values(), key=Event.getSortShownCount)[-1]
@@ -694,10 +694,10 @@ label bye_prompt_sleep:
     #         show screen mas_background_timed_jump(4, "bye_prompt_sleep.reglitch")
     #         $ _history_list.pop()
     #         menu:
-    #             m "[glitchtext(41)]{fast}"
-    #             "[glitchtext(15)]":
+    #             m "[mas_glitchText(41)]{fast}"
+    #             "[mas_glitchText(15)]":
     #                 pass
-    #             "[glitchtext(12)]":
+    #             "[mas_glitchText(12)]":
     #                 pass
 
     #         hide screen mas_background_timed_jump

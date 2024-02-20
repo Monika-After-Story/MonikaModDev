@@ -285,7 +285,7 @@ python early:
             img = renpy.substitute(img)
 
         args = []
-        for flt in store.mas_sprites.FILTERS.iterkeys():
+        for flt in store.mas_sprites.FILTERS.keys():
 
             # condition
             args.append("store.mas_sprites.get_filter() == '{0}'".format(flt))
@@ -352,7 +352,7 @@ python early:
         if filterize_def:
 
             # default should be filterized
-            for flt in store.mas_sprites.FILTERS.iterkeys():
+            for flt in store.mas_sprites.FILTERS.keys():
 
                 # only use the filtesr we have not already added
                 if flt not in flt_pairs:
@@ -589,7 +589,7 @@ init 1 python in mas_sprites:
 
         Raises all errors.
         """
-        for mfwm_id, mfwm in FW_DB.iteritems():
+        for mfwm_id, mfwm in FW_DB.items():
             _verify_mfwm(mfwm_id, mfwm)
 
 
@@ -868,12 +868,6 @@ init -99 python in mas_sprites:
 
         FILTERS[flt_enum] = imx
 
-    @store.mas_utils.deprecated(use_instead="get_filter", should_raise=True)
-    def _decide_filter():
-        """DEPRECATED
-        Please use get_filter
-        """
-        return get_filter()
 
 
     def get_filter():
@@ -1083,11 +1077,11 @@ init -4 python in mas_sprites:
         """
         Clears all caches
         """
-        for cid, cache in CACHE_TABLE.iteritems():
-            for key in cache.keys():
+        for cid, cache in CACHE_TABLE.items():
+            for key in tuple(cache.keys()):
                 cache.pop(key)
 
-        for key in MFM_CACHE.keys():
+        for key in tuple(MFM_CACHE.keys()):
             MFM_CACHE.pop(key)
 
 
@@ -3117,7 +3111,7 @@ init -50 python:
 
             RETURNS: list of all filter names in this map
             """
-            return self.__mfm.map.keys()
+            return list(self.__mfm.map.keys())
 
         def get(self, flt, defval=None):
             """

@@ -172,7 +172,7 @@ init python:
         # FIXME: could be done on startup for some speedup
         new_aliases = {}
 
-        for style_tuple, style_ptr in renpy.style.styles.iteritems():
+        for style_tuple, style_ptr in renpy.style.styles.items():
             style_name = style_tuple[0]
             if mas_isTextDarkStyle(style_name):
                 text_dark_suffix = "_text" + mas_ui.dark_suffix
@@ -181,7 +181,7 @@ init python:
                 if not style.exists(alias_name):
                     new_aliases[alias_name] = style_ptr
 
-        for alias_name, alias_style_ptr in new_aliases.iteritems():
+        for alias_name, alias_style_ptr in new_aliases.items():
             setattr(style, alias_name, alias_style_ptr)
 
         # Automagically switch every style which has a dark variant
@@ -251,6 +251,8 @@ init python in mas_settings:
         """
         Handles the toggling of fields so the menu options become mutually exclusive
         """
+        global dark_mode_clicked
+
         if _persistent._mas_dark_mode_enabled:
             _persistent._mas_dark_mode_enabled = False
 
@@ -258,7 +260,6 @@ init python in mas_settings:
             _persistent._mas_dark_mode_enabled = True
             _persistent._mas_auto_mode_enabled = False
 
-        global dark_mode_clicked
         dark_mode_clicked = True
 
     def _ui_change_wrapper(*args):
@@ -269,6 +270,7 @@ init python in mas_settings:
             *args - values to pass to dark mode
         """
         global ui_changed
+
         ui_changed = True
         store.mas_darkMode(*args)
 
@@ -437,7 +439,7 @@ init 25 python in mas_ui:
         OUT:
             dict of key-value pairs
         """
-        return {item[0]: item[1]["return_value"] for item in buttons_data.iteritems() if item[1]["return_value"] == item[1]["true_value"] or return_all}
+        return {item[0]: item[1]["return_value"] for item in buttons_data.items() if item[1]["return_value"] == item[1]["true_value"] or return_all}
 
     def check_scr_menu_choose_prompt(buttons_data, selected_prompt, default_prompt):
         """
@@ -451,7 +453,7 @@ init 25 python in mas_ui:
         OUT:
             string with prompt
         """
-        for data in buttons_data.itervalues():
+        for data in buttons_data.values():
             if data["return_value"] == data["true_value"]:
                 return selected_prompt
         return default_prompt
@@ -459,10 +461,10 @@ init 25 python in mas_ui:
     # Methods for twopane_scrollable_menu
     TWOPANE_MENU_MAX_FLT_ITEMS = 50
     TWOPANE_MENU_SEARCH_DBS = (
-        store.mas_all_ev_db_map["EVE"].values()
+        list(store.mas_all_ev_db_map["EVE"].values())
         # + store.mas_all_ev_db_map["BYE"].values()
         # + store.mas_all_ev_db_map["STY"].values()
-        + store.mas_all_ev_db_map["CMP"].values()
+        + list(store.mas_all_ev_db_map["CMP"].values())
         # + store.mas_all_ev_db_map["SNG"].values()
     )
     TWOPANE_MENU_DELEGATES_CALLBACK_MAP = {
@@ -681,3 +683,14 @@ init 25 python in mas_ui:
             scr.scope["flt_evs"] = _twopane_menu_search_events(search_query)
         # Update the screen
         renpy.restart_interaction()
+
+##BASE DDLC Console Styles
+style console_text:
+    font "gui/font/F25_Bank_Printer.ttf"
+    color "#fff"
+    size 18
+    outlines []
+
+
+style console_text_console is console_text:
+    slow_cps 30

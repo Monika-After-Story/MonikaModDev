@@ -330,7 +330,7 @@ init -20 python in mas_island_event:
             # FIXME: py3 update
             return {
                 id_: data.default_unlocked
-                for id_, data in cls._data_map.iteritems()
+                for id_, data in cls._data_map.items()
             }
 
         @classmethod
@@ -344,7 +344,7 @@ init -20 python in mas_island_event:
             # FIXME: py3 update
             return {
                 id_: data.fp_map
-                for id_, data in cls._data_map.iteritems()
+                for id_, data in cls._data_map.items()
                 if data.type == type_ and data.fp_map
             }
 
@@ -1125,10 +1125,10 @@ init -25 python in mas_island_event:
                 map_ - the map to get filenames from, and which will be overriden
             """
             # FIXME: py3 update
-            for name, path_map in map_.iteritems():
-                for sprite_type, path in path_map.iteritems():
+            for name, path_map in map_.items():
+                for sprite_type, path in path_map.items():
                     raw_data = zip_file.read(path)
-                    img = store.MASImageData(raw_data, "{}_{}.png".format(name, sprite_type))
+                    img = store.im.Data(raw_data, "{}_{}.png".format(name, sprite_type))
                     path_map[sprite_type] = img
 
         try:
@@ -1144,7 +1144,7 @@ init -25 python in mas_island_event:
 
                 # Anim frames are handled a bit differently
                 glitch_frames = tuple(
-                    (store.MASImageData(zip_file.read(fn), fn + ".png") for fn in GLITCH_FPS)
+                    (store.im.Data(zip_file.read(fn), fn + ".png") for fn in GLITCH_FPS)
                 )
 
                 tree_lights_imgs = {}
@@ -1156,8 +1156,8 @@ init -25 python in mas_island_event:
                 # Audio is being loaded right away
                 isly_data = IslandsDataDefinition.getDataFor("other_isly")
                 if isly_data:
-                    for fn, fp in isly_data.fp_map.iteritems():
-                        audio_data = store.MASAudioData(zip_file.read(fp), fp + ".ogg")
+                    for fn, fp in isly_data.fp_map.items():
+                        audio_data = AudioData(zip_file.read(fp), fp + ".ogg")
                         setattr(store.audio, "isld_isly_" + fn, audio_data)
 
         except Exception as e:
@@ -1196,7 +1196,7 @@ init -25 python in mas_island_event:
 
             precip_map = {}
 
-            for p_type, suffix in precip_to_suffix_map.iteritems():
+            for p_type, suffix in precip_to_suffix_map.items():
                 k = main_key + suffix
                 if k in img_map:
                     precip_map[p_type] = img_map[k]
@@ -1271,25 +1271,25 @@ init -25 python in mas_island_event:
         global bg_disp_map, overlay_disp_map, interior_disp_map
 
         # Build the islands
-        for island_name, img_map in island_imgs_maps.iteritems():
+        for island_name, img_map in island_imgs_maps.items():
             disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(island_name).partial_disp
             island_disp_map[island_name] = partial_disp(disp)
 
         # Build the decals
-        for decal_name, img_map in decal_imgs_maps.iteritems():
+        for decal_name, img_map in decal_imgs_maps.items():
             disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(decal_name).partial_disp
             decal_disp_map[decal_name] = partial_disp(disp)
 
         # Build the bg
-        for bg_name, img_map in bg_imgs_maps.iteritems():
+        for bg_name, img_map in bg_imgs_maps.items():
             disp = _build_ifwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(bg_name).partial_disp
             bg_disp_map[bg_name] = partial_disp(disp)
 
         # Build the overlays
-        for overlay_name, img_map in overlay_imgs_maps.iteritems():
+        for overlay_name, img_map in overlay_imgs_maps.items():
             disp = _build_fwd(img_map)
             partial_disp = IslandsDataDefinition.getDataFor(overlay_name).partial_disp
             if partial_disp is not None:
@@ -1297,7 +1297,7 @@ init -25 python in mas_island_event:
             overlay_disp_map[overlay_name] = disp
 
         # Build the interior
-        for name, img_map in interior_imgs_map.iteritems():
+        for name, img_map in interior_imgs_map.items():
             interior_disp_map[name] = img_map
 
         if interior_disp_map:
@@ -1753,7 +1753,7 @@ init -25 python in mas_island_event:
         # Add all unlocked islands
         sub_displayables = [
             _reset_parallax_disp(disp)
-            for key, disp in island_disp_map.iteritems()
+            for key, disp in island_disp_map.items()
             if _is_unlocked(key)
         ]
 
@@ -1785,7 +1785,7 @@ init -25 python in mas_island_event:
                 ),
                 "island_5": ("decal_gravestones",)
             }
-            for isld, decals in isld_to_decals_map.iteritems():
+            for isld, decals in isld_to_decals_map.items():
                 island_disp_map[isld].add_decals(
                     *(decal_disp_map[key] for key in decals if _is_unlocked(key))
                 )

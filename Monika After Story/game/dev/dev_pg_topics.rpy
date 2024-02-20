@@ -18,7 +18,7 @@ label zz_mas_poemgame_actone:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "I hope that was fun!"
@@ -43,7 +43,7 @@ label zz_mas_poemgame_acttwo:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "I hope that was fun!"
@@ -119,7 +119,7 @@ label zz_mas_poemgame_actonept:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
     m "And you selected these words:"
@@ -279,7 +279,7 @@ label zz_mas_poemgame_oneg:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
 
 
@@ -325,7 +325,7 @@ label zz_mas_poemgame_oc:
     m "Hi [player]!"
     m "These are your point totals:"
     python:
-        for k,v in testvalues.iteritems():
+        for k,v in testvalues.items():
             m(k + " received "+ str(v) + " pt(s) from your choices.")
     m "you selected these words:"
     python:

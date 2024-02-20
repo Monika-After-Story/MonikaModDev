@@ -332,7 +332,7 @@ init 10 python:
         ]
 
         store.mas_versions.init()
-        ver_list = store.updates.version_updates.keys()
+        ver_list = list(store.updates.version_updates.keys())
 
         if "-" in config.version:
             working_version = config.version[:config.version.index("-")]
@@ -373,6 +373,12 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.13.0 aka RenPy8/Python3
+label v0_13_0(version="v0_13_0"):
+    python hide:
+        pass
+    return
 
 # 0.12.15
 label v0_12_15(version="v0_12_15"):
@@ -939,7 +945,7 @@ label v0_11_9_1(version="v0_11_9_1"):
         # We don't use this var anymore
         safeDel("chess_strength")
 
-        for story_type, story_last_seen in persistent._mas_last_seen_new_story.iteritems():
+        for story_type, story_last_seen in persistent._mas_last_seen_new_story.items():
             if story_last_seen is not None:
                 persistent._mas_last_seen_new_story[story_type] = datetime.datetime.combine(
                     story_last_seen, datetime.time()
@@ -1205,7 +1211,7 @@ label v0_11_4(version="v0_11_4"):
 label v0_11_3(version="v0_11_3"):
     python:
         #Rerandom all songs which aren't d25 exclusive
-        for song_ev in mas_songs.song_db.itervalues():
+        for song_ev in mas_songs.song_db.values():
             if (
                 song_ev.eventlabel not in ["mas_song_aiwfc", "mas_song_merry_christmas_baby"]
                 and mas_songs.TYPE_LONG not in song_ev.category
@@ -1221,7 +1227,7 @@ label v0_11_3(version="v0_11_3"):
             persistent._mas_pool_unlocks += store.mas_xp.level() * 4
 
         #Adjust consumables to be at their max stock amount
-        for consumable_id in persistent._mas_consumable_map.iterkeys():
+        for consumable_id in persistent._mas_consumable_map.keys():
             cons = mas_getConsumable(consumable_id)
 
             if cons and cons.getStock() > cons.max_stock_amount:
@@ -1456,7 +1462,7 @@ label v0_11_1(version="v0_11_1"):
 label v0_11_0(version="v0_11_0"):
     python:
         #First, we're fixing the consumables map
-        for cons_id in persistent._mas_consumable_map.iterkeys():
+        for cons_id in persistent._mas_consumable_map.keys():
             persistent._mas_consumable_map[cons_id]["has_restock_warned"] = False
 
         #Let's stock current users on some consumables (assuming they've gifted before)
@@ -1522,7 +1528,7 @@ label v0_11_0(version="v0_11_0"):
             "greeting_hamlet": "store.mas_getAbsenceLength() >= datetime.timedelta(days=7)"
         }
 
-        for gr_label, conditional in new_greetings_conditions.iteritems():
+        for gr_label, conditional in new_greetings_conditions.items():
             gr_ev = mas_getEV(gr_label)
             if gr_ev:
                 gr_ev.conditional = conditional
@@ -1561,7 +1567,7 @@ label v0_11_0(version="v0_11_0"):
             "monika_changename": "mas_preferredname"
         }
 
-        for new_evl, old_evl in topic_transfer_map.iteritems():
+        for new_evl, old_evl in topic_transfer_map.items():
             mas_transferTopicData(new_evl, old_evl, persistent.event_database)
 
             #If we've seen this event before, then we shouldn't allow its conditions to be true again
@@ -1742,7 +1748,7 @@ label v0_10_6(version="v0_10_6"):
                         persistent._mas_history_archives[year]["player_bday.saw_surprise"] = True
 
         #Give unseen fun facts the unlocked prop
-        for ev in mas_fun_facts.fun_fact_db.itervalues():
+        for ev in mas_fun_facts.fun_fact_db.values():
             if ev.shown_count:
                 ev.unlocked = True
 
@@ -1833,7 +1839,7 @@ label v0_10_5(version="v0_10_5"):
             "mas_bad_facts_4": "mas_bad_fact_tree_moss",
         }
 
-        for old_evl, new_evl in fun_facts_evls.iteritems():
+        for old_evl, new_evl in fun_facts_evls.items():
             mas_transferTopicData(
                 new_evl,
                 old_evl,
@@ -1860,7 +1866,7 @@ label v0_10_5(version="v0_10_5"):
             "mas_monika_daynight2": "mas_island_daynight2"
         }
 
-        for old_label, new_label in islands_evs.iteritems():
+        for old_label, new_label in islands_evs.items():
             mas_transferTopicSeen(old_label, new_label)
 
         #Fix these persist vars
@@ -2065,10 +2071,10 @@ label v0_10_3(version="v0_10_3"):
     python:
         #Convert fav/derand dicts to lists based on their keys if needed
         if isinstance(persistent._mas_player_bookmarked, dict):
-            persistent._mas_player_bookmarked = persistent._mas_player_bookmarked.keys()
+            persistent._mas_player_bookmarked = list(persistent._mas_player_bookmarked.keys())
 
         if isinstance(persistent._mas_player_derandomed, dict):
-            persistent._mas_player_derandomed = persistent._mas_player_derandomed.keys()
+            persistent._mas_player_derandomed = list(persistent._mas_player_derandomed.keys())
 
     return
 
@@ -2585,7 +2591,7 @@ label v0_9_0(version="v0_9_0"):
                 mas_bd_ev.action = EV_ACT_QUEUE
 
         # remove random props from all greetings
-        for gre_label, gre_ev in store.evhand.greeting_database.iteritems():
+        for gre_label, gre_ev in store.evhand.greeting_database.items():
             # hopefully we never use random in greetings ever
             gre_ev.random = False
 

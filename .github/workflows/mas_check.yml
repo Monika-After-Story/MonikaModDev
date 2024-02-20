@@ -30,56 +30,39 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 2.7.18 # optional, default is 3.x
+          python-version: 3.10.4 # optional, default is 3.x
 
-      # get/dl renpy src
-      - name: cache rpy source
-        id: cache-rpy
-        uses: actions/cache@v2
-        with:
-            path: renpy/
-            key: ${{ runner.os }}-rpy
-
+      # dl renpy src
       - name: Download rpy source
-        if: steps.cache-rpy.outputs.cache-hit != 'true'
         run: |
-          wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
-          tar xf renpy-6.99.12.4-sdk.tar.bz2
-          rm renpy-6.99.12.4-sdk.tar.bz2
-          mv renpy-6.99.12.4-sdk renpy
+          renpysdk=$(wget -qO- https://nightly.renpy.org/current-8/index.html | grep -P -m 1 -o '(?<=href=").*\.tar\.bz2(?=".*)')
+          wget https://nightly.renpy.org/current-8/$renpysdk
+          tar xf $renpysdk
+          rm $renpysdk
+          mv ${renpysdk/.tar.bz2/} renpy
 
       # get/download base mas
-      - name: cache base MAS
-        id: cache-mas
-        uses: actions/cache@v2
-        with:
-            path: mas0105/
-            key: ${{ runner.os }}-mas
+      # - name: cache base MAS
+      #   id: cache-mas
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: mas0105/
+      #     key: ${{ runner.os }}-mas
 
       - name: Download base MAS
-        if: steps.cache-mas.outputs.cache-hit != 'true'
+      #  if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
           wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
           mkdir mas0105
           unzip mas.zip -d mas0105
+          rm mas0105/game/scripts.rpa
 
-      # TEMP
-      #      - name: what are these
-      #  run: |
-      #    file mas0105
-      #    file renpy
-
-      # copy files over
+      # copy over gh files to base
       - name: copy source over
         run: cp -Rf Monika\ After\ Story/* mas0105/
-
-      # touch file for unstable so it doesn't raise exceptions for some things
-      - name: exception skip for unstable
-        if: github.ref == 'refs/heads/unstable'
-        run: touch mas0105/trb
 
       # run sprite checkers
       - name: check sprites
@@ -95,4 +78,4 @@ jobs:
       - name: rpy distribute
         run: |
           cd renpy
-          ./renpy.sh launcher distribute "../mas0105/" --package Mod
+          ./renpy.sh launcher distribute "../mas0105/" --package market

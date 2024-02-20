@@ -1,10 +1,12 @@
 ## module with a function that pull sprites out of the sprite-chart
 #
-# VER: Python 2.7
+# VER: Python 3.x
 
 import os
 import gamedir as GDIR
+from spritechecker import StaticSprite
 import menutils
+from typing import IO
 
 STATIC_PREFIX = "sprite-chart-0"
 ALIAS_PREFIX = "sprite-chart-1"
@@ -35,7 +37,7 @@ DYN_DIS = "DynamicDisplayable"
 MAX_FILE_LIMIT = 10
 
 
-def clean_sprite(code):
+def clean_sprite(code: str) -> str:
     """
     Cleans the given sprite (removes excess whitespace, colons)
 
@@ -49,7 +51,7 @@ def clean_sprite(code):
     return code.replace(":","")
 
 
-def is_dyn_line(line):
+def is_dyn_line(line: str) -> bool:
     """
     Checks if the given line is a sprite line with dynamic displayable
     :param line: line to check
@@ -58,12 +60,12 @@ def is_dyn_line(line):
     return is_sprite_line(line) and DYN_DIS in line
 
 
-def is_sprite_line(line):
+def is_sprite_line(line: str) -> bool:
     """
     Checks if the given line is a sprite line
 
     NOTE: a sprite line is a line that starts with "image monika"
-    
+
     NOTE: does not strip the given line.
 
     IN:
@@ -75,7 +77,7 @@ def is_sprite_line(line):
     return line.startswith(IMG_START)
 
 
-def pull_dyn_sprite_code(line):
+def pull_dyn_sprite_code(line: str) -> str | None:
     """
     Pulls sprite code from teh given line.
     Only ones that are monika + dynamic displayable are allowed
@@ -90,7 +92,7 @@ def pull_dyn_sprite_code(line):
     return None
 
 
-def pull_sprite_code(line):
+def pull_sprite_code(line: str) -> str | None:
     """
     Pulls the sprite code from the given line.
     This checks if the given line is a sprite line before pulling the code.
@@ -106,7 +108,7 @@ def pull_sprite_code(line):
     return None
 
 
-def pull_sprite_list(as_dict=False):
+def pull_sprite_list(as_dict=False) -> dict[str, StaticSprite] | list[StaticSprite]:
     """
     Goes through the sprite chart and generates a list of all the known sprite
     codes.
@@ -122,16 +124,16 @@ def pull_sprite_list(as_dict=False):
     RETURNS:
         list of known sprite codes, or dict if as_dict is True
     """
-    sprite_list = list()
+    sprite_list: list[StaticSprite] = list()
 
     for sprfile in SPRITE_PATH:
-        with open(os.path.normcase(sprfile), "r") as sprite_file:
+        with open(os.path.normcase(sprfile), "r", encoding="utf-8") as sprite_file:
             sprite_list.extend(pull_sprite_list_from_file(sprite_file))
 
     if as_dict:
         # do we want a dict instead?
-        sprite_dict = dict()
-        
+        sprite_dict: dict[str, StaticSprite] = dict()
+
         for sprite in sprite_list:
             sprite_dict[sprite] = 0
 
@@ -141,7 +143,7 @@ def pull_sprite_list(as_dict=False):
     return sprite_list
 
 
-def pull_sprite_list_from_file(sprite_file, dyn_only=False):
+def pull_sprite_list_from_file(sprite_file: IO, dyn_only=False):
     """
     Pulls a list of sprite from the given file
     :param sprite_file: file object to read sprites from
@@ -165,7 +167,7 @@ def pull_sprite_list_from_file(sprite_file, dyn_only=False):
     return sprite_list
 
 
-def write_spritecodes(sprites):
+def write_spritecodes(sprites: list[str]) -> None:
     """
     Writes out a sprite file that just contains each sprite code out,
     one sprite code per line
@@ -173,25 +175,25 @@ def write_spritecodes(sprites):
     IN:
         sprites - list of sprite codes to write out.
     """
-    with open(os.path.normcase(SAVE_PATH), "w") as outfile:
+    with open(os.path.normcase(SAVE_PATH), "w", encoding="utf-8") as outfile:
         for line in sprites:
             outfile.write(line + "\n")
 
 
-def write_spritestats(sprites):
+def write_spritestats(sprites: dict[str, str]) -> None:
     """
-    Writes out a sprite file that just contains each sprite code with its 
+    Writes out a sprite file that just contains each sprite code with its
     value, one sprite code per line
 
     IN:
         sprites - dict of sprite codes to write out
     """
-    with open(os.path.normcase(SAVE_PATH_D), "w") as outfile:
+    with open(os.path.normcase(SAVE_PATH_D), "w", encoding="utf-8") as outfile:
         for code in sprites:
             outfile.write("{0}: {1}\n".format(code, sprites[code]))
 
 
-def write_zz_sprite_opt(sprites):
+def write_zz_sprite_opt(sprites: list[str]) -> None:
     """
     Writes out a sprite file that can be used in renpy to optimize sprites
     using image prediction.
@@ -199,7 +201,7 @@ def write_zz_sprite_opt(sprites):
     IN:
         sprites - list of sprite codes to write out.
     """
-    with open(os.path.normcase(SAVE_PATH_IO), "w") as outfile:
+    with open(os.path.normcase(SAVE_PATH_IO), "w", encoding="utf-8") as outfile:
         outfile.write(__ZZ_SP_OPT_HEADER)
 
         open_list = False
@@ -222,14 +224,14 @@ def write_zz_sprite_opt(sprites):
         # 1 last footer needed
         if open_list:
             outfile.write(__ZZ_SP_OPT_LINE_END)
-        
+
         outfile.write(__ZZ_SP_OPT_FOOTER)
 
 
 ####################### special run methods ##################################
 
 
-def run():
+def run() -> None:
     """
     Runs this module (menu-related)
     """
@@ -242,7 +244,7 @@ def run():
     choice()
 
 
-def run_spl(quiet=False):
+def run_spl(quiet=False) -> None:
     """
     Generates the sprite code list and writes it to file
 
@@ -264,7 +266,7 @@ def run_spl(quiet=False):
         menutils.e_pause()
 
 
-def run_rpy_all(quiet=False):
+def run_rpy_all(quiet=False) -> None:
     """
     Generates optimized image rpy for ALL images
 
@@ -339,7 +341,7 @@ def _find_files(prefix):
     ]
 
 
-def _init():
+def _init() -> None:
     """
     Startup
     """

@@ -11,7 +11,7 @@ init -989 python:
         mas_submod_utils.submod_log.info(
             "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
-                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.values()]
                 )
             )
         )
@@ -64,7 +64,7 @@ init -991 python in mas_submod_utils:
         FB_VERS_STR = "0.0.0"
 
         #Regular expression representing a valid author and name
-        AN_REGEXP = re.compile(ur'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+        AN_REGEXP = re.compile(r'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
 
         def __init__(
             self,
@@ -119,8 +119,8 @@ init -991 python in mas_submod_utils:
 
             #Now we verify that the version number is something proper
             try:
-                map(int, version.split('.'))
-            except:
+                tuple(map(int, version.split('.')))
+            except ValueError:
                 raise SubmodError("Version number '{0}' is invalid.".format(version))
 
             #Make sure author and name are proper label names
@@ -159,7 +159,7 @@ init -991 python in mas_submod_utils:
             OUT:
                 List of integers representing the version number
             """
-            return map(int, self.version.split('.'))
+            return list(map(int, self.version.split('.')))
 
         def hasUpdated(self):
             """
@@ -177,7 +177,7 @@ init -991 python in mas_submod_utils:
                 return False
 
             try:
-                old_vers = map(int, old_vers.split('.'))
+                old_vers = list(map(int, old_vers.split('.')))
 
             #Persist data was bad, we'll replace it with something safe and return False as we need not check more
             except:
@@ -226,7 +226,7 @@ init -991 python in mas_submod_utils:
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in submod_map.itervalues():
+            for submod in submod_map.values():
                 #If it has updated, we need to call their update scripts and adjust the version data value
                 if submod.hasUpdated():
                     submod.updateFrom(
@@ -257,10 +257,10 @@ init -991 python in mas_submod_utils:
 
                 NOTE: Does not handle errors as to get here, formats must be correct regardless
                 """
-                return map(int, version.split('.'))
+                return tuple(map(int, version.split('.')))
 
-            for submod in submod_map.itervalues():
-                for dependency, minmax_version_tuple in submod.dependencies.iteritems():
+            for submod in submod_map.values():
+                for dependency, minmax_version_tuple in submod.dependencies.items():
                     dependency_submod = Submod._getSubmod(dependency)
 
                     if dependency_submod is not None:
@@ -600,7 +600,7 @@ init -980 python in mas_submod_utils:
         #First, we need to convert the functions into a list of tuples
         func_list = [
             (_function, data_tuple)
-            for _function, data_tuple in function_plugins[_label].iteritems()
+            for _function, data_tuple in function_plugins[_label].items()
         ]
 
         return sorted(func_list, key=PRIORITY_SORT_KEY)
@@ -653,5 +653,5 @@ init 999 python:
         Populates a lookup dict for all label overrides which are in effect
         """
         #Let's loop here to update our label overrides map
-        for overridden_label, label_override in config.label_overrides.iteritems():
+        for overridden_label, label_override in config.label_overrides.items():
             _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label

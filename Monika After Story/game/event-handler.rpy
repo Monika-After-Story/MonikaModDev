@@ -33,7 +33,7 @@ init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
-    import __builtin__
+    import builtins
 
     # special store dedicated to verification of Event-based data
     import datetime
@@ -90,7 +90,6 @@ init -999 python in mas_ev_data_ver:
                 bool,
                 int,
                 float,
-                long,
                 complex,
                 datetime.timedelta,
                 datetime.date,
@@ -103,10 +102,10 @@ init -999 python in mas_ev_data_ver:
 
         # list types
         if val_type in (
-                __builtin__.list,
+                builtins.list,
                 renpy.python.RevertableList,
-                __builtin__.set,
-                __builtin__.frozenset,
+                builtins.set,
+                builtins.frozenset,
                 renpy.python.RevertableSet,
                 tuple,
         ):
@@ -116,7 +115,7 @@ init -999 python in mas_ev_data_ver:
             return True
 
         # dict types
-        if val_type in (__builtin__.dict, renpy.python.RevertableDict):
+        if val_type in (builtins.dict, renpy.python.RevertableDict):
             for sub_key in val:
                 if (
                         not __strict_can_pickle(sub_key)
@@ -136,11 +135,11 @@ init -999 python in mas_ev_data_ver:
 
 
     def _verify_dict(val, allow_none=True):
-        return _verify_item(val, __builtin__.dict, allow_none)
+        return _verify_item(val, builtins.dict, allow_none)
 
 
     def _verify_list(val, allow_none=True):
-        return _verify_item(val, __builtin__.list, allow_none)
+        return _verify_item(val, builtins.list, allow_none)
 
 
     def _verify_dt(val, allow_none=True):
@@ -192,7 +191,7 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
 
-        return isinstance(val, __builtin__.list) or isinstance(val, tuple)
+        return isinstance(val, builtins.list) or isinstance(val, tuple)
 
 
     def _verify_tuli_nn(val):
@@ -353,7 +352,7 @@ init -950 python in mas_ev_data_ver:
         if per_db is None:
             return
 
-        for ev_label in per_db.keys():
+        for ev_label in tuple(per_db.keys()):
             # pull out the data
             ev_line = per_db[ev_label]
 
@@ -480,7 +479,7 @@ init 6 python:
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
-    for code,ev_db in mas_all_ev_db_map.iteritems():
+    for code,ev_db in mas_all_ev_db_map.items():
         mas_all_ev_db.update(ev_db)
 
     del code, ev_db
@@ -668,7 +667,7 @@ init 6 python:
         if ev is None:
             return False
 
-        for attr, new_value in kwargs.iteritems():
+        for attr, new_value in kwargs.items():
             setattr(ev, attr, new_value)
 
         return True
@@ -1496,26 +1495,26 @@ init -1 python in evhand:
     _NT_CAT_PANE = namedtuple("_NT_CAT_PANE", "menu cats")
 
     # RIGHT PANE
-#    PREV_X = 30
+    # PREV_X = 30
     RIGHT_X = 1020
-#    PREV_Y = 10
+    # PREV_Y = 10
     RIGHT_Y = 15 + 55
-#    PREV_W = 300
+    # PREV_W = 300
     RIGHT_W = 250
     RIGHT_H = 572
-#    PREV_XALIGN = -0.08
+    # PREV_XALIGN = -0.08
     RIGHT_XALIGN = -0.10
     RIGHT_AREA = (RIGHT_X, RIGHT_Y, RIGHT_W, RIGHT_H)
 
     # LEFT PANE
-#    MAIN_X = 360
+    # MAIN_X = 360
     LEFT_X = 740
-#    MAIN_Y = 10
+    # MAIN_Y = 10
     LEFT_Y = RIGHT_Y
-#    MAIN_W = 300
+    # MAIN_W = 300
     LEFT_W = RIGHT_W
     LEFT_H = RIGHT_H
-#    MAIN_XALIGN = -0.08
+    # MAIN_XALIGN = -0.08
     LEFT_XALIGN = -0.10
     LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
     LEFT_EXTRA_SPACE = 68
@@ -1589,8 +1588,8 @@ init -1 python in evhand:
                 self._eli
             )
 
-        @staticmethod
-        def build(evl, *args):
+        @classmethod
+        def build(cls, evl, *args):
             """
             Builds an ELI.
 
@@ -1600,10 +1599,10 @@ init -1 python in evhand:
 
             RETURNS: EventListItem object
             """
-            return EventListItem(EventListItem._build_raw(evl, *args))
+            return cls(cls._build_raw(evl, *args))
 
-        @staticmethod
-        def _build_raw(evl, *args):
+        @classmethod
+        def _build_raw(cls, evl, *args):
             """
             Builds raw data for an ELI.
 
@@ -1612,13 +1611,13 @@ init -1 python in evhand:
             RETURNS: raw data
             """
             data = list(
-                (evl, ) + args + EventListItem.DEFAULT_VALUES[len(args):]
+                (evl, ) + args + cls.DEFAULT_VALUES[len(args):]
             )
 
             # adjust context to be persistntable
-            ctx = data[EventListItem.IDX_CONTEXT]
+            ctx = data[cls.IDX_CONTEXT]
             if isinstance(ctx, store.MASEventContext):
-                data[EventListItem.IDX_CONTEXT] = ctx._to_dict()
+                data[cls.IDX_CONTEXT] = ctx._to_dict()
 
             return tuple(data)
 
@@ -1891,7 +1890,7 @@ init -1 python in evhand:
         Goes through the year setblacklist and removes expired entries
         """
         now_dt = datetime.datetime.now()
-        for evl in store.persistent._mas_ev_yearset_blacklist.keys():
+        for evl in tuple(store.persistent._mas_ev_yearset_blacklist.keys()):
             if store.persistent._mas_ev_yearset_blacklist[evl] <= now_dt:
                 store.persistent._mas_ev_yearset_blacklist.pop(evl)
 
@@ -1952,7 +1951,7 @@ init python:
                 ctx_data - context data directly from event list. Optional.
                     (Default: None)
             """
-            super(MASEventContext, self).__init__()
+            super().__init__()
             if ctx_data is not None:
                 self._from_dict(ctx_data)
 
@@ -1960,8 +1959,8 @@ init python:
             """
             We don't allow types that cannot be saved to persistent
             """
-            if MASEventContext.is_allowed_data(value):
-                super(MASEventContext, self).__setattr__(name, value)
+            if self.is_allowed_data(value):
+                super().__setattr__(name, value)
 
         @classmethod
         def is_allowed_data(cls, thing):
@@ -2034,12 +2033,12 @@ init python:
 
         # current event functions
 
-        @staticmethod
-        def clear_current():
+        @classmethod
+        def clear_current(cls):
             """
             Clears the current event aka persistent eli data.
             """
-            MASEventList._set_current(None)
+            cls._set_current(None)
 
         @staticmethod
         def load_current():
@@ -2077,39 +2076,39 @@ init python:
             persistent._mas_curr_eli_data = new_eli_data
             persistent.current_monikatopic = new_curr_moni_topic
 
-        @staticmethod
-        def sync_current():
+        @classmethod
+        def sync_current(cls):
             """
             Syncs the current event persistent vars, aka:
                 - current_monikatopic
                 - _mas_curr_eli_data
             """
-            curr_eli = MASEventList.load_current()
+            curr_eli = cls.load_current()
 
             if curr_eli is None:
 
                 if renpy.has_label(str(persistent.current_monikatopic)):
                     # to handle unexpected uses, we'll build an eli for this
                     # if this var is set but no eli data was found.
-                    MASEventList._set_current(evhand.EventListItem.build(
+                    cls._set_current(evhand.EventListItem.build(
                         str(persistent.current_monikatopic)
                     ))
 
                 else:
-                    MASEventList.clear_current()
+                    cls.clear_current()
 
             else:
-                MASEventList._set_current(curr_eli)
+                cls._set_current(curr_eli)
 
         # event list functions
 
-        @staticmethod
-        def clean():
+        @classmethod
+        def clean(cls):
             """
             Cleans the event list and makes sure all events are of the
             appropriate length and have a valid label.
             """
-            for index in MASEventList.rev_idx_iter():
+            for index in cls.rev_idx_iter():
                 item_raw = persistent.event_list[index]
 
                 # type check
@@ -2160,8 +2159,8 @@ init python:
             mas_globals.event_unpause_dt = None
             return False
 
-        @staticmethod
-        def _next():
+        @classmethod
+        def _next(cls):
             """
             Gets the next event's data and its location in the event_list.
             This takes event restrictions into account, aka pausing and idle.
@@ -2173,9 +2172,9 @@ init python:
             if len(persistent.event_list) < 1:
                 return None, -1
 
-            is_paused = MASEventList.is_paused()
+            is_paused = cls.is_paused()
 
-            for index, item in MASEventList.rev_enum_iter():
+            for index, item in cls.rev_enum_iter():
                 ev = mas_getEV(item.evl)
 
                 if (
@@ -2199,8 +2198,8 @@ init python:
             # no valid event available
             return None, -1
 
-        @staticmethod
-        def peek():
+        @classmethod
+        def peek(cls):
             """
             Gets the EventListItem for the next event on the event list, but
             does NOT remove it.
@@ -2213,10 +2212,10 @@ init python:
             RETURNS: EventListItem object for the next event, or None if no
             next event.
             """
-            return MASEventList._next()[0]
+            return cls._next()[0]
 
-        @staticmethod
-        def pop():
+        @classmethod
+        def pop(cls):
             """
             Gets the EventListItem for the next event on the event list and
             removes the event from the event list.
@@ -2229,7 +2228,7 @@ init python:
 
             RETURNS: EventListItem object for the next event
             """
-            item, loc = MASEventList._next()
+            item, loc = cls._next()
 
             if item is None:
                 return None
@@ -2237,12 +2236,12 @@ init python:
             if 0 <= loc < len(persistent.event_list): # just in case
                 persistent.event_list.pop(loc)
 
-            MASEventList._set_current(item)
+            cls._set_current(item)
 
             return item
 
-        @staticmethod
-        def push(event_label, skipeval=False, notify=False, context=None):
+        @classmethod
+        def push(cls, event_label, skipeval=False, notify=False, context=None):
             """
             Pushes an event to the list - this will make the event trigger
             next unless something else is pushed.
@@ -2260,7 +2259,7 @@ init python:
                     (accessible via MASEventContext.get())
                     (Default: None)
             """
-            MASEventList._push_eli(evhand.EventListItem.build(
+            cls._push_eli(evhand.EventListItem.build(
                 event_label,
                 notify,
                 context
@@ -2279,8 +2278,8 @@ init python:
             """
             persistent.event_list.append(eli._raw())
 
-        @staticmethod
-        def queue(event_label, notify=False, context=None):
+        @classmethod
+        def queue(cls, event_label, notify=False, context=None):
             """
             Queues an event to the list - this will make the event trigger,
             but not right away unless the list is empty.
@@ -2295,7 +2294,7 @@ init python:
                     (accessible via MASEventContext.get())
                     (Default: None)
             """
-            MASEventList._queue_eli(evhand.EventListItem.build(
+            cls._queue_eli(evhand.EventListItem.build(
                 event_label,
                 notify,
                 context
@@ -2406,33 +2405,6 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
-    @store.mas_utils.deprecated(use_instead="mas_hideEVL", should_raise=True)
-    def hideEventLabel(
-            eventlabel,
-            lock=False,
-            derandom=False,
-            depool=False,
-            decond=False,
-            eventdb=evhand.event_database
-        ):
-        #
-        # NOTE: DEPRECATED
-        # hide an event in the given eventdb by Falsing its unlocked,
-        # random, and pool properties.
-        #
-        # IN:
-        #   eventlabel - label of the event to hide
-        #   lock - True if we want to lock this event, False otherwise
-        #       (Default: False)
-        #   derandom - True if we want to unrandom this event, False otherwise
-        #       (Default: False)
-        #   depool - True if we want to unpool this event, False otherwise
-        #       (Default: False)
-        #   decond - True if we want to remove the conditional, False otherwise
-        #       (Default: False)
-        #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: evhand.event_database)
-        mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
     @store.mas_utils.deprecated(use_instead="mas_hideEvent")
     def hideEvent(
@@ -2582,29 +2554,6 @@ init python:
         """
         mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
 
-    @store.mas_utils.deprecated(use_instead="mas_lockEvent", should_raise=True)
-    def lockEvent(ev):
-        """
-        NOTE: DEPRECATED
-        Locks the given event object
-
-        IN:
-            ev - the event object to lock
-        """
-        mas_lockEvent(ev)
-
-    @store.mas_utils.deprecated(use_instead="mas_lockEventLabel", should_raise=True)
-    def lockEventLabel(evlabel, eventdb=evhand.event_database):
-        """
-        NOTE: DEPRECATED
-        Locks the given event label
-
-        IN:
-            evlabel - event label of the event to lock
-            eventdb - Event database to find this label
-        """
-        mas_lockEventLabel(evlabel, eventdb)
-
 
     def mas_lockEvent(ev):
         """
@@ -2630,6 +2579,7 @@ init python:
     @store.mas_utils.deprecated(use_instead="MASEventList.push")
     def pushEvent(event_label, skipeval=False, notify=False):
         """
+        NOTE: Preferable to use MASEventList.push
         This pushes high priority or time sensitive events onto the top of
         the event list
 
@@ -2645,12 +2595,13 @@ init python:
         ASSUMES:
             persistent.event_list
         """
-        MASEventList.push(event_label, skipeval, notify)
+        MASEventList.push(*args, **kwargs)
 
 
     @store.mas_utils.deprecated(use_instead="MASEventList.queue")
     def queueEvent(event_label, notify=False):
         """
+        NOTE: Preferable to use MASEventList.queue
         This adds low priority or order-sensitive events onto the bottom of
         the event list. This is slow, but rarely called and list should be
         small.
@@ -2664,19 +2615,8 @@ init python:
         ASSUMES:
             persistent.event_list
         """
-        MASEventList.queue(event_label, notify)
+        MASEventList.queue(*args, **kwargs)
 
-
-    @store.mas_utils.deprecated(use_instead="mas_unlockEvent", should_raise=True)
-    def unlockEvent(ev):
-        """
-        NOTE: DEPRECATED
-        Unlocks the given evnet object
-
-        IN:
-            ev - the event object to unlock
-        """
-        mas_unlockEvent(ev)
 
     @store.mas_utils.deprecated(use_instead="mas_unlockEventLabel")
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -2759,16 +2699,6 @@ init python:
             interval, False otherwise
         """
         return evhand._isPresent(ev)
-
-
-    @store.mas_utils.deprecated(use_instead="MASEventList.pop", should_raise=True)
-    def popEvent(remove=True):
-        """
-        DO NOT USE.
-
-        Use MASEventList.pop instead (not exactly the same)
-        """
-        pass
 
 
     def seen_event(event_label):
@@ -2974,7 +2904,7 @@ init python:
         # get locked pool topics that are not banned from unlocking
         pool_evs = [
             ev
-            for ev in evhand.event_database.itervalues()
+            for ev in evhand.event_database.values()
             if (
                 Event._filterEvent(ev, unlocked=False, pool=True)
                 and "no_unlock" not in ev.rules
@@ -3104,9 +3034,9 @@ label call_next_event:
         ):
             #Create a new notif
             if renpy.windows:
-                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_win_notif_quips, "Topic Alerts", flash_window=True)
             else:
-                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
+                $ mas_display_notif(m_name, mas_other_notif_quips, "Topic Alerts", flash_window=True)
 
         #Also check here and reset the forced idle exp if necessary
         if ev is not None and "keep_idle_exp" not in ev.rules:
@@ -3500,33 +3430,32 @@ label prompts_categories(pool=True):
                 # setup items
                 main_items = no_cat_list
 
-                """ KEEP this for legacy purposes
-#            sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+                # KEEP this for legacy purposes
+            # sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
-            prompt_category_menu = []
-            #Make a list of categories
+            # prompt_category_menu = []
+            # #Make a list of categories
 
-            #Make a list of all categories
-            subcategories=set([])
-            for event in sorted_event_keys:
-                if unlocked_events[event].category is not None:
-                    new_categories=set(unlocked_events[event].category).difference(set(current_category))
-                    subcategories=subcategories.union(new_categories)
+            # #Make a list of all categories
+            # subcategories=set([])
+            # for event in sorted_event_keys:
+            #     if unlocked_events[event].category is not None:
+            #         new_categories=set(unlocked_events[event].category).difference(set(current_category))
+            #         subcategories=subcategories.union(new_categories)
 
-            subcategories = list(subcategories)
-            for category in sorted(subcategories, key=lambda s: s.lower()):
-                #Don't list additional subcategories if adding them wouldn't change the same you are looking at
-                test_unlock = Event.filterEvents(evhand.event_database,full_copy=True,category=[False,current_category+[category]],unlocked=True)
+            # subcategories = list(subcategories)
+            # for category in sorted(subcategories, key=lambda s: s.lower()):
+            #     #Don't list additional subcategories if adding them wouldn't change the same you are looking at
+            #     test_unlock = Event.filterEvents(evhand.event_database,full_copy=True,category=[False,current_category+[category]],unlocked=True)
 
-                if len(test_unlock) != len(sorted_event_keys):
-                    prompt_category_menu.append([category.capitalize() + "...",category])
+            #     if len(test_unlock) != len(sorted_event_keys):
+            #         prompt_category_menu.append([category.capitalize() + "...",category])
 
 
-            #If we do have a category picked, make a list of the keys
-            if sorted_event_keys is not None:
-                for event in sorted_event_keys:
-                    prompt_category_menu.append([unlocked_events[event].prompt,event])
-                """
+            # #If we do have a category picked, make a list of the keys
+            # if sorted_event_keys is not None:
+            #     for event in sorted_event_keys:
+            #         prompt_category_menu.append([unlocked_events[event].prompt,event])
 
         call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category)) nopredict
 
@@ -3539,15 +3468,15 @@ label prompts_categories(pool=True):
                     current_category.pop()
                 current_category.append(_return)
 
-# TODO: if we have subcategories, this needs to be setup properly
-#        elif _return in main_cats:
-            # we selected a category in the main pane
-#            $ current_category.append(_return)
-#            $ cat_lists.append(main_pane)
-#            $ is_root = False
+        # TODO: if we have subcategories, this needs to be setup properly
+        # elif _return in main_cats:
+        #         we selected a category in the main pane
+        #     $ current_category.append(_return)
+        #     $ cat_lists.append(main_pane)
+        #     $ is_root = False
 
-#        elif _return == -2: # Thats enough for now
-#            $picked_event = True
+        # elif _return == -2: # Thats enough for now
+        #     $picked_event = True
 
         elif _return == -1: # go back
             if len(current_category) > 0:
@@ -3702,13 +3631,13 @@ label mas_bookmarks_unbookmark(bookmarks_items):
     # sanity check that the user selected something
     if bookmarks_to_remove:
         python:
-            for ev_label in bookmarks_to_remove.iterkeys():
+            for ev_label in bookmarks_to_remove.keys():
                 # remove the bookmark from persist (if in it)
                 if ev_label in persistent._mas_player_bookmarked:
                     persistent._mas_player_bookmarked.remove(ev_label)
 
             # filter the removed items to show the menu again
-            bookmarks_items = filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items)
+            bookmarks_items = list(filter(lambda item: item[1] not in bookmarks_to_remove, bookmarks_items))
 
         show monika at t11
         m 1dsa "Okay, [player].{w=0.2}.{w=0.2}.{w=0.2}{nw}"

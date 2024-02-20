@@ -31,7 +31,6 @@ init 10 python:
 
         if key is None:
             key = datetime.date.today()
-
         persistent._mas_event_clothes_map[key] = clothes.name
 
         #We also unlock the event clothes selector here
@@ -340,9 +339,9 @@ init 501 python:
     )
 
 init python:
-    MAS_O31_COSTUME_CG_MAP = {
-        mas_clothes_marisa: "o31mcg",
-        mas_clothes_rin: "o31rcg"
+    MAS_O31_COSTUME_CG_MAP: dict[str, str] = {
+        mas_clothes_marisa.name: "o31mcg",
+        mas_clothes_rin.name: "o31rcg"
     }
 
 #Functions
@@ -535,8 +534,8 @@ init -10 python:
 
             if wearing_costume:
                 #Check if the current costume is in the cg map, and if so, prep the cg
-                if monika_chr.clothes in MAS_O31_COSTUME_CG_MAP:
-                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes])
+                if monika_chr.clothes.name in MAS_O31_COSTUME_CG_MAP:
+                    store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[monika_chr.clothes.name])
 
                 return monika_chr.clothes
             return None
@@ -561,8 +560,8 @@ init -10 python:
             random_outfit = random.choice(selection_pool)
 
         #Setup the image decode
-        if random_outfit in MAS_O31_COSTUME_CG_MAP:
-            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit])
+        if random_outfit.name in MAS_O31_COSTUME_CG_MAP:
+            store.mas_o31_event.cg_decoded = store.mas_o31_event.decodeImage(MAS_O31_COSTUME_CG_MAP[random_outfit.name])
 
         #And return the outfit
         return random_outfit
@@ -1296,7 +1295,7 @@ label mas_o31_lingerie:
     python:
         curr_song = songs.current_track
         mas_play_song(None)
-        mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts")
+        mas_display_notif("M̷̢͘ô̴͎ṇ̵͐i̴͎͂k̸̗̂ả̴̫", ["C̸̳̓ą̵́n̷̳̎ ̸̖̊y̴̦͝õ̷̯ų̷͌ ̴̼͘h̷̭̚e̴̪͝a̴̙̐ŕ̵̖ ̴̠́m̸̰̂ě̵̬?̷̮̐"], "Topic Alerts", flash_window=True)
 
     scene black
     pause 2.0
@@ -1350,7 +1349,7 @@ label mas_o31_lingerie_end:
         mas_lockEVL("greeting_o31_lingerie", "GRE")
 
         # restart song/sounds that were playing before event
-        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+        if globals().get("curr_song", -1) != -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
             mas_play_song(curr_song, 1.0)
         else:
             mas_play_song(None, 1.0)
@@ -2128,7 +2127,7 @@ init -10 python in mas_d25_utils:
 
         # save remaining d25 gifts and delete the packages
         # they will be reacted to later
-        for c_gift_name, gift_name in d25_map.iteritems():
+        for c_gift_name, gift_name in d25_map.items():
             #Only add if the gift isn't already stored under the tree
             if c_gift_name not in store.persistent._mas_d25_gifts_given:
                 store.persistent._mas_d25_gifts_given.append(c_gift_name)
@@ -2137,7 +2136,7 @@ init -10 python in mas_d25_utils:
             store.mas_docking_station.destroyPackage(gift_name)
 
         # set all excluded and generic gifts to react now
-        for c_gift_name, mas_gift in found_map.iteritems():
+        for c_gift_name, mas_gift in found_map.items():
             store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         # register these gifts

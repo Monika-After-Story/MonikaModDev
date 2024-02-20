@@ -14,7 +14,8 @@ python early:
     renpy.config.name = "Monika After Story"
 
     ## The version of the game.
-    renpy.config.version = "0.12.15"
+    renpy.config.version = "0.13.0"
+
 
     #Triple space suffix to avoid potential issues with same names in window title
     config.window_title = "Monika After Story   "
@@ -34,6 +35,31 @@ python early:
     ## literal string, not an expression.
 
     renpy.config.save_directory = "Monika After Story"
+
+    ### R7+ Config Var adjustments
+    ## 7.4.11
+    renpy.config.mouse_focus_clickthrough = True
+    ##7.3.3
+    #Only devs need this
+    renpy.config.report_extraneous_attributes = False
+
+    ##7.3.0
+    renpy.config.keyword_after_python = True
+
+    ##7.1.1
+    #Fix menu textbox issues
+    renpy.config.menu_showed_window = True
+    #Fix textbox sometimes disappearing
+    renpy.config.window_auto_show = ["say"]
+    #Fix textbox flickering
+    renpy.config.window_auto_hide = ["scene", "call screen"]
+
+    ##7.0
+    #Fixes spaceroom masks from restarting every interaction
+    renpy.config.replay_movie_sprites = False
+
+    ##6.99.13
+    renpy.config.atl_one_frame = False
 
 init -1200 python:
 ## Sounds and music ############################################################
@@ -97,7 +123,7 @@ init -1200 python:
 
 ## The icon displayed on the taskbar or dock.
 
-    renpy.config.window_icon = "gui/window_icon.png"
+    renpy.config.window_icon = "mod_assets/mas_icon.ico"
 
 ## Custom configs ##############################################################
 
@@ -120,7 +146,6 @@ init -1200 python:
         renpy.loadsave.location.locations.pop()
 
 ################START: INIT TIME CONFIGS
-
 ## Uncomment the following line to set an audio file that will be played while
 ## the player is at the main menu. This file will continue playing into the
 ## game, until it is stopped or another file is played.
@@ -130,3 +155,6 @@ define config.main_menu_music = audio.t1
 
 define config.window_show_transition = dissolve_textbox
 define config.window_hide_transition = dissolve_textbox
+
+init python:
+    config.per_frame_screens.append("_trace_screen")

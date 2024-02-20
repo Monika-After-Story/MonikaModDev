@@ -846,7 +846,7 @@ init -10 python:
             for sl_data in self._slices:
                 filters[sl_data.flt_slice.name] = None
 
-            return filters.keys()
+            return list(filters.keys())
 
         def first_flt(self):
             """
@@ -1233,11 +1233,11 @@ init -10 python:
         def __repr__(self):
             day_f = self._day_filters
             if day_f is not None:
-                day_f = day_f.keys()
+                day_f = list(day_f.keys())
 
             night_f = self._night_filters
             if night_f is not None:
-                night_f = night_f.keys()
+                night_f = list(night_f.keys())
 
             return (
                 "<FilterManager: (index: {0}, updated: {1}, prev_flt: {2}, "
@@ -1571,7 +1571,7 @@ init -10 python:
             both = {}
             both.update(self._day_filters)
             both.update(self._night_filters)
-            return both.keys()
+            return list(both.keys())
 
         def filters_day(self):
             """
@@ -1580,7 +1580,7 @@ init -10 python:
                 (list of stirngs)
                 NOTE: does not contain duplicates
             """
-            return self._day_filters.keys()
+            return list(self._day_filters.keys())
 
         def filters_night(self):
             """
@@ -1589,7 +1589,7 @@ init -10 python:
                 (list of strings)
                 NOTE: does not contain duplicates
             """
-            return self._night_filters.keys()
+            return list(self._night_filters.keys())
 
         def is_flt_day(self, flt):
             """
@@ -2235,14 +2235,13 @@ init -10 python:
                 change_info - MASBackgroundChangeInfo object with hides
                     populated.
             """
-            for deco_obj, adv_df, override_tag in self._deco_man.deco_iter_adv():
-
+            for deco_obj, adv_df, override_tag in tuple(self._deco_man.deco_iter_adv()):
                 if (
-                        not mas_isDecoTagEnabled(override_tag)
-                        or (
-                            new_bg is not None
-                            and new_bg.get_deco_info(override_tag) is None
-                        )
+                    not mas_isDecoTagEnabled(override_tag)
+                    or (
+                        new_bg is not None
+                        and new_bg.get_deco_info(override_tag) is None
+                    )
                 ):
                     # hide all deco objects that do not have a definition
                     # in the new bg OR are not in the vis_store
@@ -2342,15 +2341,6 @@ init -10 python:
 
             return self.getRoom(flt)
 
-        @store.mas_utils.deprecated(use_instead="getDayRooms", should_raise=True)
-        def getDayRoom(self, weather=None):
-            """DEPRECATED
-            Can't use this anymore since there's no single image that defines
-            "day" anymore. It's all filter based.
-            See getDayRooms instead
-            """
-            pass
-
         def getDayRooms(self, weather=None):
             """
             Gets all day images for a weather.
@@ -2391,15 +2381,6 @@ init -10 python:
             if m_w_m is None:
                 return None
             return m_w_m.get(precip_type)
-
-        @store.mas_utils.deprecated(use_instead="getNightRooms", should_raise=True)
-        def getNightRoom(self, weather=None):
-            """DEPRECATED
-            Can't use this anymore since there's no single image that defines
-            "night" anymore. It's all filter-based
-            See getNightRooms instead
-            """
-            pass
 
         def getNightRooms(self, weather=None):
             """
@@ -2619,8 +2600,8 @@ init -10 python:
             Assumed to be called at least at init level 0
             """
             self._flt_man.verify()
-            self._verify_img_flts(self._flt_man._day_filters.keys())
-            self._verify_img_flts(self._flt_man._night_filters.keys())
+            self._verify_img_flts(list(self._flt_man._day_filters.keys()))
+            self._verify_img_flts(list(self._flt_man._night_filters.keys()))
 
         def _verify_img_flts(self, flts):
             """
@@ -2713,7 +2694,7 @@ init -20 python in mas_background:
         """
         Builds all background objects using current time settings.
         """
-        for flt_bg in BACKGROUND_MAP.itervalues():
+        for flt_bg in BACKGROUND_MAP.values():
             flt_bg.build()
 
 
@@ -2772,7 +2753,7 @@ init -20 python in mas_background:
         if store.persistent._mas_background_MBGdata is None:
             return
 
-        for mbg_id, mbg_data in store.persistent._mas_background_MBGdata.iteritems():
+        for mbg_id, mbg_data in store.persistent._mas_background_MBGdata.items():
             mbg_obj = BACKGROUND_MAP.get(mbg_id, None)
             if mbg_obj is not None:
                 mbg_obj.fromTuple(mbg_data)
@@ -2781,7 +2762,7 @@ init -20 python in mas_background:
         """
         Saves MASBackground data from bg map into persistent
         """
-        for mbg_id, mbg_obj in BACKGROUND_MAP.iteritems():
+        for mbg_id, mbg_obj in BACKGROUND_MAP.items():
             store.persistent._mas_background_MBGdata[mbg_id] = mbg_obj.toTuple()
 
     def getUnlockedBGCount():
@@ -2789,7 +2770,7 @@ init -20 python in mas_background:
         Gets the number of unlocked backgrounds
         """
         unlocked_count = 0
-        for mbg_obj in BACKGROUND_MAP.itervalues():
+        for mbg_obj in BACKGROUND_MAP.values():
             unlocked_count += int(mbg_obj.unlocked)
 
         return unlocked_count
@@ -2911,8 +2892,9 @@ init 800 python:
             **kwargs:
                 Additional kwargs to send to the prog points
         """
+        global mas_current_background
+
         if _background != mas_current_background:
-            global mas_current_background
             old_background = mas_current_background
             mas_current_background = _background
             mas_current_background.entry(old_background, **kwargs)
@@ -3246,7 +3228,7 @@ init -1 python:
 init 1 python in mas_background:
 
     # verify all backgrounds
-    for flt_bg in BACKGROUND_MAP.itervalues():
+    for flt_bg in BACKGROUND_MAP.values():
         flt_bg.verify()
 
 #START: Image definitions
@@ -3321,7 +3303,7 @@ label monika_change_background_loop:
 
         backgrounds = [
             (bg_obj.prompt, bg_obj, False, False)
-            for bg_id, bg_obj in mas_background.BACKGROUND_MAP.iteritems()
+            for bg_id, bg_obj in mas_background.BACKGROUND_MAP.items()
             if predicate(bg_id, bg_obj)
         ]
         backgrounds.sort()

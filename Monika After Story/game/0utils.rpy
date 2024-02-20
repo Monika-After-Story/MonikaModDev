@@ -37,7 +37,7 @@ python early in mas_logging:
     import re
 
     #Thanks python...
-    from logging import handlers as loghandlers
+    import logging.handlers as loghandlers
 
     # log tags
     LT_INFO = "info"
@@ -75,16 +75,17 @@ python early in mas_logging:
             if datefmt is None:
                 datefmt = DEF_DATEFMT
 
-            super(MASLogFormatter, self).__init__(fmt=fmt, datefmt=datefmt)
+            super().__init__(fmt=fmt, datefmt=datefmt)
 
         def format(self, record):
             """
             Override of format - mainly replaces the levelname prop
             """
             self.update_levelname(record)
-            return self.replace_lf(
-                super(MASLogFormatter, self).format(record)
-            )
+            # return self.replace_lf(
+            #     super().format(record)
+            # )
+            return super().format(record)
 
         def update_levelname(self, record):
             """
@@ -93,12 +94,12 @@ python early in mas_logging:
             """
             record.levelname = LT_MAP.get(record.levelno, record.levelname)
 
-        @classmethod
-        def replace_lf(cls, msg):
-            """
-            Replaces all line feeds with carriage returns and a line feed
-            """
-            return re.sub(cls.NEWLINE_MATCHER, cls.LINE_TERMINATOR, msg)
+        # @classmethod
+        # def replace_lf(cls, msg):
+        #     """
+        #     Replaces all line feeds with carriage returns and a line feed
+        #     """
+        #     return re.sub(cls.NEWLINE_MATCHER, cls.LINE_TERMINATOR, msg)
 
     class MASNewlineLogFormatter(MASLogFormatter):
         """
@@ -127,11 +128,9 @@ python early in mas_logging:
             """
             Applies a prefix newline if appropriate.
             """
-            return self.replace_lf(
-                self.apply_newline_prefix(
-                    record,
-                    super(MASNewlineLogFormatter, self).format(record)
-                )
+            return self.apply_newline_prefix(
+                record,
+                super().format(record)
             )
 
 
@@ -230,7 +229,7 @@ python early in mas_logging:
 
     #Add the header to each log, including OS info + MAS version number
     #NOTE: python logging does not auto handle CRLF, so we need to explicitly manage that for the header
-    LOG_HEADER = "\r\n\r\n{_date}\r\n{system_info}\r\n{renpy_ver}\r\n\r\nVERSION: {game_ver}\r\n{separator}"
+    LOG_HEADER = "\n\n{_date}\n{system_info}\n{renpy_ver}\n\nVERSION: {game_ver}\n{separator}"
 
     #Unformatted logs use these consts (spj/pnm)
     MSG_INFO = "[" + LT_INFO + "]: {0}"
@@ -268,7 +267,6 @@ python early in mas_logging:
                 (Default: True)
             formatter - custom logging.Formatter to be used.
                 If None is provided, the default MASLogFormatter is used.
-                NOTE: IF YOU ARE USING YOUR OWN FORMATTER, YOU SHOULD CALL THE `replace_lf` METHOD TO ENSURE YOUR LOGS ARE USING CRLF
                 (Default: None)
             adapter_ctor - Constructor reference to the adapter we want to use. If None, no adapter is used
                 (Default: None)
@@ -509,132 +507,6 @@ python early in mas_utils:
 
     deprecated.__all_warnings__ = _deprecation_warnings
 
-    # mac logging
-    class MASMacLog(renpy.renpy.log.LogFile):
-        def __init__(self, name, append=False, developer=False, flush=True):
-            """
-            `name`
-                The name of the logfile, without the .txt extension.
-            `append`
-                If true, we will append to the logfile. If false, we will truncate
-                it to an empty file the first time we write to it.
-            `developer`
-                If true, nothing happens if config.developer is not set to True.
-            `flush`
-                Determines if the file is flushed after each write.
-            """
-            super(MASMacLog, self).__init__(name, append=append, developer=developer, flush=flush)
-
-
-        def open(self):  # @ReservedAssignment
-            if self.file:
-                return True
-
-            if self.file is False:
-                return False
-
-            if self.developer and not renpy.config.developer:
-                return False
-
-            if not renpy.config.log_enable:
-                return False
-
-            try:
-
-                home = os.path.expanduser("~")
-                base = os.path.join(home,".MonikaAfterStory/" )
-
-                if base is None:
-                    return False
-
-                fn = os.path.join(base, self.name + ".txt")
-
-                path, filename = os.path.split(fn)
-                if not os.path.exists(path):
-                    os.makedirs(path)
-
-                if self.append:
-                    mode = "a"
-                else:
-                    mode = "w"
-
-                if renpy.config.log_to_stdout:
-                    self.file = real_stdout
-
-                else:
-
-                    try:
-                        self.file = codecs.open(fn, mode, "utf-8")
-                    except:
-                        pass
-
-                if self.append:
-                    self.write('')
-                    self.write('=' * 78)
-                    self.write('')
-
-                self.write("%s", time.ctime())
-                try:
-                    self.write("%s", platform.platform())
-                except:
-                    self.write("Unknown platform.")
-                self.write("%s", renpy.version())
-                self.write("%s %s", renpy.config.name, renpy.config.version)
-                self.write("")
-
-                return True
-
-            except:
-                self.file = False
-                return False
-
-    # A map from the log name to a log object.
-    mas_mac_log_cache = { }
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
-        rv = mas_mac_log_cache.get(name, None)
-
-        if rv is None:
-            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
-            mas_mac_log_cache[name] = rv
-
-        return rv
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def getMASLog(name, append=False, developer=False, flush=False):
-        if renpy.macapp or renpy.macintosh:
-            return macLogOpen(name, append=append, developer=developer, flush=flush)
-        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
-
-    @deprecated(use_instead="mas_logging.init_log")
-    def logcreate(filepath, append=False, flush=False, addversion=False):
-        """
-        Creates a log at the given filepath.
-        This also opens the log and sets raw_write to True.
-        This also adds per version number if desired
-
-        IN:
-            filepath - filepath of the log to create (extension is added)
-            append - True will append to the log. False will overwrite
-                (Default: False)
-            flush - True will flush every operation, False will not
-                (Default: False)
-            addversion - True will add the version, False will not
-                You dont need this if you create the log in runtime,
-                (Default: False)
-
-        RETURNS: created log object.
-        """
-        new_log = getMASLog(filepath, append=append, flush=flush)
-        new_log.open()
-        new_log.raw_write = True
-        if addversion:
-            new_log.write("VERSION: {0}\n".format(
-                store.persistent.version_number
-            ))
-        return new_log
-
     @deprecated(use_instead="mas_utils.mas_log.info")
     def writelog(msg):
         """
@@ -665,69 +537,8 @@ python early in mas_utils:
         """
         mas_log.debug("".join(traceback.format_stack()))
 
-    #"No longer necessary as all logs have builtin rotation"
-    @deprecated()
-    def logrotate(logpath, filename):
-        """
-        Does a log rotation. Log rotations contstantly increase. We defualt
-        to about 2 decimal places, but let the limit go past that
 
-        NOTE: exceptions are logged
-
-        IN:
-            logpath - path to the folder containing logs
-                NOTE: this is assumed to have the trailing slash
-            filename - filename of the log to rotate
-        """
-        try:
-            filelist = os.listdir(logpath)
-        except Exception as e:
-            mas_log.error(str(e))
-            return
-
-        # log rotation constants
-        __numformat = "{:02d}"
-        __numdelim = "."
-
-        # parse filelist for valid filenames,
-        # also sort them so the largest number is last
-        filelist = sorted([
-            x
-            for x in filelist
-            if x.startswith(filename)
-        ])
-
-        # now extract only the largest number in this list.
-        # NOTE: this is only possible if we have more than one file in the list
-        if len(filelist) > 1:
-            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
-            largest_num = tryparseint(largest_num, -1)
-
-        else:
-            # otherwise
-            largest_num = -1
-
-        # now increaese largest num to get the next number we should write out
-        largest_num += 1
-
-        # delete whatever file that is if it exists
-        new_path = os.path.normcase("".join([
-            logpath,
-            filename,
-            __numdelim,
-            __numformat.format(largest_num)
-        ]))
-        trydel(new_path)
-
-        # and copy our main file over
-        old_path = os.path.normcase(logpath + filename)
-        copyfile(old_path, new_path)
-
-        # and delete the current file
-        trydel(old_path)
-
-
-    class IsolatedFlexProp(object):
+    class IsolatedFlexProp(python_object):
         """
         class that supports flexible attributes.
         all attributes that are set are stored in a

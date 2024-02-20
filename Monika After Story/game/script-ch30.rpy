@@ -9,9 +9,7 @@ default persistent.monika_kill = None
 # Whether or not you launched the mod before
 default persistent.first_run = True
 default persistent.rejected_monika = None
-default initial_monika_file_check = None
 define modoorg.CHANCE = 20
-define mas_battery_supported = False
 define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
@@ -39,7 +37,7 @@ init -890 python in mas_globals:
         store.persistent._mas_pm_has_went_back_in_time = True
 
     #Internal renpy version check
-    is_r7 = renpy.version(True)[0] == 7
+    is_at_least_r7 = renpy.version(True)[0] >= 7
 
     # Check whether or not the user uses a steam install
     is_steam = "steamapps" in renpy.config.basedir.lower()
@@ -308,51 +306,24 @@ define MAS_PRONOUN_GENDER_MAP = {
     "hero": {"M": "hero", "F": "heroine", "X": "hero"}
 }
 
+init 1 python:
+    currentuser = mas_get_user()
+    # name changes if necessary
+    if not currentuser:
+        currentuser = persistent.playername
+    if not persistent.mcname:
+        persistent.mcname = currentuser
+
+    mcname = persistent.mcname
+
 init python:
     import subprocess
     import os
-    import eliza      # mod specific
-    import datetime   # mod specific
-    import battery    # mod specific
+    import datetime
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
     import store.mas_globals as mas_globals
-    therapist = eliza.eliza()
-    process_list = []
-    currentuser = None # start if with no currentuser
-    if renpy.windows:
-        try:
-            process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
-        except:
-            pass
-        try:
-            for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
-                user = os.environ.get(name)
-                if user:
-                    currentuser = user
-        except:
-            pass
-
-    try:
-        renpy.file("../characters/monika.chr")
-        initial_monika_file_check = True
-    except:
-        #Monika will mention that you don't have a char file in ch30_main instead
-        pass
-
-
-    # name changes if necessary
-    if not currentuser or len(currentuser) == 0:
-        currentuser = persistent.playername
-    if not persistent.mcname or len(persistent.mcname) == 0:
-        persistent.mcname = currentuser
-        mcname = currentuser
-    else:
-        mcname = persistent.mcname
-
-    # check for battery support
-    mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
     # this uses the amb (ambient) mixer.
@@ -387,7 +358,7 @@ init python:
         renpy.jump("mas_pick_a_game")
 
 
-    def mas_getuser():
+    def mas_get_user():
         """
         Attempts to get the current user
 
@@ -437,7 +408,6 @@ init python:
         """
         Draws the appropriate masks according to the current state of the
         game.
-
         IN:
             dissolve_masks - True will dissolve masks, False will not
                 (Default; True)
@@ -522,19 +492,6 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-    @store.mas_utils.deprecated(use_instead="mas_isDayNow", should_raise=True)
-    def mas_isMorning():
-        """DEPRECATED
-        Checks if it is day or night via suntimes
-
-        NOTE: the wording of this function is bad. This does not literally
-            mean that it is morning. USE mas_isDayNow
-
-        RETURNS: True if day, false if not
-        """
-        return mas_isDayNow()
-
-
     def mas_progressFilter():
         """
         Changes filter according to rules.
@@ -548,13 +505,6 @@ init python:
         store.mas_sprites.set_filter(new_flt)
 
         return curr_flt != new_flt
-
-    @store.mas_utils.deprecated(should_raise=True)
-    def mas_shouldChangeTime():
-        """DEPRECATED
-        This no longer makes sense with the filtering system.
-        """
-        return False
 
 
     def mas_shouldRain():
@@ -968,7 +918,7 @@ init 999 python in mas_reset:
         else:
             store.mas_lockGame("nou")
 
-        for game_name, game_startlabel in game_unlock_db.iteritems():
+        for game_name, game_startlabel in game_unlock_db.items():
             # unlock if we've seen the label
             if store.mas_getEVL_shown_count(game_startlabel) > 0:
                 store.mas_unlockGame(game_name)
@@ -1352,7 +1302,7 @@ init 999 python in mas_reset:
         Runs reset code for window reactions
         """
         #set MAS window global
-        mas_windowutils._setMASWindow()
+        mas_windowutils._setMASWindow_Linux()
 
 
     @ch30_reset(-600)
@@ -1585,10 +1535,10 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         # add show/hide statements for decos
         if bg_change_info is not None:
             if not scene_change:
-                for h_adf in bg_change_info.hides.itervalues():
+                for h_adf in bg_change_info.hides.values():
                     h_adf.hide()
 
-            for s_tag, s_info in bg_change_info.shows.iteritems():
+            for s_tag, s_info in bg_change_info.shows.items():
                 s_tag_real, s_adf = s_info
                 s_adf.show(s_tag_real)
 
@@ -1744,8 +1694,8 @@ label ch30_autoload:
 
         mas_cleanEventList()
 
-    # set the gender
-    call mas_set_gender
+        # set the gender
+        mas_set_pronouns()
 
     # call reset stuff
     call ch30_reset
@@ -2186,15 +2136,6 @@ label ch30_post_mid_loop_eval:
             $ mas_randchat.setWaitingTime()
 
         window auto
-
-#        python:
-#            if (
-#                    mas_battery_supported
-#                    and battery.is_battery_present()
-#                    and not battery.is_charging()
-#                    and battery.get_level() < 20
-#                ):
-#                pushEvent("monika_battery")
 
         if (
             store.mas_globals.in_idle_mode

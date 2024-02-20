@@ -76,14 +76,14 @@ init python in mas_songs:
         if length is None:
             return [
                 (ev.prompt, ev_label, False, False)
-                for ev_label, ev in song_db.iteritems()
+                for ev_label, ev in song_db.items()
                 if ev.unlocked
             ]
 
         else:
             return [
                 (ev.prompt, ev_label, False, False)
-                for ev_label, ev in song_db.iteritems()
+                for ev_label, ev in song_db.items()
                 if ev.unlocked and length in ev.category
             ]
 
@@ -100,7 +100,7 @@ init python in mas_songs:
         if unseen_only:
             return [
                 ev_label
-                for ev_label, ev in song_db.iteritems()
+                for ev_label, ev in song_db.items()
                 if (
                     not store.seen_event(ev_label)
                     and ev.random
@@ -111,7 +111,7 @@ init python in mas_songs:
 
         return [
             ev_label
-            for ev_label, ev in song_db.iteritems()
+            for ev_label, ev in song_db.items()
             if ev.random and TYPE_SHORT in ev.category and ev.checkAffection(store.mas_curr_affection)
         ]
 
@@ -144,7 +144,7 @@ init python in mas_songs:
 
         return [
             (ev.prompt, ev_label, False, False)
-            for ev_label, ev in song_db.iteritems()
+            for ev_label, ev in song_db.items()
             if ev.unlocked and TYPE_ANALYSIS in ev.category and ev.checkAffection(curr_aff)
         ]
 

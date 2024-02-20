@@ -30,6 +30,3 @@ label dev_idle_test:
 label dev_idle_test_cb:
     m 1hua "done with idle!"
     return
-
-
-

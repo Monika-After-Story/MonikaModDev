@@ -100,8 +100,8 @@ init -10 python in mas_interactions:
                 [1] zoom level
                 [2] clickzone
             """
-            for zl, zl_d in self._zoom_cz.iteritems():
-                for zone_key, cz in zl_d.iteritems():
+            for zl, zl_d in self._zoom_cz.items():
+                for zone_key, cz in zl_d.items():
                     yield zone_key, zl, cz
 
         def _debug(self, value):
@@ -147,7 +147,7 @@ init -10 python in mas_interactions:
             self._zones.pop(zone_key)
 
             # remove from zoom levels
-            for zone_d in self._zoom_cz.itervalues():
+            for zone_d in self._zoom_cz.values():
                 if zone_key in zone_d:
                     zone_d.pop(zone_key)
 
@@ -159,7 +159,7 @@ init -10 python in mas_interactions:
                 zone_key - key of the clickzone to change
                 value - value to set disabled to
             """
-            for zl_d in self._zoom_cz.itervalues():
+            for zl_d in self._zoom_cz.values():
                 cz = zl_d.get(zone_key, None)
                 if cz is not None:
                     cz.disabled = value
@@ -174,7 +174,7 @@ init -10 python in mas_interactions:
             # get zoom level dict containing clickzones
             zl_set = self._zoom_cz.get(zoom_level, {})
 
-            for zone_key, cz in self._zones.iteritems():
+            for zone_key, cz in self._zones.items():
 
                 # only add clickzones that dont already exist
                 if zone_key not in zl_set:
@@ -221,10 +221,10 @@ init -10 python in mas_interactions:
         ],
         ZONE_CHEST_1_R: [
             (514, 453), # (her) right top
-            (491, 509), 
+            (491, 509),
             (489, 533),
             (493, 551),
-            (498, 555), # (her) right to arm 
+            (498, 555), # (her) right to arm
             (508, 498),
             (515, 453),
         ],
@@ -467,7 +467,7 @@ init -9 python:
                 start_zoom - pass this in if the clickzones are startnig at
                     a zoom level that is not the current.
                     (Default: None)
-            """ 
+            """
             if zone_actions is None:
                 zone_actions = {}
             if zone_order is None:
@@ -482,7 +482,7 @@ init -9 python:
             self._zones_unorder = {}
 
             self._last_zoom_level = start_zoom
-            
+
             self._end_int = None
             self._rst_int = False
             self._jump_to = None
@@ -592,7 +592,7 @@ init -9 python:
 
         def event(self, ev, x, y, st):
             """
-            By default, we process events in order and return/jump as 
+            By default, we process events in order and return/jump as
             appropriate.
             """
             self.event_begin(ev, x, y, st)
@@ -659,7 +659,7 @@ init -9 python:
                 return r
 
             renders = []
-            
+
             # render in reverse zone order for visual clarity
             for zone_key, cz in self.zone_iter_r():
                 if not cz.disabled:

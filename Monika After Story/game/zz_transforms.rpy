@@ -213,3 +213,73 @@ transform streaming_tears_transform(open_eyes_img, closed_eyes_img):
         closed_eyes_img
         0.15
         repeat
+
+transform tcommon(x=640, z=0.80):
+    yanchor 1.0 subpixel True
+    on show:
+        ypos 1.03
+        zoom z*0.95 alpha 0.00
+        xcenter x yoffset -20
+        easein .25 yoffset 0 zoom z*1.00 alpha 1.00
+    on replace:
+
+        alpha 1.00
+        parallel:
+            easein .25 xcenter x zoom z*1.00
+        parallel:
+            easein .15 yoffset 0 ypos 1.03
+
+transform tinstant(x=640, z=0.80):
+    xcenter x yoffset 0 zoom z*1.00 alpha 1.00 yanchor 1.0 ypos 1.03
+
+transform t41:
+    tcommon(200)
+transform t42:
+    tcommon(493)
+transform t43:
+    tcommon(786)
+transform t44:
+    tcommon(1080)
+transform t31:
+    tcommon(240)
+transform t32:
+    tcommon(640)
+transform t33:
+    tcommon(1040)
+transform t21:
+    tcommon(400)
+transform t22:
+    tcommon(880)
+transform t11:
+    tcommon(640)
+
+transform i41:
+    tinstant(200)
+transform i42:
+    tinstant(493)
+transform i43:
+    tinstant(786)
+transform i44:
+    tinstant(1080)
+transform i31:
+    tinstant(240)
+transform i32:
+    tinstant(640)
+transform i33:
+    tinstant(1040)
+transform i21:
+    tinstant(400)
+transform i22:
+    tinstant(880)
+transform i11:
+    tinstant(640)
+
+transform sticker_hop:
+    easein_quad .18 yoffset -80
+    easeout_quad .18 yoffset 0
+    easein_quad .18 yoffset -80
+    easeout_quad .18 yoffset 0
+
+transform sticker_move_n:
+    easein_quad .08 yoffset -15
+    easeout_quad .08 yoffset 0
