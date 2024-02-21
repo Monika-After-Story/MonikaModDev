@@ -183,6 +183,7 @@ init -500 python in mas_parallax:
 
         @property
         def children(self):
+            # Is not here because instance checks are mandatory
             return [decal for decal in self._decals if decal is not self._base]
 
         @property
@@ -1359,7 +1360,7 @@ label mas_timed_text_events_wrapup:
         mas_DropShield_timedtext()
 
         # restart song/sounds that were playing before event
-        if globals().get("curr_song", -1) is not -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
+        if globals().get("curr_song", -1) != -1 and curr_song != store.songs.FP_MONIKA_LULLABY:
             mas_play_song(curr_song, 1.0)
         else:
             mas_play_song(None, 1.0)

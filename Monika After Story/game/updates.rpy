@@ -386,12 +386,6 @@ label v0_12_15(version="v0_12_15"):
         pass
     return
 
-# 0.12.14
-label v0_12_14(version="v0_12_14"):
-    python hide:
-        pass
-    return
-
 # 0.12.13
 label v0_12_13(version="v0_12_13"):
     python hide:
