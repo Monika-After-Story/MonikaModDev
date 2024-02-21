@@ -43,7 +43,7 @@ jobs:
         id: cache-rpy
         uses: actions/cache@v4
         with:
-          path: renpy/
+          path: ${{ env.RENPY_DIR }}/
           key: rpy
 
       - name: Download rpy source
@@ -60,7 +60,7 @@ jobs:
         id: cache-mas
         uses: actions/cache@v4
         with:
-          path: masbase/
+          path: ${{ env.MAS_BASE_DIR }}/
           key: masbase
 
       - name: download base MAS
