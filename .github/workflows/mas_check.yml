@@ -23,6 +23,7 @@ jobs:
 
     env:
       MAS_RENPY_VER: 8.1.1
+      MAS_BASE_DIR: masbase
       MAS_DIR: mas
       RENPY_DIR: renpy
 
@@ -59,15 +60,17 @@ jobs:
         id: cache-mas
         uses: actions/cache@v4
         with:
-          path: mas/
-          key: mas
+          path: masbase/
+          key: masbase
 
       - name: download base MAS
         if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
           wget https://monika-after-story.s3.us-west-2.amazonaws.com/ddlc/mas8.zip
+          mkdir $MAS_BASE_DIR
+          unzip mas8.zip -d $MAS_BASE_DIR/ # this is so we cache ONLY the aws download and NOT the full repo
           mkdir $MAS_DIR
-          unzip mas8.zip -d $MAS_DIR/
+          cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
           rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
 
       # copy over gh files to base
