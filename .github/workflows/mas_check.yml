@@ -24,6 +24,7 @@ jobs:
     env:
       MAS_RENPY_VER: 8.1.1
       MAS_DIR: mas
+      RENPY_DIR: renpy
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -41,25 +42,25 @@ jobs:
         id: cache-rpy
         uses: actions/cache@v4
         with:
-          path: renpy/
-          key: ${{ runner.os }}-rpy
+          path: $RENPY_DIR/
+          key: rpy
 
       - name: Download rpy source
         if: steps.cache-rpy.outputs.cache-hit != 'true'
         run: |
           renpysdk=renpy-$MAS_RENPY_VER-sdk.tar.bz2
-          wget https://www.renpy.org/dl/8.1.1/$renpysdk
+          wget https://www.renpy.org/dl/$MAS_RENPY_VER/$renpysdk
           tar xf $renpysdk
           rm $renpysdk
-          mv ${renpysdk/.tar.bz2/} renpy
+          mv ${renpysdk/.tar.bz2/} $RENPY_DIR
 
       # get/download base mas
       - name: cache base MAS
         id: cache-mas
         uses: actions/cache@v4
         with:
-          path: mas/
-          key: ${{ runner.os }}-mas
+          path: $MAS_DIR/
+          key: mas
 
       - name: download base MAS
         if: steps.cache-mas.outputs.cache-hit != 'true'
@@ -67,6 +68,7 @@ jobs:
           wget https://monika-after-story.s3.us-west-2.amazonaws.com/ddlc/mas8.zip
           mkdir $MAS_DIR
           unzip mas8.zip -d $MAS_DIR/
+          rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
 
       # copy over gh files to base
       - name: copy source over
@@ -79,7 +81,7 @@ jobs:
       # lint renpy
       - name: rpy lint
         run: |
-          cd renpy
+          cd $RENPY_DIR
           ./renpy.sh "../$MAS_DIR/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
       # setup open GL for distribute
@@ -93,5 +95,5 @@ jobs:
       # distribute
       - name: rpy distribute
         run: |
-          cd renpy
-          ./renpy.sh launcher distribute "../$MAS_DIR/" --package market
+          cd $RENPY_DIR
+          ./renpy.sh launcher distribute "../$MAS_DIR/" --package Linux
