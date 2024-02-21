@@ -13,6 +13,7 @@ __pycache__
 #Ide specific things
 *.swp
 **/*.vscode
+tools/*
 
 #Various other clutter-y things
 log.txt
