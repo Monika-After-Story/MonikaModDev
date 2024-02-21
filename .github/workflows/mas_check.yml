@@ -69,6 +69,10 @@ jobs:
           wget https://monika-after-story.s3.us-west-2.amazonaws.com/ddlc/mas8.zip
           mkdir $MAS_BASE_DIR
           unzip mas8.zip -d $MAS_BASE_DIR/ # this is so we cache ONLY the aws download and NOT the full repo
+
+      # setup build folder
+      - name: setup build folder
+        run: |
           mkdir $MAS_DIR
           cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
           rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
