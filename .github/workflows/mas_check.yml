@@ -42,7 +42,7 @@ jobs:
         id: cache-rpy
         uses: actions/cache@v4
         with:
-          path: $RENPY_DIR/
+          path: renpy/
           key: rpy
 
       - name: Download rpy source
@@ -59,7 +59,7 @@ jobs:
         id: cache-mas
         uses: actions/cache@v4
         with:
-          path: $MAS_DIR/
+          path: mas/
           key: mas
 
       - name: download base MAS
