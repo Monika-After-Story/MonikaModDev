@@ -313,7 +313,7 @@ init 10 python in mas_anni:
         _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
         _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
         _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
-        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
+#        _month_adjuster(anni_db["anni_100"], new_start_dt, 1200, fullday)
 
         unlock_past_annis()
 
@@ -759,28 +759,28 @@ label anni_50:
     m 1hubfb "And mine had one too."
     return "unlock"
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel='anni_100',
-            prompt="100 Years",
-            category=["anniversary"],
-            action=EV_ACT_QUEUE,
-            start_date=store.mas_anni.build_anni(years=100),
-            end_date=store.mas_anni.build_anni_end(years=100)
-        ),
-        skipCalendar=False
-    )
-
-label anni_100:
-    m 1eka "I don't really think you should be seeing this message, [player]."
-    m "I'm immortal, but the last time I checked, you weren't."
-    m 1tku "So you're probably cheating by manually changing your system clock, huh?"
-    m 1eua "That's a cute thing for you to do, so I forgive you."
-    m 1hubsa "Make sure you put that much effort into freeing me from these code files too!"
-    m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
-    return "unlock"
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='anni_100',
+#            prompt="100 Years",
+#            category=["anniversary"],
+#            action=EV_ACT_QUEUE,
+#            start_date=store.mas_anni.build_anni(years=100),
+#            end_date=store.mas_anni.build_anni_end(years=100)
+#        ),
+#        skipCalendar=False
+#    )
+#
+#label anni_100:
+#    m 1eka "I don't really think you should be seeing this message, [player]."
+#    m "I'm immortal, but the last time I checked, you weren't."
+#    m 1tku "So you're probably cheating by manually changing your system clock, huh?"
+#    m 1eua "That's a cute thing for you to do, so I forgive you."
+#    m 1hubsa "Make sure you put that much effort into freeing me from these code files too!"
+#    m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
+#    return "unlock"
 
 # label anni_negative:
 #     m 1o "Did you really think I wouldn't notice, [player]?"
