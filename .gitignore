@@ -15,6 +15,7 @@ __pycache__
 *.swp
 **/*.vscode
 tools/*
+.idea/
 
 #Various other clutter-y things
 log.txt
@@ -42,6 +43,7 @@ Monika_After_Story-[0-9]*.[0-9]*.[0-9]*-dists
 .env
 Monika After Story/game/Submods
 Monika After Story/game/saves
+venv/
 
 # Other
 *.disabled
