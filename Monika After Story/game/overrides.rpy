@@ -79,9 +79,16 @@ python early in mas_overrides:
         This specific function is called before the init scripts start running
         so this is the last place we can remove the scripts rpa stuff we dont
         want.
+
+        renpy.game.script.initcode contains a list of AST nodes that will be
+        loaded on init - script-poemgame is the only known init that crashes
+        startup, so any AST node coming from that file is removed from 
+        initcode here.
         """
         global report_parse_errors_ran
 
+        # report_parse_errors runs multiple times (counted 10 on startup)
+        # so this is guarded to only run once
         if not report_parse_errors_ran:
             for index, initcode in reversed(list(enumerate(renpy.game.script.initcode))):
                 init_lvl, obj = initcode
