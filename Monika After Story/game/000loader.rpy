@@ -230,7 +230,7 @@ python early in _mas_root:
     __ENV_FILE = f"{renpy.config.basedir}/.env"
     load_dotenv(dotenv_path=__ENV_FILE, verbose=True)
 
-    __ENV_KEY = "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT_OR_SACRIFICE_CHILDREN"
+    __ENV_KEY = "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT"
     __DM_ENV_VALUE = "Yes, I will regret this! Enable DM!"
     __CNSL_ENV_VALUE = "Yes, I will regret this! Enable CNSL!"
 
