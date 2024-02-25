@@ -75,7 +75,6 @@ jobs:
         run: |
           mkdir $MAS_DIR
           cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
-          rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
 
       # copy over gh files to base
       - name: copy source over
