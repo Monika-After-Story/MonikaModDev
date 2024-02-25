@@ -67,7 +67,7 @@ python early in mas_overrides:
     savelocation.init = savelocation_init_override
 
 
-    def parser_report_parser_errors_override():
+    def parser_report_parse_errors_override():
         """
         This override is actually for something unrelated. 
 
@@ -80,14 +80,18 @@ python early in mas_overrides:
         so this is the last place we can remove the scripts rpa stuff we dont
         want.
         """
-        for index, initcode in reversed(list(enumerate(renpy.game.script.initcode))):
-            init_lvl, obj = initcode
+        global report_parse_errors_ran
 
-            try:
-                if obj.filename == "script-poemgame.rpyc":
-                    renpy.game.script.initcode.pop(index)
-            except:
-                pass
+        if not report_parse_errors_ran:
+            for index, initcode in reversed(list(enumerate(renpy.game.script.initcode))):
+                init_lvl, obj = initcode
+
+                try:
+                    if obj.filename == "script-poemgame.rpyc":
+                        renpy.game.script.initcode.pop(index)
+                except:
+                    pass
+            report_parse_errors_ran = True
 
         # non-override code below
 
@@ -137,6 +141,7 @@ python early in mas_overrides:
 
         return True
 
-    parser.report_parse_errors = parser_report_parser_errors_override
+    report_parse_errors_ran = False
+    parser.report_parse_errors = parser_report_parse_errors_override
 
 
