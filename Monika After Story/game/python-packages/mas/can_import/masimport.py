@@ -1,7 +1,7 @@
 
 from typing import Dict
 
-from .. renpyspec import Renpy
+import renpy as Renpy
 
 _imports: Dict[str, 'MASImport'] = {}
 # key: module name

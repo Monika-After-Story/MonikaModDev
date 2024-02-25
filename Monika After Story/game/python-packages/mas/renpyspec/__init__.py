@@ -1,2 +1,0 @@
-
-from .renpyspec import Renpy

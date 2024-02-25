@@ -1,7 +1,7 @@
 
+import renpy as Renpy
 
 from .masimport import MASImport
-from ..renpyspec import Renpy
 
 
 class MASImport_certifi(MASImport):
