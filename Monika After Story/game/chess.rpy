@@ -2683,7 +2683,7 @@ init python:
                 if ret_value is not None:
                     return ret_value
 
-            elif config.developer and ev.type == pygame.KEYDOWN:
+            elif ev.type == pygame.KEYDOWN and store._mas_root.is_dm_enabled():
                 # debug keys for dev testing
                 if ev.key == pygame.K_d:
                     # toggle draw button state

@@ -5,7 +5,7 @@
 
 init 999 python:
     if persistent._mas_fastgreeting is None:
-        persistent._mas_fastgreeting = config.developer
+        persistent._mas_fastgreeting = store._mas_root.is_dm_enabled()
 
 
 init 5 python:
