@@ -24,6 +24,7 @@ python early in mas_overrides:
 
     import renpy
     import renpy.savelocation as savelocation
+    import renpy.parser as parser
 
 
     def verify_data_override(data, signatures, check_verifying=True):
@@ -64,5 +65,78 @@ python early in mas_overrides:
             savelocation.scan_thread.start()
 
     savelocation.init = savelocation_init_override
+
+
+    def parser_report_parser_errors_override():
+        """
+        This override is actually for something unrelated. 
+
+        We need to prevent scripts.rpa code from being loaded, but there's
+        no way to override script loading code since by the time THIS script
+        is loaded (and override set), the scripts.rpa contents are already
+        queued to be loaded later.
+
+        This specific function is called before the init scripts start running
+        so this is the last place we can remove the scripts rpa stuff we dont
+        want.
+        """
+        for index, initcode in reversed(list(enumerate(renpy.game.script.initcode))):
+            init_lvl, obj = initcode
+
+            try:
+                if obj.filename == "script-poemgame.rpyc":
+                    renpy.game.script.initcode.pop(index)
+            except:
+                pass
+
+        # non-override code below
+
+        parser.release_deferred_errors()
+
+        if not parser.parse_errors:
+            return False
+
+        full_text = ""
+
+        f, error_fn = renpy.error.open_error_file("errors.txt", "w")
+        with f:
+            f.write("\ufeff") # BOM
+
+            print("I'm sorry, but errors were detected in your script. Please correct the", file=f)
+            print("errors listed below, and try again.", file=f)
+            print("", file=f)
+
+            for i in parser.parse_errors:
+
+                full_text += i
+                full_text += "\n\n"
+
+                if not isinstance(i, str):
+                    i = str(i, "utf-8", "replace")
+
+                print("", file=f)
+                print(i, file=f)
+
+                try:
+                    print("")
+                    print(i)
+                except Exception:
+                    pass
+
+            print("", file=f)
+            print("Ren'Py Version:", renpy.version, file=f)
+            print(str(time.ctime()), file=f)
+
+        renpy.display.error.report_parse_errors(full_text, error_fn)
+
+        try:
+            if renpy.game.args.command == "run": # type: ignore
+                renpy.exports.launch_editor([ error_fn ], 1, transient=True)
+        except Exception:
+            pass
+
+        return True
+
+    parser.report_parse_errors = parser_report_parser_errors_override
 
 
