@@ -11386,7 +11386,11 @@ label monika_grad_speech_call:
                 #timed menu to see if player listened
                 m "Well [player]? What do you think?{nw}"
                 $ _history_list.pop()
-                show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention")
+                show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention_doublecheck")
+
+                label .menu_normal:
+                    pass
+
                 menu:
                     m "Well [player]? What do you think?{fast}"
 
@@ -11473,7 +11477,11 @@ label monika_grad_speech_call:
             m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
             $ _history_list.pop()
             #another timed menu checking if you were listening
-            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock")
+            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock_doublecheck")
+
+            label .menu_ignored:
+                pass
+
             menu:
                 m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{fast}"
                 #If menu is used, set player on a good path
@@ -11500,7 +11508,7 @@ label monika_grad_speech_call:
                     m 2eka "Thanks for listening this time, [player]~"
                     m "I'm so glad you enjoyed it!"
 
-                "That {i}was{/i} long":
+                "That {i}was{/i} long.":
                     hide screen mas_background_timed_jump
                     $ mas_loseAffectionFraction(min_amount=75, modifier=2.0)
                     $ persistent._mas_pm_listened_to_grad_speech = True
@@ -11513,9 +11521,27 @@ label monika_grad_speech_call:
                     m 6dstsc "But I guess that's too much to ask."
     return
 
-label monika_grad_speech_not_paying_attention:
-    #First menu timeout
+label monika_grad_speech_not_paying_attention_doublecheck:
     hide screen mas_background_timed_jump
+
+    # Make a double check here.
+    m 1euc "...[player]?{w=0.3}{nw}"
+    m 1wud "Are you...{w=0.3}listening?{nw}"
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(5, "monika_grad_speech_not_paying_attention")
+    menu:
+        m "Are you...listening?{fast}"
+        "Of course!":
+            hide screen mas_background_timed_jump
+
+            m 1hub "Ah, sorry for assuming~"
+            m 1hua "Well [player]? What do you think?{nw}"
+
+    $ _history_list.pop()
+    jump monika_grad_speech_call.menu_normal
+
+label monika_grad_speech_not_paying_attention:
+    # So you really aren't listening.
     $ persistent._mas_pm_listened_to_grad_speech = False
 
     if mas_isMoniAff(higher=True):
@@ -11545,10 +11571,31 @@ label monika_grad_speech_not_paying_attention:
 
     return
 
-label monika_grad_speech_ignored_lock:
-    #Second timeout, lock speech
+label monika_grad_speech_ignored_lock_doublecheck:
     hide screen mas_background_timed_jump
-    #Set false for modified dialogue in the random
+
+    # Still, we make a double check.
+    m 1dsc "...{w=0.2}{nw}"
+    extend 1esd "[player].{nw}"
+
+    $ _history_list.pop()
+    show screen mas_background_timed_jump(5, "monika_grad_speech_ignored_lock")
+    menu:
+        m "...[player].{fast}"
+        "I'm listening!":
+            hide screen mas_background_timed_jump
+
+            m 1wsb "Oh!{w=0.5}{nw}"
+            extend 1hua " Sorry for that."
+            m 1hksdla "There have a time when you haven't really listened, so I'm a little sensitive."
+            m 1hksdlb "Ahaha~"
+            m 1eub "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
+
+            $ _history_list.pop()
+            jump monika_grad_speech_call.menu_ignored
+
+label monika_grad_speech_ignored_lock:
+    # Okay, so you really aren't listening, TWICE. We hide this topic for you.
     $ persistent._mas_pm_listened_to_grad_speech = False
     $ persistent._mas_grad_speech_timed_out = True
     $ mas_hideEVL("monika_grad_speech_call","EVE",lock=True,depool=True)
