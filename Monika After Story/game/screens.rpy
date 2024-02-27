@@ -2247,6 +2247,10 @@ screen quit_dialog(message, ok_action):
 
                 textbutton _("QUIT") action ok_action
 
+    ## Right-click and escape do nothing.
+    key "mas_game_menu" action NullAction()
+    key "mas_hide_windows" action NullAction()
+
 image confirm_glitch:
     "gui/overlay/confirm_glitch.png"
     pause 0.02
@@ -2288,8 +2292,9 @@ screen confirm(message, yes_action, no_action):
                     textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
                     textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
-    ## Right-click and escape answer "no".
-    #key "game_menu" action no_action
+    ## Right-click and escape do nothing.
+    key "mas_game_menu" action NullAction()
+    key "mas_hide_windows" action NullAction()
 
 
 style confirm_frame is gui_frame:
