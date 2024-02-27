@@ -582,7 +582,8 @@ init -20 python:
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
-                select_dlg=None
+                select_dlg=None,
+                min_aff=None
             ):
             """
             MASSelectableClothes constructor
@@ -606,6 +607,9 @@ init -20 python:
                     sprite
                     (after the first time)
                     (Default: None)
+                min_aff - minimum level of affection (as affection constant or
+                    constant name) for this clothing to be displayed in selector
+                    (Default: LOVE)
             """
             if type(_sprite_object) != MASClothes:
                 raise Exception("not a clothes: {0}".format(group))
@@ -621,6 +625,26 @@ init -20 python:
                 select_dlg
             )
 
+            if isinstance(min_aff, basestring):
+                min_aff = store.mas_affection.getAffByName(min_aff)
+            self.min_aff = min_aff
+
+        def aff_allows_selection(self):
+            """
+            Checks if this sprite object's min_aff allows this sprite to be
+            displayed in selector. If min_aff is not defined, returns False.
+            Returns True if current affection level is at least min_aff and it
+            is not None.
+            """
+
+            if self.min_aff is None:
+                return False
+
+            return store.mas_affection._isMoniState(
+                mas_curr_affection,
+                self.min_aff,
+                higher=True
+            )
 
         def get_sprobj(self):
             """
@@ -935,7 +959,8 @@ init -10 python in mas_selspr:
             visible_when_locked=True,
             hover_dlg=None,
             first_select_dlg=None,
-            select_dlg=None
+            select_dlg=None,
+            min_aff=None
         ):
         """
         Inits the selectable clothes
@@ -955,6 +980,9 @@ init -10 python in mas_selspr:
             select_dlg - list of dialogue to say when the item is selected
                 after the first time
                 (Default: None)
+            min_aff - minimum level of affection (as affection constant or
+                constant name) for this clothing to be displayed in selector
+                (Default: LOVE)
         """
         # no duplicates
         if clothes.name in CLOTH_SEL_MAP:
@@ -970,7 +998,8 @@ init -10 python in mas_selspr:
             visible_when_locked,
             hover_dlg,
             first_select_dlg,
-            select_dlg
+            select_dlg,
+            min_aff
         )
         CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
         store.mas_utils.insert_sort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
@@ -4023,7 +4052,9 @@ label monika_clothes_select:
             clothes_id_to_add = persistent._mas_event_clothes_map.get(datetime.date.today(), None)
 
             for index in range(len(gifted_clothes)-1, -1, -1):
-                spr_obj = gifted_clothes[index].get_sprobj()
+                clothes = gifted_clothes[index]
+                spr_obj = clothes.get_sprobj()
+
                 if (
                     spr_obj.name == clothes_id_to_add
                     or (
