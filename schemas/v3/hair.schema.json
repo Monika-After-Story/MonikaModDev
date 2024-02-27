@@ -1,0 +1,115 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+
+    "title": "Hair",
+    "description": "Monika After Story Mod hair JSON schema",
+
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "version",
+        "type",
+        "name",
+        "img_sit",
+        "pose_map"
+    ],
+
+    "properties": {
+        "__author": { "$ref": "#/$defs/any" },
+
+        "version": { "const": 3 },
+        "type":    { "const": 1 },
+        "name":    { "type": "string" },
+        "img_sit": { "$ref": "#/$defs/filename" },
+
+        "pose_map": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "mpm_type":      { "type": "integer" },
+                "default":       { "$ref": "#/$defs/pose" },
+                "l_default":     { "$ref": "#/$defs/pose" },
+                "use_reg_for_l": { "type": "boolean", "default": false }
+            },
+            "patternProperties": {
+                "p[0-7]": { "$ref": "#/$defs/pose" }
+            }
+        },
+
+        "stay_on_start": { "type": "boolean", "default": false },
+
+        "ex_props": {
+            "type": "object",
+            "default": { },
+            "properties": {
+                "excluded-clothes-props": { "$ref": "#/$defs/string_list" },
+                "no-tails":               { "$ref": "#/$defs/flag" },
+                "required-clothes-prop":  { "type": "string" },
+                "ribbon":                 { "$ref": "#/$defs/flag" },
+                "ribbon-off":             { "$ref": "#/$defs/flag" },
+                "ribbon-restore":         { "$ref": "#/$defs/flag" },
+                "tiedstrand":             { "$ref": "#/$defs/flag" },
+                "twintails":              { "$ref": "#/$defs/flag" }
+            }
+        },
+
+        "select_info": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "display_name":        { "type": "string" },
+                "thumb":               { "$ref": "#/$defs/filename" },
+                "group":               { "type": "string" },
+                "visible_when_locked": { "type": "boolean", "default": true },
+                "select_dlg":          { "$ref": "#/$defs/string_list" }
+            }
+        },
+
+        "highlight": {
+            "type": "object",
+            "additionalProperties": false,
+
+            "properties": {
+                "default": { "$ref": "#/$defs/filter" },
+                "mapping": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "patternProperties": { "^.*$": { "$ref": "#/$defs/filter" } }
+                }
+            }
+        },
+
+        "dryrun": { "$ref": "#/$defs/flag" },
+
+        "unlock": { "type": "boolean", "default": true }
+    },
+
+    "$defs": {
+        "pose": {
+            "if": { "properties": { "mpm_type": 0 } },
+            "then": { "type": "boolean" },
+            "else": {
+                "enum": [
+                    "steepling", "crossed", "restleftpointright", "pointright", "down", "downleftpointright", "def|def"
+                ]
+            }
+        },
+
+        "flag": { },
+
+        "string_list": { "type": "array","items": { "type": "string" }, "default": null },
+
+        "filter":  {
+            "type": "object",
+            "properties": {
+                "default": { "type": "string" },
+                "day":     { "type": "string" },
+                "night":   { "type": "string" }
+            }
+        },
+
+        "filename": { "type": "string", "pattern": "^[^./\\\\]*$" },
+
+        "any": { "type": [ "number", "string", "boolean", "object", "array", "null" ] }
+    }
+}
