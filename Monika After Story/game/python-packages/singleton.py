@@ -36,7 +36,14 @@ class SingleInstance:
                 # file already exists, we try to remove (in case previous
                 # execution was interrupted)
                 if os.path.exists(self.lockfile):
-                    os.unlink(self.lockfile)
+                    try:
+                        os.unlink(self.lockfile)
+                    except OSError:
+                        # Race conditions happen, make sure the file is actually deleted
+                        # Carry on with the startup if it is
+                        if os.path.exists(self.lockfile):
+                            raise
+
                 self.fd = os.open(self.lockfile, os.O_CREAT | os.O_EXCL | os.O_RDWR)
 
             except OSError as e:
