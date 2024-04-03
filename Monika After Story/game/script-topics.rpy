@@ -1,7 +1,7 @@
-#This file contains all of monika's topics she can talk about
+#This file contains all of Monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate actiona
+#or date-dependent event with an appropriate action
 
 define monika_random_topics = []
 define mas_rev_unseen = []
@@ -98,7 +98,7 @@ init -1 python:
 
     def mas_randomSelectAndPush(sel_list):
         """
-        Randomly selects an element from the the given list and pushes the event
+        Randomly selects an element from the given list and pushes the event
         This also removes the element from that list.
 
         NOTE: this does sensitivy checks
