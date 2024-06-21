@@ -281,7 +281,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_bluesky:
+label mas_wrs_twitter:
     python:
         temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
         temp_len = len(temp_line)
@@ -302,7 +302,7 @@ label mas_wrs_bluesky:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_bluesky')
+        $ mas_unlockFailedWRS('mas_wrs_twitter')
     return "love" if ily_quips_map[quip] else None
 
 # This is removed until later, maybe it could work with other quips
