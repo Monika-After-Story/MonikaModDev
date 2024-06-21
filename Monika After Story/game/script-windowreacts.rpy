@@ -268,7 +268,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_twitter",
+            eventlabel="mas_wrs_bluesky",
             category=["/ Twitter"],
             rules={
                 "notif-group": "Window Reactions",
@@ -281,7 +281,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_twitter:
+label mas_wrs_bluesky:
     python:
         temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
         temp_len = len(temp_line)
@@ -290,7 +290,7 @@ label mas_wrs_twitter:
         ily_quips_map = {
             "See anything you want to share with me, [player]?": False,
             "Anything interesting to share, [player]?": False,
-            "280 characters? I only need [temp_len]...\n[temp_line]": True
+            "300 characters? I only need [temp_len]...\n[temp_line]": True
         }
         quip = renpy.random.choice(ily_quips_map.keys())
 
@@ -302,7 +302,7 @@ label mas_wrs_twitter:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_twitter')
+        $ mas_unlockFailedWRS('mas_wrs_bluesky')
     return "love" if ily_quips_map[quip] else None
 
 # This is removed until later, maybe it could work with other quips
