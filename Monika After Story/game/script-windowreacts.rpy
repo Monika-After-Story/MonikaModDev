@@ -290,7 +290,8 @@ label mas_wrs_twitter:
         ily_quips_map = {
             "See anything you want to share with me, [player]?": False,
             "Anything interesting to share, [player]?": False,
-            "300 characters? I only need [temp_len]...\n[temp_line]": True
+            "300 characters? I only need [temp_len]...\n[temp_line]": True,
+            "The sky is always blue when you're around, [player]...": True
         }
         quip = renpy.random.choice(ily_quips_map.keys())
 
