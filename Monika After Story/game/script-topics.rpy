@@ -6432,7 +6432,16 @@ label monika_science:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_surprise",
+            category=['romance'],
+            prompt="Surprises",
+            conditional="persistent.playthrough >= 2",
+            action=EV_ACT_RANDOM
+        )
+    )
 
 label monika_surprise:
     m 1rksdla "You know..."
