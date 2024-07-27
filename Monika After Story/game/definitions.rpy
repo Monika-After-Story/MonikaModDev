@@ -7964,8 +7964,11 @@ init python:
         if not renpy.windows:
             return False # If MAS is running in Wine it will always think it's running in Windows
 
-        import ctypes
-        NTDLL = ctypes.WinDLL("ntdll.dll")
+        try:
+            import ctypes
+            NTDLL = ctypes.WinDLL("ntdll.dll")
+        except (ImportError, IOError):
+            return False
 
         try:
             wine_get_version = NTDLL.wine_get_version
