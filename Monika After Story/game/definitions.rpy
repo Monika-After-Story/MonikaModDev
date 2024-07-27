@@ -7947,3 +7947,122 @@ init python:
             and should_kiss
             and mas_timePastSince(persistent._mas_last_kiss, cooldown)
         )
+
+    def mas_RegOpenKeyEx(hive, subkey, ul_options=0x0, sam_desired=0x20019):
+        """
+        Opens Windows registry key and returns its HKEY handle value.
+
+        CONDITIONS:
+            Unavailable on non-Windows platforms (raises NotImplementedError.)
+
+        IN:
+            hive:
+                Windows API constant value for registry hive
+            subkey:
+                Registry key path (e.g. Software\Windows)
+            ul_options:
+                See Windows API documentation.
+                0x0 by default.
+            sam_desired:
+                Key open mode (read/write), see Windows API documentation.
+                0x20019 to open key for reading by default.
+
+        OUT:
+            ctypes.wintypes.HKEY:
+                Handle HKEY for the opened registry key.
+
+        RAISES:
+            NotImplementedError:
+                If called on non-Windows platform.
+            OSError:
+                If an error has occurred calling Windows API function.
+        """
+
+        if not renpy.windows:
+            raise NotImplementedError("RegOpenKeyEx is only supported on Windows.")
+
+        import ctypes
+        from ctypes import wintypes
+
+        AdvApi32 = ctypes.WinDLL("advapi32")
+
+        RegOpenKeyEx = AdvApi32.RegOpenKeyExW
+        RegOpenKeyEx.argtypes = [
+            wintypes.HKEY,                 # hKey
+            wintypes.LPCWSTR,              # lpSubKey
+            wintypes.DWORD,                # ulOptions
+            wintypes.REGSAM,               # samDesired (i.e. open mode, read/write, see WinAPI docs)
+            ctypes.POINTER(wintypes.HKEY)  # phkResult (handle to use for reading etc.)
+        ]
+        RegOpenKeyEx.restype = wintypes.LONG
+
+        res_hkey = wintypes.HKEY()
+        ok = RegOpenKeyEx(hive, subkey, ul_options, sam_desired, ctypes.byref(res_hkey))
+        if ok != 0x0:
+            raise OSError(ok, ctypes.FormatError(ok))
+        return res_hkey
+
+    def mas_RegCloseKey(handle_hkey):
+        """
+        Closes Windows registry key handle (previously opened with RegOpenKeyEx.)
+
+        CONDITIONS:
+            Unavailable on non-Windows platforms (raises NotImplementedError.)
+
+        IN:
+            handle_hkey:
+                Windows API HKEY value for handle of the opened registry key.
+
+        OUT:
+            None.
+
+        RAISES:
+            NotImplementedError:
+                If called on non-Windows platform.
+            OSError:
+                If an error has occurred calling Windows API function.
+        """
+
+
+        if not renpy.windows:
+            raise NotImplementedError("RegCloseKey is only supported on Windows.")
+
+        import ctypes
+        from ctypes import wintypes
+
+        AdvApi32 = ctypes.WinDLL("advapi32")
+
+        RegCloseKey = AdvApi32.RegCloseKey
+        RegCloseKey.argtypes = [wintypes.HKEY] # hKey (handle from RegOpenKeyEx)
+        RegCloseKey.restype = wintypes.LONG
+
+        ok = RegCloseKey(handle_hkey)
+        if ok != 0x0:
+            raise OSError(ok, ctypes.FormatError(ok))
+
+    def mas_isRunningInWine():
+        """
+        Checks (by testing if HKEY_LOCAL_MACHINE\Software\Wine registry key is
+        present in the Windows registry) if MAS is currently running in Wine
+        environment. Always returns False on non-Windows platforms.
+
+        IN:
+            None.
+
+        OUT:
+            True if MAS is running in Wine environment.
+            False otherwise and if function is called on non-Windows platform.
+        """
+
+        if not renpy.windows:
+            return False # If MAS is running in Wine it will always think it's running in Windows
+
+        HKEY_LOCAL_MACHINE = 0x80000002
+
+        try:
+            # This will raise an error if there is no such key instead of returning
+            hkey = mas_RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Wine")
+            mas_RegCloseKey(hkey)
+            return True
+        except OSError:
+            return False
