@@ -213,6 +213,23 @@ init -1 python in songs:
         if chan.mixer in renpy.game.preferences.volumes:
             renpy.game.preferences.volumes[chan.mixer] = _sanitizeVolume(value)
 
+    def addSongEntry(path, display_name, by_user=False):
+        """
+        Adds song entry to selection list. Automatically paginates and cleans
+        title text.
+
+        NOTE: Does not perform loop/metadata prefix scan. Path will be added as-is.
+
+        IN:
+            path - path to the music file
+            display_name - title of the song to show in music selector
+            by_user (default False) - whether this is an action user has done
+                (sets the corresponding PM variable)
+        """
+
+        music_choices.append((cleanGUIText(display_name), path))
+        music_pages = __paginate(music_choices)
+
 
     def _sanitizeVolume(value):
         """
