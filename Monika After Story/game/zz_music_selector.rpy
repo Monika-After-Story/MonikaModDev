@@ -219,6 +219,7 @@ init -1 python in songs:
         title text.
 
         NOTE: Does not perform loop/metadata prefix scan. Path will be added as-is.
+        NOTE: Checks if the path exists (loop prefix is ignored for this check.)
 
         IN:
             path - path to the music file
@@ -227,8 +228,15 @@ init -1 python in songs:
                 (sets the corresponding PM variable)
         """
 
+        filepath = path.split(">")[:-1]
+        if not os.path.exists(filepath):
+            raise ValueError("{0} does not exist.".format(filepath))
+
         music_choices.append((cleanGUIText(display_name), path))
         music_pages = __paginate(music_choices)
+
+        if by_user:
+            store.persistent._mas_pm_added_custom_bgm = True
 
 
     def _sanitizeVolume(value):
