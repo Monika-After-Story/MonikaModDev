@@ -226,17 +226,22 @@ init -1 python in songs:
             display_name - title of the song to show in music selector
             by_user (default False) - whether this is an action user has done
                 (sets the corresponding PM variable)
+
+        OUT:
+            True if path exists and song entry was created, False otherwise.
         """
 
         filepath = path.split(">")[:-1]
         if not os.path.exists(filepath):
-            raise ValueError("{0} does not exist.".format(filepath))
+            return False
 
         music_choices.append((cleanGUIText(display_name), path))
         music_pages = __paginate(music_choices)
 
         if by_user:
             store.persistent._mas_pm_added_custom_bgm = True
+
+        return True
 
 
     def _sanitizeVolume(value):
