@@ -8,39 +8,39 @@ init -1 python:
 
     # tooltips
     layout.MAS_TT_SENS_MODE = (
-        "Sensitive mode removes content that may be disturbing, offensive, "
-        " or considered tasteless."
+        "Чувствительный режим скрывает контент который сожет показаться неприятным, оскорбительным, "
+        " или безвкусным."
     )
     layout.MAS_TT_UNSTABLE = (
-        "Unstable mode downloads updates from the experimental unstable "
-        "branch of development. It is HIGHLY recommended to make a backup "
-        "of your persistents before enabling this mode."
+        "Нестабильный режим загружает обновления из экспериментальной нестабильной "
+        "ветки разработки. РЕКОМЕНДУЕТСЯ сохранить копию "
+        "persistent файлов перед включением этого режима."
     )
     layout.MAS_TT_UNSTABLE_DISABLED = (
-        "Unstable cannot be disabled until the next stable release."
+        "Нестабильный режим не может быть отключён вплоть до сделующего стабильного релиза."
     )
     layout.MAS_TT_REPEAT = _(
-        "Enable this to let Monika repeat topics that you have already seen."
+        "При включении позволяет Монике повторять темы для разговоры, которые уже были прочитаны."
     )
     layout.MAS_TT_NOTIF = _(
-        "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
+        "При включении позволяет Монике использовать уведомления в системе и проверять является ли MAS активным окном "
     )
     layout.MAS_TT_NOTIF_SOUND = _(
-        "If enabled, a custom notification sound will play for Monika's notifications "
+        "Если включено, для уведомлений Моники будет использоваться специальный звук "
     )
     layout.MAS_TT_G_NOTIF = _(
-        "Enables notifications for the selected group."
+        "Включает уведомления для выбранных групп."
     )
     layout.MAS_TT_ACTV_WND = (
-        "Enabling this will allow Monika to see your active window "
-        "and offer some comments based on what you're doing."
+        "При включении позволяет Монике видеть текущее активное окно "
+        "и комментировать в зависимости от того что ты делаешь."
     )
 
     _TXT_FINISHED_UPDATING = (
-        "The updates have been installed. Please reopen Monika After Story.\n\n"
-        "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
-        "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
-        "Confused about some features? Take a look at our {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}wiki page{/u}{/i}{/a}."
+        "Обновления были установлены. Пожалуйста, перезапустите Monika After Story.\n\n"
+        "Скачать спрайтпаки {a=http://monikaafterstory.com/releases.html}{i}{u}на нашем сайте{/u}{/i}{/a}.\n"
+        "Посмотреть изменения {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}здесь{/u}{/i}{/a}.\n"
+        "Не понятны какие-то функции или детали? Взгляните на нашу {a=https://github.com/Monika-After-Story/MonikaModDev/wiki}{i}{u}страницу вики{/u}{/i}{/a}."
     )
 
 
@@ -48,34 +48,34 @@ init -2 python in mas_layout:
     import store
     import store.mas_affection as aff
 
-    QUIT_YES = _("Please don't close the game on me!")
-    QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
-    QUIT = _("Leaving without saying goodbye, [player]?")
+    QUIT_YES = _("Пожалуйста, не закрывай игру без моего ведома!")
+    QUIT_NO = _("Спасибо, [player]!\nДавай проведём это время вместе~")
+    QUIT = _("Уходишь не попрощавшись, [player]?")
     UNSTABLE = (
-        "WARNING: Enabling unstable mode will download updates from the "
-        "experimental unstable branch. "
-        "THIS IS NOT EASILY REVERSIBLE. "
-        "It is HIGHLY recommended to make a backup of your persistents "
-        "before enabling this mode. "
-        "Please report issues found here with an [[UNSTABLE] tag."
+        "ВНИМАНИЕ: Включение нестабильного режима загрузит обновления из "
+        "экспериментальной нестабильной ветки. "
+        "ЭТО СЛОЖНО ОТМЕНИТЬ. "
+        "ОЧЕНЬ рекомендуется сделать копию ваших persistent файлов "
+        "перед включением этого режима. "
+        "Пожалуйста, сообщайте о проблемах с этой веткой с [[UNSTABLE] тэгом."
     )
 
     # quit yes messages affection scaled
-    QUIT_YES_BROKEN = _("You could at least pretend that you care.")
+    QUIT_YES_BROKEN = _("Ты хотябы притворись что тебе не всё равно.")
     QUIT_YES_DIS = _(":(")
     QUIT_YES_AFF = _("T_T [player]...")
 
     # quit no messages affection scaled
-    QUIT_NO_BROKEN = _("{i}Now{/i} you listen?")
-    QUIT_NO_UPSET = _("Thanks for being considerate, [player].")
+    QUIT_NO_BROKEN = _("{i}Теперь{/i} ты слушаешь?")
+    QUIT_NO_UPSET = _("Спасибо за деликатность, [player].")
     QUIT_NO_HAPPY = _(":)")
-    QUIT_NO_AFF_G = _("Good [boy].")
-    QUIT_NO_AFF_GL = _("Good. :)")
+    QUIT_NO_AFF_G = _("Хороший [boy].")
+    QUIT_NO_AFF_GL = _("Хорошо. :)")
     QUIT_NO_LOVE = _("<3 u")
 
     # quit messages affection scaled
-    QUIT_BROKEN = _("Just go.")
-    QUIT_AFF = _("Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!")
+    QUIT_BROKEN = _("Просто уйди.")
+    QUIT_AFF = _("Почему ты всё ещё здесь?\n Нажми 'Нет' и используй кнопку 'Пока', глупышка!")
 
     if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
@@ -297,7 +297,7 @@ style splash_text:
 
 style poemgame_text:
     yalign 0.5
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     size 30
     color "#000"
     outlines []
@@ -306,7 +306,7 @@ style poemgame_text:
 
 style poemgame_text_dark:
     yalign 0.5
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     size 30
     color "#000"
     outlines []
@@ -570,7 +570,7 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt="Неважно", return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
@@ -710,21 +710,21 @@ screen quick_menu():
             #textbutton _("Back") action Rollback()
 
 #            textbutton _("History") action ShowMenu('history')
-            textbutton _("History") action Function(_mas_quick_menu_cb, "history")
+            textbutton _("История") action Function(_mas_quick_menu_cb, "history")
 
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
+            textbutton _("Пропустить") action Skip() alternate Skip(fast=True, confirm=True)
+            textbutton _("Авто") action Preference("auto-forward", "toggle")
 
 #            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Save") action Function(_mas_quick_menu_cb, "save")
+            textbutton _("Сохранить") action Function(_mas_quick_menu_cb, "save")
 
 #            textbutton _("Load") action ShowMenu('load')
-            textbutton _("Load") action Function(_mas_quick_menu_cb, "load")
+            textbutton _("Загрузить") action Function(_mas_quick_menu_cb, "load")
             #textbutton _("Q.Save") action QuickSave()
             #textbutton _("Q.Load") action QuickLoad()
 
 #            textbutton _("Settings") action ShowMenu("preferences")
-            textbutton _("Settings") action Function(_mas_quick_menu_cb, "preferences")
+            textbutton _("Настройки") action Function(_mas_quick_menu_cb, "preferences")
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -806,29 +806,29 @@ label mas_bad_name_input:
             pause 1
 
             show chibika at  mas_chflip_s(1) onlayer screens zorder 10
-            "Hey there!"
+            "Хей!"
 
             show chibika at mas_chlongjump(x=650, y=405, ymax=375, travel_time=0.8) onlayer screens zorder 10
-            "I'm glad you decided to come back!"
-            "I'm sure that you and Monika will be a great couple."
+            "Я рада что ты вернулся!"
+            "Я уврена что Моника и ты будете прекрасной парочкой."
 
             show chibika sad at mas_chflip_s(-1) onlayer screens zorder 10
-            "But if you call yourself names like that...{w=0.5}{nw}"
+            "Но если ты будешь называть себя так...{w=0.5} {nw}"
 
             show chibika at sticker_hop onlayer screens zorder 10
-            extend "you won't win her heart!"
+            extend "ты не сможешь заполучить её сердца!"
 
             show chibika smile at mas_chmove(x=300, y=405, travel_time=1) onlayer screens zorder 10
-            "...But just embarrass her instead."
+            "...а вместо этого засмущаешь её."
 
             show chibika at mas_chlongjump(x=190, y=552, ymax=375, travel_time=0.8) onlayer screens zorder 10
-            "Why don't you choose something more appropriate."
+            "Почему бы тебе не выбрать что нибудь поприличнее."
             window auto
 
     else:
         show chibika smile at mas_chflip(-1), mas_chmove(x=130, y=552, travel_time=0), sticker_hop onlayer screens zorder 10
-        "I don't think she would be comfortable calling you that..."
-        "Why don't you choose something more appropriate instead."
+        "Я не думаю что ей будет приятно тебя так называть..."
+        "Почему бы тебе не выбрать что нибудь поприличнее."
 
     $ enable_esc()
     hide screen fake_main_menu
@@ -851,22 +851,22 @@ screen fake_main_menu():
 
         spacing gui.navigation_spacing
 
-        textbutton _("Just Monika")
+        textbutton _("Только Моника")
 
-        textbutton _("Load Game")
+        textbutton _("Загрузить игру")
 
-        textbutton _("Settings")
+        textbutton _("Настройки")
 
         if store.mas_submod_utils.submod_map:
-            textbutton _("Submods")
+            textbutton _("Субмоды")
 
-        textbutton _("Hotkeys")
+        textbutton _("Горячие клавиши")
 
         if renpy.variant("pc"):
 
-            textbutton _("Help")
+            textbutton _("Помощь")
 
-            textbutton _("Quit")
+            textbutton _("Выход")
 
     if gui.show_name:
 
@@ -900,49 +900,49 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Только моника") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Пожалуйста, введи своё имя", ok_action=Function(FinishEnterName)))
 
         else:
 
-            textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
+            textbutton _("История") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
 
-            textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
+            textbutton _("Сохранить игру") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
 
-        textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
+        textbutton _("Загрузить игру") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
 
         if _in_replay:
 
-            textbutton _("End Replay") action EndReplay(confirm=True)
+            textbutton _("Закончить реплей") action EndReplay(confirm=True)
 
         elif not main_menu:
-            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+            textbutton _("Главное меню") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
 
-        textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+        textbutton _("Настройки") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
         if store.mas_submod_utils.submod_map:
-            textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
+            textbutton _("Субмоды") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
-            textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
+            textbutton _("Уведомления") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
         if store.mas_api_keys.has_features():
-            textbutton _("API Keys") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
+            textbutton _("API ключи") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
 
-        textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
+        textbutton _("Горячие клавиши") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
 
         #textbutton _("About") action ShowMenu("about")
 
         if renpy.variant("pc"):
 
             ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action Help("README.html")
+            textbutton _("Помощь") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
             #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
-            textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
+            textbutton _("Выйти") action Quit(confirm=(None if main_menu else _confirm_quit))
 
         if not main_menu:
-            textbutton _("Return") action Return()
+            textbutton _("Вернуться") action Return()
 
 style navigation_button is gui_button:
     properties gui.button_properties("navigation_button")
@@ -956,7 +956,7 @@ style navigation_button_dark is gui_button:
 
 style navigation_button_text is gui_button_text:
     properties gui.button_text_properties("navigation_button")
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.button_text_font # "gui/font/RifficFree-Bold.ttf"
     color "#fff"
     outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
     hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
@@ -964,7 +964,7 @@ style navigation_button_text is gui_button_text:
 
 style navigation_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("navigation_button_dark")
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.button_text_font # "gui/font/RifficFree-Bold.ttf"
     color "#FFD9E8"
     outlines [(4, "#DE367E", 0, 0), (2, "#DE367E", 2, 2)]
     hover_outlines [(4, "#FF80B7", 0, 0), (2, "#FF80B7", 2, 2)]
@@ -1194,14 +1194,14 @@ style game_menu_label_dark is gui_label:
     ysize 120
 
 style game_menu_label_text is gui_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.interface_font # "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#fff"
     outlines [(6, "#b59", 0, 0), (3, "#b59", 2, 2)]
     yalign 0.5
 
 style game_menu_label_text_dark is gui_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.interface_font # "gui/font/RifficFree-Bold.ttf"
     size gui.title_text_size
     color "#FFD9E8"
     outlines [(6, "#DE367E", 0, 0), (3, "#DE367E", 2, 2)]
@@ -1235,20 +1235,20 @@ screen about():
     ## This use statement includes the game_menu screen inside this one. The
     ## vbox child is then included inside the viewport inside the game_menu
     ## screen.
-    use game_menu(_("About"), scroll="viewport"):
+    use game_menu(_("Об игре"), scroll="viewport"):
 
         style_prefix "about"
 
         vbox:
 
             label "[config.name!t]"
-            text _("Version [config.version!t]\n")
+            text _("Версия [config.version!t]\n")
 
             ## gui.about is usually set in options.rpy.
             if gui.about:
                 text "[gui.about!t]\n"
 
-            text _("Made with {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
+            text _("Сделано с помощью {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
 
 
 ## This is redefined in options.rpy to add text to the about screen.
@@ -1276,19 +1276,19 @@ screen save():
 
     tag menu
 
-    use file_slots(_("Save"))
+    use file_slots(_("Сохранить"))
 
 
 screen load():
 
     tag menu
 
-    use file_slots(_("Load"))
+    use file_slots(_("Загрузить"))
 
 init python:
     def FileActionMod(name, page=None, **kwargs):
         if renpy.current_screen().screen_name[0] == "save":
-            return Show(screen="dialog", message="There's no point in saving anymore.\nDon't worry, I'm not going anywhere.", ok_action=Hide("dialog"))
+            return Show(screen="dialog", message="Больше нет смысла сохраняться.\nНЕ волнуйся, я никуда не уйду.", ok_action=Hide("dialog"))
 
 
 screen file_slots(title):
@@ -1433,7 +1433,7 @@ screen preferences():
 
     default tooltip = Tooltip("")
 
-    use game_menu(_("Settings"), scroll="viewport"):
+    use game_menu(_("Настройки"), scroll="viewport"):
 
         vbox:
             xoffset 50
@@ -1444,10 +1444,10 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "generic_fancy_check"
-                        label _("Display")
-                        textbutton _("Window") action Preference("display", "window")
-                        textbutton _("Fullscreen") action Preference("display", "fullscreen")
+                        style_prefix "fancy_check"
+                        label _("Отображение")
+                        textbutton _("В окне") action Preference("display", "window")
+                        textbutton _("На весь экран") action Preference("display", "fullscreen")
 
 #                vbox:
 #                    style_prefix "check"
@@ -1458,63 +1458,63 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "generic_fancy_check"
-                    label _("Graphics")
+                    style_prefix "fancy_check"
+                    label _("Графика")
 
                     # this is a normal button
-                    textbutton _("Change Renderer"):
+                    textbutton _("Отрисовщик"):
                         style "check_button"
                         action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
-                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
+                    textbutton _("Анимация") action ToggleField(persistent, "_mas_disable_animations")
 
                     #Handle buttons
-                    textbutton _("UI: Night Mode"):
+                    textbutton _("UI: Тёмный"):
                         action [Function(mas_settings._ui_change_wrapper, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
                         selected persistent._mas_dark_mode_enabled
-                    textbutton _("UI: D/N Cycle"):
+                    textbutton _("UI: День/Ночь"):
                         action [Function(mas_settings._ui_change_wrapper, mas_current_background.isFltDay()), Function(mas_settings._auto_mode_toggle)]
                         selected persistent._mas_auto_mode_enabled
 
 
                 vbox:
-                    style_prefix "generic_fancy_check"
-                    label _("Gameplay")
+                    style_prefix "fancy_check"
+                    label _("Геймплей")
                     if not main_menu:
                         if persistent._mas_unstable_mode:
                             if store.mas_utils.is_ver_stable(config.version):
-                                textbutton _("Unstable"):
+                                textbutton _("Нестабильный"):
                                     action SetField(persistent, "_mas_unstable_mode", False)
                                     selected persistent._mas_unstable_mode
                             else:
-                                textbutton _("Unstable"):
-                                    style "generic_fancy_check_button_disabled"
-                                    text_style "generic_fancy_check_button_disabled_text"
+                                textbutton _("Нестабильный"):
+                                    style "fancy_check_button_disabled"
+                                    text_style "fancy_check_button_disabled_text"
                                     action SetField(persistent, "_mas_unstable_mode", True)
                                     selected True
                                     hovered tooltip.Action(layout.MAS_TT_UNSTABLE_DISABLED)
 
                         else:
-                            textbutton _("Unstable"):
+                            textbutton _("Нестабильный"):
                                 action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                                 selected persistent._mas_unstable_mode
                                 hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
-                    textbutton _("Repeat Topics"):
+                    textbutton _("Повторять темы"):
                         action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
                         hovered tooltip.Action(layout.MAS_TT_REPEAT)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "generic_fancy_check"
+                    style_prefix "fancy_check"
                     label _(" ")
 #                    textbutton _("Sensitive Mode"):
 #                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
 #                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
                     if store.mas_windowreacts.can_do_windowreacts:
-                        textbutton _("Window Detect"):
+                        textbutton _("Отлеживание активного окна"):
                             action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
                             hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
 
@@ -1592,7 +1592,7 @@ screen preferences():
                 vbox:
 
                     hbox:
-                        label _("Sunrise  ")
+                        label _("Восход  ")
 
                         # display time
                         label _("[[ " + sr_display + " ]")
@@ -1601,7 +1601,7 @@ screen preferences():
 
 
                     hbox:
-                        label _("Sunset  ")
+                        label _("Заход  ")
 
                         # display time
                         label _("[[ " + ss_display + " ]")
@@ -1612,7 +1612,7 @@ screen preferences():
                 vbox:
 
                     hbox:
-                        label _("Random Chatter  ")
+                        label _("Случайные разговоры  ")
 
                         # display str
                         label _("[[ " + rc_display + " ]")
@@ -1625,36 +1625,36 @@ screen preferences():
                     )
 
                     hbox:
-                        label _("Ambient Volume")
+                        label _("Громкость заднего шума")
 
                     bar value Preference("mixer amb volume")
 
 
                 vbox:
 
-                    label _("Text Speed")
+                    label _("Скорость текста")
 
                     #bar value Preference("text speed")
                     bar value FieldValue(_preferences, "text_cps", range=170, max_is_zero=False, style="slider", offset=30)
 
-                    label _("Auto-Forward Time")
+                    label _("Авто-перемотка")
 
                     bar value Preference("auto-forward time")
 
                 vbox:
-                    label _("Music Volume")
+                    label _("Громкость музыки")
                     hbox:
                         bar value Preference("music volume")
 
-                    label _("Sound Volume")
+                    label _("Громкость звуков")
                     hbox:
                         bar value Preference("sound volume")
 
 
                     null height gui.pref_spacing
 
-                    textbutton _("Mute All"):
-                        style "generic_fancy_check_button"
+                    textbutton _("Заглушить всё"):
+                        style "fancy_check_button"
                         action Preference("all mute", "toggle")
 
 
@@ -1662,11 +1662,11 @@ screen preferences():
                 #We disable updating on the main menu because it causes graphical issues
                 #due to the spaceroom not being loaded in
                 if not main_menu:
-                    textbutton _("Update Version"):
+                    textbutton _("Обновить эту версию"):
                         action Function(renpy.call_in_new_context, 'forced_update_now')
                         style "navigation_button"
 
-                textbutton _("Import DDLC Save Data"):
+                textbutton _("Импортировать сохранения ДДЛК"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
@@ -1694,14 +1694,14 @@ style pref_label_dark is gui_label:
     bottom_margin 2
 
 style pref_label_text is gui_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.interface_font # "gui/font/RifficFree-Bold.ttf"
     size 24
     color "#fff"
     outlines [(3, "#b59", 0, 0), (1, "#b59", 1, 1)]
     yalign 1.0
 
 style pref_label_text_dark is gui_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font gui.interface_font # "gui/font/RifficFree-Bold.ttf"
     size 24
     color "#FFD9E8"
     outlines [(3, "#DE367E", 0, 0), (1, "#DE367E", 1, 1)]
@@ -1734,12 +1734,12 @@ style radio_button_dark is gui_button_dark:
 
 style radio_button_text is gui_button_text:
     properties gui.button_text_properties("radio_button")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     outlines []
 
 style radio_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("radio_button_dark")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
@@ -1769,12 +1769,12 @@ style check_button_dark is gui_button_dark:
 
 style check_button_text is gui_button_text:
     properties gui.button_text_properties("check_button")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     outlines []
 
 style check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("check_button_dark")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     color "#8C8C8C"
     hover_color "#FF80B7"
     selected_color "#DE367E"
@@ -1829,28 +1829,28 @@ style slider_pref_vbox is pref_vbox
 screen notif_settings():
     tag menu
 
-    use game_menu(("Alerts"), scroll="viewport"):
+    use game_menu(("Уведомления"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
         vbox:
-            style_prefix "generic_fancy_check"
+            style_prefix "fancy_check"
             hbox:
                 spacing 25
-                textbutton _("Use Notifications"):
+                textbutton _("Разрешить уведомления"):
                     action ToggleField(persistent, "_mas_enable_notifications")
                     selected persistent._mas_enable_notifications
                     hovered tooltip.Action(layout.MAS_TT_NOTIF)
 
-                textbutton _("Sounds"):
+                textbutton _("Звуки"):
                     action ToggleField(persistent, "_mas_notification_sounds")
                     selected persistent._mas_notification_sounds
                     hovered tooltip.Action(layout.MAS_TT_NOTIF_SOUND)
 
-            label _("Alert Filters")
+            label _("Фильтры уведомлений")
 
         hbox:
-            style_prefix "generic_fancy_check"
+            style_prefix "fancy_check"
             box_wrap True
             spacing 25
 
@@ -1872,7 +1872,7 @@ screen notif_settings():
 screen hot_keys():
     tag menu
 
-    use game_menu(("Hotkeys"), scroll="viewport"):
+    use game_menu(("Горячие клавиши"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1883,16 +1883,16 @@ screen hot_keys():
             hbox:
                 style_prefix "check"
                 vbox:
-                    label _("General")
+                    label _("Стандартные")
                     spacing 10
-                    text _("Music")
-                    text _("Play")
-                    text _("Talk")
-                    text _("Bookmark")
-                    text _("Derandom")
-                    text _("Fullscreen")
-                    text _("Screenshot")
-                    text _("Settings")
+                    text _("Музыка")
+                    text _("Продолжить воспроизведение")
+                    text _("Поговрить")
+                    text _("Закладка")
+                    text _("Отключение случайности") # derandom ???
+                    text _("Полный экран")
+                    text _("Скриншот")
+                    text _("Настройки")
 
                 vbox:
                     label _("")
@@ -1909,11 +1909,11 @@ screen hot_keys():
             hbox:
                 style_prefix "check"
                 vbox:
-                    label _("Music")
+                    label _("Музыка")
                     spacing 10
-                    text _("Volume Up")
-                    text _("Volume Down")
-                    text _("Mute")
+                    text _("Увеличить громкость")
+                    text _("Уменьшить громкость")
+                    text _("Заглушить")
 
                 vbox:
                     label _("")
@@ -1923,7 +1923,7 @@ screen hot_keys():
                     text _("Shift-M")
 
     # there are lesser used hotkeys in Help that aren't needed here
-    text "Click 'Help' for the complete list.":
+    text "Нажми 'Помощь' для полного списка.":
         xalign 1.0 yalign 0.0
         xoffset -10
         style "main_menu_version"
@@ -1944,7 +1944,7 @@ screen history():
     ## Avoid predicting this screen, as it can be very large.
     predict False
 
-    use game_menu(_("History"), scroll=("vpgrid" if gui.history_height else "viewport")):
+    use game_menu(_("История"), scroll=("vpgrid" if gui.history_height else "viewport")):
 
         style_prefix "history"
 
@@ -1969,7 +1969,7 @@ screen history():
                 text h.what.replace("[","[[")  # ]" fix syntax highlight issue
 
         if not _history_list:
-            label _("The dialogue history is empty.")
+            label _("Истоиря диалогов пуста.")
 
 
 style history_window is empty:
@@ -2195,7 +2195,7 @@ screen name_input(message, ok_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("OK") action ok_action
+                textbutton _("ОК") action ok_action
 
 screen dialog(message, ok_action):
     ## Ensure other screens do not get input while this screen is displayed.
@@ -2220,7 +2220,7 @@ screen dialog(message, ok_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("OK") action ok_action
+                textbutton _("ОК") action ok_action
 
 screen quit_dialog(message, ok_action):
     ## Ensure other screens do not get input while this screen is displayed.
@@ -2245,7 +2245,7 @@ screen quit_dialog(message, ok_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("QUIT") action ok_action
+                textbutton _("ВЫЙТИ") action ok_action
 
 image confirm_glitch:
     "gui/overlay/confirm_glitch.png"
@@ -2285,8 +2285,8 @@ screen confirm(message, yes_action, no_action):
                     textbutton _("-") action yes_action
                     textbutton _("-") action yes_action
                 else:
-                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
-                    textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
+                    textbutton _("Да") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
+                    textbutton _("Нет") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -2344,22 +2344,22 @@ screen update_check(ok_action,cancel_action,mode):
             spacing 30
 
             if mode == 0:
-                label _('An update is now avalable!'):
+                label _('Достпно обновление!'):
                     style "confirm_prompt"
                     xalign 0.5
 
             elif mode == 1:
-                label _("No update available."):
+                label _("нет доступных обновлений."):
                     style "confirm_prompt"
                     xalign 0.5
 
             elif mode == 2:
-                label _('Checking for updates...'):
+                label _('Проверка обновлений...'):
                     style "confirm_prompt"
                     xalign 0.5
             else:
                 # otherwise, we assume a timeout
-                label _('Timeout occured while checking for updates. Try again later.'):
+                label _('Произошёл таймаут во время проверки обновлений. Попробуйте снова позже.'):
                     style "confirm_prompt"
                     xalign 0.5
 
@@ -2367,9 +2367,9 @@ screen update_check(ok_action,cancel_action,mode):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Install") action [ok_action, SensitiveIf(mode == 0)]
+                textbutton _("Установить") action [ok_action, SensitiveIf(mode == 0)]
 
-                textbutton _("Cancel") action cancel_action
+                textbutton _("Отмена") action cancel_action
 
     timer 1.0 action Return("None")
 
@@ -2396,33 +2396,33 @@ screen updater:
         has side "t c b":
             spacing gui._scale(10)
 
-        label _("Updater")
+        label _("Обновления")
 
         fixed:
             vbox:
                 if u.state == u.ERROR:
-                    text _("An error has occured:")
+                    text _("Произошла ошибка:")
                 elif u.state == u.CHECKING:
-                    text _("Checking for updates.")
+                    text _("Проверка обновлений.")
                 elif u.state == u.UPDATE_AVAILABLE:
-                    text _("Version [u.version] is available. Do you want to install it?")
+                    text _("Доступна версия [u.version]. Хотите установить её?")
 
                 elif u.state == u.UPDATE_NOT_AVAILABLE:
-                    text _("Monika After Story is up to date.")
+                    text _("Monika After Story уже последней версии.")
                 elif u.state == u.PREPARING:
-                    text _("Preparing to download the updates.")
+                    text _("Подготовка к загрузке обновлений.")
                 elif u.state == u.DOWNLOADING:
-                    text _("Downloading the updates. (Progress bar may not advance during download)")
+                    text _("Загрузка обновлений. (Шкала прогресса может не изменяться во время загрузки)")
                 elif u.state == u.UNPACKING:
-                    text _("Unpacking the updates.")
+                    text _("Распаковка обновлений.")
                 elif u.state == u.FINISHING:
-                    text _("Finishing up.")
+                    text _("Завершение.")
                 elif u.state == u.DONE:
                     text _(_TXT_FINISHED_UPDATING)
                 elif u.state == u.DONE_NO_RESTART:
-                    text _("The updates have been installed.")
+                    text _("Обновления успешно установлены.")
                 elif u.state == u.CANCELLED:
-                    text _("The updates were cancelled.")
+                    text _("Обновления были отменены.")
 
                 if u.message is not None:
                     null height gui._scale(10)
@@ -2439,15 +2439,15 @@ screen updater:
             # We also call quit when we get an ERROR, UPDATE_NOT_AVAILABLE or CANCELLED state, otherwise, proceed calls full_restart
             # in this case, in windows we end up in the main menu and in linux everything breaks apart
             if u.state in (u.ERROR, u.UPDATE_NOT_AVAILABLE, u.DONE, u.DONE_NO_RESTART, u.CANCELLED):
-                textbutton _("Quit") action Function(renpy.quit, relaunch=False)
-                textbutton _("Restart") action [Function(me.__del__), Function(renpy.quit, relaunch=True)]
+                textbutton _("Выйти") action Function(renpy.quit, relaunch=False)
+                textbutton _("Перезапустить") action [Function(me.__del__), Function(renpy.quit, relaunch=True)]
 
             else:
                 if u.can_proceed:
-                    textbutton _("Proceed") action Function(u.proceed)
+                    textbutton _("Продолжить") action Function(u.proceed)
 
                 if u.can_cancel:
-                    textbutton _("Cancel") action Return()
+                    textbutton _("Отмена") action Return()
 
     # Constantly update the screen to force the progress bar to update
     timer 1.0 action Function(renpy.restart_interaction) repeat True
@@ -2478,7 +2478,7 @@ screen skip_indicator():
         hbox:
             spacing 6
 
-            text _("Skipping")
+            text _("Пропуск")
 
             text "▸" at delayed_blink(0.0, 1.0) style "skip_triangle"
             text "▸" at delayed_blink(0.2, 1.0) style "skip_triangle"
@@ -2730,7 +2730,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
                 null height 20
 
-                textbutton _("Nevermind."):
+                textbutton _("Неважно."):
                     style "scrollable_menu_button"
                     xsize right_area[0] - left_area[0] + right_area[2]
                     action [Return(False), Function(store.prev_adj.change, 0)]
@@ -2784,10 +2784,10 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                     null height 20
 
                     if cat_length == 0:
-                        textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+                        textbutton _("Неважно.") action [Return(False), Function(store.prev_adj.change, 0)]
 
                     elif cat_length > 1:
-                        textbutton _("Go Back") action [Return(-1), Function(store.prev_adj.change, 0)]
+                        textbutton _("Назад") action [Return(-1), Function(store.prev_adj.change, 0)]
 
         # Right panel
         if main_items:
@@ -2822,7 +2822,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
                     null height 20
 
-                    textbutton _("Nevermind.") action [Return(False), Function(store.prev_adj.change, 0)]
+                    textbutton _("Неважно.") action [Return(False), Function(store.prev_adj.change, 0)]
 
     # Search bar
     # The constants are hardcoded, but the menu looks good so just don't change them
@@ -2852,7 +2852,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 changed store.mas_ui.twopane_menu_search_callback
 
         if flt_evs is None:
-            text "Search for a conversation...":
+            text "найти тему для разговора...":
                 text_align 0.0
                 layout "nobreak"
                 color "#EEEEEEB2"
@@ -2999,8 +2999,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done",
-    default_button_prompt="Nevermind",
+    selected_button_prompt="Готово",
+    default_button_prompt="Неважно",
     return_all=False
 ):
     default buttons_data = {
@@ -3086,7 +3086,7 @@ screen mas_generic_restart:
 # TODO have a brb feature somehow
 # TODO: that would tie into the knowing how long player is out
 #            label _("Tell Monika that you'll be right back?"):
-            label _("Please restart Monika After Story."):
+            label _("Пожалуйста, перезапустите Monika After Story."):
                 style "confirm_prompt"
                 xalign 0.5
 
@@ -3094,7 +3094,7 @@ screen mas_generic_restart:
                 xalign 0.5
                 spacing 100
 
-                textbutton _("OK") action Return(True)
+                textbutton _("ОК") action Return(True)
 
 # Partial generic showpoem screen
 # IN:
@@ -3117,7 +3117,7 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
 
 #Chibika's text style
 style chibika_note_text:
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     size 28
     color "#000"
     outlines []
@@ -3126,7 +3126,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods")):
+    use game_menu(("Субмоды")):
 
         default tooltip = Tooltip("")
 
@@ -3179,10 +3179,10 @@ screen mas_apikeys():
 
     tag menu
 
-    use game_menu(_("API Keys"), scroll="viewport"):
+    use game_menu(_("API ключи"), scroll="viewport"):
 
         if not store.mas_api_keys.has_features():
-            text _("No API keys accepted"): # NOTE: the game menu screen shouldn't have let us get here.
+            text _("API ключи не используются"): # NOTE: the game menu screen shouldn't have let us get here.
                 style "main_menu_version"
 
         else:
@@ -3191,7 +3191,7 @@ screen mas_apikeys():
                 spacing 30
 
                 if store.mas_can_import.certifi():
-                    textbutton _("Update Certificate"):
+                    textbutton _("Обновить сертификат"):
                         style "mas_button_simple"
                         action Function(store.mas_api_keys.screen_update_cert)
 
@@ -3218,12 +3218,12 @@ screen mas_apikeys():
                                 spacing 10
 
                                 if feature_data[2]:
-                                    textbutton _("Clear"):
+                                    textbutton _("Очистить"):
                                         style "mas_button_simple"
                                         yalign 0.5
                                         action Function(store.mas_api_keys.screen_clear, feature_data[1])
                                 else:
-                                    textbutton _("Paste"):
+                                    textbutton _("Вставить"):
                                         style "mas_button_simple"
                                         yalign 0.5
                                         action Function(store.mas_api_keys.screen_paste, feature_data[1])
