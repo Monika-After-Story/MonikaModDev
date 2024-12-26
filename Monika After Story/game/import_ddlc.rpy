@@ -77,24 +77,24 @@ label import_ddlc_persistent:
     #We have something to import
     if ddlc_save_path:
         $ ddlc_save_path = ddlc_save_path[0]
-        "Save data for Doki Doki Literature Club was found at [ddlc_save_path]."
+        "Найдено сохранение Доки Доки Литературный клуб в [ddlc_save_path]."
         menu:
-            "Would you like to import Doki Doki Literature Club save data into [config.name]?\n(DDLC will not be affected)"
+            "Загрузить сохранение Доки Доки Литературный Клуб в [config.name]?\n(Это не затронет ДДЛК)"
 
-            "Yes, import DDLC save data.":
+            "Да, загрузить сохранение ДДЛК.":
                 pause 0.3
 
-            "No, do not import.":
+            "Нет, не загружать.":
                 pause 0.3
                 return
 
     #Nothing to import
     else:
-        "Save data from Doki Doki Literature Club could not be found."
+        "Сохранения Доки Доки Литературный клуб не найдены."
         menu:
-            "Save data will not be imported at this time."
+            "Данные не могут быть загружены в этот момент."
 
-            "Okay.":
+            "Хорошо.":
                 pause 0.3
                 return
 
@@ -120,9 +120,9 @@ label import_ddlc_persistent:
 
     if ddlc_persistent is None:
         menu:
-            "Couldn't read/decode save data from Doki Doki Literature Club. Aborting."
+            "Не удалось прочитать/декодировать сохранение Доки Доки Литературный клуб. Отмена."
 
-            "Okay.":
+            "Хорошо.":
                 pass
 
         pause 0.3
@@ -132,13 +132,13 @@ label import_ddlc_persistent:
     if not persistent.first_run:
         label .save_merge_or_replace:
         menu:
-            "Previous Monika After Story save data has also been found.\nWould you like to merge with DDLC save data?"
+            "Найдено старое сохранение Monika After Story.\nОбъединить старое сохранение с сохранением ДДЛК?"
 
-            "Merge save data.":
+            "Объединить сохранения.":
                 pass
 
-            "Cancel.":
-                "DDLC data can be imported later in the Settings menu."
+            "Отмена.":
+                "Сохранение ДДЛК может быть ипортированно позже в меню настроек."
                 return
 
 
