@@ -73,8 +73,8 @@ init:
                 self.paddle = Image("mod_assets/games/pong/pong.png")
                 self.ball = Image("mod_assets/games/pong/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
-                self.monika = Text(_("Monika"), size=36)
-                self.ctb = Text(_("Click to Begin!"), size=36)
+                self.monika = Text(_("Моника"), size=36)
+                self.ctb = Text(_("Кликни чтобы начать!"), size=36)
 
                 # Sounds used.
                 self.playsounds = True
@@ -570,7 +570,7 @@ label demo_minigame_pong:
 
             jump demo_minigame_pong
 
-        "нет.":
+        "Нет.":
             if winner == "monika":
                 if renpy.seen_label(store.mas_pong.DLG_WINNER_END):
                     $ end_dialogue = store.mas_pong.DLG_WINNER_FAST
