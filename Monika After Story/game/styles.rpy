@@ -349,27 +349,27 @@ style generic_fancy_check_button_disabled is generic_fancy_check_button:
 
 style generic_fancy_check_button_text is gui_button_text:
     properties gui.button_text_properties("generic_fancy_check_button")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     color "#BFBFBF"
     hover_color "#000000"
     selected_color "#000000"
     insensitive_color mas_ui.light_button_text_insensitive_color
     outlines []
-    yoffset 3
+    yoffset 5
 
 style generic_fancy_check_button_text_dark is gui_button_text_dark:
     properties gui.button_text_properties("generic_fancy_check_button_dark")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     color "#BFBFBF"
     hover_color "#FFAA99"
     selected_color "#FFAA99"
     insensitive_color mas_ui.dark_button_text_insensitive_color
     outlines []
-    yoffset 3
+    yoffset 5
 
 style generic_fancy_check_button_disabled_text is generic_fancy_check_button:
     properties gui.button_text_properties("generic_fancy_check_button")
-    font "gui/font/Halogen.ttf"
+    font gui.choice_button_text_font
     color "#8C8C8C"
     outlines []
     yoffset 3
@@ -406,13 +406,17 @@ init -1 python:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x3000, 0x4dff  # jp + others
     ).add(
-        "mod_assets/font/Aller_Rg.ttf", 0x0400, 0x04FF
+        "mod_assets/font/comic.ttf", 0x0400, 0x04FF
     ).add(
         "gui/font/Aller_Rg.ttf", 0x0000, 0xffff # latin-1
     )
     gui.interface_font = gui.default_font
     gui.button_text_font = gui.default_font
-    gui.choice_button_text_font = gui.default_font
+    gui.choice_button_text_font = FontGroup().add(
+        "mod_assets/font/Rotonda-Bold.ttf", 0x0400, 0x04FF
+    ).add(
+        "gui/font/Halogen.ttf", 0x0000, 0xffff
+    )
 
     gui.name_font = FontGroup().add(
         "mod_assets/font/SourceHanSansK-Regular.otf", 0xac00, 0xd7a3 # kr
@@ -421,7 +425,7 @@ init -1 python:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x3000, 0x4dff  # jp + others
     ).add(
-        "mod_assets/font/RifficFree-Bold.ttf", 0x0400, 0x04FF
+        "mod_assets/font/Rotonda-Bold.ttf", 0x0400, 0x04FF
     ).add(
         "gui/font/Aller_Rg.ttf", 0x0000, 0xffff # latin-1
     )
