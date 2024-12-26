@@ -406,11 +406,25 @@ init -1 python:
     ).add(
         "mod_assets/font/mplus-2p-regular.ttf", 0x3000, 0x4dff  # jp + others
     ).add(
+        "mod_assets/font/Aller_Rg.ttf", 0x0400, 0x04FF
+    ).add(
         "gui/font/Aller_Rg.ttf", 0x0000, 0xffff # latin-1
     )
     gui.interface_font = gui.default_font
     gui.button_text_font = gui.default_font
     gui.choice_button_text_font = gui.default_font
+
+    gui.name_font = FontGroup().add(
+        "mod_assets/font/SourceHanSansK-Regular.otf", 0xac00, 0xd7a3 # kr
+    ).add(
+        "mod_assets/font/SourceHanSansSC-Regular.otf", 0x4e00, 0x9faf # s-cn
+    ).add(
+        "mod_assets/font/mplus-2p-regular.ttf", 0x3000, 0x4dff  # jp + others
+    ).add(
+        "mod_assets/font/RifficFree-Bold.ttf", 0x0400, 0x04FF
+    ).add(
+        "gui/font/Aller_Rg.ttf", 0x0000, 0xffff # latin-1
+    )
 
 init -1 python in mas_ui:
     import store
