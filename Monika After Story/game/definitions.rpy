@@ -8055,10 +8055,10 @@ default currentpos = 0
 default faint_effect = None
 
 
-default s_name = "Sayori"
+default s_name = "Сайори"
 default m_name = persistent._mas_monika_nickname
-default n_name = "Natsuki"
-default y_name = "Yuri"
+default n_name = "Натсуки"
+default y_name = "Юри"
 
 # Instantiating variables for poem appeal. This is how much each character likes the poem for each day.
 # -1 = Dislike, 0 = Neutral, 1 = Like
@@ -8224,17 +8224,19 @@ define startup_check = False
 # define temp zoom to default level in case of crash
 define mas_temp_zoom_level = store.mas_sprites.default_zoom_level
 
-define his = "his"
-define he = "he"
-define hes = "he's"
-define heis = "he is"
-define bf = "boyfriend"
-define man = "man"
-define boy = "boy"
-define guy = "guy"
-define him = "him"
-define himself = "himself"
-define hero = "hero"
+define his = "его"
+define he = "он"
+define bf = "парень"
+define guy = "парень"
+define boy = "мальчик"
+define him = "он"
+define hero = "герой"
+
+# translator note: unused
+define hes = "его"
+define heis = "он"
+define man = "парень"
+define himself = "сам"
 
 # Input characters filters
 define numbers_only = "0123456789"
@@ -8285,13 +8287,13 @@ init -1 python in mas_randchat:
 
     ## slider map for displaying
     SLIDER_MAP_DISP = {
-        NEVER: "Never",
-        RARELY: "Rarely",
-        OCCASIONALLY: "Occasionally",
-        LESS_OFTEN: "Less Often",
-        NORMAL: "Normal",
-        OFTEN: "Often",
-        VERY_OFTEN: "Very Often"
+        NEVER: "Никогда",
+        RARELY: "Редко",
+        OCCASIONALLY: "Иногда",
+        LESS_OFTEN: "Не часто",
+        NORMAL: "Обычно",
+        OFTEN: "Часто",
+        VERY_OFTEN: "Очень часто"
     }
 
     # current frequency times
