@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DDLC_ARCHIVE="ddlc.zip"
+DDLC_FOLDER="DDLC-1.1.1-pc"
+
+MAS_FOLDER="Monika\ After\ Story"
+
+# check for DDLC archive
+if ls -1 | not grep $DDLC_ARCHIVE -q; then
+    echo "No DDLC Folder found."
+    exit 1
+fi
+
+# rm -rf $DDLC_FOLDER
+# unzip -q $DDLC_ARCHIVE
+
+eval cp -r $MAS_FOLDER/* $DDLC_FOLDER
+
+bash $DDLC_FOLDER/DDLC.sh
+
