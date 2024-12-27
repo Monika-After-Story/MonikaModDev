@@ -7948,13 +7948,11 @@ init python:
             and mas_timePastSince(persistent._mas_last_kiss, cooldown)
         )
 
+python early:
     def mas_isRunningInWine():
         """
         Checks (by calling wine_get_version NTDLL function) if MAS is currently
         running in Wine environment. Always returns False on non-Windows platforms.
-
-        IN:
-            None.
 
         OUT:
             True if MAS is running in Wine environment.
