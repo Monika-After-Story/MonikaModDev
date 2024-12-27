@@ -7967,14 +7967,14 @@ init python:
         try:
             import ctypes
             NTDLL = ctypes.WinDLL("ntdll.dll")
-        except (ImportError, IOError):
+        except Exception:
             return False
 
         try:
             wine_get_version = NTDLL.wine_get_version
             wine_get_version.argtypes = []
             wine_get_version.restype = ctypes.c_char_p
-        except AttributeError:
+        except Exception:
             # No such function in DLL
             return False
 
