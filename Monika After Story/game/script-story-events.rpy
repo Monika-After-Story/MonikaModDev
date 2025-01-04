@@ -511,6 +511,7 @@ label mas_player_name_enter_name_loop(input_prompt):
         python:
             tempname = mas_input(
                 "[input_prompt]",
+                allow=name_characters_only,
                 length=20,
                 screen_kwargs={"use_return_button": True}
             ).strip(' \t\n\r')
