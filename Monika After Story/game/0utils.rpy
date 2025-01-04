@@ -795,13 +795,3 @@ python early in mas_utils:
             return int(value)
         except:
             return default
-
-# Override to completely disable Ren'Py's signature verification """f e a t u r e"""
-# NOTE: Without this, Ren'Py will literally replace the persistent data with a blank file if signature verification fails.
-# And the game will not inform the user, making backups/transfers impossible.
-# Btw this apparently comes with the tagline "There is intentionally no way to disable this feature." lol
-python early:
-    def verify_data_override(data, signatures, check_verifying=True):
-        return True
-
-    renpy.savetoken.verify_data = verify_data_override
