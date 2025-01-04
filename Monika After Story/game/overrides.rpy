@@ -26,7 +26,7 @@ python early in mas_overrides:
     import renpy.savelocation as savelocation
 
 
-    def verify_data_override(data, signatures, check_verifying=True):
+    def verify_data_override(*args, **kwargs):
         """
         Verify the data in a save token.
 
