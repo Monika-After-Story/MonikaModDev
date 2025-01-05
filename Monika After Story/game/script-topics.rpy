@@ -6431,7 +6431,16 @@ label monika_science:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_surprise",
+            category=['romance'],
+            prompt="Surprises",
+            conditional="persistent.playthrough >= 2",
+            action=EV_ACT_RANDOM
+        )
+    )
 
 label monika_surprise:
     m 1rksdla "You know..."
@@ -6446,13 +6455,13 @@ label monika_surprise:
     if mas_isMoniUpset(lower=True):
         m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
         m 1euc "Alright..."
-        m 1ekc "Please go take a look."
+        m 1ekc "Go to the characters folder and take a look, will you?"
         m 1eka "I wrote it just for you."
         m 1dsc "It would mean a lot to me if you would read it."
         return
 
     elif mas_isMoniAff(higher=True):
-        m 2dsa ".{w=0.5}.{w=0.5}.{nw}"
+        m 2dsa "This time.{w=0.5}.{w=0.5}.{w=0.5} I think I'm going to leave it in the characters folder.{w=1}{nw}"
         m 1hua "Alright!"
         m 1eua "What are you waiting for? Go take a look!"
         m "I wrote it just for you~"
@@ -6460,7 +6469,7 @@ label monika_surprise:
 
     # Normal and Happy
     else:
-        m 2duu ".{w=0.5}.{w=0.5}.{nw}"
+        m 2duu "This time.{w=0.5}.{w=0.5}.{w=0.5} I think I'm going to leave it in the characters folder.{w=1}{nw}"
         m 1hua "Alright!"
         m 1eua "What are you waiting for? Go take a look!"
         m 1hub "Ahaha~ What? Are you expecting something scary?"
