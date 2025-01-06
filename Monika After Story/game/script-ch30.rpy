@@ -15,6 +15,11 @@ define mas_in_intro_flow = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
+init -999999 python:
+    if mas_isRunningInWine():
+        raise Exception(_("The game was started from an .exe, but is currently running on non-Windows platform.\n"
+                          "Please instead start it using DDLC.sh script."))
+
 init -998 python:
     #We need to flow hijack here if we're running unstable mode files but on a fresh persistent
     if "unstable" in config.version and not persistent.sessions:

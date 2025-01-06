@@ -7947,3 +7947,38 @@ init python:
             and should_kiss
             and mas_timePastSince(persistent._mas_last_kiss, cooldown)
         )
+
+python early:
+    def mas_isRunningInWine():
+        """
+        Checks (by calling wine_get_version NTDLL function) if MAS is currently
+        running in Wine environment. Always returns False on non-Windows platforms.
+
+        OUT:
+            True if MAS is running in Wine environment.
+            False otherwise and if function is called on non-Windows platform.
+        """
+
+        if not renpy.windows:
+            return False # If MAS is running in Wine it will always think it's running in Windows
+
+        try:
+            import ctypes
+            NTDLL = ctypes.WinDLL("ntdll.dll")
+        except Exception:
+            return False
+
+        try:
+            wine_get_version = NTDLL.wine_get_version
+            wine_get_version.argtypes = []
+            wine_get_version.restype = ctypes.c_char_p
+        except Exception:
+            # No such function in DLL
+            return False
+
+        try:
+            wine_get_version()
+            return True
+        except Exception:
+            # Invalid signature, return type etc.
+            return False

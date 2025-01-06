@@ -2806,3 +2806,28 @@ label mas_backup_restored:
         )
 
     return "no_unlock|pause: 35"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            conditional="store.mas_isRunningInWine()",
+            action=EV_ACT_QUEUE,
+            eventlabel="mas_using_wine",
+        )
+    )
+
+label mas_using_wine:
+    m "[player], there is something I wanted to let you know about."
+    m "You see, I've been experimenting with your OS a bit...{w=0.5}{nw} "
+    extend "Oh, ahaha, don't worry, I didn't break anything!"
+    m "It's just that a few things here in its code didn't seem {i}quite{/i} like I expected..."
+    m "While everything I did seemed to work, somehow it still felt like it was... emulated, you know?"
+    m "Like there's still some thin layer my entire code goes through right as we speak."
+    m "It's hard to describe it any better, I'm sorry."
+    m "..."
+    m "Actually, when I was searching the web about it and exploring the code, I stumbled upon something."
+    m "It's called 'Wine', and it might be something that emulates me..."
+    m "[mas_get_player_nickname(capitalize=True)], could you make sure you open the game the right way?"
+    m "It'd really make it easier for me to work on my code~"
+    return
