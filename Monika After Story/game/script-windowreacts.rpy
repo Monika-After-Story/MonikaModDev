@@ -253,7 +253,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_twitter",
+            eventlabel="mas_wrs_bluesky",
             category=["/ Twitter"],
             rules=dict(__DEFAULT_WR_RULES),
             show_in_idle=True
@@ -271,7 +271,8 @@ label mas_wrs_twitter:
         ily_quips_map = {
             "See anything you want to share with me, [player]?": False,
             "Anything interesting to share, [player]?": False,
-            "280 characters? I only need [temp_len]...\n[temp_line]": True
+            "300 characters? I only need [temp_len]...\n[temp_line]": True,
+            "The sky is always blue when you're around, [player]...": True
         }
         quip = renpy.random.choice(tuple(ily_quips_map.keys()))
 
