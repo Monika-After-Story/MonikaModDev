@@ -99,9 +99,8 @@ init python in mas_windowutils:
 
         #Wayland is not supported, disable wrs
         if session_type in ("wayland", None) or os.environ.get("WAYLAND_DISPLAY"):
-            store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
-            store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling notifications.")
+            store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling window reactions.")
 
         #X11 however is fine
         elif session_type == "x11" or os.environ.get("DISPLAY"):
@@ -115,18 +114,14 @@ init python in mas_windowutils:
                 __root = __display.screen().root
 
             except Exception as e:
-                store.mas_windowreacts.can_show_notifs = False
                 store.mas_windowreacts.can_do_windowreacts = False
-
                 store.mas_utils.mas_log.warning(
-                    f"Xlib failed to be imported, disabling notifications: {e}"
+                    f"Xlib failed to be imported, disabling window reactions: {e}"
                 )
 
         else:
-            store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
-
-            store.mas_utils.mas_log.warning("Cannot detect current session type, disabling notifications.")
+            store.mas_utils.mas_log.warning("Cannot detect current session type, disabling window reactions.")
 
     else:
         store.mas_windowreacts.can_do_windowreacts = False
@@ -693,7 +688,7 @@ init python:
 
         NOTE: THIS SHOULD NEVER RETURN NONE
         """
-        if mas_windowreacts.can_show_notifs and mas_canCheckActiveWindow():
+        if mas_windowreacts.can_do_windowreacts and mas_canCheckActiveWindow():
             return store.mas_windowutils._window_get()
         return ""
 
@@ -763,7 +758,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindowHandle() == store.mas_getWindowTitle()
+        return store.mas_windowreacts.can_do_windowreacts and mas_getActiveWindowHandle() == store.mas_getWindowTitle()
 
     def mas_isInActiveWindow(regexp, active_window_handle=None):
         """
@@ -779,7 +774,7 @@ init python:
         """
 
         #Don't do work if we don't have to
-        if not store.mas_windowreacts.can_show_notifs:
+        if not store.mas_windowreacts.can_do_windowreacts:
             return False
 
         #Otherwise, let's get the active window
@@ -800,7 +795,7 @@ init python:
         Runs through events in the windowreact_db to see if we have a reaction, and if so, queue it
         """
         #Do not check anything if we're not supposed to
-        if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_show_notifs:
+        if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_do_windowreacts:
             return
 
         active_window_handle = mas_getActiveWindowHandle()
