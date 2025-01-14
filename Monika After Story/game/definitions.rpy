@@ -7947,3 +7947,33 @@ init python:
             and should_kiss
             and mas_timePastSince(persistent._mas_last_kiss, cooldown)
         )
+
+
+    def mas_hasSuperuserPrivileges():
+        """
+        Tells if user running MAS has admin (Windows) or superuser/root (*nix)
+        privileges.
+
+        OUT:
+            True - user has special privileges.
+            False - user has no special privileges.
+        """
+
+
+        if renpy.windows:
+            import ctypes
+
+            try:
+                return ctypes.windll.shell32.IsUserAnAdmin() == 1
+            except AttributeError:
+                # WinAPI refuses to tell admin status, so consider this a no.
+                return False
+
+        else:  # MacOS and Linux
+            import os
+
+            try:
+                return os.getuid() == 0
+            except AttributeError:
+                # Same as above, generally this call should be available though.
+                return False
