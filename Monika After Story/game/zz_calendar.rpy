@@ -7,6 +7,8 @@ init -1 python:
 
     import json
     import copy
+    import calendar
+
     from renpy.display.layout import Container
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
 
@@ -95,8 +97,14 @@ init -1 python:
             "November", "December"]
 
         # Day names constant array
-        DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+        DAY_NAMES_SUN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
+        DAY_NAMES_MON = ["Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"]
+        # Fallback
+        DAY_NAMES = DAY_NAMES_SUN
+
+        FIRST_DAY_OF_WEEK = calendar.firstweekday()
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -471,8 +479,17 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # call set up day buttons to fill up the calendar
             self._setupDayButtons()
 
+            # Setup week format based on user's locale
+            self._setupWeekFormat()
 
-
+        def _setupWeekFormat(self):
+            """
+            Sets up week format (e.g. monday-sunday or sunday-saturday.)
+            Falls back to sunday-saturday if first day of week isn't 0 or 6.
+            """
+            if self.FIRST_DAY_OF_WEEK == 0:
+                self.DAY_NAMES = self.DAY_NAMES_MON
+            # Otherwise falls back to sunday-saturday
 
         def _setupDayButtons(self):
             """
@@ -537,7 +554,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             first_day = datetime.datetime(self.selected_year, self.selected_month, 1)
 
             # get the first_day of the week that has the first day of current month
-            while first_day.weekday() != 6:
+            while first_day.weekday() != self.FIRST_DAY_OF_WEEK:
                 first_day = first_day - day
 
             # init the array that will hold the dates we're displaying
