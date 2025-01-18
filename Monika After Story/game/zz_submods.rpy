@@ -11,7 +11,7 @@ init -989 python:
         mas_submod_utils.submod_log.info(
             "\nINSTALLED SUBMODS:\n{0}".format(
                 ",\n".join(
-                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.itervalues()]
+                    ["    '{0}' v{1}".format(submod.name, submod.version) for submod in store.mas_submod_utils.submod_map.values()]
                 )
             )
         )
@@ -64,7 +64,7 @@ init -991 python in mas_submod_utils:
         FB_VERS_STR = "0.0.0"
 
         #Regular expression representing a valid author and name
-        AN_REGEXP = re.compile(ur'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
+        AN_REGEXP = re.compile(r'^[ a-zA-Z_\u00a0-\ufffd][ 0-9a-zA-Z_\u00a0-\ufffd]*$')
 
         def __init__(
             self,
@@ -119,8 +119,8 @@ init -991 python in mas_submod_utils:
 
             #Now we verify that the version number is something proper
             try:
-                map(int, version.split('.'))
-            except:
+                tuple(map(int, version.split('.')))
+            except ValueError:
                 raise SubmodError("Version number '{0}' is invalid.".format(version))
 
             #Make sure author and name are proper label names
@@ -159,7 +159,7 @@ init -991 python in mas_submod_utils:
             OUT:
                 List of integers representing the version number
             """
-            return map(int, self.version.split('.'))
+            return list(map(int, self.version.split('.')))
 
         def hasUpdated(self):
             """
@@ -177,7 +177,7 @@ init -991 python in mas_submod_utils:
                 return False
 
             try:
-                old_vers = map(int, old_vers.split('.'))
+                old_vers = list(map(int, old_vers.split('.')))
 
             #Persist data was bad, we'll replace it with something safe and return False as we need not check more
             except:
@@ -226,7 +226,7 @@ init -991 python in mas_submod_utils:
             Checks if submods have updated and sets the appropriate update scripts for them to run
             """
             #Iter thru all submods we've got stored
-            for submod in submod_map.itervalues():
+            for submod in submod_map.values():
                 #If it has updated, we need to call their update scripts and adjust the version data value
                 if submod.hasUpdated():
                     submod.updateFrom(
@@ -257,10 +257,10 @@ init -991 python in mas_submod_utils:
 
                 NOTE: Does not handle errors as to get here, formats must be correct regardless
                 """
-                return map(int, version.split('.'))
+                return tuple(map(int, version.split('.')))
 
-            for submod in submod_map.itervalues():
-                for dependency, minmax_version_tuple in submod.dependencies.iteritems():
+            for submod in submod_map.values():
+                for dependency, minmax_version_tuple in submod.dependencies.items():
                     dependency_submod = Submod._getSubmod(dependency)
 
                     if dependency_submod is not None:
@@ -337,6 +337,7 @@ init -991 python in mas_submod_utils:
 init -980 python in mas_submod_utils:
     import inspect
     import store
+    from store import mas_utils
 
     #Store the current label for use elsewhere
     current_label = None
@@ -355,12 +356,13 @@ init -980 python in mas_submod_utils:
     PRIORITY_SORT_KEY = lambda x: x[1][2]
 
     #START: Decorator Function
-    def functionplugin(_label, _args=[], auto_error_handling=True, priority=0):
+    def functionplugin(_label, _args=None, auto_error_handling=True, priority=0):
         """
         Decorator function to register a plugin
 
         The same as registerFunction. See its doc for parameter details
         """
+        # TODO: functools.wraps
         def wrap(_function):
             registerFunction(
                 _label,
@@ -392,26 +394,29 @@ init -980 python in mas_submod_utils:
             return
 
         #Firstly, let's get our sorted list
+        # TODO: use insort instead of sorting every time we run things
         sorted_plugins = __prioritySort(key)
         for _action, data_tuple in sorted_plugins:
             if data_tuple[1]:
                 try:
-                    store.__run(_action, getArgs(key, _action))
+                    store.__run(_action, __getArgs(key, _action))
                 except Exception as ex:
                     store.mas_utils.mas_log.error("function {0} failed because {1}".format(_action.__name__, ex))
 
             else:
-                store.__run(_action, getArgs(key, _action))
+                store.__run(_action, __getArgs(key, _action))
 
-    def registerFunction(key, _function, args=[], auto_error_handling=True, priority=DEF_PRIORITY):
+    def registerFunction(key, _function, args=None, auto_error_handling=True, priority=DEF_PRIORITY):
         """
         Registers a function to the function_plugins dict
 
         NOTE: Does NOT allow overwriting of existing functions in the dict
         NOTE: Function must be callable
         NOTE: Functions run when a label matching the key for the function is:
-        called, jumped, or fallen through to.
-        Or if plugged into a function, when a function by the name of the key calls getAndRunFunctions
+            called, jumped, or fallen through to.
+            Or if plugged into a function, when a function by the name of the key calls getAndRunFunctions
+        NOTE: If you need to provide args/kwargs to the function,
+            wrap it into functools.partial
 
         IN:
             key - key to add the function to.
@@ -419,8 +424,6 @@ init -980 python in mas_submod_utils:
                 NOTE: Function names only work if the function contains a getAndRunFunctions call.
                     Without it, it does nothing.
             _function - function to register
-            args - list of args (must be in order) to pass to the function
-                (Default: [])
             auto_error_handling - whether or function plugins should ignore errors in functions
                 (Set this to False for functions which call or jump)
             priority - Order priority to run functions
@@ -438,10 +441,20 @@ init -980 python in mas_submod_utils:
             store.mas_utils.mas_log.error("{0} is not callable".format(_function.__name__))
             return False
 
-        #Too many args
-        elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
-            return False
+        # TODO: remove args entirely in r8
+        if args is None:
+            args = ()
+
+        else:
+            mas_utils.report_deprecation(
+                "parameter 'args' in 'registerFunction'",
+                use_instead="functools.partial",
+                use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+            )
+            #Too many args
+            if len(args) > len(inspect.getargspec(_function).args):
+                store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
+                return False
 
         #Check for overrides
         key = __getOverrideLabel(key)
@@ -457,8 +470,9 @@ init -980 python in mas_submod_utils:
         function_plugins[key][_function] = (args, auto_error_handling, priority)
         return True
 
-    def getArgs(key, _function):
+    def __getArgs(key, _function):
         """
+        TODO: remove this with r8
         Gets args for the given function at the given key
 
         IN:
@@ -471,21 +485,44 @@ init -980 python in mas_submod_utils:
         """
         global function_plugins
 
-        func_dict = function_plugins.get(key)
+        try:
+            return function_plugins[key][_function][0]
 
-        if not func_dict:
-            return
+        except KeyError:
+            # Unknown key/function
+            # We do not handle index error as that shouldn't be possible
+            # and means there's a bug in the system
+            return None
 
-        return func_dict.get(_function)[0]
+    @mas_utils.deprecated(
+        use_instead="functools.partial",
+        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+    )
+    def getArgs(key, _function):
+        """
+        Gets args for the given function at the given key
 
-    def setArgs(key, _function, args=[]):
+        IN:
+            key - key to retrieve the function from
+            _function - function to retrieve args from
+
+        OUT:
+            list of args if the function is present
+            If function is not present, None is returned
+        """
+        return __getArgs(key, _function)
+
+    @mas_utils.deprecated(
+        use_instead="functools.partial",
+        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
+    )
+    def setArgs(key, _function, args=None):
         """
         Sets args for the given function at the key
 
         IN:
             key - key that the function's function dict is stored in
             _function - function to set the args
-            args - list of args (must be in order) to pass to the function (Default: [])
 
         OUT:
             boolean:
@@ -501,8 +538,11 @@ init -980 python in mas_submod_utils:
             return False
 
         #Function not in dict
-        elif _function not in func_dict:
+        if _function not in func_dict:
             return False
+
+        if args is None:
+            args = ()
 
         #Too many args provided
         elif len(args) > len(inspect.getargspec(_function).args):
@@ -560,7 +600,7 @@ init -980 python in mas_submod_utils:
         #First, we need to convert the functions into a list of tuples
         func_list = [
             (_function, data_tuple)
-            for _function, data_tuple in function_plugins[_label].iteritems()
+            for _function, data_tuple in function_plugins[_label].items()
         ]
 
         return sorted(func_list, key=PRIORITY_SORT_KEY)
@@ -613,5 +653,5 @@ init 999 python:
         Populates a lookup dict for all label overrides which are in effect
         """
         #Let's loop here to update our label overrides map
-        for overridden_label, label_override in config.label_overrides.iteritems():
+        for overridden_label, label_override in config.label_overrides.items():
             _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label

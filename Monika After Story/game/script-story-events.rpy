@@ -60,7 +60,7 @@ label mas_gender:
     #Unlock the gender redo event
     $ mas_unlockEVL("monika_gender_redo","EVE")
     # set pronouns
-    call mas_set_gender
+    $ mas_set_pronouns()
 
     #Set up the preferredname topic
     python:
@@ -161,7 +161,7 @@ label monika_gender_redo:
     m 5hubsa "I'll always love you for who you are~"
 
     # set pronouns
-    call mas_set_gender
+    $ mas_set_pronouns()
     return "love"
 
 label mas_gender_neither:
@@ -1067,7 +1067,7 @@ init 5 python:
 
 label mas_random_limit_reached:
     #Notif so people don't get stuck here
-    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+    $ mas_display_notif(m_name, ["Hey [player]..."], "Topic Alerts", flash_window=True)
 
     python:
         limit_quips = [
@@ -1641,7 +1641,7 @@ label mas_corrupted_persistent:
         call mas_showpoem(mas_note_backups_all_good)
 
     window auto
-    $ _gtext = glitchtext(7)
+    $ _gtext = mas_glitchText(7)
 
     m 1ekc "Do you know what this is about?{nw}"
     $ _history_list.pop()

@@ -14,7 +14,7 @@ init -10 python in mas_fun_facts:
         """
         return [
             fun_fact_evl
-            for fun_fact_evl, ev in fun_fact_db.iteritems()
+            for fun_fact_evl, ev in fun_fact_db.items()
             if not ev.unlocked
         ]
 
@@ -25,7 +25,7 @@ init -10 python in mas_fun_facts:
         OUT:
             List of all fun fact eventlabels
         """
-        return fun_fact_db.keys()
+        return list(fun_fact_db.keys())
 
 
 #Whether or not the last fun fact seen was a good fact

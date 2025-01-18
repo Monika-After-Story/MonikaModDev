@@ -3,6 +3,7 @@ define persistent.demo = False
 define config.developer = False
 # define persistent.steam = "steamapps" in config.basedir.lower()
 
+
 python early:
     # We want these to be available globally, please don't remove
     # Add more as needed
@@ -12,6 +13,7 @@ python early:
     import random
     import traceback
     from collections import defaultdict # this will be availalable anywhere now
+    import string
 
     # define the zorders
     MAS_MONIKA_Z = 10
@@ -21,11 +23,11 @@ python early:
 
 
     ### Overrides of core renpy things
-    def dummy(*args, **kwargs):
+    def dummy(*args, **kwargs) -> None:
         """
         Dummy function that does nothing
         """
-        return
+        return None
 
     class MASDummyClass(object):
         """
@@ -76,6 +78,32 @@ python early:
         Our string formatter that uses more
         advanced formatting rules compared to the RenPy one
         """
+        @staticmethod
+        def _getStoreNameForObject(object_name, *scopes):
+            """
+            Returns the name of the store where the given object
+            was defined or imported to
+
+            IN:
+                object_name - the name of the object to look for (string)
+                scopes - the scopes where we look for the object (storemodule.__dict__)
+
+            OUT:
+                name of the store module where the object was defined
+                or empty string if we couldn't find it
+            """
+            for scope in scopes:
+                if object_name in scope:
+                    stores_names_list = [
+                        store_module_name
+                        for store_module_name, store_module in sys.modules.items()
+                        if store_module and store_module.__dict__ is scope
+                    ]
+                    if stores_names_list:
+                        return stores_names_list[0]
+
+            return ""
+
         def get_field(self, field_name, args, kwargs):
             """
             Originally this method returns objects by references
@@ -90,31 +118,6 @@ python early:
             OUT:
                 tuple of the object and its key
             """
-            def _getStoreNameForObject(object_name, *scopes):
-                """
-                Returns the name of the store where the given object
-                was defined or imported to
-
-                IN:
-                    object_name - the name of the object to look for (string)
-                    scopes - the scopes where we look for the object (storemodule.__dict__)
-
-                OUT:
-                    name of the store module where the object was defined
-                    or empty string if we couldn't find it
-                """
-                for scope in scopes:
-                    if object_name in scope:
-                        stores_names_list = [
-                            store_module_name
-                            for store_module_name, store_module in sys.modules.iteritems()
-                            if store_module and store_module.__dict__ is scope
-                        ]
-                        if stores_names_list:
-                            return stores_names_list[0]
-
-                return ""
-
             # if it's a function call, we eval it
             if "(" in field_name:
                 # split the string into its components
@@ -129,10 +132,10 @@ python early:
 
                 # now we find the store's name to use in eval
                 if isinstance(kwargs, renpy.substitutions.MultipleDict):
-                    scope_store_name = _getStoreNameForObject(first, *kwargs.dicts)
+                    scope_store_name = self._getStoreNameForObject(first, *kwargs.dicts)
 
                 else:
-                    scope_store_name = _getStoreNameForObject(first, kwargs)
+                    scope_store_name = self._getStoreNameForObject(first, kwargs)
 
                 # apply formatting if appropriate
                 if scope_store_name:
@@ -149,78 +152,15 @@ python early:
                         args
                     )
                 )
+                # RenPy requires to return a tuple of the object and the kwargs
+                # as the first item
+                return ((obj, kwargs), first)
 
-            # otherwise just get the reference
-            else:
-                first, rest = field_name._formatter_field_name_split()
-
-                obj = self.get_value(first, args, kwargs)
-
-                for is_attr, i in rest:
-                    if is_attr:
-                        obj = getattr(obj, i)
-
-                    else:
-                        # convert the accessor only if obj isn't a dict
-                        # so the accessor is always a long for other iterables
-                        if not isinstance(obj, dict):
-                            i = long(i)
-
-                        obj = obj[i]
-
-            return obj, first
+            # Otherwise fallback to what renpy does: just get the reference
+            return super().get_field(field_name, args, kwargs)
 
     # allows us to use a more advanced string formatting
     renpy.substitutions.formatter = MASFormatter()
-
-    def mas_with_statement(trans, always=False, paired=None, clear=True):
-        """
-        Causes a transition to occur. This is the Python equivalent of the
-        with statement
-
-        IN:
-            trans - the transition to use
-            always - if True, the transition will always occur, even if the user has disabled transitions
-            paired - Tom knows
-            clear - if True cleans out transient stuff at the end of an interaction
-
-        OUT:
-            True if the user chose to interrupt the transition,
-            and False otherwise
-        """
-        if renpy.game.context().init_phase:
-            raise Exception("With statements may not run while in init phase.")
-
-        if renpy.config.skipping:
-            trans = None
-
-        if not (renpy.game.preferences.transitions or always):
-            trans = None
-
-        renpy.exports.mode('with')
-
-        if isinstance(paired, dict):
-            paired = paired.get(None, None)
-
-            if (trans is None) and (paired is None):
-                return
-
-        if isinstance(trans, dict):
-
-            for k, v in trans.items():
-                if k is None:
-                    continue
-
-                renpy.exports.transition(v, layer=k)
-
-            if None not in trans:
-                return
-
-            trans = trans[None]
-
-        return renpy.game.interface.do_with(trans, paired, clear=clear)
-
-    renpy.exports.with_statement = mas_with_statement
 
     def mas_find_target(self):
         """
@@ -243,6 +183,8 @@ python early:
 
             if renpy.config.debug:
                 raise Exception(msg)
+
+        target = None # typing
 
         args = [ ]
 
@@ -274,7 +216,7 @@ python early:
                     target = renpy.display.image.images[name]
 
                 #If we somehow failed, show the exception and return False
-                except:
+                except Exception:
                     error("Image '%s' not found." % ' '.join(self.name))
                     return False
 
@@ -282,17 +224,24 @@ python early:
                 error("Image '%s' not found." % ' '.join(self.name))
                 return False
 
+        if self._args.name == name:
+            error("Image '{}' refers to itself.".format(' '.join(name)))
+            return False
+
+        args += self._args.args
+
         try:
             a = self._args.copy(name=name, args=args)
             self.target = target._duplicate(a)
 
         except Exception as e:
-            if renpy.config.debug:
+            if renpy.config.raise_image_exceptions and (renpy.config.debug or renpy.config.developer):
                 raise
 
             error(str(e))
+            return False
 
-        #Copy the old transform over.
+        # Copy the old transform over.
         new_transform = self.target._target()
 
         if isinstance(new_transform, renpy.display.transform.Transform):
@@ -308,207 +257,11 @@ python early:
 
     renpy.display.image.ImageReference.find_target = mas_find_target
 
-    class MASImageData(renpy.display.im.ImageBase):
-        """
-        NOTE: This DOES NOT support saving in persistent (pickling),
-            and it might be unsafe to do so.
+    # Deprecated, use im.Data directly
+    MASImageData = im.Data
 
-        This image manipulator loads an image from binary data.
-        """
-        def __init__(self, data, filename, **properties):
-            """
-            Constructor
-
-            IN:
-                data - string of bytes, giving the compressed image data in a standard
-                    file format.
-                filename - "filename" associated with the image. This is used to provide a
-                    hint to Ren'Py about the format of `data`. (It's not actually
-                    loaded from disk.)
-                properties - additional props
-            """
-            super(MASImageData, self).__init__(data, filename, **properties)
-            self.data = data
-            self.filename = filename
-
-        def __unicode__(self):
-            return u"MASImageData({})".format(self.filename)
-
-        def __repr__(self):
-            return str(self.__unicode__())
-
-        def __reduce__(self):
-            return (str, (self.filename,))
-
-        def load(self):
-            f = io.BytesIO(self.data)
-            return renpy.display.pgrender.load_image(f, self.filename)
-
-    class MASAudioData(unicode):
-        """
-        NOTE: This is temporal plaster-fix to renpy, use on your own risk,
-            this class and all support for it will be completely gone with r8
-        NOTE: This DOES NOT support saving in persistent (pickling),
-            and it might be unsafe to do so.
-
-        This loads audio from binary data
-        """
-
-        def __new__(cls, data, filename):
-            rv = unicode.__new__(cls, filename)
-            rv.data = data
-            return rv
-
-        def __init__(self, data, filename):
-            self.filename = filename
-
-        def __reduce__(self):
-            # Pickle as a str is safer
-            return (str, (self.filename, ))
-
-    def __mas_periodic_override(self):
-        """
-        This is the periodic call that causes this channel to load new stuff
-        into its queues, if necessary.
-        """
-
-        # Update the channel volume.
-        vol = self.chan_volume * renpy.game.preferences.volumes[self.mixer]
-
-        if vol != self.actual_volume:
-            renpy.audio.renpysound.set_volume(self.number, vol)
-            self.actual_volume = vol
-
-        # This should be set from something that checks to see if our
-        # mixer is muted.
-        force_stop = self.context.force_stop or (renpy.game.preferences.mute[self.mixer] and self.stop_on_mute)
-
-        if self.playing and force_stop:
-            renpy.audio.renpysound.stop(self.number)
-            self.playing = False
-            self.wait_stop = False
-
-        if force_stop:
-            if self.loop:
-                self.queue = self.queue[-len(self.loop):]
-            else:
-                self.queue = [ ]
-            return
-
-        # Should we do the callback?
-        do_callback = False
-
-        topq = None
-
-        # This has been modified so we only queue a single sound file
-        # per call, to prevent memory leaks with really short sound
-        # files. So this loop will only execute once, in practice.
-        while True:
-
-            depth = renpy.audio.renpysound.queue_depth(self.number)
-
-            if depth == 0:
-                self.wait_stop = False
-                self.playing = False
-
-            # Need to check this, so we don't do pointless work.
-            if not self.queue:
-                break
-
-            # If the pcm_queue is full, then we can't queue
-            # anything, regardless of if it is midi or pcm.
-            if depth >= 2:
-                break
-
-            # If we can't buffer things, and we're playing something
-            # give up here.
-            if not self.buffer_queue and depth >= 1:
-                break
-
-            # We can't queue anything if the depth is > 0 and we're
-            # waiting for a synchro_start.
-            if self.synchro_start and depth:
-                break
-
-            # If the queue is full, return.
-            if renpy.audio.renpysound.queue_depth(self.number) >= 2:
-                break
-
-            # Otherwise, we might be able to enqueue something.
-            topq = self.queue.pop(0)
-
-            # Blacklist of old file formats we used to support, but we now
-            # ignore.
-            lfn = topq.filename.lower() + self.file_suffix.lower()
-            for i in (".mod", ".xm", ".mid", ".midi"):
-                if lfn.endswith(i):
-                    topq = None
-
-            if not topq:
-                continue
-
-            try:
-                filename, start, end = self.split_filename(topq.filename, topq.loop)
-
-                if (end >= 0) and ((end - start) <= 0) and self.queue:
-                    continue
-
-                if isinstance(topq.filename, MASAudioData):
-                    topf = io.BytesIO(topq.filename.data)
-                else:
-                    topf = renpy.audio.audio.load(self.file_prefix + filename + self.file_suffix)
-
-                renpy.audio.renpysound.set_video(self.number, self.movie)
-
-                if depth == 0:
-                    renpy.audio.renpysound.play(self.number, topf, topq.filename, paused=self.synchro_start, fadein=topq.fadein, tight=topq.tight, start=start, end=end)
-                else:
-                    renpy.audio.renpysound.queue(self.number, topf, topq.filename, fadein=topq.fadein, tight=topq.tight, start=start, end=end)
-
-                self.playing = True
-
-            except:
-
-                # If playing failed, remove topq.filename from self.loop
-                # so we don't keep trying.
-                while topq.filename in self.loop:
-                    self.loop.remove(topq.filename)
-
-                if renpy.config.debug_sound and not renpy.game.after_rollback:
-                    raise
-                else:
-                    return
-
-            break
-
-        if self.loop and not self.queue:
-            for i in self.loop:
-                if topq is not None:
-                    newq = renpy.audio.audio.QueueEntry(i, 0, topq.tight, True)
-                else:
-                    newq = renpy.audio.audio.QueueEntry(i, 0, False, True)
-
-                self.queue.append(newq)
-        else:
-            do_callback = True
-
-        # Queue empty callback.
-        if do_callback and self.callback:
-            self.callback()  # E1102
-
-        # global global_pause
-        want_pause = self.context.pause or renpy.audio.audio.global_pause
-
-        if self.paused != want_pause:
-
-            if want_pause:
-                self.pause()
-            else:
-                self.unpause()
-
-            self.paused = want_pause
-
-    renpy.audio.audio.Channel.periodic = __mas_periodic_override
+    # Deprecated, use AudioData
+    MASAudioData = AudioData
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -770,7 +523,7 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-#                diary_entry=None,
+                # diary_entry=None,
                 rules=dict(),
                 last_seen=None,
                 years=None,
@@ -787,12 +540,12 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-#            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-#                raise Exception(
-#                    (
-#                        "diary entry for {0} is longer than {1} characters"
-#                    ).format(eventlabel, self.DIARY_LIMIT)
-#                )
+            # if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+            #     raise Exception(
+            #         (
+            #             "diary entry for {0} is longer than {1} characters"
+            #         ).format(eventlabel, self.DIARY_LIMIT)
+            #     )
             if rules is None:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
@@ -898,7 +651,7 @@ python early:
                 stored_data_list = list(stored_data_row)
 
                 # first, check for lock existence
-                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+                lock_entry = self.INIT_LOCKDB.get(eventlabel, None)
 
                 if lock_entry:
 
@@ -912,8 +665,7 @@ python early:
 
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
-                    for name,index in Event.T_EVENT_NAMES.iteritems():
-
+                    for name,index in self.T_EVENT_NAMES.items():
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
@@ -931,8 +683,8 @@ python early:
                     # actaully this should be always
                     self.prompt = prompt
                     self.category = category
-#                    self.diary_entry = diary_entry
-#                    self.rules = rules
+                    # self.diary_entry = diary_entry
+                    # self.rules = rules
                     self.years = years
                     #self.sensitive = sensitive
                     self.aff_range = aff_range
@@ -944,11 +696,11 @@ python early:
                 self.per_eventdb[self.eventlabel] = data_row
 
             # setup lock entry
-            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+            self.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
 
             # Cache conditional
-            if self.conditional is not None and self.conditional not in Event._conditional_cache:
-                Event._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
+            if self.conditional is not None and self.conditional not in self._conditional_cache:
+                self._conditional_cache[self.conditional] = renpy.python.py_compile(self.conditional, "eval")
 
         def __eq__(self, other):
             """
@@ -985,8 +737,8 @@ python early:
                 value - the new value
             """
             if name in self.N_EVENT_NAMES:
-                super(Event, self).__setattr__(name, value)
-#                self.__dict__[name] = value
+                super().__setattr__(name, value)
+                # self.__dict__[name] = value
 
             # otherwise, figure out the location of an attribute, then repack
             # a tup
@@ -1020,9 +772,9 @@ python early:
                     elif (
                         name == "conditional"
                         and value is not None
-                        and value not in Event._conditional_cache
+                        and value not in self._conditional_cache
                     ):
-                        Event._conditional_cache[value] = renpy.python.py_compile(value, "eval")
+                        self._conditional_cache[value] = renpy.python.py_compile(value, "eval")
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
@@ -1055,7 +807,7 @@ python early:
                 return data_row[attr_loc]
 
             else:
-                return super(Event, self).__getattribute__(name)
+                return super().__getattribute__(name)
 
         #repr override
         def __repr__(self):
@@ -1129,7 +881,11 @@ python early:
             if self.conditional is None:
                 return True
 
-            return renpy.python.py_eval_bytecode(Event._conditional_cache[self.conditional], globals=globals, locals=locals)
+            return renpy.python.py_eval_bytecode(
+                self._conditional_cache[self.conditional],
+                globals=globals,
+                locals=locals
+            )
 
         def canRepeat(self):
             """
@@ -1168,7 +924,7 @@ python early:
             if not self.canRepeat():
                 return False
 
-            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
+            new_start, new_end, was_changed = self._yearAdjustEV(self, force)
 
             if was_changed:
                 if self.isWithinRange():
@@ -1265,17 +1021,20 @@ python early:
             """
             A method to validate conditionals
 
+            RAISES:
+                EventException
+
             ASSUMES:
                 mas_all_ev_db
             """
-            for ev in mas_all_ev_db.itervalues():
+            for ev in mas_all_ev_db.values():
                 if ev.conditional is not None:
                     try:
                         renpy.python.py_eval_bytecode(cls._conditional_cache[ev.conditional])
 
                     except Exception as e:
                         raise EventException(
-                            "Failed to evaluate the '{0}' conditional for the event with the '{1}' label:\n{2}.".format(
+                            "Failed to evaluate '{0}' conditional for the event '{1}':\n{2}.".format(
                                 ev.conditional,
                                 ev.eventlabel,
                                 traceback.format_exc()
@@ -1298,8 +1057,8 @@ python early:
             """
             return ev.shown_count
 
-        @staticmethod
-        def lockInit(name, ev=None, ev_label=None):
+        @classmethod
+        def lockInit(cls, name, ev=None, ev_label=None):
             """
             Locks the property for a given event object or eventlabel.
             This will prevent the property from being overwritten on object
@@ -1312,11 +1071,11 @@ python early:
                 ev_label - event label of Event to property lock
                     (Default: None)
             """
-            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+            cls._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
 
 
-        @staticmethod
-        def unlockInit(name, ev=None, ev_label=None):
+        @classmethod
+        def unlockInit(cls, name, ev=None, ev_label=None):
             """
             Unlocks the property for a given event object or event label.
             This will allow the property to be overwritten on object creation.
@@ -1328,11 +1087,11 @@ python early:
                 ev_label - event label of Event to property lock
                     (Default: None)
             """
-            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+            cls._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
 
 
-        @staticmethod
-        def _modifyInitLock(name, value, ev=None, ev_label=None):
+        @classmethod
+        def _modifyInitLock(cls, name, value, ev=None, ev_label=None):
             """
             Modifies the init lock for a given event/eventlabel
 
@@ -1349,7 +1108,7 @@ python early:
                 return
 
             # check if we have a valid property
-            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            property_dex = cls.T_EVENT_NAMES.get(name, None)
             if property_dex is None:
                 return
 
@@ -1358,13 +1117,13 @@ python early:
                 ev_label = ev.eventlabel
 
             # now lock the property
-            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry = list(cls.INIT_LOCKDB[ev_label])
             lock_entry[property_dex] = value
-            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
+            cls.INIT_LOCKDB[ev_label] = tuple(lock_entry)
 
 
-        @staticmethod
-        def _verifyAndSetDatesEV(ev):
+        @classmethod
+        def _verifyAndSetDatesEV(cls, ev):
             """
             Runs _verifyDatesEV and sets the event properties if change
             happens
@@ -1374,7 +1133,7 @@ python early:
 
             RETURNS: was_changed
             """
-            new_start, new_end, was_changed = Event._verifyDatesEV(ev)
+            new_start, new_end, was_changed = cls._verifyDatesEV(ev)
             if was_changed:
                 ev.start_date = new_start
                 ev.end_date = new_end
@@ -1382,8 +1141,8 @@ python early:
             return was_changed
 
 
-        @staticmethod
-        def _verifyDatesEV(ev):
+        @classmethod
+        def _verifyDatesEV(cls, ev):
             """
             _verifyDates, but for an Event object.
 
@@ -1392,11 +1151,11 @@ python early:
 
             RETURNS: See _verifyDates
             """
-            return Event._verifyDates(ev.start_date, ev.end_date, ev.years)
+            return cls._verifyDates(ev.start_date, ev.end_date, ev.years)
 
 
-        @staticmethod
-        def _yearAdjustEV(ev, force=False):
+        @classmethod
+        def _yearAdjustEV(cls, ev, force=False):
             """
             _yearAdjust, but for an Event object
 
@@ -1407,7 +1166,7 @@ python early:
 
             RETURNS: See _verifyDates
             """
-            return Event._yearAdjust(
+            return cls._yearAdjust(
                 ev.start_date,
                 ev.end_date,
                 ev.years,
@@ -1415,8 +1174,8 @@ python early:
             )
 
 
-        @staticmethod
-        def _verifyDates(_start, _end, _years):
+        @classmethod
+        def _verifyDates(cls, _start, _end, _years):
             """
             Given start/end/_yeras, figure out the appropriate start and end
             dates. We use current datetime to figure this out.
@@ -1441,7 +1200,7 @@ python early:
                 return (_start, _end, False)
 
             # otherwise, we need to repeat
-            return Event._yearAdjust(_start, _end, _years)
+            return cls._yearAdjust(_start, _end, _years)
 
 
         @staticmethod
@@ -1589,12 +1348,7 @@ python early:
             RETURNS:
                 True if this event passes the filter, False if not
             """
-
-            # collections allow us to match all
-            from collections import Counter
-
             # NOTE: this is done in an order to minimize branching.
-
             # now lets filter
             if unlocked is not None and event.unlocked != unlocked:
                 return False
@@ -1650,8 +1404,8 @@ python early:
             # we've passed all the filtering rules somehow
             return True
 
-        @staticmethod
-        def filterEvents(events, **flt_args):
+        @classmethod
+        def filterEvents(cls, events, **flt_args):
             """
             Filters the given events dict according to the given filters.
             HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -1708,14 +1462,10 @@ python early:
             ):
                 return events
 
-            # copy check
-#            if full_copy:
-#                from copy import deepcopy
-
             # setup keys
-            cat_key = Event.FLT[0]
-            act_key = Event.FLT[4]
-            #sns_key = Event.FLT[8]
+            cat_key = cls.FLT[0]
+            act_key = cls.FLT[4]
+            #sns_key = cls.FLT[8]
 
             # validate filter rules
             category = flt_args.get(cat_key)
@@ -1737,33 +1487,34 @@ python early:
             filt_ev_dict = dict()
 
             # python 2
-            for k,v in events.iteritems():
+            for k,v in events.items():
                 # time to apply filtering rules
-                if Event._filterEvent(v, **flt_args):
+                if cls._filterEvent(v, **flt_args):
                     filt_ev_dict[k] = v
 
             return filt_ev_dict
 
         @staticmethod
         def getSortedKeys(events, include_none=False):
-            #
-            # Returns a list of eventlables (keys) of the given dict of events
-            # sorted by the field unlock_date. The list is sorted in
-            # chronological order (newest first). Events with an unlock_date
-            # of None are not included unless include_none is True, in which
-            # case, Nones are put after everything else
-            #
-            # IN:
-            #   events - dict of events of the following format:
-            #       eventlabel: event object
-            #   include_none - True means we include events that have None for
-            #       unlock_date int he sorted key list, False means we dont
-            #       (Default: False)
-            #
-            # RETURNS:
-            #   list of eventlabels (keys), sorted in chronological order.
-            #   OR: [] if the given events is empty or all unlock_date fields
-            #   were None and include_none is False
+            """
+            Returns a list of eventlables (keys) of the given dict of events
+            sorted by the field unlock_date. The list is sorted in
+            chronological order (newest first). Events with an unlock_date
+            of None are not included unless include_none is True, in which
+            case, Nones are put after everything else
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                include_none - True means we include events that have None for
+                    unlock_date int he sorted key list, False means we dont
+                    (Default: False)
+
+            RETURNS:
+                list of eventlabels (keys), sorted in chronological order.
+                OR: [] if the given events is empty or all unlock_date fields
+                were None and include_none is False
+            """
 
             # sanity check
             if not events or len(events) == 0:
@@ -1802,150 +1553,8 @@ python early:
 
             return eventlabels
 
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkConditionals(events, rebuild_ev=False):
-            # NOTE: DEPRECATED
-            #
-            # This checks the conditionals for all of the events in the event list
-            # if any evaluate to true, run the desired action then clear the
-            # conditional.
-            #
-            # IN:
-            #   rebulid_ev - pass in True to notify idle to rebuild events
-            #       if a random action occured.
-            import datetime
-
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            _now = datetime.datetime.now()
-
-            for ev_label,ev in events.iteritems():
-                # TODO: honestly, we should index events with conditionals
-                #   so we only check what needs to be checked. Its a bit of an
-                #   annoyance to check all of these properties once per minute.
-
-                # NOTE: we only check events with:
-                #   - a conditional property
-                #   - current affection is within aff_range
-                #   - has None for date properties
-
-                if (
-                        # has conditional property
-                        ev.conditional is not None
-
-                        # within aff range
-                        and ev.checkAffection(mas_curr_affection)
-
-                        # no date props
-                        and ev.start_date is None
-                        and ev.end_date is None
-
-                        # check if the action is valid
-                        and ev.action in Event.ACTION_MAP
-
-                        # finally check if the conditional is true
-                        and eval(ev.conditional)
-                    ):
-
-                    # perform action
-                    Event._performAction(
-                        ev,
-                        unlock_time=_now,
-                        rebuild_ev=rebuild_ev
-                    )
-
-                    #Clear the conditional
-                    ev.conditional = None
-
-
-            return events
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkCalendar(events):
-            # NOTE: DEPRECATED
-            #
-            # This checks the date for all events to see if they are active.
-            # If they are active, then it checks for a conditional, and evaluates
-            # if an action should be run.
-            import datetime
-
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # dict check
-            ev_list = events.keys() # python 2
-
-            current_time = datetime.datetime.now()
-            # insertion sort
-            for ev in ev_list:
-
-                e = events[ev]
-
-                #If the event has no time-dependence, don't check it
-                if (e.start_date is None) and (e.end_date is None):
-                    continue
-
-                #Calendar must be based on a date
-                if e.start_date is not None:
-                    if e.start_date > current_time:
-                        continue
-
-                if e.end_date is not None:
-                    if e.end_date <= current_time:
-                        continue
-
-                if e.conditional is not None:
-                    if not eval(e.conditional):
-                        continue
-
-
-                if e.action in Event.ACTION_MAP:
-                    # perform action
-                    Event._performAction(e, unlock_time=current_time)
-
-                    # Check if we have a years property
-                    if e.years is not None:
-
-                        # if it's an empty list
-                        if len(e.years) == 0:
-
-                            # get event ready for next year
-                            e.start_date = store.mas_utils.add_years(e.start_date, 1)
-                            e.end_date = store.mas_utils.add_years(e.end_date, 1)
-                            continue
-
-                        # if it's not empty, get all the years that are in the future
-                        new_years = [year for year in e.years if year > e.start_date.year]
-
-                        # if we have possible new years
-                        if len(new_years) > 0:
-                            # sort them to ensure we get the nearest one
-                            new_years.sort()
-
-                            # pick it
-                            new_year = new_years[0]
-
-                            # get the difference
-                            diff = new_year - e.start_date.year
-
-                            # update event for the year it should repeat
-                            e.start_date = store.mas_utils.add_years(e.start_date, diff)
-                            e.end_date = store.mas_utils.add_years(e.end_date, diff)
-                            continue
-
-                    # Clear the conditional since the event shouldn't repeat
-                    events[ev].conditional = "False"
-
-            return events
-
-
-        @staticmethod
-        def _checkEvent(ev, curr_time):
+        @classmethod
+        def _checkEvent(cls, ev, curr_time):
             """
             Singular filter function for checkEvents
 
@@ -1971,15 +1580,15 @@ python early:
                 return False
 
             # check if valid action
-            if ev.action not in Event.ACTION_MAP:
+            if ev.action not in cls.ACTION_MAP:
                 return False
 
             # success
             return True
 
 
-        @staticmethod
-        def checkEvents(ev_dict, rebuild_ev=True):
+        @classmethod
+        def checkEvents(cls, ev_dict, rebuild_ev=True):
             """
             This acts as a combination of both checkConditoinal and
             checkCalendar
@@ -1991,13 +1600,20 @@ python early:
 
             _now = datetime.datetime.now()
 
-            for ev_label,ev in ev_dict.iteritems():
-                # TODO: same TODO as in checkConditionals.
-                #   indexing would be smarter.
+            for ev_label,ev in ev_dict.items():
+                # TODO: honestly, we should index events with conditionals
+                #   so we only check what needs to be checked. Its a bit of an
+                #   annoyance to check all of these properties once per minute.
 
-                if Event._checkEvent(ev, _now):
+                # NOTE: we only check events with:
+                #   - a conditional property
+                #   - current affection is within aff_range
+                #   - has None for date properties
+                # indexing would be smarter.
+
+                if cls._checkEvent(ev, _now):
                     # perform action
-                    Event._performAction(
+                    cls._performAction(
                         ev,
                         unlock_time=_now,
                         rebuild_ev=rebuild_ev
@@ -2010,87 +1626,6 @@ python early:
                         ev.action = None
 
             return
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def _checkRepeatRule(ev, check_time, defval=True):
-            """DEPRECATED
-
-            (remove when farewells is updated)
-
-            Checks a single event against its repeat rules, which are evaled
-            to a time.
-            NOTE: no sanity checks
-            TODO: include checkConditional
-
-            IN:
-                ev - single event to check
-                check_time - datetime used to check time rules
-                defval - defval to pass into the rules
-                    (Default: True)
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            # check if the event contains a MASSelectiveRepeatRule and
-            # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(
-                    check_time, ev, defval=defval
-                ):
-                return True
-
-            # check if the event contains a MASNumericalRepeatRule and
-            # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(
-                    check_time, ev, defval=defval
-                ):
-                return True
-
-            return False
-
-        @store.mas_utils.deprecated(should_raise=True)
-        @staticmethod
-        def checkRepeatRules(events, check_time=None):
-            """DEPRECATED
-
-            (remove when farewells is updated)
-
-            checks the event dict against repeat rules, which are evaluated
-            to a time.
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-                check_time - the datetime object that will be used to check the
-                    timed rules, if none is passed we check against the current time
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-                for the given check_time
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # if check_time is none we check against current time
-            if check_time is None:
-                check_time = datetime.datetime.now()
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-                if Event._checkRepeatRule(event, check_time, defval=False):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    available_events[event.eventlabel] = event
-
-            # return the available events dict
-            return available_events
-
 
         @staticmethod
         def _checkFarewellRule(ev):
@@ -2106,8 +1641,8 @@ python early:
             return MASFarewellRule.evaluate_rule(ev)
 
 
-        @staticmethod
-        def checkFarewellRules(events):
+        @classmethod
+        def checkFarewellRules(cls, events):
             """
             Checks the event dict (farewells) against their own farewell specific
             rules, filters out those Events whose rule check return true. As for
@@ -2129,10 +1664,10 @@ python early:
             available_events = dict()
 
             # iterate over each event in the given events dict
-            for label, event in events.iteritems():
+            for label, event in events.items():
 
                 # check if the event contains a MASFarewellRule and evaluate it
-                if Event._checkFarewellRule(event):
+                if cls._checkFarewellRule(event):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -2143,64 +1678,8 @@ python early:
             # return the available events dict
             return available_events
 
-        #TODO: Depricate this
-        @staticmethod
-        def _checkAffectionRule(ev,keepNoRule=False):
-            """
-            Checks the given event against its own affection specific rule.
-
-            IN:
-                ev - event to check
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
-
-        #TODO: Depricate this
-        @staticmethod
-        def checkAffectionRules(events,keepNoRule=False):
-            """
-            Checks the event dict against their own affection specific rules,
-            filters out those Events whose rule check return true. This rule
-            checks if current affection is inside the specified range contained
-            on the rule
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-                keepNoRule - Boolean indicating wheter if it should keep
-                    events that don't have an affection rule defined
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-
-                # check if the event contains a MASAffectionRule and evaluate it
-                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
-
-
-        @staticmethod
-        def _performAction(ev, **kwargs):
+        @classmethod
+        def _performAction(cls, ev, **kwargs):
             """
             Efficient / no checking action performing
 
@@ -2210,19 +1689,19 @@ python early:
                 ev - event we are performing action on
                 **kwargs - keyword args to pass to action
             """
-            Event.ACTION_MAP[ev.action](ev, **kwargs)
+            cls.ACTION_MAP[ev.action](ev, **kwargs)
 
 
-        @staticmethod
-        def performAction(ev, **kwargs):
+        @classmethod
+        def performAction(cls, ev, **kwargs):
             """
             Performs the action of the given event
 
             IN:
                 ev - event we are perfrming action on
             """
-            if ev.action in Event.ACTION_MAP:
-                Event._performAction(ev, **kwargs)
+            if ev.action in cls.ACTION_MAP:
+                cls._performAction(ev, **kwargs)
 
         @staticmethod
         def _undoEVAction(ev):
@@ -2339,12 +1818,12 @@ python early:
             """
             super(renpy.Displayable, self).__init__()
             # setup
-#            self.idle_text = idle_text
-#            self.hover_text = hover_text
-#            self.disable_text = disable_text
-#            self.idle_back = idle_back
-#            self.hover_back = hover_back
-#            self.disable_back = disable_back
+            # self.idle_text = idle_text
+            # self.hover_text = hover_text
+            # self.disable_text = disable_text
+            # self.idle_back = idle_back
+            # self.hover_back = hover_back
+            # self.disable_back = disable_back
             self.xpos = xpos
             self.ypos = ypos
             self.width = width
@@ -3207,17 +2686,6 @@ python early:
                 self.corners[-1]
             ))
 
-# init -1 python:
-    @store.mas_utils.deprecated(should_raise=True)
-    class MASInteractable(renpy.Displayable):
-        """DEPRECATED
-
-        Do not use this.
-        """
-
-        def __init__(self, *args, **kwargs):
-            pass
-
 
 # init -1 python:
     # new class to manage a list of quips
@@ -3328,7 +2796,7 @@ python early:
             if self.allow_glitch:
 
                 # create the glitchtext quip
-                quip = glitchtext(length)
+                quip = mas_glitchText(length)
 
                 # check for cps speed adding
                 if cps_speed > 0 and cps_speed != 1:
@@ -3765,7 +3233,7 @@ python early:
             if key.startswith(self.EX_PFX):
                 return self.ex_props.get(key[self._EX_LEN:], None)
 
-            return super(MASExtraPropable, self).__getattr__(key)
+            return super().__getattr__(key)
 
         def __setattr__(self, key, value):
             if key.startswith(self.EX_PFX):
@@ -3774,7 +3242,7 @@ python early:
                 if len(stripped_key) > 0:
                     self.ex_props[stripped_key] = value
 
-            super(MASExtraPropable, self).__setattr__(key, value)
+            super().__setattr__(key, value)
 
         def ex_has(self, key):
             """
@@ -3793,7 +3261,7 @@ python early:
 
             RETURNS: iter of ex prop names and values
             """
-            return (item for item in self.ex_props.iteritems())
+            return (item for item in self.ex_props.items())
 
         def ex_pop(self, key, default=None):
             """
@@ -3826,7 +3294,7 @@ python early:
 
                 props = [
                     "{0}: {1}".format(key, value)
-                    for key, value in ex_props.iteritems()
+                    for key, value in ex_props.items()
                 ]
                 return "<exprops: ({0})>".format(", ".join(props))
 
@@ -4188,21 +3656,6 @@ init -1 python in _mas_root:
     import datetime
     import collections
 
-    # redefine this because I can't get access to global functions, also
-    # i dont care to find out how
-    nonunicode = (
-        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ" +
-        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę" +
-        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ" +
-        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
-    )
-
-    def glitchtext(length):
-        import random
-        output = ""
-        for x in range(length):
-            output += random.choice(nonunicode)
-        return output
 
     def mangleFile(filepath, mangle_length=1000):
         """
@@ -4215,7 +3668,7 @@ init -1 python in _mas_root:
                 (Default: 1000)
         """
         import struct
-        bad_text = glitchtext(mangle_length)
+        bad_text = store.mas_glitchText(mangle_length)
         bad_text = [ord(x) for x in bad_text]
         bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
         with open(filepath, "wb") as m_file:
@@ -4416,7 +3869,7 @@ init -995 python in mas_utils:
         """
         # check dicts
         if data is not None:
-            for value in data.itervalues():
+            for value in data.values():
                 if value is not None:
                     return False
 
@@ -4795,7 +4248,7 @@ init -100 python in mas_utils:
     import random
     import os
     import math
-    from cStringIO import StringIO as fastIO
+    from io import StringIO
     from collections import defaultdict
     import functools
 
@@ -5334,9 +4787,9 @@ init -100 python in mas_utils:
                 (Default: None)
 
         RETURNS:
-            a cStringIO buffer of the random blob
+            a StringIO buffer of the random blob
         """
-        data = fastIO()
+        data = StringIO()
         _byte_count = 0
         curr_state = None
 
@@ -5366,9 +4819,9 @@ init -100 python in mas_utils:
             size - size in bytes of the blob to make
 
         RETURNS:
-            a cStringIO buffer of the random blob
+            a StringIO buffer of the random blob
         """
-        data = fastIO()
+        data = StringIO()
         _byte_limit = 4 * (1024**2) # 4MB
 
         while size > 0:
@@ -6857,8 +6310,13 @@ init 21 python:
 
         return rv
 
+    @store.mas_utils.deprecated(use_instead="renpy.get_mouse_pos", should_raise=True)
     def mas_getMousePos():
         """
+        DEPRECIATED
+
+        Use renpy.get_mouse_pos instead
+
         Gets the mouse position in terms of physical screen size
 
         OUT:
@@ -6900,6 +6358,26 @@ init 21 python:
         """
         renpy.show("monika " + exp_code)
         return ""
+
+    __NONUNICODE = (
+        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ"
+        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę"
+        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ"
+        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+    )
+
+    def mas_glitchText(length: int) -> str:
+        """
+        Backported and impoved glitchtext from DDLC
+
+        IN:
+            length - len of the text to generate
+
+        OUT:
+            str of the generated glitch text
+        """
+        output = [random.choice(__NONUNICODE) for i in range(length)]
+        return "".join(output)
 
 # Music
 init -1:
@@ -8317,12 +7795,13 @@ init -1 python in mas_randchat:
             slider_value - slider value given from the slider
                 Should be between 0 - 6
         """
+        global rand_low
+        global rand_high
+
         slider_setting = SLIDER_MAP.get(slider_value, 4)
 
         # otherwise set up the times
         # globalize
-        global rand_low
-        global rand_high
 
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
@@ -8395,12 +7874,6 @@ init -1 python in mas_randchat:
 # stores that need to be globally available
 init 4 python:
     import store.mas_randchat as mas_randchat
-
-
-# Deprecated, call mas_set_pronouns directly
-label mas_set_gender:
-    $ mas_set_pronouns()
-    return
 
 
 style jpn_text:

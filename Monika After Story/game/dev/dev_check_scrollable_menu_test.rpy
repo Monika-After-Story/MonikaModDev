@@ -1,4 +1,3 @@
-
 init 5 python:
     addEvent(
         Event(
@@ -141,4 +140,3 @@ label dev_check_scrollable_menu_sample:
     m "sample complete"
 
     return
-

@@ -26,7 +26,7 @@ init python:
 
         _today = datetime.date.today()
         #Iter thru the stuffs in the apology time tb
-        for ev_label in persistent._mas_apology_time_db.keys():
+        for ev_label in tuple(persistent._mas_apology_time_db.keys()):
             if current_total_playtime >= persistent._mas_apology_time_db[ev_label][0] or _today >= persistent._mas_apology_time_db[ev_label][1]:
                 #Pop the ev_label from the time db and lock the event label. You just lost your chance
                 store.mas_lockEVL(ev_label,'APL')
@@ -94,7 +94,7 @@ label monika_playerapologizes:
     python:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
-            for ev_label, ev in store.mas_apology.apology_db.iteritems()
+            for ev_label, ev in store.mas_apology.apology_db.items()
             if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
         ]
 

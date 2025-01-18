@@ -1,4 +1,3 @@
-
 init 5 python:
     addEvent(
         Event(

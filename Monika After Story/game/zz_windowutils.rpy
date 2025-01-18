@@ -43,8 +43,15 @@ init python in mas_windowutils:
     from store import mas_utils
     #The initial setup
 
+    ## Linux
     # The window object, used on Linux systems, otherwise always None
     MAS_WINDOW = None
+
+    ## Windows
+    # The notification manager
+    WIN_NOTIF_MANAGER = None
+    # Window handler
+    HWND = None
 
     #We can only do this on windows
     if renpy.windows:
@@ -54,22 +61,27 @@ init python in mas_windowutils:
 
         #We try/catch/except to make sure the game can run if load fails here
         try:
-            #Going to import win32gui for use in destroying notifs
-            import win32gui
-            #Import win32api so we know if we can or cannot use notifs
-            import win32api
-
-            #Since importing the required libs was successful, we can move onto importing and initializing a balloontip
-            import balloontip
-
-            #And finally, import the internal functions to make getting window handle easier
-            from win32gui import GetWindowText, GetForegroundWindow
+            import winnie32api
 
             #Now we initialize the notification class
-            __tip = balloontip.WindowsBalloonTip()
-
-            #Now we set the hwnd of this temporarily
-            __tip.hwnd = None
+            WIN_NOTIF_MANAGER = winnie32api.NotifManager(
+                renpy.config.name,
+                os.path.join(renpy.config.gamedir, "mod_assets/mas_icon.ico"),
+                on_dismiss=lambda: (
+                    focusMASWindow(),
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                ),
+                on_lmb_click=lambda: (
+                    focusMASWindow(),
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                ),
+                on_rmb_click=lambda: (
+                    _unflashMASWindow_Windows(),
+                    WIN_NOTIF_MANAGER.clear()
+                )
+            )
 
         except Exception as e:
             #If we fail to import, then we're going to have to make sure nothing can run.
@@ -78,7 +90,7 @@ init python in mas_windowutils:
 
             #Log this
             store.mas_utils.mas_log.warning(
-                "win32api/win32gui failed to be imported, disabling notifications: {}".format(e)
+                f"winnie32api failed to be imported, disabling notifications: {e}"
             )
 
     elif renpy.linux:
@@ -86,13 +98,13 @@ init python in mas_windowutils:
         session_type = os.environ.get("XDG_SESSION_TYPE")
 
         #Wayland is not supported, disable wrs
-        if session_type == "wayland":
+        if session_type in ("wayland", None) or os.environ.get("WAYLAND_DISPLAY"):
             store.mas_windowreacts.can_show_notifs = False
             store.mas_windowreacts.can_do_windowreacts = False
             store.mas_utils.mas_log.warning("Wayland is not yet supported, disabling notifications.")
 
         #X11 however is fine
-        elif session_type == "x11":
+        elif session_type == "x11" or os.environ.get("DISPLAY"):
             try:
                 import Xlib
 
@@ -107,7 +119,7 @@ init python in mas_windowutils:
                 store.mas_windowreacts.can_do_windowreacts = False
 
                 store.mas_utils.mas_log.warning(
-                    "Xlib failed to be imported, disabling notifications: {}".format(e)
+                    f"Xlib failed to be imported, disabling notifications: {e}"
                 )
 
         else:
@@ -120,24 +132,13 @@ init python in mas_windowutils:
         store.mas_windowreacts.can_do_windowreacts = False
 
 
-    class MASWindowFoundException(Exception):
-        """
-        Custom exception class to flag a window found during a window enum
-
-        Has the hwnd as a property
-        """
-        def __init__(self, hwnd):
-            self.hwnd = hwnd
-
-        def __str__(self):
-            return self.hwnd
-
     #Fallback Const Defintion
     DEF_MOUSE_POS_RETURN = (0, 0)
 
+
     ##Now, we start defining OS specific functions which we can set to a var for proper cross platform on a single func
     #Firstly, the internal helper functions
-    def __getActiveWindowObj_Linux():
+    def __getActiveWindow_Linux():
         """
         Gets the active window object
 
@@ -164,7 +165,7 @@ init python in mas_windowutils:
             mas_utils.mas_log.error("Failed to get active window object: {}".format(e))
             return None
 
-    def __getMASWindowLinux():
+    def __getMASWindow_Linux():
         """
         Funtion to get the MAS window on Linux systems
 
@@ -199,36 +200,30 @@ init python in mas_windowutils:
             mas_utils.mas_log.error("Failed to get MAS window object: {}".format(e))
             return None
 
-    def __getMASWindowHWND():
+    def __getMASWindowHWND_Windows() -> int|None:
         """
         Gets the hWnd of the MAS window
 
-        NOTE: Windows ONLY
-
         OUT:
             int - represents the hWnd of the MAS window
+            None - if we failed to get hwnd
         """
+        global HWND
+
         #Verify we can actually do this before doing anything
-        if not store.mas_windowreacts.can_do_windowreacts:
-            return None
+        if store.mas_windowreacts.can_do_windowreacts:
+            if HWND is None:
+                try:
+                    HWND = winnie32api.get_hwnd_by_title(store.mas_getWindowTitle())
+                except Exception as e:
+                    HWND = None
+                    mas_utils.mas_log.error(f"Failed to get MAS window hwnd: {e}")
+        else:
+            HWND = None
 
-        def checkMASWindow(hwnd, lParam):
-            """
-            Internal function to identify the MAS window. Raises an exception when found to allow the main func to return
-            """
-            if store.mas_getWindowTitle() == win32gui.GetWindowText(hwnd):
-                raise MASWindowFoundException(hwnd)
+        return HWND
 
-        try:
-            win32gui.EnumWindows(checkMASWindow, None)
-
-        except MASWindowFoundException as e:
-            return e.hwnd
-
-        mas_utils.mas_log.error("Failed to get MAS window hwnd")
-        return None
-
-    def __getAbsoluteGeometry(win):
+    def __getAbsoluteGeometry_Linux(win):
         """
         Returns the (x, y, height, width) of a window relative to the top-left
         of the screen.
@@ -242,7 +237,7 @@ init python in mas_windowutils:
         #If win is None, then we should just return a None here
         if win is None:
             # This handles some odd issues with setting window on Linux
-            win = _setMASWindow()
+            win = _setMASWindow_Linux()
             if win is None:
                 return None
 
@@ -263,14 +258,14 @@ init python in mas_windowutils:
 
         except Xlib.error.BadDrawable:
             #In the case of a bad drawable, we'll try to re-get the MAS window to get a good one
-            _setMASWindow()
+            _setMASWindow_Linux()
 
         except XError as e:
-            mas_utils.mas_log.error("Failed to get window geometry: {}".format(e))
+            mas_utils.mas_log.error(f"Failed to get window geometry: {e}")
 
         return None
 
-    def _setMASWindow():
+    def _setMASWindow_Linux():
         """
         Sets the MAS_WINDOW global on Linux systems
 
@@ -280,7 +275,7 @@ init python in mas_windowutils:
         global MAS_WINDOW
 
         if renpy.linux:
-            MAS_WINDOW = __getMASWindowLinux()
+            MAS_WINDOW = __getMASWindow_Linux()
 
         else:
             MAS_WINDOW = None
@@ -288,7 +283,7 @@ init python in mas_windowutils:
         return MAS_WINDOW
 
     #Next, the active window handle getters
-    def _getActiveWindowHandle_Windows():
+    def _getActiveWindowHandle_Windows() -> str:
         """
         Funtion to get the active window on Windows systems
 
@@ -297,9 +292,13 @@ init python in mas_windowutils:
 
         ASSUMES: OS IS WINDOWS (renpy.windows)
         """
-        return unicode(GetWindowText(GetForegroundWindow()))
+        try:
+            # winnie32api can return None
+            return winnie32api.get_active_window_title() or ""
+        except Exception:
+            return ""
 
-    def _getActiveWindowHandle_Linux():
+    def _getActiveWindowHandle_Linux() -> str:
         """
         Funtion to get the active window on Linux systems
 
@@ -309,7 +308,7 @@ init python in mas_windowutils:
         ASSUMES: OS IS LINUX (renpy.linux)
         """
         NET_WM_NAME = __display.intern_atom("_NET_WM_NAME")
-        active_winobj = __getActiveWindowObj_Linux()
+        active_winobj = __getActiveWindow_Linux()
 
         if active_winobj is None:
             return ""
@@ -318,22 +317,17 @@ init python in mas_windowutils:
             # Subsequent method calls might raise BadWindow exception if active_winid refers to nonexistent window.
             active_winname_prop = active_winobj.get_full_property(NET_WM_NAME, 0)
 
+            # TODO: consider logging if this is None, also catch a more generic exception just in case
             if active_winname_prop is not None:
                 active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
                 return active_winname.replace("\n", "")
 
-            else:
-                return ""
-
-        except BadWindow:
-            return ""
-
-        except XError as e:
-            mas_utils.mas_log.error("Failed to get active window handle: {}".format(e))
+        except (XError, BadWindow) as e:
+            mas_utils.mas_log.error(f"Failed to get active window handle: {e}")
 
         return ""
 
-    def _getActiveWindowHandle_OSX():
+    def _getActiveWindowHandle_OSX() -> str:
         """
         Gets the active window on macOS
 
@@ -341,6 +335,55 @@ init python in mas_windowutils:
         for MacOS
         """
         return ""
+
+    def _flashMASWindow_Windows():
+        """
+        Tries to flash MAS window
+        """
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.flash_window(
+                hwnd,
+                count=None,
+                caption=False,
+                tray=True
+            )
+
+    def _unflashMASWindow_Windows():
+        """
+        Tries to stop flashing MAS window
+        """
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.unflash_window(hwnd)
+
+    def _flashMASWindow_Linux():
+        """
+        Tries to flash MAS window
+        """
+
+    def _flashMASWindow_OSX():
+        """
+        Tries to flash MAS window
+        """
+
+    def _focusMASWindow_Windows():
+        """
+        Tries to set focus on MAS window
+        """
+        hwnd = __getMASWindowHWND_Windows()
+        if hwnd:
+            winnie32api.set_active_window(hwnd)
+
+    def _focusMASWindow_Linux():
+        """
+        Tries to set focus on MAS window
+        """
+
+    def _focusMASWindow_OSX():
+        """
+        Tries to set focus on MAS window
+        """
 
     #Notif show internals
     def _tryShowNotification_Windows(title, body):
@@ -355,12 +398,10 @@ init python in mas_windowutils:
         OUT:
             bool. True if the notification was successfully sent, False otherwise
         """
-        # The Windows way, notif_success is adjusted if need be
-        notif_success = __tip.showWindow(title, body)
-
-        #We need the IDs of the notifs to delete them from the tray
-        store.destroy_list.append(__tip.hwnd)
-        return notif_success
+        try:
+            return WIN_NOTIF_MANAGER.send(title, body)
+        except Exception:
+            return False
 
     def _tryShowNotification_Linux(title, body):
         """
@@ -408,7 +449,8 @@ init python in mas_windowutils:
         if store.mas_windowreacts.can_do_windowreacts:
             #Try except here because we may not have permissions to do so
             try:
-                cur_pos = win32gui.GetCursorPos()
+                cur_pos = tuple(winnie32api.get_screen_mouse_pos())
+
             except Exception:
                 cur_pos = DEF_MOUSE_POS_RETURN
 
@@ -432,19 +474,22 @@ init python in mas_windowutils:
         OUT:
             tuple representing window geometry or None if the window's hWnd could not be found
         """
-        hwnd = __getMASWindowHWND()
+        hwnd = __getMASWindowHWND_Windows()
 
         if hwnd is None:
             return None
 
-        rv = win32gui.GetWindowRect(hwnd)
-
-        # win32gui may return incorrect geometry (-32k seems to be the limit),
-        # in this case we return None
-        if rv[0] <= -32000 and rv[1] <= -32000:
+        try:
+            rect = winnie32api.get_window_rect(hwnd)
+        except Exception:
             return None
 
-        return rv
+        # Windows may return incorrect geometry (-32k seems to be the limit),
+        # in this case we return None
+        if rect.top_left.x <= -32000 and rect.top_left.y <= -32000:
+            return None
+
+        return (rect.top_left.x, rect.top_left.y, rect.bottom_right.x, rect.bottom_right.y)
 
     def _getMASWindowPos_Linux():
         """
@@ -453,7 +498,7 @@ init python in mas_windowutils:
         OUT:
             tuple representing (left, top, right, bottom) of the window bounds, or None if not possible to get
         """
-        geom = __getAbsoluteGeometry(MAS_WINDOW)
+        geom = __getAbsoluteGeometry_Linux(MAS_WINDOW)
 
         if geom is not None:
             return (
@@ -579,28 +624,33 @@ init python in mas_windowutils:
         _tryShowNotif = _tryShowNotification_Windows
         getMASWindowPos = _getMASWindowPos_Windows
         getMousePos = _getAbsoluteMousePos_Windows
+        flashMASWindow = _flashMASWindow_Windows
+        focusMASWindow = _focusMASWindow_Windows
+
+    elif renpy.linux:
+        _window_get = _getActiveWindowHandle_Linux
+        _tryShowNotif = _tryShowNotification_Linux
+        getMASWindowPos = _getMASWindowPos_Linux
+        getMousePos = _getAbsoluteMousePos_Linux
+        flashMASWindow = _flashMASWindow_Linux
+        focusMASWindow = _focusMASWindow_Linux
 
     else:
-        if renpy.linux:
-            _window_get = _getActiveWindowHandle_Linux
-            _tryShowNotif = _tryShowNotification_Linux
-            getMASWindowPos = _getMASWindowPos_Linux
-            getMousePos = _getAbsoluteMousePos_Linux
+        _window_get = _getActiveWindowHandle_OSX
+        _tryShowNotif = _tryShowNotification_OSX
+        flashMASWindow = _flashMASWindow_OSX
+        focusMASWindow = _focusMASWindow_OSX
 
-        else:
-            _window_get = _getActiveWindowHandle_OSX
-            _tryShowNotif = _tryShowNotification_OSX
+        #Because we have no method of testing on Mac, we'll use the dummy function for these
+        getMASWindowPos = store.dummy
+        getMousePos = store.dummy
 
-            #Because we have no method of testing on Mac, we'll use the dummy function for these
-            getMASWindowPos = store.dummy
-            getMousePos = store.dummy
-
-            #Now make sure we don't use these functions so long as we can't validate Mac
-            isCursorAboveMASWindow = return_false
-            isCursorBelowMASWindow = return_false
-            isCursorLeftOfMASWindow = return_false
-            isCursorRightOfMASWindow = return_false
-            isCursorInMASWindow = return_true
+        #Now make sure we don't use these functions so long as we can't validate Mac
+        # isCursorAboveMASWindow = return_false
+        # isCursorBelowMASWindow = return_false
+        # isCursorLeftOfMASWindow = return_false
+        # isCursorRightOfMASWindow = return_false
+        # isCursorInMASWindow = return_true
 
 init python:
     #List of notif quips (used for topic alerts)
@@ -623,8 +673,6 @@ init python:
         "Do you have a minute, [player]?",
     ]
 
-    #List of hwnd IDs to destroy
-    destroy_list = list()
 
     #START: Utility methods
     def mas_canCheckActiveWindow():
@@ -649,7 +697,13 @@ init python:
             return store.mas_windowutils._window_get()
         return ""
 
-    def mas_display_notif(title, body, group=None, skip_checks=False):
+    def mas_display_notif(
+        title: str,
+        body: list[str],
+        group: str|None = None,
+        skip_checks: bool = False,
+        flash_window: bool = False
+    ) -> bool:
         """
         Notification creation method
 
@@ -660,6 +714,8 @@ init python:
                 (Default: None)
             skip_checks - Whether or not we skips checks
                 (Default: False)
+            flash_window - do we want to flash the MAS window (tray icon)
+
         OUT:
             bool indicating status (notif shown or not (by check))
 
@@ -671,10 +727,11 @@ init python:
                 4. And if the notification group is enabled
                 OR if we skip checks. BUT this should only be used for introductory or testing purposes.
         """
-
         #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
         if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
             persistent._mas_windowreacts_notif_filters[group] = False
+
+        notif_success = False
 
         if (
             skip_checks
@@ -689,17 +746,17 @@ init python:
                 renpy.substitute(title),
                 renpy.substitute(renpy.random.choice(body))
             )
+            if notif_success:
+                # Flash the window if needed
+                if flash_window:
+                    mas_windowutils.flashMASWindow()
 
-            #Play the notif sound if we have that enabled and notif was successful
-            if persistent._mas_notification_sounds and notif_success:
-                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+                #Play the notif sound if we have that enabled and notif was successful
+                if persistent._mas_notification_sounds:
+                    renpy.sound.play("mod_assets/sounds/effects/notif.wav")
 
-            #Now we return true if notif was successful, false otherwise
-            return notif_success
-        return False
-
-    #TODO: Remove this at some point | Alias for depreciation
-    display_notif = mas_display_notif
+        #Now we return true if notif was successful, false otherwise
+        return notif_success
 
     def mas_isFocused():
         """
@@ -735,10 +792,8 @@ init python:
         """
         Clears all tray icons (also action center on win10)
         """
-        if renpy.windows and store.mas_windowreacts.can_show_notifs:
-            for index in range(len(destroy_list)-1,-1,-1):
-                store.mas_windowutils.win32gui.DestroyWindow(destroy_list[index])
-                destroy_list.pop(index)
+        if renpy.windows:
+            mas_windowutils.WIN_NOTIF_MANAGER.clear()
 
     def mas_checkForWindowReacts():
         """
@@ -749,7 +804,7 @@ init python:
             return
 
         active_window_handle = mas_getActiveWindowHandle()
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if (
                 Event._filterEvent(ev, unlocked=True, aff=store.mas_curr_affection)
                 and ev.checkConditional()
@@ -770,7 +825,7 @@ init python:
         IN:
             List of ev_labels to exclude from being unlocked
         """
-        for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
+        for ev_label, ev in mas_windowreacts.windowreact_db.items():
             if ev_label not in excluded:
                 ev.unlocked=True
 
@@ -829,4 +884,3 @@ init python:
         ASSUMES: renpy.windows
         """
         store.mas_clearNotifs()
-        store.mas_windowutils.win32gui.UnregisterClass(__tip.classAtom, __tip.hinst)

@@ -6,7 +6,7 @@ init python:
         if val is not None and not isinstance(val, bool):
             report.extend([delim, "bad ", name, " {0}".format(val)])
 
-    
+
     def _mas_check_ev_type_dict(val, name, report, delim=" | ", str_rep=True):
         if val is not None and not isinstance(val, dict):
             report.extend([delim, "bad ", name, " {0}".format(val)])
@@ -29,7 +29,7 @@ init python:
 
     def _mas_check_ev_type_str(val, name, report, delim=" | ", str_rep=True):
         if (
-                val is not None 
+                val is not None
                 and not (isinstance(val, str) or isinstance(val, unicode))
             ):
             report.extend([delim, "bad ", name, " {0}".format(val)])
@@ -37,7 +37,7 @@ init python:
 
     def _mas_check_ev_type_tuli(val, name, report, delim=" | ", str_rep=True):
         if (
-                val is not None 
+                val is not None
                 and not (
                     isinstance(val, list)
                     or isinstance(val, tuple)
@@ -132,7 +132,7 @@ init python:
 
     def mas_check_event_types(per_db, str_buffer=None, str_rep=True):
         """
-        Goes through given persistent database for events and double checks 
+        Goes through given persistent database for events and double checks
         types. Returns a string report.
 
         IN:
@@ -147,8 +147,8 @@ init python:
         # NOTE: we assume lots of things about the given per_db.
         if str_buffer is None:
             return
-        
-        for ev_label, ev_line in per_db.iteritems():
+
+        for ev_label, ev_line in per_db.items():
             str_buffer.write("".join(_mas_check_ev_type_per(ev_line)))
 
     def mas_largest_persistent_item():
@@ -187,7 +187,7 @@ init python:
             mas_per_dump_list(item_key)
         # NOTE: ignore others for now
 
-    
+
     def mas_per_dump_dict(dkey):
         """
         Dumps an output of a persistent dict
@@ -215,7 +215,8 @@ init python:
 
 
 init python in dev_mas_shared:
-    import cPickle
+    import renpy.compat.pickle as pickle
+    import codecs
     import store
     import store.mas_ev_data_ver as ver
 
@@ -242,8 +243,8 @@ init python in dev_mas_shared:
         def __init__(self, in_char):
             """
             IN:
-                in_char - pass True if the persisten file is int 
-                eh user's charactesr dir. Otherwise we use the 
+                in_char - pass True if the persisten file is int
+                eh user's charactesr dir. Otherwise we use the
                 loaded persistent
             """
             self.in_char = in_char
@@ -257,8 +258,9 @@ init python in dev_mas_shared:
             # select persistent to load
             if self.in_char:
                 pkg = store.mas_docking_station.getPackage("persistent")
-                pdata = cPickle.loads(pkg.read().decode("zlib"))
+                pdata = pickle.loads(codecs.decode(pkg.read(),"zlib"))
                 pkg.close()
+
             else:
                 pdata = store.persistent
 
@@ -273,7 +275,7 @@ init python in dev_mas_shared:
                 for prop_name in store.Event.T_EVENT_NAMES:
                     prop_value = getattr(ev_data, prop_name)
 
-                    # listables need to be split into parts                    
+                    # listables need to be split into parts
                     # except affection
                     if ver._verify_tuli(prop_value, allow_none=False) and prop_name != "aff_range":
                         for item in prop_value:
@@ -329,7 +331,7 @@ init python in dev_mas_shared:
                 only_incl=None
         ):
             """
-            Does get_all_for_prop but saves the results directly to file 
+            Does get_all_for_prop but saves the results directly to file
 
             See get_all_for_prop for param doc
             """
@@ -349,7 +351,7 @@ init python in dev_mas_shared:
 
                 prop_value = getattr(curr_data, prop)
 
-                # this is just so we dont have to print out of loop 
+                # this is just so we dont have to print out of loop
                 if prop_value is None:
                     last_value = ""
                 else:
@@ -377,7 +379,7 @@ init python in dev_mas_shared:
                     False to sort descending
                     None to not sort
                     (Default: None)
-                only_incl - pass this in as a dictionary of eventlabels to 
+                only_incl - pass this in as a dictionary of eventlabels to
                     only include these in the prop
 
             RETURNS: tuple:
@@ -415,7 +417,7 @@ init python in dev_mas_shared:
             IN:
                 prop - the property to get
                 value - the value to get
-                only_incl - if passed in, only include entries with 
+                only_incl - if passed in, only include entries with
                     eventlabel in this dict
 
             RETURNS: dictionary containing all items that match the value for

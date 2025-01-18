@@ -5,6 +5,8 @@
 
 init -1 python:
     import datetime
+    import random
+
     import store.mas_utils as mas_utils
 
     # special constants for rule type identifiers for the rule dict on Event class
@@ -14,7 +16,8 @@ init -1 python:
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
     EV_RULE_PRIORITY = "rule_priority"
-    EV_RULE_PROBABILITY = "rule_probability"
+    EV_RULE_WEIGHT = "rule_weight"
+    EV_RULE_PROBABILITY = EV_RULE_WEIGHT#"rule_probability"
     EV_RULE_RP_TIMEDELTA = "rp_timedelta"
 
 
@@ -375,7 +378,7 @@ init -1 python:
         Each rule is defined by a skip_visual boolean and a special random chance.
         skip_visual is used to store if the greeting should be executed without
         executing the normal visual setup, this is useful for special greetings
-        random_chance is used to define the 1 in random_chance chance that this
+        random_chance is used to define the chance that this
         greeting can be called
         """
 
@@ -383,7 +386,7 @@ init -1 python:
         def create_rule(
                 ev=None,
                 skip_visual=False,
-                random_chance=0,
+                random_chance=None,
                 setup_label=None,
                 override_type=False,
                 forced_exp=None
@@ -395,10 +398,10 @@ init -1 python:
                 skip_visual - A boolean stating wheter we should skip visual
                     initialization
                     (Default: False)
-                random_chance - An int used to determine 1 in random_chance
+                random_chance - A float used to determine
                     special chance for this greeting to appear
-                    If 0, we ignore this property
-                    (Default: 0)
+                    If None, we ignore this property
+                    (Default: None)
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
@@ -409,17 +412,38 @@ init -1 python:
                     for the first spaceroom render
                     (Default: None)
 
-            RETURNS:
+            OUT:
                 a dict containing the specified rules
-            """
 
+            RAISES:
+                ValueError - on invalid input
+            """
             # random_chance can't be negative
-            if random_chance < 0:
-                raise Exception("random_chance can't be negative")
+            if random_chance is not None:
+                if isinstance(random_chance, float):
+                    if not 0.0 <= random_chance <= 1.0:
+                        raise ValueError(
+                            "Invalid value for random_chance: {}".format(random_chance)
+                        )
+
+                else:
+                    mas_utils.report_deprecation(
+                        "Using 'int' for 'random_chance' in 'MASGreetingRule'",
+                        use_instead="float",
+                        use_instead_msg_fmt="Use '{use_instead}' in range [0.0, 1.0] instead."
+                    )
+                    if random_chance < 0:
+                        raise ValueError("random_chance can't be negative")
+
+                    elif random_chance == 0:
+                        random_chance = None
+
+                    else:
+                        random_chance = 1.0 / float(random_chance)
 
             # setup_label must exist
             if setup_label is not None and not renpy.has_label(setup_label):
-                raise Exception("'{0}' does not exist.".format(setup_label))
+                raise ValueError("'{0}' does not exist.".format(setup_label))
 
             # return the tuple inside a dict
             rule = {
@@ -461,16 +485,16 @@ init -1 python:
             # unpack the tuple for easy access
             random_chance = rule[1]
 
-            if random_chance == 0:
-                # 0 chance, return default
+            if random_chance is None:
+                # No rng, return default
                 return defval
 
-            # check if random_chance is less than 0 return False
-            if random_chance <= 0:
+            # Check if random_chance is invalid
+            if not 0.0 <= random_chance <= 1.0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
-            return renpy.random.randint(1,random_chance) == 1
+            return random.random() <= random_chance
 
         @staticmethod
         def should_override_type(ev=None, rule=None):
@@ -612,83 +636,6 @@ init -1 python:
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
 
-    @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
-    class MASAffectionRule(object):
-        """
-        NOTE: DEPRECATED
-        Use the aff_range property for Events instead
-
-        Static Class used to create affection specific rules in tuple form.
-        That tuple is then stored in a dict containing this rule name constant.
-        Each rule is defined by a min and a max determining a range of affection
-        to check against.
-        """
-
-        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
-        @staticmethod
-        def create_rule(min, max, ev=None):
-            """
-            IN:
-                min - An int representing the minimal(inclusive) affection required
-                    for the event to be available, if None is passed is assumed
-                    that there's no minimal affection
-                max - An int representing the maximum(inclusive) affection required
-                    for the event to be available, if None is passed is assumed
-                    that there's no maximum affection
-                ev - Event to create rule for, if passed in
-                    (Default: None)
-
-            RETURNS:
-                a dict containing the specified rules
-            """
-
-            # both min and max can't be None at the same time, since that means
-            # that this is not affection dependent
-            if not min and not max:
-                raise Exception("at least min or max must not be None")
-
-            # return the rule inside a dict
-            rule = {EV_RULE_AFF_RANGE : (min, max)}
-
-            if ev:
-                ev.rules.update(rule)
-
-            return rule
-
-        @store.mas_utils.deprecated(use_instead="the aff_range property for Events", should_raise=True)
-        @staticmethod
-        def evaluate_rule(event=None, rule=None, affection=None, noRuleReturn=False):
-            """
-            IN:
-                event - the event to evaluate
-                rule - the MASAffectionRule to check against
-                affection - the affection to check the rule against
-
-            RETURNS:
-                True if the current affection is inside the rule range
-            """
-
-            # check if we have an event that contains the rule we need
-            # event rule takes priority so it's checked here
-
-            if event and EV_RULE_AFF_RANGE in event.rules:
-                rule = event.rules[EV_RULE_AFF_RANGE]
-
-            # sanity check if we don't have a rule return False
-            if rule is None:
-                return noRuleReturn
-
-            # store affection for easy checking
-            if not affection:
-                affection = _mas_getAffection()
-
-            # unpack the rule for easy access
-            min, max = rule
-
-            # Evaluate if affection is inside the rule range, in case both are None
-            # will return true (however that case should be catched on create_rule)
-            return  (affection >= min and not max) or (min <= affection <= max)
-
 
     class MASPriorityRule(object):
         """
@@ -738,63 +685,78 @@ init -1 python:
             return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
 
-    class MASProbabilityRule(object):
+    class MASWeightRule(object):
         """
         Static class used to create probability rules.
 
-        Probability rules are just integers that determine the probability of something being selected.
+        Probability rules are just integers that determine the weight of something being selected.
 
-
-        Probabilities must be greater than 1
+        Weights must be greater than 1
 
         This value is designed to be used with mas_utils.weightedChoice, and acts essentially akin to duplicating
         the choice `probability` times in the list
         """
-        DEF_PROBABILITY = 1
+        DEF_WEIGHT = 1
 
-        @staticmethod
-        def create_rule(probability, ev=None):
+        @classmethod
+        def create_rule(cls, weight, ev=None):
             """
             IN:
-                probability - the probability to set.
-                    If None is passed in, we use the default probability value.
-                    NOTE: If it is below 1 probability, is is set to 1
+                weight - the weight to set.
+                    If None is passed in, we use the default weight value.
+                    NOTE: If it is below 1 weight, is is set to 1
 
                 ev - Event to add this rule to. This will replace existing
                     rules of the same key.
                     (Default: None)
             """
-            if probability is None:
-                probability = MASProbabilityRule.DEF_PROBABILITY
+            if weight is None:
+                weight = cls.DEF_WEIGHT
 
-            elif probability < 1:
-                probability = 1
+            elif weight < 1:
+                weight = 1
 
-            if not store.mas_ev_data_ver._verify_int(probability, allow_none=False):
+            if not store.mas_ev_data_ver._verify_int(weight, allow_none=False):
                 raise Exception(
-                    "'{0}' is not a valid in probability".format(probability)
+                    "'{0}' is not a valid weight".format(weight)
                 )
 
-            rule = {EV_RULE_PROBABILITY: probability}
+            rule = {EV_RULE_WEIGHT: weight}
 
             if ev:
                 ev.rules.update(rule)
 
             return rule
 
-
-        @staticmethod
-        def get_probability(ev):
+        @classmethod
+        def get_weight(cls, ev):
             """
-            Gets the probability of the given event.
+            Gets the weight of the given event.
 
             IN:
-                ev - event to get probability of
+                ev - event to get weight of
 
             OUT:
-                The probability of the given event, or def if no ProbilityRule is found
+                The weight of the given event, or def if no ProbilityRule is found
             """
-            return ev.rules.get(EV_RULE_PROBABILITY, MASProbabilityRule.DEF_PROBABILITY)
+            return ev.rules.get(EV_RULE_WEIGHT, cls.DEF_WEIGHT)
+
+
+    @store.mas_utils.deprecated(use_instead="MASWeightRule")
+    class MASProbabilityRule(object):
+        """
+        Deprecated version, use MASWeightRule
+        """
+        @staticmethod
+        @store.mas_utils.deprecated(use_instead="MASWeightRule.create_rule")
+        def create_rule(*args, **kwargs):
+            return MASWeightRule.create_rule(*args, **kwargs)
+
+        @staticmethod
+        @store.mas_utils.deprecated(use_instead="MASWeightRule.get_weight")
+        def get_probability(*args, **kwargs):
+            return MASWeightRule.get_weight(*args, **kwargs)
+
 
     class MASTimedeltaRepeatRule(object):
         """
@@ -1026,7 +988,7 @@ init python:
 
             NOTE: uses mas_getEV
             """
-            for ev_label in persistent._mas_undo_action_rules.keys():
+            for ev_label in tuple(persistent._mas_undo_action_rules.keys()):
                 ev = mas_getEV(ev_label)
                 #Since we can have differing returns, we store this to use later
                 should_undo = MASUndoActionRule.evaluate_rule(ev)

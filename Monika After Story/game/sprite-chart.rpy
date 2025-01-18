@@ -1042,7 +1042,7 @@ init -5 python in mas_sprites:
 
     # reverse map for eaiser lookup
     ARMS_LEAN = {}
-    for lean, values in LEAN_ARMS.iteritems():
+    for lean, values in LEAN_ARMS.items():
         for value in values:
             ARMS_LEAN[value] = lean
 
@@ -1092,27 +1092,6 @@ init -5 python in mas_sprites:
         if val is None:
             return allow_none
         return _verify_uprightpose(val) or _verify_leaningpose(val)
-
-    @store.mas_utils.deprecated(should_raise=True)
-    def acs_lean_mode(sprite_list, lean):
-        """
-        NOTE: DEPRECATED
-
-        Adds the appropriate accessory prefix dpenedong on lean
-
-        IN:
-            sprite_list - list to add sprites to
-            lean - type of lean
-        """
-        if lean:
-            sprite_list.extend((
-                PREFIX_ACS_LEAN,
-                lean,
-                ART_DLM
-            ))
-
-        else:
-            sprite_list.append(PREFIX_ACS)
 
 
     def face_lean_mode(lean):
@@ -1185,7 +1164,7 @@ init -5 python in mas_sprites:
             if no ACS of the given type
         """
         return [
-            acs for acs in ACS_MAP.itervalues()
+            acs for acs in ACS_MAP.values()
             if acs.acs_type == acs_type
         ]
 
@@ -1380,7 +1359,7 @@ init -5 python in mas_sprites:
         if predicate:
             return [
                 spr_object
-                for spr_object in sprite_map.itervalues()
+                for spr_object in sprite_map.values()
                 if predicate(spr_object)
             ]
 
@@ -2829,10 +2808,18 @@ init -3 python:
                 startup - True if we are loading on start, False if not
                     (Default: False)
             """
+            clothes = store.mas_sprites.CLOTH_MAP.get(_clothes_name, None)
+            if clothes is None:
+                store.mas_utils.mas_log.warning(f"Failed to find clothes '{_clothes_name}', restoring default")
+                clothes = store.mas_clothes_def
+            hair = store.mas_sprites.HAIR_MAP.get(_hair_name, None)
+            if hair is None:
+                store.mas_utils.mas_log.warning(f"Failed to find hair '{_hair_name}', restoring default")
+                hair = store.mas_hair_def
             # clothes and hair
             self.change_outfit(
-                store.mas_sprites.CLOTH_MAP.get(_clothes_name, store.mas_clothes_def),
-                store.mas_sprites.HAIR_MAP.get(_hair_name, store.mas_hair_def),
+                clothes,
+                hair,
                 startup=startup
             )
 
@@ -3506,7 +3493,7 @@ init -3 python:
             IN:
                 exprop - exprop to check for
             """
-            for acs_name in self.acs_list_map.keys():
+            for acs_name in tuple(self.acs_list_map.keys()):
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs and _acs.hasprop(exprop):
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
@@ -3520,7 +3507,7 @@ init -3 python:
             """
             for mux_type in mux_types:
                 acs_with_mux = self._acs_type_map.get(mux_type, {})
-                for acs_name in acs_with_mux.keys():
+                for acs_name in tuple(acs_with_mux.keys()):
                     self.remove_acs(store.mas_sprites.get_acs(acs_name))
 
         def remove_acs_in(self, accessory, acs_layer):
@@ -3963,7 +3950,7 @@ init -3 python:
                     acs_layer
                 )
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_pre(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre body accessory mode
@@ -3973,7 +3960,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.PRE_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_bbh(self, acs):
             """DEPRECATED
             Wears the given accessory in the post back hair accessory loc
@@ -3983,7 +3970,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BBH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_bfh(self, acs):
             """DEPRECATED
             Wears the given accessory in the pre front hair accesory log
@@ -3993,7 +3980,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.BFH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_afh(self, acs):
             """DEPRECATED
             Wears the given accessory in the between front hair and arms
@@ -4004,7 +3991,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.AFH_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_mid(self, acs):
             """DEPRECATED
             Wears the given accessory in the mid body acessory mode
@@ -4014,7 +4001,7 @@ init -3 python:
             """
             self.wear_acs_in(acs, self.MID_ACS)
 
-        @store.mas_utils.deprecated("wear_acs_in")
+        @store.mas_utils.deprecated(use_instead="wear_acs_in")
         def wear_acs_pst(self, acs):
             """DEPRECATED
             Wears the given accessory in the post body accessory mode
@@ -4295,7 +4282,7 @@ init -3 python:
                         vhl_data,
                         msg_log,
                         ind_lvl,
-                        layer_map.keys()
+                        list(layer_map.keys())
                 ):
                     # success
                     hl_data = vhl_data.get("hl_data", None)
@@ -4366,7 +4353,7 @@ init -3 python:
             IN:
                 mapping - mapping to clean
             """
-            for map_key in mapping.keys():
+            for map_key in tuple(mapping.keys()):
                 if map_key not in self.__MPA_KEYS:
                     mapping.pop(map_key)
 
@@ -4569,7 +4556,7 @@ init -3 python:
                 arm_data - cleaned arm data
             """
             # first validate the arm data
-            for arm_key in arm_data.keys():
+            for arm_key in tuple(arm_data.keys()):
 
                 # then check
                 if arm_key in store.mas_sprites.NUM_ARMS:
@@ -4651,7 +4638,7 @@ init -3 python:
 
             # loop over valid arm data
             isbad = False
-            for arm_id, arm_sid in store.mas_sprites.NUM_ARMS.iteritems():
+            for arm_id, arm_sid in store.mas_sprites.NUM_ARMS.items():
                 if arm_sid in json_obj:
                     arm_obj = json_obj.pop(arm_sid)
 
@@ -5195,7 +5182,7 @@ init -3 python:
 
             # verify other params
             isbad = False
-            for prop_name in json_obj.keys():
+            for prop_name in tuple(json_obj.keys()):
                 prop_val = json_obj.pop(prop_name)
                 if prop_name in cls.CONS_PARAM_NAMES:
                     if not cls._verify_mpm_item(
@@ -5274,13 +5261,13 @@ init -3 python:
             """
             try:
                 values = []
-                for value in self.__all_map.itervalues():
+                for value in self.__all_map.values():
                     if value is not None and value not in values:
                         values.append(value)
 
                 return values
             except:
-                return self.values()
+                return list(self.values())
 
         def values(self):
             """
@@ -5290,7 +5277,7 @@ init -3 python:
             """
             return [
                 value
-                for value in self.__all_map.itervalues()
+                for value in self.__all_map.values()
                 if value is not None
             ]
 
@@ -5605,7 +5592,7 @@ init -3 python:
             if self.hl_map is None:
                 return []
 
-            return self.hl_map.keys()
+            return list(self.hl_map.keys())
 
         def is_dynamic(self):
             """
@@ -8395,7 +8382,7 @@ python early:
                 exps = (exps,)
 
             for exp in exps:
-                for aff_lvl, exp_list in self.exp_map.iteritems():
+                for aff_lvl, exp_list in self.exp_map.items():
                     if exp.check_aff(aff_lvl):
                         exp_list.append(exp)
 
@@ -8447,7 +8434,7 @@ python early:
             """
             need_redraw = self.current_exp is exp
 
-            for exp_list in self.exp_map.itervalues():
+            for exp_list in self.exp_map.values():
                 if exp in exp_list:
                     exp_list.remove(exp)
                     need_redraw = True
@@ -8482,7 +8469,7 @@ python early:
                     need_redraw = True
                     break
 
-            for exp_list in self.exp_map.itervalues():
+            for exp_list in self.exp_map.values():
                 for exp_id in range(len(exp_list)-1, -1, -1):
                     if exp_list[exp_id].tag == tag:
                         exp_list.pop(exp_id)
@@ -9420,7 +9407,7 @@ python early:
             """
             Adds 4 new params
             """
-            super(_MASMoniFollowTransformDissolve, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
             # KEY CHANGES
             self.new_widget_st = None
@@ -9452,15 +9439,30 @@ python early:
 
             bottom = renpy.display.transition.render(self.old_widget, width, height, old_widget_st, old_widget_at)
             top = renpy.display.transition.render(self.new_widget, width, height, new_widget_st, new_widget_at)
+            # END KEY CHANGES
 
             width = min(top.width, bottom.width)
             height = min(top.height, bottom.height)
 
-            rv = renpy.display.render.Render(width, height, opaque=not self.alpha)
+            rv = renpy.display.render.Render(width, height)
 
             rv.operation = renpy.display.render.DISSOLVE
-            rv.operation_alpha = self.alpha
+            rv.operation_alpha = self.alpha or renpy.config.dissolve_force_alpha
             rv.operation_complete = complete
+
+            if renpy.display.render.models:
+
+                target = rv.get_size()
+
+                if top.get_size() != target:
+                    top = top.subsurface((0, 0, width, height))
+                if bottom.get_size() != target:
+                    bottom = bottom.subsurface((0, 0, width, height))
+
+                rv.mesh = True
+                rv.add_shader("renpy.dissolve")
+                rv.add_uniform("u_renpy_dissolve", complete)
+                rv.add_property("mipmap", renpy.config.mipmap_dissolves if (self.style.mipmap is None) else self.style.mipmap)
 
             rv.blit(bottom, (0, 0), focus=False, main=False)
             rv.blit(top, (0, 0), focus=True, main=True)
@@ -9519,8 +9521,9 @@ python early:
                 # self.up_eyes_code: self.up_eyes_img,
                 # self.down_eyes_code: self.down_eyes_img
             }
-            for first_img_code in img_map.iterkeys():
-                for second_img_code in img_map.iterkeys():
+
+            for first_img_code in img_map.keys():
+                for second_img_code in img_map.keys():
                     if first_img_code != second_img_code:
                         self.transform_map[(first_img_code, second_img_code)] = _MASMoniFollowTransformDissolve(
                             time=MASMoniFollowTransform.DIS_DUR,

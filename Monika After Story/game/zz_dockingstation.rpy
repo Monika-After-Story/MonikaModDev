@@ -71,8 +71,7 @@ init -45 python:
         """
         import hashlib  # sha256 signatures
         import base64   # "packing" shipments involve base64
-        from StringIO import StringIO as slowIO
-        from cStringIO import StringIO as fastIO
+        from io import BytesIO, StringIO
 
         import store.mas_utils as mas_utils # logging
 
@@ -340,12 +339,12 @@ init -45 python:
 
             RETURNS:
                 tuple of the following format:
-                [0] - base64 version of the given data, in a cStringIO buffer
+                [0] - base64 version of the given data, in a BytesIO buffer
                 [1] - sha256 checksum if pkg_slip is True, None otherwise
             """
             box = None
             try:
-                box = self.fastIO()
+                box = self.BytesIO()
 
                 return (box, self._pack(contents, box, True, pkg_slip))
 
@@ -482,8 +481,8 @@ init -45 python:
 
                 ### we have a package, lets unpack it
                 if keep_contents:
-                    # use slowIO since we dont know contents unpacked
-                    contents = slowIO()
+                    # use StringIO since we dont know contents unpacked
+                    contents = StringIO()
 
                 # we always want a package slip in this case
                 # we only want to unpack if we are keeping contents
@@ -591,7 +590,7 @@ init -45 python:
 
             # internalize contents so we can do proper file closing
             if contents is None:
-                _contents = self.slowIO()
+                _contents = self.BytesIO()
             else:
                 _contents = contents
 
@@ -699,7 +698,7 @@ init -45 python:
         def unpackPackage(self, package, pkg_slip=None):
             """
             Unpacks a package
-            (decodes a base64 file into a regular StringIO buffer)
+            (decodes a base64 file into a regular BytesIO buffer)
 
             NOTE: may throw exceptions
 
@@ -712,7 +711,7 @@ init -45 python:
                     (Default: None)
 
             RETURNS:
-                StringIO buffer containing the package decoded
+                BytesIO buffer containing the package decoded
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
@@ -722,7 +721,7 @@ init -45 python:
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
-                contents = self.slowIO()
+                contents = self.BytesIO()
 
                 _pkg_slip = self._unpack(
                     package,
@@ -1083,7 +1082,7 @@ init -11 python in mas_dockstat:
         Returns TRUE upon success, False otherwise
         """
         if len(selective) == 0:
-            selective = image_dict.keys()
+            selective = list(image_dict.keys())
 
         for b64_name in selective:
             real_name, chksum = image_dict[b64_name]
@@ -1170,7 +1169,7 @@ init -11 python in mas_dockstat:
         AKA quitting
         """
         if len(selective) == 0:
-            selective = image_dict.keys()
+            selective = list(image_dict.keys())
 
         for b64_name in selective:
             real_name, chksum = image_dict[b64_name]
@@ -1179,7 +1178,7 @@ init -11 python in mas_dockstat:
 
 init python in mas_dockstat:
     import store
-    import cPickle
+    import renpy.compat.pickle as pickle
     import math
 
     # previous vars dict
@@ -1211,7 +1210,7 @@ init 200 python in mas_dockstat:
     import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
     import store.evhand as evhand
-    from cStringIO import StringIO as fastIO
+    from io import StringIO
     import codecs
     import re
     import os
@@ -1283,7 +1282,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
+            _outbuffer.write(codecs.encode(pickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1469,7 +1468,7 @@ init 200 python in mas_dockstat:
 
         ### other stuff we need
         # inital buffer
-        moni_buffer = fastIO()
+        moni_buffer = StringIO()
         moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
@@ -1533,7 +1532,7 @@ init 200 python in mas_dockstat:
                 moni_buffer,
                 blocksize
             )
-            moni_tbuffer = fastIO()
+            moni_tbuffer = StringIO()
             moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
@@ -1832,8 +1831,8 @@ init 200 python in mas_dockstat:
             # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
             splitted = data_line.split("|||per|")
             if(len(splitted)>0):
-                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
-            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
+                return pickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return pickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             log.error(

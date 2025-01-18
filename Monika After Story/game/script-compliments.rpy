@@ -91,7 +91,7 @@ label monika_compliments:
         # build menu list
         compliments_menu_items = [
             (ev.prompt, ev_label, not seen_event(ev_label), False)
-            for ev_label, ev in mas_compliments.compliment_database.iteritems()
+            for ev_label, ev in mas_compliments.compliment_database.items()
             if (
                 Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
                 and ev.checkConditional()

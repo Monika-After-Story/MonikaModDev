@@ -21,7 +21,8 @@ default persistent._mas_is_backup = False
 
 python early in mas_per_check:
     import __main__
-    import cPickle
+    import renpy.compat.pickle as pickle
+    import codecs
     import os
     import datetime
     import shutil
@@ -91,6 +92,12 @@ python early in mas_per_check:
         store.persistent._mas_incompat_per_rpy_files_found = False
 
 
+    def _load_per_data(path: str):
+        with open(path, "rb") as per_file:
+            pickle_data = codecs.decode(per_file.read(), "zlib")
+            return pickle.loads(pickle_data)
+
+
     def tryper(_tp_persistent, get_data=False):
         """
         Tries to read a persistent.
@@ -106,13 +113,8 @@ python early in mas_per_check:
             [1] - the version number, or the persistent data if get_data is
                 True
         """
-        per_file = None
         try:
-            per_file = file(_tp_persistent, "rb")
-            per_data = per_file.read().decode("zlib")
-            per_file.close()
-            actual_data = cPickle.loads(per_data)
-
+            actual_data = _load_per_data(_tp_persistent)
             if get_data:
                 return True, actual_data
 
@@ -120,10 +122,6 @@ python early in mas_per_check:
 
         except Exception as e:
             raise e
-
-        finally:
-            if per_file is not None:
-                per_file.close()
 
 
     def is_version_compatible(per_version, cur_version):
@@ -693,13 +691,13 @@ init -900 python:
 
         # the seen ever dict must be iterated through
         from store.mas_ev_data_ver import _verify_str
-        for seen_ever_key in persistent._seen_ever.keys():
+        for seen_ever_key in list(persistent._seen_ever.keys()):
             if not _verify_str(seen_ever_key):
                 persistent._seen_ever.pop(seen_ever_key)
 
         # the seen images dict must be iterated through
         # NOTE: we only want to keep non-monika sprite images
-        for seen_images_key in persistent._seen_images.keys():
+        for seen_images_key in list(persistent._seen_images.keys()):
             if (
                     len(seen_images_key) > 0
                     and seen_images_key[0] == "monika"

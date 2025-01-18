@@ -19,5 +19,64 @@ init -10 python:
 ## Super early overrides
 ## You'll need a block like this for creator defined screen language
 ## Don't use this unless you know you need it
-python early:
-    pass
+python early in mas_overrides:
+    import threading
+
+    import renpy
+    import renpy.savelocation as savelocation
+
+
+    def verify_data_override(*args, **kwargs):
+        """
+        Verify the data in a save token.
+
+        Originally, this function is used to check against a checksum to verify the persistent should be loaded
+        But because we want to allow anyone be able to migrate and transfer their data, we will just return True
+        """
+        return True
+
+    renpy.savetoken.verify_data = verify_data_override
+
+    
+    def savelocation_init_override():
+        """
+        Run **SOME** of the stuff savelocation.init runs
+
+        basically we trying to keep saves in the AppData/equivalent folder
+        to make backups/restoring easier.
+
+        The only difference here is that this skips over game savedirs and
+        'extra' save dirs (so just omissions)
+
+        TODO: Find a way to avoid overriding the entire function just
+        to disable 2 save locations, this is more bug prone
+        """
+        savelocation.quit()
+        savelocation.quit_scan_thread = False
+
+        location = savelocation.MultiLocation()
+
+        # 1. User savedir.
+        location.add(savelocation.FileLocation(renpy.config.savedir))
+
+        # # 2. Game-local savedir.
+        # if (not renpy.mobile) and (not renpy.macapp):
+        #     path = os.path.join(renpy.config.gamedir, "saves")
+        #     location.add(savelocation.FileLocation(path))
+
+        # # 3. Extra savedirs.
+        # for i in renpy.config.extra_savedirs:
+        #     location.add(savelocation.FileLocation(i))
+
+        # Scan the location once.
+        location.scan()
+
+        renpy.loadsave.location = location
+
+        if not renpy.emscripten:
+            savelocation.scan_thread = threading.Thread(target=savelocation.run_scan_thread)
+            savelocation.scan_thread.start()
+
+    savelocation.init = savelocation_init_override
+
+

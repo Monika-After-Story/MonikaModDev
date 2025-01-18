@@ -232,7 +232,7 @@ init -1 python in mas_greetings:
             check_time = datetime.datetime.now()
 
         # now filter
-        for ev_label, ev in gre_db.iteritems():
+        for ev_label, ev in gre_db.items():
             if _filterGreeting(
                     ev,
                     curr_priority,
@@ -1143,7 +1143,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 20
+define opendoor.chance = 0.05
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
@@ -2724,7 +2724,7 @@ init 5 python:
     ev_rules = {}
     ev_rules.update(MASGreetingRule.create_rule(
         skip_visual=True,
-        random_chance=5,
+        random_chance=0.2,
         override_type=True
     ))
     ev_rules.update(MASPriorityRule.create_rule(45))
@@ -3038,9 +3038,12 @@ label greeting_back_from_school:
             ]
 
         show monika 2ekc at t21
+        window show
         m "If you don't mind me asking, was there something in particular that happened?" nointeract
 
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
@@ -3237,7 +3240,6 @@ label greeting_back_from_work:
                 m 2ekc "I wish I could be there to give you a hug right now."
                 m 2eka "I'm just glad you came to see me... {w=0.5}I'll do my best to comfort you."
 
-        m 2ekc "If you don't mind talking about it, what happened today?{nw}"
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
             final_item = ("I don't want to talk about it.", False, False, False, 20)
@@ -3251,8 +3253,12 @@ label greeting_back_from_work:
             ]
 
         show monika 2ekc at t21
-        $ renpy.say(m, "If you don't mind talking about it, what happened today?{fast}", interact=False)
+        window show
+        m "If you don't mind talking about it, what happened today?" nointeract
+
         call screen mas_gen_scrollable_menu(menu_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, final_item)
+
+        window auto
 
         $ label_suffix = _return
 
@@ -4394,7 +4400,7 @@ init 5 python:
     ev_rules = dict()
     ev_rules.update(
         MASGreetingRule.create_rule(
-            random_chance=3,
+            random_chance=0.3,
             forced_exp=random.choice(("monika 1gsbsu", "monika 1msbsu"))
         )
     )
@@ -4469,7 +4475,7 @@ init 5 python:
     ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True,
-            random_chance=20,
+            random_chance=0.05,
             override_type=True
         )
     )
@@ -4679,7 +4685,7 @@ init 5 python:
     ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True,
-            random_chance=10,
+            random_chance=0.1,
             override_type=True
         )
     )

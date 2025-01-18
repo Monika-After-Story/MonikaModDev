@@ -1,7 +1,6 @@
 ## dumps file for unstablers
 
 init 999 python:
-
     def mas_eventDataDump():
         """
         Data dump for purely events stats
@@ -86,7 +85,6 @@ init 999 python:
             def calcAvgs(self):
                 """
                 Calculates averages
-
                 Returns tuple:
                     [0]: show count avg
                     [1]: pool show count avg
@@ -110,7 +108,6 @@ init 999 python:
                     self.most_seen_ev = ev
                 elif self.most_seen_ev.shown_count < ev.shown_count:
                     self.most_seen_ev = ev
-
 
             def inDB(self, ev):
                 """
@@ -158,7 +155,6 @@ init 999 python:
                     self.seen_count += 1
 
                 return _seen
-
 
             def __str__(self):
                 """
@@ -297,7 +293,8 @@ init 999 python:
         last_sesh_ed = persistent.sessions.get("last_session_end", "N/A")
 
         if total_sesh and total_playtime is not None:
-            avg_sesh = total_playtime / total_sesh
+            total_playtime = total_playtime.total_seconds()
+            avg_sesh = datetime.timedelta(seconds=total_playtime / total_sesh)
 
         else:
             avg_sesh = "N/A"
@@ -332,7 +329,6 @@ init 999 python:
         )
 
         return outstr.format(*output)
-
 
     def mas_varDataDump():
         """

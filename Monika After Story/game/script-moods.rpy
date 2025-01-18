@@ -649,8 +649,7 @@ label mas_mood_bored:
         unlocked_games = {
             # use display name, or prompt as backup
             ev_label: game_ev.rules.get("display_name", game_ev.prompt)
-
-            for ev_label, game_ev in mas_games.game_db.iteritems()
+            for ev_label, game_ev in mas_games.game_db.items()
             if mas_isGameUnlocked(game_ev.prompt)
         }
 

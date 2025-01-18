@@ -12,7 +12,7 @@ init python in mas_sprites:
             name - tuple of strings (tag, attributes)
             d - displayables
         """
-        if store.mas_globals.is_r7:
+        if store.mas_globals.is_at_least_r7:
             renpy.display.image.register_image(name, d)
 
         else:

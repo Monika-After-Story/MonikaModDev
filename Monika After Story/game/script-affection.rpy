@@ -1701,6 +1701,7 @@ init 15 python in mas_affection:
         Initializes the talk quiplists
         """
         global talk_menu_quips
+
         def save_quips(_aff, quiplist):
             mas_ql = store.MASQuipList(allow_label=False)
             for _quip in quiplist:
@@ -1838,6 +1839,7 @@ init 15 python in mas_affection:
         Initializes the play quipliust
         """
         global play_menu_quips
+
         def save_quips(_aff, quiplist):
             mas_ql = store.MASQuipList(allow_label=False)
             for _quip in quiplist:
@@ -2025,11 +2027,11 @@ init python:
         """
         return mas_affection._get_aff()
 
-    @mas_utils.deprecated("_get_current_aff_lose")
+    @mas_utils.deprecated(use_instead="_get_current_aff_lose")
     def _mas_getBadExp():
         return _get_current_aff_lose()
 
-    @mas_utils.deprecated("_get_current_aff_gain")
+    @mas_utils.deprecated(use_instead="_get_current_aff_gain")
     def _mas_getGoodExp():
         return _get_current_aff_gain()
 
@@ -3078,7 +3080,7 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
 
     python:
         done = False
-        acceptable_nicknames = _return.keys()
+        acceptable_nicknames = list(_return.keys())
 
         if acceptable_nicknames:
             dlg_line = "Is there anything else you'd like me to call you?"
@@ -3332,7 +3334,7 @@ label mas_finalfarewell_start:
         allow_dialogue = False
         store.songs.enabled = False
         mas_in_finalfarewell_mode = True
-        layout.QUIT = glitchtext(20)
+        layout.QUIT = mas_glitchText(20)
         #Console is not going to save you.
         config.keymap["console"] = []
 

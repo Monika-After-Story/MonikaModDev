@@ -33,7 +33,7 @@ label dev_bgsel_loop:
         # build other backgrounds list
         other_backgrounds = [
             (mbg_obj.prompt, mbg_obj, False, False)
-            for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
+            for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.items()
             if mbg_id != "spaceroom"
         ]
 

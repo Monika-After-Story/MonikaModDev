@@ -255,7 +255,7 @@ label dev_gre_sampler:
 
         # done with sampling, output results
         with open(renpy.config.basedir + "/gre_sample", "w") as outdata:
-            for ev_label, count in results.iteritems():
+            for ev_label, count in results.items():
                 outdata.write("{0},{1}\n".format(ev_label, count))
 
         # relock locked gres

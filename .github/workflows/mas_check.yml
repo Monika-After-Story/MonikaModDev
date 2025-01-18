@@ -22,64 +22,64 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      SDL_AUDIODRIVER: dummy # handles ALSA issues
+      MAS_RENPY_VER: 8.1.1
+      MAS_BASE_DIR: masbase
+      MAS_DIR: mas
+      RENPY_DIR: renpy
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v5
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 2.7.18 # optional, default is 3.x
+          python-version: 3.10.4 # optional, default is 3.x
 
       # get/dl renpy src
       - name: cache rpy source
         id: cache-rpy
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
-            path: renpy/
-            key: ${{ runner.os }}-rpy
+          path: ${{ env.RENPY_DIR }}/
+          key: rpy
 
       - name: Download rpy source
         if: steps.cache-rpy.outputs.cache-hit != 'true'
         run: |
-          wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
-          tar xf renpy-6.99.12.4-sdk.tar.bz2
-          rm renpy-6.99.12.4-sdk.tar.bz2
-          mv renpy-6.99.12.4-sdk renpy
+          renpysdk=renpy-$MAS_RENPY_VER-sdk.tar.bz2
+          wget https://www.renpy.org/dl/$MAS_RENPY_VER/$renpysdk
+          tar xf $renpysdk
+          rm $renpysdk
+          mv ${renpysdk/.tar.bz2/} $RENPY_DIR
 
       # get/download base mas
       - name: cache base MAS
         id: cache-mas
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
-            path: mas0105/
-            key: ${{ runner.os }}-mas
+          path: ${{ env.MAS_BASE_DIR }}/
+          key: masbase
 
-      - name: Download base MAS
+      - name: download base MAS
         if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
-          wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
-          mkdir mas0105
-          unzip mas.zip -d mas0105
+          wget https://monika-after-story.s3.us-west-2.amazonaws.com/ddlc/mas8.zip
+          mkdir $MAS_BASE_DIR
+          unzip mas8.zip -d $MAS_BASE_DIR/ # this is so we cache ONLY the aws download and NOT the full repo
 
-      # TEMP
-      #      - name: what are these
-      #  run: |
-      #    file mas0105
-      #    file renpy
+      # setup build folder
+      - name: setup build folder
+        run: |
+          mkdir $MAS_DIR
+          cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
+          rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
 
-      # copy files over
+      # copy over gh files to base
       - name: copy source over
-        run: cp -Rf Monika\ After\ Story/* mas0105/
-
-      # touch file for unstable so it doesn't raise exceptions for some things
-      - name: exception skip for unstable
-        if: github.ref == 'refs/heads/unstable'
-        run: touch mas0105/trb
+        run: cp -Rf Monika\ After\ Story/* $MAS_DIR/
 
       # run sprite checkers
       - name: check sprites
@@ -88,11 +88,19 @@ jobs:
       # lint renpy
       - name: rpy lint
         run: |
-          cd renpy
-          ./renpy.sh "../mas0105/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
+          cd $RENPY_DIR
+          ./renpy.sh "../$MAS_DIR/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
+
+      # setup open GL for distribute
+      - name: setup openGL
+        run: |
+          sudo apt-get install cmake pkg-config
+          sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+          sudo apt-get install libglew-dev libglfw3-dev libglm-dev
+          sudo apt-get install libao-dev libmpg123-dev
 
       # distribute
       - name: rpy distribute
         run: |
-          cd renpy
-          ./renpy.sh launcher distribute "../mas0105/" --package Mod
+          cd $RENPY_DIR
+          ./renpy.sh launcher distribute "../$MAS_DIR/" --package linux

@@ -32,7 +32,3 @@ label dev_calendar_testing:
                 m "You selected [sel_date_formal]."
 
     return
-                    
-
-
-

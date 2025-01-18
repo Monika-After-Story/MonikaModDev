@@ -1058,18 +1058,18 @@ init -10 python in mas_selspr:
                 (Default: False)
         """
         if select_type == SELECT_ACS:
-            new_map_view = new_map.viewkeys()
+            new_map_view = new_map.keys()
 
             # determine which map is the "old" and which is "new"
             # we want to remove what is excess from the desired map
             if use_old:
-                old_map_view = old_map.viewkeys()
+                old_map_view = old_map.keys()
                 remove_keys = new_map_view - old_map_view
                 remove_map = new_map
                 add_map = old_map
 
             else:
-                old_map_view = prev_map.viewkeys()
+                old_map_view = prev_map.keys()
                 remove_keys = old_map_view - new_map_view
                 remove_map = prev_map
                 add_map = new_map
@@ -1082,7 +1082,7 @@ init -10 python in mas_selspr:
 
             # then readd everything that was previous
             # EXCEPT removers
-            for item in add_map.itervalues():
+            for item in add_map.values():
                 if not item.selectable.remover:
                     moni_chr.wear_acs(item.selectable.get_sprobj())
 
@@ -1096,7 +1096,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.itervalues():
+            for item in select_map.values():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
                     new_hair = item.selectable.get_sprobj()
@@ -1130,7 +1130,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.itervalues():
+            for item in select_map.values():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
                     new_cloth = item.selectable.get_sprobj()
@@ -1148,11 +1148,11 @@ init -10 python in mas_selspr:
                     except Exception as e:
                         store.mas_utils.mas_log.warning("BAD CLOTHES: " + repr(e))
                         moni_chr.change_clothes(prev_cloth)
-                        
+
                         # undo the selection
                         prev_sel = prev_map[prev_cloth.name]
                         prev_sel._core_select() # re-adds the old clothing to select map
-                        prev_sel._send_select_dlg() 
+                        prev_sel._send_select_dlg()
                         new_map.pop(new_cloth.name)
 
                     return # quit early since you can only have 1 clothes
@@ -1260,7 +1260,7 @@ init -10 python in mas_selspr:
         OUT:
             select_map - select map cleaned of non-selectd items
         """
-        for item_name in select_map.keys():
+        for item_name in tuple(select_map.keys()):
             if force or not select_map[item_name].selected:
                 item = select_map.pop(item_name)
                 item.selected = False # force deselection
@@ -1292,8 +1292,8 @@ init -10 python in mas_selspr:
         map.
 
         IN:
-            old_map_view - viewkeys view of the old map
-            new_map_view - viewkeys view of the new map
+            old_map_view - dict_keys view of the old map
+            new_map_view - dict_keys view of the new map
 
         RETURNS:
             True if the maps are the same, false if different.
@@ -1316,7 +1316,7 @@ init -10 python in mas_selspr:
             source - source data to read
             dest - data place to save
         """
-        for item_name, item in source.iteritems():
+        for item_name, item in source.items():
             dest[item_name] = item.toTuple()
 
 
@@ -1343,7 +1343,7 @@ init -10 python in mas_selspr:
             source - source data to load from
             dest - data to save the loaded data into
         """
-        for item_name, item_tuple in source.iteritems():
+        for item_name, item_tuple in source.items():
             if item_name in dest:
                 dest[item_name].fromTuple(item_tuple)
 
@@ -1680,16 +1680,6 @@ init -10 python in mas_selspr:
             hair - MASHair object to unlock
         """
         _unlock_item(hair, SELECT_HAIR)
-
-    @store.mas_utils.deprecated(use_instead="unlock_prompt", should_raise=True)
-    def unlock_selector(group):
-        """DEPRECATED - Use unlock_prompt instead
-        Unlocks the selector of the given group.
-
-        IN:
-            group - group to unlock selector topic.
-        """
-        unlock_prompt(group)
 
 
     def json_sprite_unlock(sp_obj, unlock_label=True):
@@ -2728,7 +2718,7 @@ init -1 python:
 
             if not self.multi_select:
                 # must clean select map
-                for item in self.select_map.itervalues():
+                for item in self.select_map.values():
                     # setting to False will queue for removal of item
                     # NOTE: the caller must handle teh removal
                     item.selected = False
@@ -3675,8 +3665,8 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         prev_select_map = dict(select_map)
 
         # also create views that we use for comparisons
-        old_view = old_select_map.viewkeys()
-        new_view = select_map.viewkeys()
+        old_view = old_select_map.keys()
+        new_view = select_map.keys()
 
         # disable menu interactions to prevent bugs
         disable_esc()
@@ -3813,7 +3803,7 @@ label mas_selector_sidebar_select_confirm:
             monika_chr.restore(prev_moni_state)
 
         # If monika is wearing a remover ACS, remove it.
-        for item_name in select_map.keys():
+        for item_name in tuple(select_map.keys()):
             sel_obj = select_map[item_name].selectable
             if sel_obj.remover:
                 spr_obj = sel_obj.get_sprobj()

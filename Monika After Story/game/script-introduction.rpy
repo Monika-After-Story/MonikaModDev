@@ -167,7 +167,7 @@ label introduction:
                 m 3hubfa "It makes everything I've done for us worthwhile!"
                 m 1dkbfu "Thank you so much for saying it..."
     else:
-        "Do you love me, [player]?{nw}"
+        m "Do you love me, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you love me, [player]?{fast}"
