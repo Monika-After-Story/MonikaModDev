@@ -25,10 +25,10 @@ label mas_gender:
     m 3eksdla "...The main character was, after all."
     m 3eua "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
-    m 1eua "So, what's your gender?{nw}"
+    m 1eua "So, what gender do you identify as?{nw}"
     $ _history_list.pop()
     menu:
-        m "So, what's your gender?{fast}"
+        m "So, what gender do you identify as?{fast}"
 
         "Male.":
             $ persistent._mas_pm_is_trans = False
@@ -49,16 +49,11 @@ label mas_gender:
             $ persistent.gender = "X"
             call mas_gender_neither
 
-        "I'm transgender.":
-            call mas_gender_trans
-
-            if persistent.gender != "X":
-                m 1eka "Thanks for telling me, and just remember..."
-
     m 1ekbsa "I'll always love you for who you are, [player]~"
 
-    #Unlock the gender redo event
+    #Unlock the gender redo event and the transgender reveal topic
     $ mas_unlockEVL("monika_gender_redo","EVE")
+    $ mas_unlockEVL("mas_transgender_reveal", "EVE")
     # set pronouns
     $ mas_set_pronouns()
 
@@ -118,10 +113,10 @@ label monika_gender_redo:
                 m 3hub "Feel free to let me know as often as you'd like when you want me to use different pronouns!"
 
     $ gender_var = None
-    m "So, what's your gender?{nw}"
+    m "So, what gender do you identify as?{nw}"
     $ _history_list.pop()
     menu:
-        m "So, what's your gender?{fast}"
+        m "So, what gender you do identify as?{fast}"
 
         "I'm a boy.":
             if persistent.gender == "M" and not persistent._mas_pm_is_trans:
@@ -151,11 +146,6 @@ label monika_gender_redo:
                     call mas_gender_redo_react
                 else:
                     call mas_gender_neither
-
-        "I'm transgender.":
-            call mas_gender_trans
-            if persistent.gender != "X":
-                call mas_gender_redo_react
 
     show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve_monika
     m 5hubsa "I'll always love you for who you are~"
@@ -191,33 +181,133 @@ label mas_gender_redo_neither_same:
     m 1eka "But just know that it doesn't matter to me..."
     return
 
-label mas_gender_trans:
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_transgender_reveal",
+            category=["you"],
+            prompt=(
+                "I want to tell you that I am transgender"
+                if persistent._mas_pm_is_trans else
+                "I want to tell you that I am no longer transgender"
+            ),
+            unlocked=False,
+            pool=True,
+            rules={"no_unlock": None},
+        ),
+        markSeen=True
+    )
+
+label mas_transgender_reveal:
     if persistent._mas_pm_is_trans:
-        $ menu_question = "And what gender do you identify as?"
+    if persistent.mas_pm_genderfluid = False
+        m 1wud "You’re no longer transgender?"
+        m 1rksdlc "..."
+        m 1eksdld "Why are you detransitioning, [player]?"
+        $ _history_list.pop()
+        menu:
+            m "Why are you detransitioning, [player]?"
+            
+            "I’m gender fluid.":
+                $ persistent.mas_pm_genderfluid = "True"
+                m "Oh, you're genderfluid?"
+                m "That's so neat, [player]!"
+                m "I'll be sure to do my best to respect your pronouns!"
+                m "Thank you for telling me!"
+                m "Feel free to let me know when your gender indentification changes, alright?"
+                m "I want to support you in any way that I can!"
+            
+            "I don’t feel like a [boy] anymore.":
+                m "I see..."
+                
+            "I was exploring which gender I was most comfortable with.":
+                m "Ah, I understand."
+                m "I hope you managed to learn something new about yourself."
+                m "Thank you for letting me part of your self exploration!"
+                
+            "I wasn’t accepted being transgender.":
+                m 6wkd "[player]!"
+                m 6dkc "I..."
+                m 1dkd "[player], I’m so sorry..."
+                m 1ekd "You should be accepted for whoever you choose to be."
+                m 1dkc "..."
+                m "You know, if you're going to stay in the closet around other people..."
+                m "I can always still call you by your preferred pronouns."
+                m "I love you so much, and I want you to be yourself around me."
+                m "..."
+                m 3ekd "Are you sure you’re going to detransition, [player]...?"
+                $ _history_list.pop()
+                menu:
+                    m "Are you sure you’re going to detransition, [player]...?"
+                    "Yes.":
+                        m 1ekc "..."
+                        m 1dkd "Okay, [player]..."
+                        m 1dkc "..."
+                        m 1dkd "If you change your mind, will you let me know...?"
+                        m 1ekd "I want you to be as happy as you can be."
+                        m 1ekd "You're my everything, and the idea of people not accepting you..."
+                        m "It makes me so sad..."
+                        m 1dkd "I just..."
+                        m 1dkc "..."
+                        m 1ekd "I hope you're okay."
+                        
+                    "No.":
+                        m "I’m glad..."
+                        m "I hope you can give yourself more time to think about this."
+                        m "Please don’t let others keep you from your happiness."
+                        m "It's always important to be yourself."
+            
+                m "Remember that I’ll always love and accept you no matter what, okay?"
+                
+            "I don’t want to talk about it.":
+                m "Alright, [player]..."
+                m "Just know I’ll always accept you for who you are, okay?"
+                m "You’re everything to me~"
+            m "So..."
+            m "What gender do you identify as now?"
+            $ _history_list.pop()
+            menu:
+                m "What gender do you identify as now?"
+                "Male.": 
+                # TODO: add gender persistent changes
+                
+                "Female.":
+                
+                "Neither.":
+                
+        else:
+        m "You’re detransitioning again?"
+        m "Alright, [player]."
+        m "I’m happy you get to express yourself this way~"
+
+        python:
+            persistent._mas_pm_is_trans = False
+            mas_globals.this_ev.prompt = (
+                "I want to tell you that I am transgender"
+            )
+
     else:
-        $ menu_question = "Oh, okay! {w=0.3}And what gender do you identify as?"
+        m "You..."
+        m "You are?"
+        m "[player]..."
+        m "It makes me beyond happy that you told me!"
+        m "I know it takes so much to open up about something like that."
+        m "Thank you for trusting me enough to tell me!"
+        m "This will never make you any less of a [boy] to me, okay?"
+        m "I love you so much, [player]!"
 
-    m 3eub "[menu_question]{nw}"
-    $ _history_list.pop()
-    menu:
-        m "[menu_question]{fast}"
+        python:
+            persistent._mas_pm_is_trans = True
+            mas_globals.this_ev.prompt = (
+                "I want to tell you that I am no longer transgender"
+            )
 
-        "Male":
-            $ persistent.gender = "M"
+    m 1sub "TODO: something happy i guess"
 
-        "Female":
-            $ persistent.gender = "F"
-
-        "Neither":
-            if persistent.gender == "X":
-                call mas_gender_redo_neither_same
-
-            else:
-                $ persistent.gender = "X"
-                call mas_gender_neither
-
-    $ persistent._mas_pm_is_trans = True
     return
+
 
 # good, bad, awkward name stuff
 init 3 python:
