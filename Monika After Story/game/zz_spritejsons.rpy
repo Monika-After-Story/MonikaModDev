@@ -408,7 +408,7 @@ init -21 python in mas_sprites_json:
 
     # these imports are for the classes
     from store.mas_ev_data_ver import _verify_bool, _verify_str, \
-        _verify_int, _verify_list, _verify_dict
+        _verify_int, _verify_list, _verify_dict, _verify_aff_const
 
 
     class SpriteJsonLogAdapter(store.mas_logging.MASNewlineLogAdapter):
@@ -786,6 +786,7 @@ init -21 python in mas_sprites_json:
 
     SEL_INFO_OPT_PARAM_NAMES = {
         "visible_when_locked": (bool, _verify_bool),
+        "min_aff": (str, _verify_aff_const)
     }
 
     # pose arm data params

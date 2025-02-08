@@ -78,6 +78,18 @@ init -900 python in mas_affection:
     ENAMORED = 7
     LOVE = 8
 
+    # Named map for by-name lookups
+    AFF_NAME_MAP = {
+        "BROKEN": BROKEN,
+        "DISTRESSED": DISTRESSED,
+        "UPSET": UPSET,
+        "NORMAL": NORMAL,
+        "HAPPY": HAPPY,
+        "AFFECTIONATE": AFFECTIONATE,
+        "ENAMORED": ENAMORED,
+        "LOVE": LOVE
+    }
+
     # natural order of affection levels
     _aff_order = [
         BROKEN,
@@ -175,6 +187,19 @@ init -900 python in mas_affection:
     }
 
     __STRUCT = struct.Struct(__STRUCT_FMT)
+
+    def getAffByName(name):
+        """
+        Safely returns affection constant by name.
+
+        IN:
+            name - str:
+                Name of the affection level constant (HAPPY, UPSET, etc)
+        OUT:
+            Affection constant or None if name is unknown.
+        """
+
+        return AFF_NAME_MAP.get(name.upper())
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
