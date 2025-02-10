@@ -324,7 +324,7 @@ init -1000 python in mas_submod_utils:
         """
         return f"'{os.path.dirname(header_path)}'"
 
-    def _read_submod_header(header_path: str) -> dict|None:
+    def _read_submod_header(header_path: str) -> "dict | None":
         """
         Tries to read a submod header at the given path
 
@@ -355,7 +355,7 @@ init -1000 python in mas_submod_utils:
 
         return header_json
 
-    def _parse_submod_header(raw_header: dict, header_path: str) -> dict|None:
+    def _parse_submod_header(raw_header: dict, header_path: str) -> "dict | None":
         """
         This does extra processing on header, validation, and setting default values
 
@@ -490,7 +490,7 @@ init -1000 python in mas_submod_utils:
         SETTING_IS_SUBMOD_ENABLED = "is_enabled"
 
         @classmethod
-        def _create_setting(cls, submod: _Submod, key: str, default) -> bool:
+        def _create_setting(cls, submod: "_Submod", key: str, default) -> bool:
             """
             Defines a submod setting (including intermediate keys) with
             the given default value
@@ -518,7 +518,7 @@ init -1000 python in mas_submod_utils:
             return False
 
         @classmethod
-        def _get_setting(cls, submod: _Submod, key: str, default):
+        def _get_setting(cls, submod: "_Submod", key: str, default):
             """
             Returns a setting for a submod
 
@@ -538,7 +538,7 @@ init -1000 python in mas_submod_utils:
                 return default
 
         @classmethod
-        def _set_setting(cls, submod: _Submod, key: str, value) -> None:
+        def _set_setting(cls, submod: "_Submod", key: str, value) -> None:
             """
             Sets a setting for a submod
 
@@ -554,19 +554,19 @@ init -1000 python in mas_submod_utils:
                 cls._create_setting(submod, key, value)
 
         @classmethod
-        def is_submod_enabled(cls, submod: _Submod) -> bool:
+        def is_submod_enabled(cls, submod: "_Submod") -> bool:
             return cls._get_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
-        def enable_submod(cls, submod: _Submod):
+        def enable_submod(cls, submod: "_Submod"):
             cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
-        def disable_submod(cls, submod: _Submod):
+        def disable_submod(cls, submod: "_Submod"):
             cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, False)
 
         @classmethod
-        def toggle_submod(cls, submod: _Submod) -> bool:
+        def toggle_submod(cls, submod: "_Submod") -> bool:
             if cls.is_submod_enabled(submod):
                 cls.disable_submod(submod)
                 return False
@@ -912,7 +912,7 @@ init -1000 python in mas_submod_utils:
             return bool(cls._submod_map)
 
         @classmethod
-        def _getSubmod(cls, name: str) -> _Submod|None:
+        def _getSubmod(cls, name: str) -> "_Submod | None":
             """
             Gets the submod with the name provided
 
@@ -926,7 +926,7 @@ init -1000 python in mas_submod_utils:
             return cls._submod_map.get(name, None)
 
         @classmethod
-        def _iterSubmods(cls) -> Iterator[_Submod]:
+        def _iterSubmods(cls) -> "Iterator[_Submod]":
             """
             Returns an iterator over the submods
 
@@ -936,7 +936,7 @@ init -1000 python in mas_submod_utils:
             return iter(cls._submod_map.values())
 
         @classmethod
-        def _getSubmods(cls) -> list[_Submod]:
+        def _getSubmods(cls) -> "list[_Submod]":
             """
             Returns a list of the submods
 
@@ -947,7 +947,7 @@ init -1000 python in mas_submod_utils:
 
 
     #END: Submod class
-    def isSubmodInstalled(name: str, version: str|None = None) -> bool:
+    def isSubmodInstalled(name: str, version: "str | None" = None) -> bool:
         """
         Checks if a submod with `name` is installed
 
@@ -971,7 +971,7 @@ init -1000 python in mas_submod_utils:
 
         return True
 
-    def getSubmodDirectory(name: str) -> str|None:
+    def getSubmodDirectory(name: str) -> "str | None":
         """
         Returns a submod directory relative to the game folder
 
