@@ -6,7 +6,7 @@ python early in _mas_loader:
     from heapq import merge as heapq_merge
     from importlib.util import (
         spec_from_file_location,
-        module_from_spec
+        module_from_spec,
     )
     from collections.abc import Iterator
     from types import ModuleType
@@ -235,7 +235,7 @@ python early in _mas_root:
     __CNSL_ENV_VALUE = "Yes, I will regret this! Enable CNSL!"
 
 
-    def __get_env_var(key: str) -> str|None:
+    def __get_env_var(key: str) -> "str | None":
         """
         Gets value of an env variable
         """
