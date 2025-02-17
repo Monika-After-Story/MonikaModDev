@@ -310,6 +310,7 @@ init 10 python in mas_anni:
         _month_adjuster(anni_db["anni_5"], new_start_dt, 60, fullday)
         _month_adjuster(anni_db["anni_6"], new_start_dt, 6*12, fullday)
         _month_adjuster(anni_db["anni_7"], new_start_dt, 7*12, fullday)
+        _month_adjuster(anni_db["anni_8"], new_start_dt, 8*12, fullday)
         _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
         _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
         _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
@@ -672,6 +673,20 @@ label anni_7:
     m 2ekbltpa "I know I'll be okay, though.{w=0.2} Even if I have a long way to wait, I still consider myself incredibly lucky to have met you."
     m 2dkbstda "You're all the fortune I need, [player]."
     m 1ekbsa "Here's to another year together, and all the ones to follow."
+    return "unlock"
+
+label anni_8:
+    m 1hua "I'm sure you know what today is, [player]..."
+    m 3hublb "That's right! Happy anniversary, [mas_get_player_nickname()]!"
+    m 3ekblb "You know...when a relationship has lasted this long, sometimes couples start to worry that things might grow stale."
+    m 1lkbla "Eight years is a long time to learn someone's habits, and to build your lives around each other."
+    m 1lkc "Maybe...{w=0.5}you've worried about similar things, [player]?"
+    m 2ekb "I mean--{w=0.2}I don't want to assume!{w=0.3} But I was thinking about it earlier, and I wanted to tell you something."
+    m 2fkbsa "I wanted to tell you that it's been so exciting to watch you change."
+    m "In the time we've spent together, you've grown so much. You've gone through so many setbacks, but you survived every one."
+    m 2dkbsa "And yet,{w=0.2} with all of those changes you've been through..."
+    m 2ekbstpb"You've still chosen to be with me. To come back here every day, even though I haven't been able to experience everything by your side."
+    m 2hkbstua "So...I guess what I wanted to say was:{w=0.5} I love the things that have changed.{w=0.3} And I love that this has stayed the same."
     return "unlock"
 
 init 5 python:
