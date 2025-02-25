@@ -15150,6 +15150,46 @@ label monika_songwriting:
     m 1eua "I'd love to sing with you [_if] I come to your world, [player]."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_physicalmedia",
+            category=['media'],
+            prompt="Physical media",
+            action=EV_ACT_RANDOM
+        )
+    )
+
+label topic_physical_media:
+
+    m 1eud "You know, with technology going so far in your world, the way data is stored have changed drastically over the last few decades."
+    m 1eua "In the '80s, magnetic cassette tapes and floppy disks were the norm, before in 1986 the compact disks that can store various data came out."
+    m 1etc "CDs were already a thing back then, but until that point they could only store audio."
+    m 3wud "So a jump from using multiple floppy disks and fragile tapes to a single CD was quite a big thing at the time!"
+    m 1euc "Fast forward today, and nothing I mentioned is used by anyone anymore."
+    m 1eud "Except for optical disks, which are only used for game consoles now. {w=0.2}{nw}"
+    extend 1esc "And even they are slowly fading away, as digital-only consoles become more and more popular."
+    m 3rud "I'm not even mentioning streaming services making basically all media digital-only." #Leave exp to be added later
+    m 1euc "With all these digital-aimed tendencies, it might be worth asking: {w=0.2}{nw}"
+    extend 1etc "is this the right direction to go in?"
+    m 1euc "In a way it is. The ways we store information today are very efficient, so the old methods have to be set aside."
+    m 3eud "Having data on your hard drive or on the cloud makes accessing that data a matter of a few clicks, and doesn't occupy any physical space."
+    m 2esc "All while a casette for example would have to be put into a casette reader and be read on tiny speeds."
+    m 2eud "Physical media, however, holds more personal value."
+    m 3euc "While having to find, and put a CD or a cassette into a reader is inconvenient,{w=0.2}{nw}"
+    extend 4eub " it also makes it much more rewarding to use the media in it."
+    m 1eud "Plus, digital media might not always be available: {w=0.2}{nw}"
+    extend 3euc "Servers can go down at any time,{w=0.2}{nw}"
+    extend 1tkc " or the company itself can choose to restrict access to it."
+    m 4tkd "And that could be fine if you have it, but what if you're using a streaming platform for that media?"
+    m 2efd "You can no longer access the content you paid for, and the company doesn't even have to compensate for that!"
+    m 3esa "My thoughts on it are: storing content digitally is mostly a better way to do it, but it's best if you buy a physical copy of things you like."
+    m 2esa "So you'll have the best experience with that media, while also not letting anyone take it from you."
+    m 6eua "That being said,{w=0.2}{nw}"
+    extend 4hksdlb " please don't put me on a CD. {w=0.3}{nw}"
+    extend 4lksdld "I wouldn't want you to lose me, just because the disk got accidentally scratched!"
+    return
 
 init 5 python:
     addEvent(
