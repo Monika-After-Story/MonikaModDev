@@ -2145,7 +2145,7 @@ init -10 python in mas_d25_utils:
         mas_frs.register_gen_grds(nd25_gen)
 
         # now build the reaction labels for standard gifts
-        return mas_frs.build_gift_react_labels(
+        react_labels = mas_frs.build_gift_react_labels(
             nd25_evb,
             nd25_gsp,
             nd25_gen,
@@ -2153,6 +2153,20 @@ init -10 python in mas_d25_utils:
             "mas_reaction_end",
             mas_frs._pick_starter_label()
         )
+
+        # add additional dialogue if needed
+        extra_labels = []
+
+        # add special tree dialogue if needed
+        d25_tree_gift_count = len(d25_evb) + len(d25_gsp)
+        nd25_gift_count = len(nd25_evb) + len(nd25_gsp) + len(nd25_gen)
+        if d25_tree_gift_count > 0:
+            extra_labels.append("mas_d25_gift_tree_intro_{0}_{1}".format(
+                min(2, d25_tree_gift_count),
+                min(1, nd25_gift_count)  
+            ))
+
+        return react_labels + extra_labels
 
 
 ####START: d25 arts
@@ -2415,6 +2429,60 @@ label mas_d25_season_exit:
         mas_hideEVL("mas_d25_monika_christmaslights", "EVE", derandom=True)
 
         mas_d25ReactToGifts()
+    return
+
+# pre-d25 gift handling
+# NOTE: YES this is super hackish, but until we have event/topic context 
+#   this is the quickest way without adding an extra per var.
+# multiple d25, no non-d25
+label mas_d25_gift_tree_intro_2_0:
+    call mas_d25_gift_tree_intro(True, False)
+    return
+
+# single d25, no non-d25
+label mas_d25_gift_tree_intro_1_0:
+    call mas_d25_gift_tree_intro(False, False)
+    return
+
+# multiple d25, non-d25 > 0
+label mas_d25_gift_tree_intro_2_1:
+    call mas_d25_gift_tree_intro(True, True)
+    return
+
+# single d25, non-d25 > 0
+label mas_d25_gift_tree_intro_1_1:
+    call mas_d25_gift_tree_intro(False, True)
+    return
+   
+label mas_d25_gift_tree_intro(d25_multiple, nd25_any):
+
+    if nd25_any:
+        m 3hub "And here we have..."
+
+    if renpy.seen_label("mas_d25_gift_tree_intro"):
+        call mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any)
+        return
+
+    python:
+        if d25_multiple:
+            _these = "these"
+            _gifts = "Gifts"
+        else:
+            _these = "this"
+            _gifts = "A gift"
+
+    m 1wublb "[_gifts]? For me?"
+    m 1hublb "[player], you're so sweet!"
+    m 1hubla "There's just something so special about receiving a present this time of year..."
+    m 3hub "I'm going to put [_these] under the tree."
+    m 3hua "It'll be so exciting to open them on Christmas morning!"
+    return
+
+label mas_d25_gift_tree_intro_repeat(d25_multiple, nd25_any):
+    $ _more_presents = "more presents" if d25_multiple else "another present"
+    m 1wub "Ah, [_more_presents] for the tree!"
+    m 1eka "Thank you so much, [mas_get_player_nickname()]."
+    m 1hublb "I'm getting so excited for Christmas, ahaha~"
     return
 
 #D25 holiday gift starter/connector
