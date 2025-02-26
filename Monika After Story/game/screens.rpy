@@ -3187,9 +3187,6 @@ screen submods():
 
                         if submod.description:
                             text "[submod.description]":
-                                # TODO: are we sure we don't want to allow substitute?
-                                # To allow, use recursive interpolation: !i
-                                substitute False
                                 text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
