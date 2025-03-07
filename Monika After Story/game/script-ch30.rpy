@@ -773,7 +773,10 @@ init python:
                 value = sub_map[key]
             else:
                 value = sub_map["X"]
+
             setattr(store, word, value)
+            # Add a Titlecase (he -> He) counterpart
+            setattr(store, word.title(), value.title())
 
 
 init 995 python in mas_reset:
