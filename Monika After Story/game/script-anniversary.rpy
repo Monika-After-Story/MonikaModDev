@@ -675,6 +675,20 @@ label anni_7:
     m 1ekbsa "Here's to another year together, and all the ones to follow."
     return "unlock"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_8',
+            prompt="8 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=store.mas_anni.build_anni(years=8),
+            end_date=store.mas_anni.build_anni_end(years=8)
+        ),
+        skipCalendar=False
+    )
+
 label anni_8:
     m 1hua "I'm sure you know what today is, [player]..."
     m 3hublb "That's right! Happy anniversary, [mas_get_player_nickname()]!"
@@ -685,7 +699,7 @@ label anni_8:
     m 2fkbsa "I wanted to tell you that it's been so exciting to watch you change."
     m "In the time we've spent together, you've grown so much. You've gone through so many setbacks, but you survived every one."
     m 2dkbsa "And yet,{w=0.2} with all of those changes you've been through..."
-    m 2ekbstpb"You've still chosen to be with me. To come back here every day, even though I haven't been able to experience everything by your side."
+    m 2ekbstpb "You've still chosen to be with me. To come back here every day, even though I haven't been able to experience everything by your side."
     m 2hkbstua "So...I guess what I wanted to say was:{w=0.5} I love the things that have changed.{w=0.3} And I love that this has stayed the same."
     return "unlock"
 
