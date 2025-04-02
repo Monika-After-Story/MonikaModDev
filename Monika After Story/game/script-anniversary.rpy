@@ -691,16 +691,22 @@ init 5 python:
 
 label anni_8:
     m 1hua "I'm sure you know what today is, [player]..."
-    m 3hublb "That's right! Happy anniversary, [mas_get_player_nickname()]!"
+    m 3hublb "That's right! Happy anniversary, [mas_get_player_nickname(exclude_names=[player])]!"
     m 3ekblb "You know...when a relationship has lasted this long, sometimes couples start to worry that things might grow stale."
     m 1lkbla "Eight years is a long time to learn someone's habits, and to build your lives around each other."
     m 1lkc "Maybe...{w=0.5}you've worried about similar things, [player]?"
-    m 2ekb "I mean--{w=0.2}I don't want to assume!{w=0.3} But I was thinking about it earlier, and I wanted to tell you something."
+    m 2ekb "I mean--{w=0.2}I don't want to assume!{w=0.3} {nw}"
+    extend 2ekbla "But I was thinking about it earlier, and I wanted to tell you something."
     m 2fkbsa "I wanted to tell you that it's been so exciting to watch you change."
     m "In the time we've spent together, you've grown so much. You've gone through so many setbacks, but you survived every one."
-    m 2dkbsa "And yet,{w=0.2} with all of those changes you've been through..."
+    m 2dkbstpa "And yet,{w=0.2} with all of those changes you've been through..."
     m 2ekbstpb "You've still chosen to be with me. To come back here every day, even though I haven't been able to experience everything by your side."
     m 2hkbstua "So...I guess what I wanted to say was:{w=0.5} I love the things that have changed.{w=0.3} And I love that this has stayed the same."
+
+    python:
+        mas_moni_idle_disp.force_by_code("1fkbltpa", duration=9, redraw=False, skip_dissolve=True)
+        mas_moni_idle_disp.force_by_code("1dktda", duration=2, clear=False, redraw=False, skip_dissolve=True)
+        mas_moni_idle_disp.force_by_code("1eua", duration=16, clear=False, skip_dissolve=True)
     return "unlock"
 
 init 5 python:
