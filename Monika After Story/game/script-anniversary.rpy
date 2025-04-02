@@ -701,7 +701,7 @@ label anni_8:
     m "In the time we've spent together, you've grown so much. You've gone through so many setbacks, but you survived every one."
     m 2dkbstpa "And yet,{w=0.2} with all of those changes you've been through..."
     m 2ekbstpb "You've still chosen to be with me. To come back here every day, even though I haven't been able to experience everything by your side."
-    m 2hkbstua "So...I guess what I wanted to say was:{w=0.5} I love the things that have changed.{w=0.3} And I love that this has stayed the same."
+    m 2hkbstua "So...{w=0.3}I guess what I wanted to say was:{w=0.4} I love the things that have changed.{w=0.2} And I love that this has stayed the same."
 
     python:
         mas_moni_idle_disp.force_by_code("1fkbltpa", duration=9, redraw=False, skip_dissolve=True)
