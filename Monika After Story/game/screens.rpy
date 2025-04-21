@@ -3126,7 +3126,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']")):
+    use game_menu(_("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']")):
 
         default tooltip = Tooltip("")
 
