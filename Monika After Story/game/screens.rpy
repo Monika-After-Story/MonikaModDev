@@ -920,7 +920,7 @@ screen navigation():
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
         if mas_submod_utils.submod_map:
-            textbutton _("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']")  action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
+            textbutton _("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
