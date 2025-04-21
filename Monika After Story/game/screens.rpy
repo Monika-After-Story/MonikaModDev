@@ -857,8 +857,8 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils.submod_map:
-            textbutton _("Submods")
+        if mas_submod_utils.submod_map:
+            textbutton _("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']") 
 
         textbutton _("Hotkeys")
 
@@ -919,13 +919,13 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils.submod_map:
-            textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
+        if mas_submod_utils.submod_map:
+            textbutton _("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']")  action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
-        if store.mas_windowreacts.can_show_notifs and not main_menu:
+        if mas_windowreacts.can_show_notifs and not main_menu:
             textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
-        if store.mas_api_keys.has_features():
+        if mas_api_keys.has_features():
             textbutton _("API Keys") action [ShowMenu("mas_apikeys"), SensitiveIf(renpy.get_screen("mas_apikeys") == None)]
 
         textbutton _("Hotkeys") action [ShowMenu("hot_keys"), SensitiveIf(renpy.get_screen("hot_keys") == None)]
@@ -3126,7 +3126,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods")):
+    use game_menu(("['Submod' if len(mas_submod_utils.submod_map) == 1 else 'Submods']")):
 
         default tooltip = Tooltip("")
 
