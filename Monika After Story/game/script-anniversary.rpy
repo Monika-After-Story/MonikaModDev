@@ -210,6 +210,7 @@ init 10 python in mas_anni:
         "anni_5",
         "anni_6",
         "anni_7",
+        "anni_8",
         "anni_10",
         "anni_20",
         "anni_50",
