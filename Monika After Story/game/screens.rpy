@@ -1829,7 +1829,7 @@ style slider_pref_vbox is pref_vbox
 screen notif_settings():
     tag menu
 
-    use game_menu(("Alerts"), scroll="viewport"):
+    use game_menu(_("Alerts"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1872,7 +1872,7 @@ screen notif_settings():
 screen hot_keys():
     tag menu
 
-    use game_menu(("Hotkeys"), scroll="viewport"):
+    use game_menu(_("Hotkeys"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -3137,7 +3137,7 @@ style chibika_note_text:
 screen submods():
     tag menu
 
-    use game_menu(("Submods")):
+    use game_menu(_("Submods")):
 
         default tooltip = Tooltip("")
 
