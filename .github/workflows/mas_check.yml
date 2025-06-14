@@ -46,10 +46,10 @@ jobs:
       - name: Download rpy source
         if: steps.cache-rpy.outputs.cache-hit != 'true'
         run: |
-          wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
-          tar xf renpy-6.99.12.4-sdk.tar.bz2
-          rm renpy-6.99.12.4-sdk.tar.bz2
-          mv renpy-6.99.12.4-sdk renpy
+          wget https://www.renpy.org/dl/8.3.7/renpy-8.3.7-sdk.tar.bz2
+          tar xf renpy-8.3.7-sdk.tar.bz2
+          rm renpy-8.3.7-sdk.tar.bz2
+          mv renpy-8.3.7-sdk renpy
 
       # get/download base mas
       - name: cache base MAS
