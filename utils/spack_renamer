@@ -1,0 +1,14 @@
+#!/bin/bash
+
+IMG_REG="^acs-$1-.*png$"
+
+mkdir $1
+for png in *.png; do
+    if [[ $png =~ $IMG_REG ]]; then
+        IMG_NAME=${png#*-$1-*}
+        #echo $png
+        #echo $1/$IMG_NAME
+        git mv $png $1/$IMG_NAME
+    fi
+done
+
