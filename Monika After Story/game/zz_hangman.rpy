@@ -643,10 +643,10 @@ label mas_hangman_game_loop:
             else:
                 $ guesses += 1
                 python:
-                    if guess in word:
+                    if guess in word.lower():
                         for index in range(0,len(word)):
-                            if guess == word[index]:
-                                display_word[index] = guess
+                            if guess == word[index].lower():
+                                display_word[index] = word[index]
                     else:
                         chances -= 1
                         missed += guess
