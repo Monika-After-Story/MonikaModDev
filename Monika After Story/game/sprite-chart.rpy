@@ -6011,6 +6011,27 @@ init -3 python:
             """
             raise NotImplementedError
 
+        def _build_img_str_prefix(self, prefix):
+            """
+            Builds img string prefix to use for loadstrs
+
+            IN:
+                prefix - prefix to build with
+
+            RETURNS: img string prefix to use
+            """
+            if self.use_folders:
+                return prefix + [
+                    self.img_sit,
+                    "/",
+                ]
+
+            return prefix + [
+                store.mas_sprites.PREFIX_ACS,
+                self.img_sit,
+                store.mas_sprites.ART_DLM,
+            ]
+
 
     class MASAccessory(MASAccessoryBase):
         """
@@ -6151,27 +6172,6 @@ init -3 python:
                     store.mas_sprites.FILE_EXT
                 ]
                 for hlc in mfm.unique_values()
-            ]
-
-        def _build_img_str_prefix(self, prefix):
-            """
-            Builds img string prefix to use for loadstrs
-
-            IN:
-                prefix - prefix to build with
-
-            RETURNS: img string prefix to use
-            """
-            if self.use_folders:
-                return prefix + [
-                    self.img_sit,
-                    "/",
-                ]
-
-            return prefix + [
-                store.mas_sprites.PREFIX_ACS,
-                self.img_sit,
-                store.mas_sprites.ART_DLM,
             ]
 
         def build_loadstrs(self, prefix):
