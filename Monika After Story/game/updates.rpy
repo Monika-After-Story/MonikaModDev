@@ -377,6 +377,7 @@ label v0_3_1(version=version): # 0.3.1
 
 label v0_12_19(version="v0_12_19"):
     python hide:
+        # Fix pm var
         # See update script v0_11_1 AND v0_12_7
         # Unsure why we did this TWICE before, but we have to do it again
         # We wanted to replace a generic var with a pm var, but forgot to rename the var in the event label
@@ -387,6 +388,17 @@ label v0_12_19(version="v0_12_19"):
         if persistent._mas_called_moni_a_bad_name is not None: # NEW
             persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
             safeDel("_mas_called_moni_a_bad_name")
+
+        # Fix nicknname event never reunlocking
+        # player had no option to apologise for the bad nickname,
+        # so the event stayed locked forever
+        nickname_ev = mas_getEV("monika_affection_nickname")
+        apology_ev = mas_getEV("mas_apology_bad_nickname")
+        if (
+            apology_ev.shown_count < 3
+            and not nickname_ev.unlocked
+        ):
+            mas_unlockEVL("monika_affection_nickname", "EVE")
 
     return
 
