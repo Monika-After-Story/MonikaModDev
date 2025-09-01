@@ -2957,7 +2957,7 @@ label monika_affection_nickname:
                             else:
                                 m 2efc "Please don't do that again."
 
-                        $ persistent._mas_called_moni_a_bad_name = True
+                        $ persistent._mas_pm_called_moni_a_bad_name = True
 
                         #reset nickname if not Monika
                         if m_name.lower() != "monika":
