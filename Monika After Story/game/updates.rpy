@@ -374,6 +374,22 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+
+label v0_12_19(version="v0_12_19"):
+    python hide:
+        # See update script v0_11_1 AND v0_12_7
+        # Unsure why we did this TWICE before, but we have to do it again
+        # We wanted to replace a generic var with a pm var, but forgot to rename the var in the event label
+        # All this time we were setting the old variable. Sadly, it's impossible to correctly set history now,
+        # since we don't know when the old variable was set. All we can do is execute this code again and
+        # update the new variable. That means that the history date for the pm var will be set to the update
+        # date, and not when the player's actually done this action
+        if persistent._mas_called_moni_a_bad_name is not None: # NEW
+            persistent._mas_pm_called_moni_a_bad_name = persistent._mas_called_moni_a_bad_name
+            safeDel("_mas_called_moni_a_bad_name")
+
+    return
+
 # 0.12.18
 label v0_12_18(version="v0_12_18"):
     python hide:
