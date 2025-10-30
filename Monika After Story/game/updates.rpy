@@ -374,8 +374,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.12.17
-label v0_12_17(version="v0_12_17"):
+# 0.12.18
+label v0_12_18(version="v0_12_18"):
     python hide:
         pass
     return
