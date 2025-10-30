@@ -2294,11 +2294,11 @@ init -1 python:
         "desk_candy_jack",
         ConditionSwitch(
             "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 2",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_brim-0.png", None),
+            MASFilterableSprite("mod_assets/monika/a/desk_candy_jack_brim/0.png", None),
             "(persistent._mas_o31_tt_count + mas_getGiftStatsForDate('mas_reaction_candy', date = mas_o31)) > 0",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_half-0.png", None),
+            MASFilterableSprite("mod_assets/monika/a/desk_candy_jack_half/0.png", None),
             "True",
-            MASFilterableSprite("mod_assets/monika/a/acs-desk_candy_jack_empty-0.png", None)
+            MASFilterableSprite("mod_assets/monika/a/desk_candy_jack_empty/0.png", None)
         ),
         MASPoseMap(
             default=True,
@@ -2319,8 +2319,8 @@ init -1 python:
     mas_acs_desk_lantern = MASDynamicAccessory(
         "desk_lantern",
         ConditionSwitch(
-            "store.mas_isNightNow()", "mod_assets/monika/a/acs-desk_lantern_lit-0.png",
-            "True", MASFilterableSprite("mod_assets/monika/a/acs-desk_lantern_unlit-0.png", None)
+            "store.mas_isNightNow()", "mod_assets/monika/a/desk_lantern_lit/0.png",
+            "True", MASFilterableSprite("mod_assets/monika/a/desk_lantern_unlit/0.png", None)
         ),
         MASPoseMap(
             default=True,
