@@ -1,0 +1,44 @@
+name: Bug report
+description: The mod doesn't work? Use this form to open a new bug report
+title: "[Bug]: <title>"
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: Please fill out this form to help us solve your issue
+
+  - type: input
+    id: mas-version
+    attributes:
+      label: Mod version
+      description: What version of MAS are you using? You can find mod version in the settings or in the logs
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-report
+    attributes:
+      label: "Describe your problem"
+      description: "A clear and concise description of your issue. If applicable, add screenshots to help explain your problem"
+      placeholder: "Tip: you can attach images by dragging and dropping files in this area"
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: "Traceback"
+      description: "If you're experiencing a crash, please attach `traceback.txt` from your game directory"
+      placeholder: "Tip: you can attach log files by dragging and dropping files in this area"
+    validations:
+      required: false
+
+  - type: textarea
+    id: renpy-log
+    attributes:
+      label: Ren'Py log
+      description: "If you can't launch the game, please attach `log.txt` from your game directory"
+      placeholder: "Tip: you can attach log files by dragging and dropping files in this area"
+    validations:
+      required: false
