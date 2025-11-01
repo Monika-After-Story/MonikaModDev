@@ -1,18 +1,35 @@
-name: Bug report
-description: The mod doesn't work? Use this form to open a new bug report
+name: "Bug report"
+description: "The mod doesn't work? Use this form to open a new bug report"
 title: "[Bug]: <title>"
 type: bug
 body:
   - type: markdown
     attributes:
-      value: Please fill out this form to help us solve your issue
+      value: |
+        > [!NOTE]
+        > For tech support questions please open [a new discussion](https://github.com/Monika-After-Story/MonikaModDev/discussions/categories/qa-tech-support-general)
+
+  - type: markdown
+    attributes:
+      value: "Only use this form if you found a bug or think something isn't working as intended"
 
   - type: input
     id: mas-version
     attributes:
-      label: Mod version
-      description: What version of MAS are you using? You can find mod version in the settings or in the logs
-      placeholder: 1.0.0
+      label: "Mod version"
+      description: "What version of MAS are you using? You can find mod version in the settings or in the logs"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mas-unstable
+    attributes:
+      label: "Unstable"
+      description: "Are you running unstable version of MAS?"
+      options:
+        - "Yes"
+        - "No"
     validations:
       required: true
 
@@ -26,7 +43,7 @@ body:
       required: true
 
   - type: textarea
-    id: traceback
+    id: traceback-log
     attributes:
       label: "Traceback"
       description: "If you're experiencing a crash, please attach `traceback.txt` from your game directory"
@@ -37,7 +54,7 @@ body:
   - type: textarea
     id: renpy-log
     attributes:
-      label: Ren'Py log
+      label: "Ren'Py log"
       description: "If you can't launch the game, please attach `log.txt` from your game directory"
       placeholder: "Tip: you can attach log files by dragging and dropping files in this area"
     validations:
