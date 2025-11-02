@@ -393,7 +393,7 @@ init -2 python in mas_sprites:
 
 init python:
     if persistent._mas_dev_ahoge is None:
-        persistent._mas_dev_ahoge = store._mas_root.is_dm_enabled()
+        persistent._mas_dev_ahoge = store._mas_root.is_dbug_enabled()
 
 init 5 python:
     addEvent(

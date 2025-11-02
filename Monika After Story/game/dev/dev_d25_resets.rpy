@@ -2,7 +2,7 @@
 
 init 999 python:
     if persistent._mas_override_d25_gift_react is None:
-        persistent._mas_override_d25_gift_react = store._mas_root.is_dm_enabled()
+        persistent._mas_override_d25_gift_react = store._mas_root.is_dbug_enabled()
 
 init 998 python:
     def mas_reset_d25():

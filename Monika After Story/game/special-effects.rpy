@@ -638,7 +638,7 @@ init -500 python in mas_parallax:
 
                     return None
 
-            if store._mas_root.is_dm_enabled():
+            if store._mas_root.is_dbug_enabled():
                 if ev.type == pygame.KEYDOWN and ev.key == pygame.K_v:
                     self.debug = not self.debug
                     self._container.debug = not self._container.debug

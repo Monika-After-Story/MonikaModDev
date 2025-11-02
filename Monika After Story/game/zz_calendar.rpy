@@ -1037,7 +1037,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 # only re-render if mouse action
                 renpy.redraw(self, 0)
 
-            elif ev.type == pygame.KEYDOWN and store._mas_root.is_dm_enabled():
+            elif ev.type == pygame.KEYDOWN and store._mas_root.is_dbug_enabled():
                 # debug keys
                 curr_year = self.selected_year
 

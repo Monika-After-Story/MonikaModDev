@@ -3693,7 +3693,7 @@ init 810 python:
                 )
 
             # debug mode shows extra information
-            if store._mas_root.is_dm_enabled():
+            if store._mas_root.is_dbug_enabled():
                 match_str = ""
                 if self.match is not None:
                     match_str = str(self.match.matchdex)

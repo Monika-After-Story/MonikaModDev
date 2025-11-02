@@ -120,8 +120,8 @@ python early in _mas_loader:
                 # Means it's not packed in an archive
                 scripts.pop(i)
 
-    def handle_scripts():
-        if not store._mas_root.is_dm_enabled():
+    def __handle_scripts():
+        if not store._mas_root.is_dbug_enabled():
             _unload_unrecognised_scripts()
             _disable_unrecognised_scripts()
 
@@ -135,7 +135,7 @@ python early in _mas_root:
     load_dotenv(dotenv_path=__ENV_FILE, verbose=True)
 
     __ENV_KEY = "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT"
-    __DM_ENV_VALUE = "Yes, I will regret this! Enable DM!"
+    __DBUG_ENV_VALUE = "Yes, I will regret this! Enable DBUG!"
     __CNSL_ENV_VALUE = "Yes, I will regret this! Enable CNSL!"
 
 
@@ -145,56 +145,56 @@ python early in _mas_root:
         """
         return os.environ.get(key, None)
 
-    def is_dm_enabled() -> bool:
+    def is_dbug_enabled() -> bool:
         """
-        Checks if dm is enabled
+        Checks if dbug is enabled
         """
-        return __get_env_var(__ENV_KEY) == __DM_ENV_VALUE
+        return __get_env_var(__ENV_KEY) == __DBUG_ENV_VALUE
 
-    def _is_cnsl_enabled() -> bool:
+    def __is_cnsl_enabled() -> bool:
         """
         Checks if cnsl is enabled
         """
         return __get_env_var(__ENV_KEY) == __CNSL_ENV_VALUE
 
-    def __mark_dm():
-        store.persistent._mas_pm_used_dm = True
+    def __mark_dbug():
+        store.persistent._mas_pm_used_dbug = True
 
-    def __dm_enabled_cb():
+    def __dbug_enabled_callback():
         """
         Callback on dm enabling
         """
         renpy.config.developer = True
         renpy.config.early_developer = True
         renpy.config.console = True
-        __mark_dm()
+        __mark_dbug()
 
-    def __dm_disabled_cb():
+    def __dbug_disabled_callback():
         """
         Callback on dm disabling
         """
         renpy.config.developer = False
         renpy.config.early_developer = False
-        if _is_cnsl_enabled():
+        if __is_cnsl_enabled():
             renpy.config.console = True
-            __mark_dm()
+            __mark_dbug()
 
         else:
             renpy.config.console = False
 
-    def handle_dm() -> bool:
-        if is_dm_enabled():
-            __dm_enabled_cb()
+    def handle_dbug() -> bool:
+        if is_dbug_enabled():
+            __dbug_enabled_callback()
             return True
 
-        __dm_disabled_cb()
+        __dbug_disabled_callback()
         return False
 
 
-python early:
-    _mas_loader.handle_scripts()
+python early in _mas_loader:
+    __handle_scripts()
 
-init -999 python:
+init -999 python in _mas_root:
     # This has to be run during init,
     # and perhaps no earlier than -999
-    _mas_root.handle_dm()
+    handle_dbug()

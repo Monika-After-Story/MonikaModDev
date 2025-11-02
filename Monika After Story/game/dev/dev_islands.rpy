@@ -12,7 +12,7 @@ init 5 python:
     )
 
 label dev_test_islands_progress:
-    if not store._mas_root.is_dm_enabled():
+    if not store._mas_root.is_dbug_enabled():
         m 1rtsdlb "You're not supposed to use this, [player]..."
         return
 
