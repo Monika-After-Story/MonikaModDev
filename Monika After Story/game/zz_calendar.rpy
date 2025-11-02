@@ -2199,7 +2199,7 @@ label _mas_start_calendar(select_date=True):
 
     python:
         #Check if shields are up for whatever reason. If so, we won't drop them when leaving this label
-        _should_drop_shields = not store.mas_calendar.enabled
+        _should_drop_shields = store.mas_calendar.enabled
         mas_calRaiseOverlayShield()
         HKBHideButtons()
 
