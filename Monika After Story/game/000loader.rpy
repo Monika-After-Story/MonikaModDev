@@ -105,44 +105,6 @@ python early in _mas_loader:
 
         return False
 
-    def include_module(name: str):
-        """
-        Fine, I'll do it myself (c)
-        Includes a module to load down the init pipeline
-
-        IN:
-            name - str, name of the moduleto include
-
-        RAISES:
-            IncludeModuleError - in case we failed to include the module for any reason
-        """
-        if not renpy.is_init_phase():
-            raise IncludeModuleError("Can't include module when init phase is over")
-
-        try:
-            if not (module_initcode := renpy_script.load_module(name)):
-                # Loaded, but the module is empty, can quit here
-                return
-
-        except Exception as e:
-            raise IncludeModuleError(f"Failed to include module: {e}") from e
-
-        # We may not insert elements at or prior the current id!
-        current_id = renpy.game.initcode_ast_id
-
-        if module_initcode[0][0] < renpy_script.initcode[current_id][0]:
-            raise IncludeModuleError(
-                f"Module '{name}' contains nodes with priority lower than the node that loads it"
-            )
-
-        merge_id = current_id + 1
-        current_tail = renpy_script.initcode[merge_id:]
-        # Since script initcode and module initcode are both sorted,
-        # we can use heap to merge them
-        new_tail = heapq_merge(current_tail, module_initcode, key=lambda i: i[0])
-
-        renpy_script.initcode[merge_id:] = list(new_tail)
-
     def _disable_unrecognised_scripts():
         """
         Iterates over unrecognised scripts and disables them
