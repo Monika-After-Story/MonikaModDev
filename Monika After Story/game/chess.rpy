@@ -3650,6 +3650,19 @@ init python:
                 while monika_move is None:
                     # We have to wait for stockfish to send us a move
                     monika_move = self.poll_monika_move()
+                    # TODO: FIX THIS SHIT
+                    # 1. MASChessDisplayableBase.handle_monika_move can quit early
+                    #   if there's no moves in the queue for Monika, this might be a bug or not
+                    # 2. stockfish takes time to come up with a move, if we poll here and don't get one, we'd
+                    #   have to run handle_monika_move (and thus game_loop) around 50 times per turn.
+                    #   This is stupid and causes issues when we show multiple quips per turn
+                    # 3. I added this while loop here, in MASChessDisplayable.handle_monika_move we assume that we're using stockfish
+                    #   and will always get a move eventually. but it's still a while loop that freezes the game, to fix this
+                    #   we add short pause here to let screen redraws
+                    # 4. the point is, we have to rethink and remake this turn logic eventually
+                    # 5. Legend: add ellipses to her last dlg and loop it with the ellipses moving while pausing to make it look like she's thinking
+                    if monika_move is None:
+                        renpy.pause(0.1)
 
                 #Now verify legality
                 monika_move_check = chess.Move.from_uci(monika_move)
