@@ -3,10 +3,17 @@
     "author": "Monika After Story",
     "name": "Test Submod",
     "description": "This is a test submod to demonstrate the schema structure.",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "version_updates": {"monikaafterstory_test_submod_v0_0_1": "monikaafterstory_test_submod_v0_0_2"},
+    "os_whitelist": ["linux", "windows"],
+    "settings_pane": "test_submod_settings",
+    "priority": 8,
+    "dependencies": {
+        "foobar": ["0.1.0", null]
+    },
     "modules": [
         "main",
-        "deps/dep1",
-        "deps/dep2"
+        "submodules/one",
+        "submodules/two"
     ]
 }
