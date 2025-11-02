@@ -3133,6 +3133,21 @@ style chibika_note_text:
     color "#000"
     outlines []
 
+
+screen mas_dbug():
+    zorder 999
+
+    default positions = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)]
+
+    if store._mas_root.is_dbug_enabled():
+        for p in positions:
+            text "debug":
+                align p
+                black_color "#ffffff04"
+                color "#ffffff04"
+                outlines []
+
+
 #Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
 screen submods():
     tag menu

@@ -37,6 +37,9 @@ python early:
 
     ### R8+ Config Var adjustments
 
+    # 8.0
+    renpy.config.always_shown_screens.append("mas_dbug")
+
     ## 7.4.11
     renpy.config.mouse_focus_clickthrough = True
     ##7.3.3
