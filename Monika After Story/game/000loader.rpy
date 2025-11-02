@@ -15,25 +15,25 @@ python early in _mas_loader:
     from renpy.game import script as renpy_script
 
 
-    __EXCEPTIONS = frozenset((
+    __LOADABLE_DATA = frozenset((
         "images.rpa",
         "audio.rpa",
         "fonts.rpa",
-        "scripts.rpa"
+        "scripts.rpa",
     ))
 
     __GLOB_PATTERN_0 = "**/*.rp[aey]*"
     __GLOB_PATTERN_1 = "**/*_ren.py"
 
-    __RS_EXTS = frozenset((
+    __RENPY_EXTS = frozenset((
         "rpa",
         "rpe",
         "rpy",
         "rpyc",
-        "py"
+        "py",
     ))
 
-    __DISB_EXT = ".disabled"
+    __SPURIOUS_FILES_EXT = ".invalid"
 
 
     class IncludeModuleError(Exception):
@@ -46,16 +46,6 @@ python early in _mas_loader:
         def __str__(self):
             return self.msg
 
-
-    def _sanitise_path(path: str) -> str:
-        """
-        Fixes filepaths on Windows OS
-
-        IN:
-            path - the path to fix
-
-        """
-        return path.replace("\\", "/")
 
     def _get_unrecognised_scripts() -> Iterator[str]:
         """
@@ -72,12 +62,12 @@ python early in _mas_loader:
             if rel_fn.startswith("\\") or rel_fn.startswith("/"):
                 rel_fn = rel_fn[1:]
 
-            if rel_fn in __EXCEPTIONS:
+            if rel_fn in __LOADABLE_DATA:
                 continue
 
             ext = os.path.splitext(fn)[1]
 
-            if ext and ext[1:] in __RS_EXTS:
+            if ext and ext[1:] in __RENPY_EXTS:
                 yield fn
 
     def do_modules_exist(*modules: str, is_any: bool = False) -> bool:
@@ -115,7 +105,7 @@ python early in _mas_loader:
         """
         for fn in _get_unrecognised_scripts():
             try:
-                os.rename(fn, "{}{}".format(fn, __DISB_EXT))
+                os.rename(fn, "{}{}".format(fn, __SPURIOUS_FILES_EXT))
 
             except OSError as e:
                 raise RuntimeError(
@@ -126,18 +116,15 @@ python early in _mas_loader:
         """
         Iterates over unrecognised scripts and unloads them
         """
+        # NOTE: renpy scripts are now in common_script_files
         scripts = renpy_script.script_files
 
         for i in range(len(scripts)-1, -1, -1):
             name, path = scripts[i]
 
-            if (
-                path is None# Means packed
-                or path.endswith("/renpy/common")# renpy specific
-            ):
-                continue
-
-            scripts.pop(i)
+            if path is not None:
+                # Means it's not packed in an archive
+                scripts.pop(i)
 
     def import_from_path(name: str, path: str, *, is_global: bool = False) -> ModuleType:
         """
