@@ -606,10 +606,9 @@ init python in mas_chess:
             white_pieces_back=back_row_str
         )
 
-    def enqueue_output(out, queue, lock):
+    def enqueue_output(out, queue):
         for line in iter(out.readline, b''):
-            with lock:
-                queue.appendleft(line)
+            queue.appendleft(line)
 
         out.close()
 
@@ -3386,12 +3385,11 @@ init python:
                 move - representing the best move stockfish found
             """
             res = None
-            with self.lock:
-                while self.queue:
-                    line = self.queue.pop().decode("utf-8")
-                    match = re.match(r"^bestmove (\w+)", line)
-                    if match:
-                        res = match.group(1)
+            while self.queue:
+                line = self.queue.pop().decode("utf-8")
+                match = re.match(r"^bestmove (\w+)", line)
+                if match:
+                    res = match.group(1)
 
             return res
 
@@ -3509,8 +3507,7 @@ init python:
 
             #And set up facilities for asynchronous communication
             self.queue = collections.deque()
-            self.lock = threading.Lock()
-            thrd = threading.Thread(target=store.mas_chess.enqueue_output, args=(self.stockfish.stdout, self.queue, self.lock))
+            thrd = threading.Thread(target=store.mas_chess.enqueue_output, args=(self.stockfish.stdout, self.queue))
             thrd.daemon = True
             thrd.start()
 
