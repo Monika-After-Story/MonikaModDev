@@ -1005,12 +1005,61 @@ init -1000 python in mas_submod_utils:
         return submod.directory
 
 
+init -999 python in mas_submod_utils:
+    import os
+    import sys
+
+    from types import ModuleType
+    from importlib.util import (
+        spec_from_file_location,
+        module_from_spec,
+    )
+
+    def import_from_path(name: str, path: str, *, is_global: bool = False) -> ModuleType:
+        """
+        Dynamically imports a module from the given relative path
+        This is like Nodejs 'require'
+
+        Example:
+            my_module = import_from_path("my_module", "some/path/my_module.py")
+            my_module.hello_world()
+
+        IN:
+            name - str, the name to import the mode as
+            path - str, relative path to the module (relative to gamedir)
+            is_global - bool, whether or not add the module to 'sys.modules'
+                (Default: False)
+
+        OUT:
+            the module object
+
+        RAISES:
+            ModuleNotFoundError - if failed to find the module
+        """
+        path = os.path.join(renpy.config.gamedir, path)
+        # If it's a dir, then it's a module, so we should find its __init__.py
+        if os.path.isdir(path):
+            path = os.path.join(path, "__init__.py")
+
+        spec = spec_from_file_location(name, path)
+        if spec is None:
+            raise ModuleNotFoundError(f"Failed to dynamically import '{path}' as '{name}', not found")
+
+        module = module_from_spec(spec)
+
+        if is_global:
+            sys.modules[name] = module
+
+        spec.loader.exec_module(module)
+
+        return module
+
+
 #START: Function Plugins
 init -999 python in mas_submod_utils:
     import inspect
     import store
 
-    from store._mas_loader import import_from_path as require
     from store import mas_utils
 
     #Store the current label for use elsewhere
