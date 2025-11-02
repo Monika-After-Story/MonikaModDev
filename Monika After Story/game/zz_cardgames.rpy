@@ -2610,7 +2610,7 @@ init 5 python in mas_nou:
                 if total_cards > 12:
                     total_to_shuffle = 7
                 else:
-                    total_to_shuffle = total_cards / 2
+                    total_to_shuffle = total_cards // 2
 
                 # make a list of ids we'll shuffle
                 for i in range(total_to_shuffle):
@@ -4143,7 +4143,7 @@ label monika_change_nou_house_rules:
 
 
 label .no_change:
-    
+
     if from_game:
         return False
 
