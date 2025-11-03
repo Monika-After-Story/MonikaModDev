@@ -142,11 +142,6 @@ init -1200 python:
     renpy.config.menu_clear_layers = ["front"]
     renpy.config.gl_test_image = "white"
 
-    # Remove extra save location (for whatever reason we do this)
-    # FIXME: Also, this is unsafe since renpy has a thread that
-    # iterates thru this list
-    if len(renpy.loadsave.location.locations) > 1:
-        renpy.loadsave.location.locations.pop()
 
 ################START: INIT TIME CONFIGS
 ## Uncomment the following line to set an audio file that will be played while
