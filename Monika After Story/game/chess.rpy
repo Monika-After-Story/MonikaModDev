@@ -563,10 +563,8 @@ init python in mas_chess:
 
         #Now, we generate the remaining available range
         occupied_positions = frozenset((king_position, left_rook_position, right_rook_position))
-        # FIXME: Due to a renpy bug, we have to access python set here via _set
-        # In the latest versions it might be fixed, so this should be adjusted w/ r7 support
-        available_white_positions = _set(range(1, 9, 2)) - occupied_positions
-        available_black_positions = _set(range(0, 8, 2)) - occupied_positions
+        available_white_positions = python_set(range(1, 9, 2)) - occupied_positions
+        available_black_positions = python_set(range(0, 8, 2)) - occupied_positions
 
         #For picking bishops, we need to have one on a light square, one on a dark square
         first_bishop_position = random.choice(tuple(available_white_positions))

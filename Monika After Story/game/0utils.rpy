@@ -466,11 +466,7 @@ python early in mas_utils:
             IN:
                 callable_ - the func/class to decorate
             """
-            # FIXME: We have to do this 'til we finally get py3
-            DEF_ATTR = ("__module__", "__name__", "__doc__")
-            assigned = [attr for attr in DEF_ATTR if hasattr(callable_, attr)]
-
-            @functools.wraps(callable_, assigned=assigned)
+            @functools.wraps(callable_)
             def wrapper(*args, **kwargs):
                 """
                 Wrapper around the deprecated function/class

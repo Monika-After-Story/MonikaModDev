@@ -3205,8 +3205,7 @@ screen submods():
                                 text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
-                        # FIXME: use the use statement?
-                        $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
+                        use expression submod.settings_pane
 
     text tooltip.value:
         xalign 0 yalign 1.0
