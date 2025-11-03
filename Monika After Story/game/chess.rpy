@@ -650,7 +650,7 @@ label game_chess:
         # quicksave holds the pgn game in plaintext
         python:
             quicksaved_game = chess.pgn.read_game(
-                StringIO.StringIO(persistent._mas_chess_quicksave)
+                io.StringIO(persistent._mas_chess_quicksave)
             )
 
             quicksaved_game = mas_chess._checkInProgressGame(
