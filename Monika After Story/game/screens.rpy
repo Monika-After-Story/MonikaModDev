@@ -3225,14 +3225,8 @@ screen mas_apikeys():
                 style "main_menu_version"
 
         else:
-
             vbox:
                 spacing 30
-
-                if store.mas_can_import.certifi():
-                    textbutton _("Update Certificate"):
-                        style "mas_button_simple"
-                        action Function(store.mas_api_keys.screen_update_cert)
 
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:

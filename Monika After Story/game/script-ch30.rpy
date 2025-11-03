@@ -2365,10 +2365,6 @@ label ch30_day:
         # Give the bonus
         mas_affection._withdraw_aff()
 
-        # do cert updates if certifi enabled
-        if store.mas_can_import.certifi():
-            store.mas_can_import.certifi.ch30_day_cert_update()
-
     return
 
 

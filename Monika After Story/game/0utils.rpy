@@ -6,28 +6,6 @@ init -1500 python:
     me = singleton.SingleInstance()
 
 
-init -1500 python in mas_utils:
-    # ssl/https usage checks
-
-
-    def can_use_https():
-        """
-        Checks if we can safely use https in general - this combines several
-        checks, mainly:
-            - ssl
-            - a cert
-
-        NOTE: https can still be used with sites that do not require SSL verify
-        even if no cert is found.
-
-        RETURNS: True if https can be used.
-        """
-        return (
-            store.mas_can_import.ssl()
-            and store.mas_can_import.certifi.cert_available
-        )
-
-
 python early in mas_logging:
     import datetime
     import logging
