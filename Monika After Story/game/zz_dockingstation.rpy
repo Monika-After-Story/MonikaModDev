@@ -620,7 +620,7 @@ init -45 python:
                     first_unpacked = self.base64.b64decode(first_item)
 
                     # parse the line for the first NUM_DELIM
-                    raw_num, sep, remain = first_unpacked.partition(NUM_DELIM)
+                    raw_num, sep, remain = first_unpacked.partition(bytes(NUM_DELIM, "utf-8"))
                     if len(sep) == 0:
                         raise Exception(
                             "did not find sep. size of first {0}".format(
@@ -1216,6 +1216,7 @@ init 200 python in mas_dockstat:
     import os
     import random
     import datetime
+    import base64
 
     cr_log_path = "mfgen"
     rd_log_path = "mfread"
@@ -1282,7 +1283,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(codecs.encode(pickle.dumps(store.persistent), "base64"))
+            _outbuffer.write(base64.b64encode(pickle.dumps(store.persistent)).decode("utf-8"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1469,7 +1470,6 @@ init 200 python in mas_dockstat:
         ### other stuff we need
         # inital buffer
         moni_buffer = StringIO()
-        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
         NUM_DELIM = "|num|"
@@ -1488,7 +1488,7 @@ init 200 python in mas_dockstat:
             ), "rb")
 
             # NOTE: moin_chr is going to be less than 200KB, this be fine
-            moni_buffer.write(moni_chr.read())
+            moni_buffer.write(moni_chr.read().decode("utf-8"))
 
         except Exception as e:
             cr_log.error("mbase copy failed | {0}".format(
@@ -1533,7 +1533,6 @@ init 200 python in mas_dockstat:
                 blocksize
             )
             moni_tbuffer = StringIO()
-            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
                 moni_tbuffer.write(_line)
@@ -1583,9 +1582,9 @@ init 200 python in mas_dockstat:
                     moni_size_left -= extra_padding
 
                 # and write out the metadata / monika
-                data = encoder(_line + dockstat.safeRandom(extra_padding))
+                data = encoder(bytes(_line, "utf-8") + dockstat.safeRandom(extra_padding))
                 checklist.update(data)
-                moni_fbuffer.write(data)
+                moni_fbuffer.write(data.decode("utf-8"))
 
                 # and now for the random data generation
                 # NOTE: this should represent number of bytes
@@ -1595,7 +1594,7 @@ init 200 python in mas_dockstat:
                 while curr_size < moni_size_limit:
                     data = safe_encoder(blocksize)
                     checklist.update(data)
-                    moni_fbuffer.write(data)
+                    moni_fbuffer.write(data.decode("utf-8"))
                     curr_size += blocksize
 
                 # we should have some leftovers
@@ -1603,7 +1602,7 @@ init 200 python in mas_dockstat:
                 if leftovers > 0:
                     data = safe_encoder(leftovers)
                     checklist.update(data)
-                    moni_fbuffer.write(data)
+                    moni_fbuffer.write(data.decode("utf-8"))
 
             else:
                 # otherwise, we shoudl just write out the last line and
@@ -1745,7 +1744,7 @@ init 200 python in mas_dockstat:
             # this isn't a persistent. Let's try backup strats
 
             # and see if this does contain our stuff
-            real_data, sep, garbage = real_data.partition(END_DELIM)
+            real_data, sep, garbage = real_data.partition(bytes(END_DELIM, "utf-8"))
 
             # and return results
             if len(sep) == 0:
@@ -1829,7 +1828,7 @@ init 200 python in mas_dockstat:
         try:
             #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
             # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
-            splitted = data_line.split("|||per|")
+            splitted = data_line.split(b"|||per|")
             if(len(splitted)>0):
                 return pickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
             return pickle.loads(codecs.decode(data_line + b'='*4, "base64"))

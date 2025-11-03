@@ -200,7 +200,7 @@ init python in mas_windowutils:
             mas_utils.mas_log.error("Failed to get MAS window object: {}".format(e))
             return None
 
-    def __getMASWindowHWND_Windows() -> int|None:
+    def __getMASWindowHWND_Windows() -> "int | None":
         """
         Gets the hWnd of the MAS window
 
@@ -319,7 +319,7 @@ init python in mas_windowutils:
 
             # TODO: consider logging if this is None, also catch a more generic exception just in case
             if active_winname_prop is not None:
-                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
+                active_winname = active_winname_prop.value.decode("utf-8")
                 return active_winname.replace("\n", "")
 
         except (XError, BadWindow) as e:
@@ -700,7 +700,7 @@ init python:
     def mas_display_notif(
         title: str,
         body: list[str],
-        group: str|None = None,
+        group: "str | None" = None,
         skip_checks: bool = False,
         flash_window: bool = False
     ) -> bool:

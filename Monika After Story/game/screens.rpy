@@ -857,7 +857,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils._Submod.hasSubmods():
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -919,7 +919,7 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils._Submod.hasSubmods():
             textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
@@ -3133,6 +3133,21 @@ style chibika_note_text:
     color "#000"
     outlines []
 
+
+screen mas_dbug():
+    zorder 999
+
+    default positions = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)]
+
+    if store._mas_root.is_dbug_enabled():
+        for p in positions:
+            text "debug":
+                align p
+                black_color "#ffffff04"
+                color "#ffffff04"
+                outlines []
+
+
 #Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
 screen submods():
     tag menu
@@ -3140,6 +3155,7 @@ screen submods():
     use game_menu(("Submods")):
 
         default tooltip = Tooltip("")
+        default submods = sorted(store.mas_submod_utils._Submod._getSubmods(), key=lambda x: x.name)
 
         viewport id "scrollme":
             scrollbars "vertical"
@@ -3151,33 +3167,45 @@ screen submods():
                 xfill True
                 xmaximum 1000
 
-                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
+                for submod in submods:
                     vbox:
                         xfill True
                         xmaximum 1000
 
-                        label submod.name:
+                        label "[submod.name]":
                             yanchor 0
                             xalign 0
                             text_text_align 0.0
 
                         if submod.coauthors:
-                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
+                            $ details = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
 
                         else:
-                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+                            $ details = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
 
-                        text "[authors]":
+                        text "[details]":
                             yanchor 0
                             xalign 0
                             text_align 0.0
                             layout "greedy"
                             style "main_menu_version"
 
-                        if submod.description:
-                            text submod.description text_align 0.0
+                        if store.mas_submod_utils._SubmodSettings.is_submod_enabled(submod):
+                            textbutton _("Disable submod"):
+                                style "mas_button_simple"
+                                action Function(store.mas_submod_utils._SubmodSettings.disable_submod, submod)
 
-                    if submod.settings_pane:
+                        else:
+                            textbutton _("Enable submod"):
+                                style "mas_button_simple"
+                                action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
+
+                        if submod.description:
+                            text "[submod.description]":
+                                text_align 0.0
+
+                    if submod.settings_pane and renpy.has_screen(submod.settings_pane):
+                        # FIXME: use the use statement?
                         $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
 
     text tooltip.value:
@@ -3197,14 +3225,8 @@ screen mas_apikeys():
                 style "main_menu_version"
 
         else:
-
             vbox:
                 spacing 30
-
-                if store.mas_can_import.certifi():
-                    textbutton _("Update Certificate"):
-                        style "mas_button_simple"
-                        action Function(store.mas_api_keys.screen_update_cert)
 
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:

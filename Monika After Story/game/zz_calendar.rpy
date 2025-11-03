@@ -1037,7 +1037,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 # only re-render if mouse action
                 renpy.redraw(self, 0)
 
-            elif ev.type == pygame.KEYDOWN and config.developer:
+            elif ev.type == pygame.KEYDOWN and store._mas_root.is_dbug_enabled():
                 # debug keys
                 curr_year = self.selected_year
 
@@ -1312,9 +1312,8 @@ init -1 python in mas_calendar:
                 the database
             - database a dict containing the events
         """
-        #TODO: Remove the unicode conversion once r8 is here
         with open(renpy.config.savedir + '/db.mcal', 'w', encoding="utf-8") as fp:
-            fp.write(unicode(json.dumps(calendar_database, cls=encoder, ensure_ascii=False)))
+            fp.write(json.dumps(calendar_database, cls=encoder, ensure_ascii=False))
 
 
     def loadCalendarDatabase():
@@ -2199,7 +2198,7 @@ label _mas_start_calendar(select_date=True):
 
     python:
         #Check if shields are up for whatever reason. If so, we won't drop them when leaving this label
-        _should_drop_shields = not store.mas_calendar.enabled
+        _should_drop_shields = store.mas_calendar.enabled
         mas_calRaiseOverlayShield()
         HKBHideButtons()
 

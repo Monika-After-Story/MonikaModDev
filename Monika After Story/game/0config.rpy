@@ -16,7 +16,6 @@ python early:
     ## The version of the game.
     renpy.config.version = "0.13.0"
 
-
     #Triple space suffix to avoid potential issues with same names in window title
     config.window_title = "Monika After Story   "
 
@@ -36,7 +35,11 @@ python early:
 
     renpy.config.save_directory = "Monika After Story"
 
-    ### R7+ Config Var adjustments
+    ### R8+ Config Var adjustments
+
+    # 8.0
+    renpy.config.always_shown_screens.append("mas_dbug")
+
     ## 7.4.11
     renpy.config.mouse_focus_clickthrough = True
     ##7.3.3
@@ -133,9 +136,9 @@ init -1200 python:
     renpy.config.autosave_slots = 0
     renpy.config.layers = ["master", "transient", "minigames", "screens", "overlay", "front"]
     renpy.config.image_cache_size = 64
-    renpy.config.debug_image_cache = config.developer
+    renpy.config.debug_image_cache = False
     renpy.config.predict_statements = 5
-    renpy.config.rollback_enabled = config.developer
+    renpy.config.rollback_enabled = False
     renpy.config.menu_clear_layers = ["front"]
     renpy.config.gl_test_image = "white"
 
@@ -158,3 +161,8 @@ define config.window_hide_transition = dissolve_textbox
 
 init python:
     config.per_frame_screens.append("_trace_screen")
+
+init -1099 python:
+    ## 8.1 Disable syncing
+    ## NOTE: MUST BE AFTER INIT -1100
+    renpy.config.has_sync = False

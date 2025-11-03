@@ -267,7 +267,7 @@ init -1 python:
             ]
 
             # inital state
-            if not config.developer or start_state is None:
+            if not store._mas_root.is_dbug_enabled() or start_state is None:
                 start_state = self.STATE_PRECHECK
             self._state = start_state
 

@@ -18,11 +18,14 @@ jobs:
   build:
     name: ci_build
 
+    environment: ci
+
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
 
     env:
-      MAS_RENPY_VER: 8.1.1
+      I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT: ${{ secrets.DEV_MODE }}
+      MAS_RENPY_VER: 8.3.4
       MAS_BASE_DIR: masbase
       MAS_DIR: mas
       RENPY_DIR: renpy

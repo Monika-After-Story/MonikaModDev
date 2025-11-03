@@ -30,7 +30,7 @@ init python:
     def _mas_check_ev_type_str(val, name, report, delim=" | ", str_rep=True):
         if (
                 val is not None
-                and not (isinstance(val, str) or isinstance(val, unicode))
+                and not isinstance(val, str)
             ):
             report.extend([delim, "bad ", name, " {0}".format(val)])
 

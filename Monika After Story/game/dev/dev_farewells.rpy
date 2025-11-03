@@ -2,7 +2,7 @@
 
 init python:
     if persistent._mas_fastbye is None:
-        persistent._mas_fastbye = config.developer
+        persistent._mas_fastbye = store._mas_root.is_dbug_enabled()
 
 
 init 5 python:

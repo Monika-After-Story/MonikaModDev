@@ -606,10 +606,9 @@ init python in mas_chess:
             white_pieces_back=back_row_str
         )
 
-    def enqueue_output(out, queue, lock):
+    def enqueue_output(out, queue):
         for line in iter(out.readline, b''):
-            with lock:
-                queue.appendleft(line)
+            queue.appendleft(line)
 
         out.close()
 
@@ -651,7 +650,7 @@ label game_chess:
         # quicksave holds the pgn game in plaintext
         python:
             quicksaved_game = chess.pgn.read_game(
-                StringIO.StringIO(persistent._mas_chess_quicksave)
+                io.StringIO(persistent._mas_chess_quicksave)
             )
 
             quicksaved_game = mas_chess._checkInProgressGame(
@@ -2683,7 +2682,7 @@ init python:
                 if ret_value is not None:
                     return ret_value
 
-            elif config.developer and ev.type == pygame.KEYDOWN:
+            elif ev.type == pygame.KEYDOWN and store._mas_root.is_dbug_enabled():
                 # debug keys for dev testing
                 if ev.key == pygame.K_d:
                     # toggle draw button state
@@ -3386,12 +3385,11 @@ init python:
                 move - representing the best move stockfish found
             """
             res = None
-            with self.lock:
-                while self.queue:
-                    line = self.queue.pop().decode("utf-8")
-                    match = re.match(r"^bestmove (\w+)", line)
-                    if match:
-                        res = match.group(1)
+            while self.queue:
+                line = self.queue.pop().decode("utf-8")
+                match = re.match(r"^bestmove (\w+)", line)
+                if match:
+                    res = match.group(1)
 
             return res
 
@@ -3509,8 +3507,7 @@ init python:
 
             #And set up facilities for asynchronous communication
             self.queue = collections.deque()
-            self.lock = threading.Lock()
-            thrd = threading.Thread(target=store.mas_chess.enqueue_output, args=(self.stockfish.stdout, self.queue, self.lock))
+            thrd = threading.Thread(target=store.mas_chess.enqueue_output, args=(self.stockfish.stdout, self.queue))
             thrd.daemon = True
             thrd.start()
 
@@ -3650,6 +3647,19 @@ init python:
                 while monika_move is None:
                     # We have to wait for stockfish to send us a move
                     monika_move = self.poll_monika_move()
+                    # TODO: FIX THIS SHIT
+                    # 1. MASChessDisplayableBase.handle_monika_move can quit early
+                    #   if there's no moves in the queue for Monika, this might be a bug or not
+                    # 2. stockfish takes time to come up with a move, if we poll here and don't get one, we'd
+                    #   have to run handle_monika_move (and thus game_loop) around 50 times per turn.
+                    #   This is stupid and causes issues when we show multiple quips per turn
+                    # 3. I added this while loop here, in MASChessDisplayable.handle_monika_move we assume that we're using stockfish
+                    #   and will always get a move eventually. but it's still a while loop that freezes the game, to fix this
+                    #   we add short pause here to let screen redraws
+                    # 4. the point is, we have to rethink and remake this turn logic eventually
+                    # 5. Legend: add ellipses to her last dlg and loop it with the ellipses moving while pausing to make it look like she's thinking
+                    if monika_move is None:
+                        renpy.pause(0.1)
 
                 #Now verify legality
                 monika_move_check = chess.Move.from_uci(monika_move)

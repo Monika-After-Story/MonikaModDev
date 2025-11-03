@@ -175,6 +175,8 @@ label splashscreen:
         # We're about to start, all things should be loaded, we can check event conditionals
         Event.validateConditionals()
 
+        _mas_root.handle_dbug()
+
     if store.mas_per_check.should_show_chibika_persistent():
         # we have a corrupted per w/ no backups or incompatible per
         call mas_backups_you_have_bad_persistent
@@ -261,7 +263,7 @@ label warningscreen:
 
 label after_load:
     $ config.allow_skipping = False
-    $ _dismiss_pause = config.developer
+    $ _dismiss_pause = store._mas_root.is_dbug_enabled()
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
     #Check if the save has been tampered with
