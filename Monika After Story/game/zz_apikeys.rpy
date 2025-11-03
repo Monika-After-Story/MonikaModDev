@@ -200,8 +200,7 @@ init -980 python in mas_api_keys:
                     raise TypeError(ERR_ON_CHG_TYPE_BAD_TUP_SIZE.format(len(rv)))
 
                 # only check error message if on_change is returning false
-                # TODO: py3: unicode doesn't exist. On migration, simply check for str
-                if not rv[0] and not isinstance(rv[1], (str, unicode)):
+                if not rv[0] and not isinstance(rv[1], str):
                     raise TypeError(ERR_ON_CHG_TYPE_BAD_ERR_MSG.format(type(rv[1]).__name__))
 
                 return rv

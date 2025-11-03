@@ -2642,7 +2642,6 @@ label dev_unit_test_strict_can_pickle:
         # non-structure types
         scp_tester.prepareTest("strings check")
         scp_tester.assertEqual(can_pickle, scp(str("test")))
-        scp_tester.assertEqual(can_pickle, scp(unicode("test")))
 
         scp_tester.prepareTest("bool check")
         scp_tester.assertEqual(can_pickle, scp(bool(1)))

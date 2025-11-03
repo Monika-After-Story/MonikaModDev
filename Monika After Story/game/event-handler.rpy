@@ -86,7 +86,6 @@ init -999 python in mas_ev_data_ver:
         val_type = type(val)
         if val_type in (
                 str,
-                unicode,
                 bool,
                 int,
                 float,
@@ -174,7 +173,7 @@ init -999 python in mas_ev_data_ver:
         if val is None:
             return allow_none
 
-        return isinstance(val, str) or isinstance(val, unicode)
+        return isinstance(val, str)
 
 
     def _verify_td(val, allow_none=True):

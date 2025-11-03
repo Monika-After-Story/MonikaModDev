@@ -319,7 +319,7 @@ init python in mas_windowutils:
 
             # TODO: consider logging if this is None, also catch a more generic exception just in case
             if active_winname_prop is not None:
-                active_winname = unicode(active_winname_prop.value, encoding = "utf-8")
+                active_winname = active_winname_prop.value.decode("utf-8")
                 return active_winname.replace("\n", "")
 
         except (XError, BadWindow) as e:

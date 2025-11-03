@@ -1312,9 +1312,8 @@ init -1 python in mas_calendar:
                 the database
             - database a dict containing the events
         """
-        #TODO: Remove the unicode conversion once r8 is here
         with open(renpy.config.savedir + '/db.mcal', 'w', encoding="utf-8") as fp:
-            fp.write(unicode(json.dumps(calendar_database, cls=encoder, ensure_ascii=False)))
+            fp.write(json.dumps(calendar_database, cls=encoder, ensure_ascii=False))
 
 
     def loadCalendarDatabase():
