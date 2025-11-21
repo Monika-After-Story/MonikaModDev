@@ -17,7 +17,7 @@ init -10 python in mas_games:
             return platform.system() == 'Windows'
 
 init 1 python in mas_games:
-    def _total_games_played(exclude_list=[]):
+    def _total_games_played(exclude_list=None):
         """
         Returns the total number of games played by adding up the shown_count of each game
 
@@ -26,6 +26,9 @@ init 1 python in mas_games:
                 defaults to an empty list
         """
         global game_db
+
+        if exclude_list is None:
+            exclude_list = []
 
         total_shown_count = 0
         for ev in game_db.values():
