@@ -17,7 +17,7 @@ init -10 python in mas_games:
             return platform.system() == 'Windows'
 
 init 1 python in mas_games:
-    def _total_games_played(exclude_list=[]):
+    def _total_games_played(exclude_list=None):
         """
         Returns the total number of games played by adding up the shown_count of each game
 
@@ -26,6 +26,9 @@ init 1 python in mas_games:
                 defaults to an empty list
         """
         global game_db
+
+        if exclude_list is None:
+            exclude_list = []
 
         total_shown_count = 0
         for ev in game_db.values():
@@ -114,6 +117,8 @@ init 5 python:
     )
 
 label mas_pong:
+    if not played_pong_this_session:
+        call mas_before_game_quip()
     call game_pong
     return
 
@@ -138,6 +143,7 @@ init 5 python:
 
 label mas_chess:
     $ persistent._mas_chess_timed_disable = None
+    call mas_before_game_quip()
     call game_chess
     return
 
@@ -153,6 +159,7 @@ init 5 python:
     )
 
 label mas_hangman:
+    call mas_before_game_quip()
     call game_hangman
     return
 
@@ -187,6 +194,7 @@ init 5 python:
     )
 
 label mas_nou:
+    call mas_before_game_quip()
     call mas_nou_game_start
     return
 
@@ -220,44 +228,6 @@ label mas_pick_a_game:
 
     if selected_game:
         show monika at t11
-        if selected_game != "mas_piano" and not (selected_game == "mas_pong" and played_pong_this_session):
-            python:
-                if mas_isMoniUpset(lower=True):
-                    begin_quips = [
-                        _("Okay, let's play."),
-                        _("I guess we can play that."),
-                        _("Let's begin."),
-                        _("Sure."),
-                        _("Fine."),
-                        _("Alright."),
-                    ]
-
-                else:
-                    begin_quips = [
-                        _("Let's do this!"),
-                        _("Bring it on, [mas_get_player_nickname()]!"),
-                        _("Ready to lose, [mas_get_player_nickname()]?"),
-                        _("I'm ready when you are, [mas_get_player_nickname()]!"),
-                        _("I hope you're ready, [mas_get_player_nickname()]~"),
-                        _("Let's have some fun, [mas_get_player_nickname()]!"),
-                        _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
-                        _("Throwing down the gauntlet, are we?"),
-                        _("It's time to duel!"),
-                        _("Challenge accepted!"),
-                    ]
-
-                game_quip = renpy.substitute(renpy.random.choice(begin_quips))
-
-
-            if mas_isMoniBroken():
-                m 6ckc "..."
-
-            elif mas_isMoniUpset(lower=True):
-                m 2ekd "[game_quip]"
-
-            else:
-                m 3hub "[game_quip]"
-
         $ MASEventList.push(selected_game, skipeval=True)
 
     if not renpy.showing("monika idle"):
@@ -266,3 +236,44 @@ label mas_pick_a_game:
     $ mas_DropShield_dlg()
 
     jump ch30_loop
+
+# Common pre-game quip label to use in Player-vs-Monika games.
+label mas_before_game_quip():
+    python:
+        if mas_isMoniUpset(lower=True):
+            begin_quips = [
+                _("Okay, let's play."),
+                _("I guess we can play that."),
+                _("Let's begin."),
+                _("Sure."),
+                _("Fine."),
+                _("Alright."),
+            ]
+
+        else:
+            begin_quips = [
+                _("Let's do this!"),
+                _("Bring it on, [mas_get_player_nickname()]!"),
+                _("Ready to lose, [mas_get_player_nickname()]?"),
+                _("I'm ready when you are, [mas_get_player_nickname()]!"),
+                _("I hope you're ready, [mas_get_player_nickname()]~"),
+                _("Let's have some fun, [mas_get_player_nickname()]!"),
+                _("Don't expect me to go easy on you, [mas_get_player_nickname()]!~"),
+                _("Throwing down the gauntlet, are we?"),
+                _("It's time to duel!"),
+                _("Challenge accepted!"),
+            ]
+
+        game_quip = renpy.substitute(renpy.random.choice(begin_quips))
+
+
+    if mas_isMoniBroken():
+        m 6ckc "..."
+
+    elif mas_isMoniUpset(lower=True):
+        m 2ekd "[game_quip]"
+
+    else:
+        m 3hub "[game_quip]"
+
+    return
