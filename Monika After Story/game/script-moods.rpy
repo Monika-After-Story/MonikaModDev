@@ -1088,7 +1088,7 @@ label mas_mood_cozy:
             return "love"
 
         "A warm blanket.":
-            m 1eub "Oh, I love warm blankets too! {w=0.3} They make everything feel so snug and comfortable."
+            m 1eub "Oh, I love warm blankets too! {w=0.3}They make everything feel so snug and comfortable."
             m 1hua "There's nothing like wrapping yourself up in a cozy blanket."
             m 1ekbla "It's like a warm hug that lasts forever..."
             m 3hubsb "I wish I could wrap you up in a blanket and keep you warm all the time!"
