@@ -1080,7 +1080,7 @@ label mas_mood_cozy:
 #                        else:
 #                            m 5mubfa "Don't let go yet..."
 #                            m 5fubfa "This moment is perfect."
-#                            m 5dubfa ".{w=0.3} .{w=0.3} .{w=0.3}"
+#                            m 5dubfa ".{w=0.3}.{w=0.3}.{w=0.3}"
 #                        m 1dubsa "Thank you, [player]. I love you."
 #                        return
 
