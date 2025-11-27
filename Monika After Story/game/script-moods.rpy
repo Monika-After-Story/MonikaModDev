@@ -1075,7 +1075,7 @@ label mas_mood_cozy:
 #                                    m 1eubsa "The sound of the rain is so relaxing..."
 #
 #                                "Let her rest.":
-#                                    m 5dubfc ".{w=1} .{w=1} .{w=1}"
+#                                    m 5dubfc ".{w=1}.{w=1}.{w=1}"
 #                                    jump mas_cozy_holding_rain
 #                        else:
 #                            m 5mubfa "Don't let go yet..."
