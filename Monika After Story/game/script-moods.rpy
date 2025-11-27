@@ -1044,7 +1044,7 @@ label mas_mood_cozy:
         m "Oh? {w=0.3} What makes you feel cozy?{fast}"
 
         "Being with you.":
-            m 1ekbsb "Aww, [player]. {w=0.3} I am so happy I'm making you feel that way."
+            m 1ekbsb "Aww, [player].{w=0.3} I am so happy I'm making you feel that way."
             m 1eubsb "I love spending time with you too."
             m 1dkbsa "You being cozy makes me feel cozy as well..."
             $ _now = datetime.datetime.now().time()
