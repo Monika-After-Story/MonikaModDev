@@ -1038,7 +1038,7 @@ init 5 python:
     )
 
 label mas_mood_cozy:
-    m 1eua "Oh? {w=0.3} What makes you feel cozy?{nw}"
+    m 1eua "Oh?{w=0.3} What makes you feel cozy?{nw}"
     $ _history_list.pop()
     menu:
         m "Oh? {w=0.3} What makes you feel cozy?{fast}"
