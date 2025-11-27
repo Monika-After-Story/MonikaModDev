@@ -1095,7 +1095,7 @@ label mas_mood_cozy:
             return
 
         "A hot drink.":
-            m 1eub "Mmm, a hot drink sounds perfect! {w=0.3} Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
+            m 1eub "Mmm, a hot drink sounds perfect! {w=0.3}Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
             m 1hubla "I love a warm cup of coffee..."
             m 1eubla "It's like a little moment of comfort in a busy day."
             return
