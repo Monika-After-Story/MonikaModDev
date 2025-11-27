@@ -1041,7 +1041,7 @@ label mas_mood_cozy:
     m 1eua "Oh?{w=0.3} What makes you feel cozy?{nw}"
     $ _history_list.pop()
     menu:
-        m "Oh? {w=0.3} What makes you feel cozy?{fast}"
+        m "Oh? What makes you feel cozy?{fast}"
 
         "Being with you.":
             m 1ekbsb "Aww, [player].{w=0.3} I am so happy I'm making you feel that way."
