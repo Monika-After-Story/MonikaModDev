@@ -1061,7 +1061,7 @@ label mas_mood_cozy:
 #                menu:
 #                    m "Would you like to hold me in your arms for a while?{fast}"
 #                    "Hold Monika.":
-#                        m 5dubfa ".{w=0.3} .{w=0.3} .{w=0.3}"
+#                        m 5dubfa ".{w=0.3}.{w=0.3}.{w=0.3}"
 #                        if mas_is_raining and renpy.random.randint(0,1):
 #                            m 5dubfc ".{w=0.3} .{w=0.3} .{w=0.3}"
 #                            label mas_cozy_holding_rain:
