@@ -2539,9 +2539,9 @@ init -10 python in mas_battleship:
             _Quip(
                 exprs=("1lta", "1lua"),
                 lines=(
-                    _("Maybe {square}..."),
-                    _("Hmmm.{{w=0.1}}.{{w=0.1}}.{{w=0.1}} Let's try {square}."),
-                    _("What are you hiding at.{{w=0.1}}.{{w=0.1}}.{{w=0.1}}{square}?"),
+                    _("Maybe {{i}}{square}{{/i}}..."),
+                    _("Hmmm.{{w=0.1}}.{{w=0.1}}.{{w=0.1}} Let's try {{i}}{square}{{/i}}."),
+                    _("What are you hiding at.{{w=0.1}}.{{w=0.1}}.{{w=0.1}}{{i}}{square}{{/i}}?"),
                 ),
             ),
         )
