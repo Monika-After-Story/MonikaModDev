@@ -118,8 +118,6 @@ init -1000 python in mas_submod_utils:
         coauthors: list[str] = dataclasses.field(default_factory=list)
         # Link to the submod git repository
         repository: str = dataclasses.field(default="")
-        # Submod loading priority. Must be within -999 and 999
-        priority: int = dataclasses.field(default=0)
         # Set of OS that are supported by the submod
         os_whitelist: frozenset[Platform] = dataclasses.field(default=frozenset())
         # Set of OS that the submod does not support
@@ -137,7 +135,6 @@ init -1000 python in mas_submod_utils:
             self.validate_version_updates()
             self.validate_coauthors()
             self.validate_repository()
-            self.validate_priority()
             self.validate_os_whitelist()
             self.validate_os_blacklist()
 
@@ -268,13 +265,6 @@ init -1000 python in mas_submod_utils:
                 url = urlparse(self.repository)
                 if url.scheme != "https":
                     submod_log.warning(f"Submod doesn't use https scheme in its repository link")
-
-        def validate_priority(self) -> None:
-            if not isinstance(self.priority, int):
-                raise ValueError("Submod priority must be an int")
-
-            if not (-999 <= self.priority <= 999):
-                raise ValueError("Submod priority must be within [-999, 999]")
 
         def validate_os_whitelist(self) -> None:
             if not isinstance(self.os_whitelist, (frozenset, list, python_list)):
@@ -603,7 +593,6 @@ init -1000 python in mas_submod_utils:
             version_updates - update labels
             coauthors - submod co-authors
             repository - submod repository
-            priority - loading priority
         """
         #The fallback version string, used in case we don't have valid data
         FB_VERS_STR = "0.0.0"
@@ -904,12 +893,12 @@ init -1000 python in mas_submod_utils:
         @classmethod
         def _load_submods(cls):
             """
-            SHOULD NEVER BE CALLED DIRECTLY
+            NOTE: SHOULD NEVER BE CALLED DIRECTLY
 
             Loads modules for every submod
             """
             submods = cls._getSubmods()
-            submods.sort(key=lambda s: s.priority)
+            submods.sort(key=lambda s: s.name)
 
             for submod in submods:
                 submod._load()
