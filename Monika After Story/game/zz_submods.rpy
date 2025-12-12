@@ -76,6 +76,11 @@ init -1000 python in mas_submod_utils:
 
             return cls.unknown
 
+    class _UpdateProviders(str, Enum):
+        """
+        Enum represents supported update providers
+        """
+        git = "git"
 
 
     class _GitOutput(typing.NamedTuple):
@@ -211,6 +216,50 @@ init -1000 python in mas_submod_utils:
             cls._exec_git("clone", "--branch", index, "--depth", "1", url, repo_path)
 
 
+    @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
+    class _UpdaterSchema(python_object):
+        """
+        Subschema for validating updater field of submod
+        """
+        # Name of the provider to use for updates
+        provider: _UpdateProviders
+        # Settings of the provider, can be different depending on the provider
+        settings: dict[str, Any]
+
+        def __post_init__(self):
+            self.validate_provider()
+            self.validate_settings()
+
+        def validate_provider(self) -> None:
+            if not isinstance(self.provider, str):
+                raise TypeError("Submod updater provider must be a str")
+
+            if self.provider not in _UpdateProviders.__members__:
+                raise ValueError(f"Submod updater uses unknown provider '{self.provider}'")
+
+            self.provider = _UpdateProviders(self.provider)
+
+        def validate_settings(self) -> None:
+            if not isinstance(self.settings, (dict, python_dict)):
+                raise TypeError("Submod updater settings must be a dict")
+
+            if not self.settings:
+                raise ValueError("Submod updater settings are empty")
+
+            # TODO: use match or smth?
+            if self.provider is _UpdateProviders.git:
+                url = self.settings.get("url", None)
+                if url is None:
+                    raise ValueError("Submod updater url wasn't provided in settings")
+                if not url:
+                    raise ValueError("Submod updater url setting is empty")
+
+            else:
+                raise NotImplementedError(f"updater provider {self.provider} is not supported")
+
+        @classmethod
+        def from_json(cls, data: dict[str, Any]) -> Self:
+            return cls(**data)
 
     @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
     class _SubmodSchema(python_object):
@@ -235,6 +284,7 @@ init -1000 python in mas_submod_utils:
         modules: list[str]
         # A short description for the submod. Does not support interpolation?
         description: str = dataclasses.field(default="")
+        updater: "_UpdaterSchema | None" = None
         # Dictionary in the following structure: {'name': ('minimum_version', 'maximum_version')}
         # corresponding to the needed submod name and version required
         # NOTE: versions must be passed in the same way as the version property is done
@@ -270,6 +320,7 @@ init -1000 python in mas_submod_utils:
             self.validate_version()
             self.validate_modules()
             self.validate_description()
+            self.validate_updater()
             self.validate_dependencies()
             self.validate_settings_pane()
             self.validate_version_updates()
@@ -345,6 +396,16 @@ init -1000 python in mas_submod_utils:
             if not isinstance(self.description, str):
                 raise ValueError("Submod description must be a str")
 
+        def validate_updater(self) -> None:
+            if self.updater is None:
+                submod_log.warning(f"Submod '{self.name}' has no updater defined and won't be able to update")
+                return
+
+            if not isinstance(self.updater, (dict, python_dict)):
+                raise TypeError("Submod updater must be a dict")
+
+            self.updater = _UpdaterSchema.from_json(self.updater)
+
         def validate_dependencies(self) -> None:
             if not isinstance(self.dependencies, (dict, python_dict)):
                 raise ValueError("Submod dependencies must be a dict")
@@ -404,7 +465,7 @@ init -1000 python in mas_submod_utils:
             if self.repository:
                 url = urlparse(self.repository)
                 if url.scheme != "https":
-                    submod_log.warning("Submod doesn't use https scheme in its repository link")
+                    submod_log.warning(f"Submod '{self.name}' doesn't use https scheme in its repository link")
 
         def validate_os_whitelist(self) -> None:
             if not isinstance(self.os_whitelist, (frozenset, list, python_list)):
