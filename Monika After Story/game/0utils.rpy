@@ -595,13 +595,13 @@ python early in mas_utils:
             return dict(self._set_vars)
 
 
-    def compareVersionLists(curr_vers, comparative_vers):
+    def compare_versions(current_vers, comparative_vers):
         """
         Generic version number checker
 
         IN:
-            curr_vers - current version number as a list (eg. 1.2.5 -> [1, 2, 5])
-            comparative_vers - the version we're comparing to as a list, same format as above
+            current_vers - current version number as a Sequence[int] (eg. 1.2.5 -> [1, 2, 5])
+            comparative_vers - the version we're comparing to as a Sequence[int], same format as above
 
             NOTE: The version numbers can be different lengths
 
@@ -611,44 +611,36 @@ python early in mas_utils:
                 - 0 if the current version is the same as the comparitive version
                 - 1 if the current version is greater than the comparitive version
         """
-        #Define a local function to use to fix up the version lists if need be
-        def fixVersionListLen(smaller_vers_list, larger_vers_list):
-            """
-            Adjusts the smaller version list to be the same length as the larger version list for easy comparison
+        cur_i = 0
+        comp_i = 0
+        checked_current = False
+        checked_comparitive = False
+        while not checked_current or not checked_comparitive:
+            if cur_i >= len(current_vers):
+                cur_v = 0
+                checked_current = True
+            else:
+                cur_v = current_vers[cur_i]
 
-            IN:
-                smaller_vers_list - the smol list to adjust
-                larger_vers_list - the list we will adjust the smol list to
+            if comp_i >= len(comparative_vers):
+                comp_v = 0
+                checked_comparitive = True
+            else:
+                comp_v = comparative_vers[comp_i]
 
-            OUT:
-                adjusted version list
-
-            NOTE: fills missing indeces with 0's
-            """
-            for missing_ind in range(len(larger_vers_list) - len(smaller_vers_list)):
-                smaller_vers_list.append(0)
-            return smaller_vers_list
-
-        #Let's verify that the lists are the same length
-        if len(curr_vers) < len(comparative_vers):
-            curr_vers = fixVersionListLen(curr_vers, comparative_vers)
-
-        elif len(curr_vers) > len(comparative_vers):
-            comparative_vers = fixVersionListLen(comparative_vers, curr_vers)
-
-        #Check if the lists are the same. If so, we're the same version and can return 0
-        if comparative_vers == curr_vers:
-            return 0
-
-        #Now we iterate and check the version numbers sequentially from left to right
-        for index in range(len(curr_vers)):
-            if curr_vers[index] > comparative_vers[index]:
-                #The current version is greater here, let's return 1 as the rest of the version is irrelevant
+            if cur_v > comp_v:
                 return 1
-
-            elif curr_vers[index] < comparative_vers[index]:
-                #Comparative version is greater, the rest of this is irrelevant
+            elif cur_v < comp_v:
                 return -1
+
+            cur_i += 1
+            comp_i += 1
+
+        return 0
+
+    @deprecated(use_instead="mas_utils.compare_versions")
+    def compareVersionLists(*args, **kwargs):
+        return compare_versions(*args, **kwargs)
 
 
     def copyfile(oldpath, newpath):
