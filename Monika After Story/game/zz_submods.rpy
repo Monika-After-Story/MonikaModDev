@@ -51,7 +51,7 @@ init -1000 python in mas_submod_utils:
     # String must start with an alpha/underscore character, and can contain only alphanumerics and underscores
     LABEL_SAFE_NAME = re.compile(r'^[a-zA-Z_][ 0-9a-zA-Z_]*$')
 
-    class Platform(str, Enum):
+    class _Platform(str, Enum):
         """
         Enum for representing OS platforms that are supported by MAS
         """
@@ -113,15 +113,17 @@ init -1000 python in mas_submod_utils:
         #     submod vers: 1.2.3
         # becomes:
         #     label monikaafterstory_example_submod_v1_2_3(version='v1_2_3')
+        # TODO: replace with functional updates and decorators
         version_updates: dict[str, str] = dataclasses.field(default_factory=dict)
         # List of co-authors who helped work on this submod
         coauthors: list[str] = dataclasses.field(default_factory=list)
         # Link to the submod git repository
+        # TODO: rm this
         repository: str = dataclasses.field(default="")
         # Set of OS that are supported by the submod
-        os_whitelist: frozenset[Platform] = dataclasses.field(default=frozenset())
+        os_whitelist: frozenset[_Platform] = dataclasses.field(default=frozenset())
         # Set of OS that the submod does not support
-        os_blacklist: frozenset[Platform] = dataclasses.field(default=frozenset())
+        os_blacklist: frozenset[_Platform] = dataclasses.field(default=frozenset())
 
         def __post_init__(self):
             self.validate_header_version()
@@ -264,7 +266,7 @@ init -1000 python in mas_submod_utils:
             if self.repository:
                 url = urlparse(self.repository)
                 if url.scheme != "https":
-                    submod_log.warning(f"Submod doesn't use https scheme in its repository link")
+                    submod_log.warning("Submod doesn't use https scheme in its repository link")
 
         def validate_os_whitelist(self) -> None:
             if not isinstance(self.os_whitelist, (frozenset, list, python_list)):
@@ -274,10 +276,10 @@ init -1000 python in mas_submod_utils:
                 if not isinstance(item, str):
                     raise ValueError("Submod os_whitelist items must be strings")
 
-                if item.lower() not in Platform.__members__:
+                if item.lower() not in _Platform.__members__:
                     raise ValueError(f"Submod os_whitelist item '{item}' is unknown")
 
-            self.os_whitelist = frozenset(Platform(v.lower()) for v in self.os_whitelist)
+            self.os_whitelist = frozenset(_Platform(v.lower()) for v in self.os_whitelist)
 
         def validate_os_blacklist(self) -> None:
             if not isinstance(self.os_blacklist, (frozenset, list, python_list)):
@@ -287,10 +289,10 @@ init -1000 python in mas_submod_utils:
                 if not isinstance(item, str):
                     raise ValueError("Submod os_blacklist items must be strings")
 
-                if item.lower() not in Platform.__members__:
+                if item.lower() not in _Platform.__members__:
                     raise ValueError(f"Submod os_blacklist item '{item}' is unknown")
 
-            self.os_blacklist = frozenset(Platform(v.lower()) for v in self.os_blacklist)
+            self.os_blacklist = frozenset(_Platform(v.lower()) for v in self.os_blacklist)
 
             if (common := (self.os_whitelist & self.os_blacklist)):
                 raise ValueError(
@@ -635,6 +637,7 @@ init -1000 python in mas_submod_utils:
         def __getattr__(self, attr):
             """
             Implements read-only attribute access
+            TODO: rm this
             """
             if not attr.startswith("_"):
                 return self.__getattribute__(f"_{attr}")
@@ -827,7 +830,7 @@ init -1000 python in mas_submod_utils:
             RAISES:
                 SubmodError - on OS check fail
             """
-            current_os = Platform.get_current_os()
+            current_os = _Platform.get_current_os()
 
             if (
                 not current_os
@@ -871,9 +874,9 @@ init -1000 python in mas_submod_utils:
                 config.gamedir, self.directory, "python-packages"
             )
             # TODO: Not sure if we should dynamically expand path like this?
-            if os.path.exists(pypacks):
-                # renpy.loader.add_python_directory(pypacks)
-                sys.path.append(pypacks)
+            # if os.path.exists(pypacks):
+            #     # renpy.add_python_directory(pypacks)
+            #     sys.path.append(pypacks)
 
             for mod_name in self.modules:
                 full_mod_name = f"{self.directory}/{mod_name}"
