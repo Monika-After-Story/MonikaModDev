@@ -16,7 +16,10 @@ init -1000 python in mas_submod_utils:
     import os
     import json
     import sys
+    import subprocess
     import dataclasses
+    import typing
+
     from urllib.parse import urlparse
     from typing import (
         Any,
@@ -72,6 +75,141 @@ init -1000 python in mas_submod_utils:
                 return cls.macintosh
 
             return cls.unknown
+
+
+
+    class _GitOutput(typing.NamedTuple):
+        return_code: int
+        output: str
+
+    class _GitUpdateProvider(python_object):
+        @classmethod
+        def _get_git_binaries(cls) -> str:
+            """
+            Returns name of the executable for git
+
+            OUT:
+                str
+            """
+            match _Platform.get_current_os():
+                case _Platform.windows:
+                    return "bin/windows/cmd/git.exe"
+                case _Platform.linux:
+                    return "bin/linux/git"
+                case _Platform.macintosh:
+                    # TODO: Somehow build git for mac?
+                    raise NotImplementedError("git updater doesn't support mac os")
+                case _:
+                    raise NotImplementedError("git updater couldn't detect current os")
+
+        @staticmethod
+        def _safe_decode(data: bytes) -> str:
+            """
+            Decodes bytes into a unicode string, if impossible, return bytes string
+
+            OUT:
+                str
+            """
+            try:
+                return data.decode(encoding="utf-8")
+            except UnicodeDecodeError:
+                submod_log.error("failed to decode git process output", exc_info=True)
+                return str(data)
+
+        @classmethod
+        def _exec_git(cls, command: str, *options: list[str], cwd: str | None = None, timeout: int | None = 10) -> _GitOutput:
+            """
+            Runs git with the given arguments
+
+            IN:
+                command - git command to run
+                *options -  command options to use
+                cwd - the directory to execute from, by default uses wherever MAS is
+                timeout - timeout for the process, None disables timeout
+
+            OUT:
+                tuple of status code and output
+            """
+            executable = os.path.join(config.gamedir, cls._get_git_binaries())
+            creationflags = 0
+            if _Platform.get_current_os() is _Platform.windows:
+                creationflags |= subprocess.CREATE_NO_WINDOW
+
+            try:
+                result = subprocess.run(
+                    [executable, command, *options],
+                    # Explicitly declare pipes
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    # Avoid creating a window on windows
+                    creationflags=creationflags,
+                    # chdir
+                    cwd=cwd,
+                    timeout=timeout,
+                    # Avoid potential injections
+                    shell=False,
+                )
+
+            except OSError:
+                submod_log.error("system failed to spawn a git process", exc_info=True)
+                return _GitOutput(-64, "")
+
+            except subprocess.TimeoutExpired:
+                submod_log.error(f"timeout {timeout}s occured while waiting for the git process")
+                return _GitOutput(-128, "")
+
+            except Exception:
+                submod_log.error("unexpected error while spawning a git process", exc_info=True)
+                return _GitOutput(-256, "")
+
+            if result.returncode != 0:
+                stderr_out = cls._safe_decode(result.stderr.strip())
+                submod_log.error(f"git returned a non-zero status code {result.returncode}, output was: '{stderr_out}'")
+                return _GitOutput(result.returncode, stderr_out)
+
+            return _GitOutput(0, cls._safe_decode(result.stdout.strip()))
+
+        @classmethod
+        def _is_repo_dir(cls, repo_path: str) -> bool:
+            """
+            Checks if the given directory is a git repository
+            """
+            result = cls._exec_git("rev-parse", "--is-inside-work-tree", cwd=repo_path)
+            return result.return_code == 0 and result.output == "true"
+
+        @classmethod
+        def _get_tags(cls, repo_path: str) -> list[str]:
+            """
+            Fetches and lists all tags
+
+            OUT:
+                list of tags
+            """
+            result = cls._exec_git("fetch", "--tags", cwd=repo_path)
+            if result.return_code != 0:
+                return []
+            result = cls._exec_git("tag", "--list", cwd=repo_path)
+            if result.return_code != 0:
+                return []
+            return result.output.split("\n")
+
+        @classmethod
+        def _checkout(cls, repo_path: str, index: str) -> None:
+            """
+            Checkouts to the given commit/tag/branch
+            """
+            result = cls._exec_git("fetch", "--tags", cwd=repo_path)
+            if result.return_code != 0:
+                return
+            result = cls._exec_git("checkout", "--detach", index, cwd=repo_path)
+
+        @classmethod
+        def _clone(cls, repo_path: str, url: str, index: str) -> None:
+            """
+            Clones a repo at the given commit/tag/branch from the given url into repo_path
+            """
+            cls._exec_git("clone", "--branch", index, "--depth", "1", url, repo_path)
+
 
 
     @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
