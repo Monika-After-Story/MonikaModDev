@@ -2902,13 +2902,14 @@ label dev_unit_test_jump_with_args:
 
     $ jump_tester.prepareTest("Expecting a crash if jumped and gave args to a label without args")
     # This is janky...
-    $ e = None
+    $ err = None
     python:
         try:
             mas_jump_with_args("dev_unit_test_jump_with_args_crash_no_args", "crash", "aboom")
         except Exception as e:
-            pass
-    $ jump_tester.assertIsNotNone(e)
+            # Thanks renpy...
+            store.err = e
+    $ jump_tester.assertIsNotNone(err)
 
     call dev_unit_test_jump_with_args_no_test_vars_in_store
 
@@ -2929,7 +2930,7 @@ label dev_unit_test_jump_with_args:
     call dev_unit_test_jump_with_args_no_test_vars_in_store
 
     call dev_unit_tests_finish_test(jump_tester)
-    $ del jump_tester, TEST_VARS, e
+    $ del jump_tester, TEST_VARS, err
 
     return
 
