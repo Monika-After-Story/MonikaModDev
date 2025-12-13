@@ -85,10 +85,52 @@ init -1000 python in mas_submod_utils:
         git = "git"
 
 
-    class _GitUpdateProvider(python_object):
+    class _BaseUpdateProvider(python_object):
+        __slots__ = ("_submod", "_settings")
+
+        def __init__(self, submod: "_Submod", settings: dict[str, Any]) -> None:
+            self._submod = submod
+            self._settings = settings
+
+        def get_latest_version(self) -> tuple[int, ...]:
+            """
+            Returns the latest available version for the submod
+
+            OUT:
+                version tuple
+            """
+            raise NotImplementedError()
+
+        def has_update(self) -> bool:
+            """
+            Checks if there's an update available
+
+            OUT:
+                True if there's an update
+                False otherwise
+            """
+            raise NotImplementedError()
+
+        def update(self) -> bool:
+            """
+            Updates the submod if there's an update available
+
+            OUT:
+                True if successfully updated
+                False otherwise
+            """
+            raise NotImplementedError()
+
+    class _GitUpdateProvider(_BaseUpdateProvider):
         """
         Updater utilising git
         """
+        __slots__ = (
+            "_latest_version",
+            "_last_update_check",
+            "_has_updated",
+        )
+
         class _GitOutput(typing.NamedTuple):
             return_code: int
             output: str
@@ -96,8 +138,8 @@ init -1000 python in mas_submod_utils:
         # In seconds
         UPDATE_CHECK_INTERVAL = 3600 * 6
 
-        def __init__(self, submod: "_Submod") -> None:
-            self._submod = submod
+        def __init__(self, submod: "_Submod", settings: dict[str, Any]) -> None:
+            super().__init__(submod, settings)
             self._latest_version = None  # type: tuple[int, ...] | None
             self._last_update_check = 0
             self._has_updated = False
@@ -113,15 +155,15 @@ init -1000 python in mas_submod_utils:
 
         @property
         def _current_version(self) -> tuple[int, ...]:
-            return _parse_version(self._submod.version)
+            return self._submod.version
 
         @property
         def _remote_url(self) -> str:
-            return self._submod.updater["settings"]["url"]
+            return self._settings["url"]
 
         @property
         def _repo_path(self) -> str:
-            return os.path.join(config.gamedir, self._submod.directory)
+            return self._submod.abs_directory
 
         @classmethod
         def _get_git_binaries(cls) -> str:
@@ -153,7 +195,7 @@ init -1000 python in mas_submod_utils:
             try:
                 return data.decode(encoding="utf-8")
             except UnicodeDecodeError:
-                submod_log.error("failed to decode git process output", exc_info=True)
+                submod_log.error(f"failed to decode git process output '{data!r}'", exc_info=True)
                 return str(data)
 
         @classmethod
@@ -267,9 +309,6 @@ init -1000 python in mas_submod_utils:
                 True if success
                 False otherwise
             """
-            # if self._is_within_repo():
-            #     return True
-
             result = self._exec_git("init", "--initial-branch=master", ".", cwd=self._repo_path)
             if result.return_code != 0:
                 return False
@@ -332,9 +371,6 @@ init -1000 python in mas_submod_utils:
                 self._last_update_check = now
 
         def get_latest_version(self) -> tuple[int, ...]:
-            """
-            Returns the latest available version for the submod
-            """
             self._update_latest_version()
             if self._latest_version is None:
                 # This is bad, fallback
@@ -356,6 +392,7 @@ init -1000 python in mas_submod_utils:
             self._has_updated = True
             submod_log.info(f"updated submod '{self._name}' {_serialize_version(self._current_version)} >>> {_serialize_version(self._latest_version)}")
             return True
+
 
     @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
     class _UpdaterSchema(python_object):
@@ -446,9 +483,6 @@ init -1000 python in mas_submod_utils:
         version_updates: dict[str, str] = dataclasses.field(default_factory=dict)
         # List of co-authors who helped work on this submod
         coauthors: list[str] = dataclasses.field(default_factory=list)
-        # Link to the submod git repository
-        # TODO: rm this
-        repository: str = dataclasses.field(default="")
         # Set of OS that are supported by the submod
         os_whitelist: frozenset[_Platform] = dataclasses.field(default=frozenset())
         # Set of OS that the submod does not support
@@ -466,7 +500,6 @@ init -1000 python in mas_submod_utils:
             self.validate_settings_pane()
             self.validate_version_updates()
             self.validate_coauthors()
-            self.validate_repository()
             self.validate_os_whitelist()
             self.validate_os_blacklist()
 
@@ -598,15 +631,6 @@ init -1000 python in mas_submod_utils:
                     raise ValueError("Submod coauthors items must be strings")
                 if not self._is_str_label_safe(item):
                     raise ValueError(f"Submod coauthor '{item}' contains unsafe characters")
-
-        def validate_repository(self) -> None:
-            if not isinstance(self.repository, str):
-                raise ValueError("Submod repository must be a str")
-
-            if self.repository:
-                url = urlparse(self.repository)
-                if url.scheme != "https":
-                    submod_log.warning(f"Submod '{self.name}' doesn't use https scheme in its repository link")
 
         def validate_os_whitelist(self) -> None:
             if not isinstance(self.os_whitelist, (frozenset, list, python_list)):
@@ -805,9 +829,33 @@ init -1000 python in mas_submod_utils:
             return
 
         try:
-            tmp = dataclasses.asdict(header)
-            tmp.pop("header_version")
-            submod_obj = _Submod(**tmp)
+            submod = _Submod(
+                author=header.author,
+                name=header.name,
+                version=_parse_version(header.version),
+                directory=header.directory,
+                modules=header.modules,
+                description=header.description,
+                # Gets set later
+                updater=None,
+                dependencies=header.dependencies,
+                settings_pane=header.settings_pane,
+                # TODO: rm this
+                version_updates=header.version_updates,
+                coauthors=header.coauthors,
+                os_whitelist=header.os_whitelist,
+                os_blacklist=header.os_blacklist,
+            )
+            if header.updater is None:
+                return
+
+            if header.updater.provider is _UpdateProviders.git:
+                updater = _GitUpdateProvider(submod, header.updater.settings)
+
+            else:
+                raise RuntimeError("unreachable code")
+
+            submod.updater = updater
 
         except SubmodError as e:
             submod_log.error(
@@ -954,89 +1002,90 @@ init -1000 python in mas_submod_utils:
             return True
 
 
-    class _Submod(object):
+    class _Submod(python_object):
         """
         Submod class
-
-        PROPERTIES:
-            author - submod author
-            name - submod name
-            version - version of the submod installed
-            directory - relative submod directory
-            modules - submod modules
-            description - submod description
-            dependencies - dependencies required for the submod
-            settings_pane - string referring to the screen used for the submod's settings
-            version_updates - update labels
-            coauthors - submod co-authors
-            repository - submod repository
         """
+        __slots__ = (
+            "author",
+            "name",
+            "version",
+            "directory",
+            "modules",
+            "description",
+            "updater",
+            "dependencies",
+            "settings_pane",
+            # TODO: rm this
+            "version_updates",
+            "coauthors",
+            "os_whitelist",
+            "os_blacklist",
+        )
+
         #The fallback version string, used in case we don't have valid data
         FB_VERS_STR = "0.0.0"
-
-        # Cache this for init
-        ALLOWED_ATTRS = frozenset(
-            f.name for f in dataclasses.fields(_SubmodSchema)
-        )
 
         _submod_map: "dict[str, _Submod]" = {}
 
         def __init__(
             self,
-            **kwargs
+            author: str,
+            name: str,
+            version: tuple[int, ...],
+            directory: str,
+            modules: list[str],
+            description: str,
+            updater: "_BaseUpdateProvider | None",
+            dependencies: "dict[str, tuple[str | None, str | None]]",
+            settings_pane: str,
+            # TODO: rm this
+            version_updates: dict[str, str],
+            coauthors: list[str],
+            os_whitelist: frozenset[_Platform],
+            os_blacklist: frozenset[_Platform],
         ):
             """
             Submod object constructor
 
-            TODO: cache/store version as a tuple instead of str
-
             RAISES:
                 SubmodError
             """
-            name = kwargs["name"]
-
             if name in self._submod_map:
                 raise SubmodError(
-                    f"Submod '{name}' has been installed twice. Please, uninstall the duplicate."
+                    f"Submod '{name}' has been installed twice. Please, uninstall the duplicate.",
                 )
 
-            for k, v in kwargs.items():
-                if k not in self.ALLOWED_ATTRS:
-                    raise SubmodError(
-                        f"Submod '{name}' got unexpected parameter: {k}."
-                    )
-                if not k.startswith("_"):
-                    k = f"_{k}"
-                setattr(self, k, v)
+            self.author = author
+            self.name = name
+            self.version = version
+            self.directory = directory
+            self.modules = modules
+            self.description = description
+            self.updater = updater
+            self.dependencies = dependencies
+            self.settings_pane = settings_pane
+            # TODO: rm this
+            self.version_updates = version_updates
+            self.coauthors = coauthors
+            self.os_whitelist = os_whitelist
+            self.os_blacklist = os_blacklist
 
             self._submod_map[name] = self
 
-        def __getattr__(self, attr):
-            """
-            Implements read-only attribute access
-            TODO: rm this
-            """
-            if not attr.startswith("_"):
-                return self.__getattribute__(f"_{attr}")
+        @property
+        def abs_directory(self) -> str:
+            return os.path.join(config.gamedir, self.directory)
 
-            raise AttributeError(
-                f"'{type(self).__name__}' object has no attribute '{attr}'"
-            ) from None
+        @property
+        def version_str(self) -> str:
+            return _serialize_version(self.version)
 
         def __repr__(self) -> str:
             """
             Representation of this object
             """
             return f"<Submod: ('{self.name}' v{self.version} by {self.author})>"
-
-        def _get_version_number_list(self) -> list[int]:
-            """
-            Gets the version number as a list of integers
-
-            OUT:
-                List of integers representing the version number
-            """
-            return list(_parse_version(self.version))
 
         def _can_update(self) -> bool:
             """
@@ -1099,7 +1148,7 @@ init -1000 python in mas_submod_utils:
                     - 1 if the current version is greater than the comparitive version
             """
             return mas_utils.compareVersionLists(
-                self._get_version_number_list(),
+                self.version,
                 comparative_vers
             )
 
@@ -1247,9 +1296,7 @@ init -1000 python in mas_submod_utils:
             if not _SubmodSettings.is_submod_enabled(self):
                 return
 
-            pypacks = os.path.join(
-                config.gamedir, self.directory, "python-packages"
-            )
+            # pypacks = os.path.join(self.abs_directory, "python-packages")
             # TODO: Not sure if we should dynamically expand path like this?
             # if os.path.exists(pypacks):
             #     # renpy.add_python_directory(pypacks)
@@ -1351,7 +1398,7 @@ init -1000 python in mas_submod_utils:
             return False
 
         if version:
-            return submod._compare_versions(version) >= 0
+            return submod._compare_versions(_parse_version(version)) >= 0
 
         return True
 
