@@ -603,7 +603,8 @@ python early in mas_utils:
             current_vers - current version number as a Sequence[int] (eg. 1.2.5 -> [1, 2, 5])
             comparative_vers - the version we're comparing to as a Sequence[int], same format as above
 
-            NOTE: The version numbers can be different lengths
+        NOTE: Why use this instead of comparing tuples/list directly? It's to support version numbers of different lengths,
+        For example, this way [1, 2, 3, 0] is equal to [1, 2, 3] which makes sense in the context of versioning
 
         OUT:
             integer:
