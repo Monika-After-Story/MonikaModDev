@@ -18,6 +18,8 @@ init -1000 python in mas_submod_utils:
     import sys
     import subprocess
     import dataclasses
+    import time
+    import functools
     import typing
 
     from urllib.parse import urlparse
@@ -29,7 +31,7 @@ init -1000 python in mas_submod_utils:
     )
     from collections.abc import (
         Iterator,
-        Iterable,
+        Sequence,
     )
     from enum import Enum
 
@@ -83,11 +85,44 @@ init -1000 python in mas_submod_utils:
         git = "git"
 
 
-    class _GitOutput(typing.NamedTuple):
-        return_code: int
-        output: str
-
     class _GitUpdateProvider(python_object):
+        """
+        Updater utilising git
+        """
+        class _GitOutput(typing.NamedTuple):
+            return_code: int
+            output: str
+
+        # In seconds
+        UPDATE_CHECK_INTERVAL = 3600 * 6
+
+        def __init__(self, submod: "_Submod") -> None:
+            self._submod = submod
+            self._latest_version = None  # type: tuple[int, ...] | None
+            self._last_update_check = 0
+            self._has_updated = False
+
+        def _reset(self) -> None:
+            self._latest_version = None
+            self._last_update_check = 0
+            self._has_updated = False
+
+        @property
+        def _name(self) -> str:
+            return self._submod.name
+
+        @property
+        def _current_version(self) -> tuple[int, ...]:
+            return _parse_version(self._submod.version)
+
+        @property
+        def _remote_url(self) -> str:
+            return self._submod.updater["settings"]["url"]
+
+        @property
+        def _repo_path(self) -> str:
+            return os.path.join(config.gamedir, self._submod.directory)
+
         @classmethod
         def _get_git_binaries(cls) -> str:
             """
@@ -122,7 +157,7 @@ init -1000 python in mas_submod_utils:
                 return str(data)
 
         @classmethod
-        def _exec_git(cls, command: str, *options: list[str], cwd: str | None = None, timeout: int | None = 10) -> _GitOutput:
+        def _exec_git(cls, command: str, *options: list[str], cwd: str | None = None, timeout: int | None = 10) -> "_GitUpdateProvider._GitOutput":
             """
             Runs git with the given arguments
 
@@ -136,13 +171,15 @@ init -1000 python in mas_submod_utils:
                 tuple of status code and output
             """
             executable = os.path.join(config.gamedir, cls._get_git_binaries())
+            args = [executable, command, *options]
+
             creationflags = 0
             if _Platform.get_current_os() is _Platform.windows:
                 creationflags |= subprocess.CREATE_NO_WINDOW
 
             try:
                 result = subprocess.run(
-                    [executable, command, *options],
+                    args,
                     # Explicitly declare pipes
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
@@ -157,64 +194,168 @@ init -1000 python in mas_submod_utils:
 
             except OSError:
                 submod_log.error("system failed to spawn a git process", exc_info=True)
-                return _GitOutput(-64, "")
+                return cls._GitOutput(-64, "")
 
             except subprocess.TimeoutExpired:
                 submod_log.error(f"timeout {timeout}s occured while waiting for the git process")
-                return _GitOutput(-128, "")
+                return cls._GitOutput(-128, "")
 
             except Exception:
-                submod_log.error("unexpected error while spawning a git process", exc_info=True)
-                return _GitOutput(-256, "")
+                submod_log.error(f"unexpected error while spawning a git process, args were: {args}", exc_info=True)
+                return cls._GitOutput(-256, "")
 
             if result.returncode != 0:
                 stderr_out = cls._safe_decode(result.stderr.strip())
                 submod_log.error(f"git returned a non-zero status code {result.returncode}, output was: '{stderr_out}'")
-                return _GitOutput(result.returncode, stderr_out)
+                return cls._GitOutput(result.returncode, stderr_out)
 
-            return _GitOutput(0, cls._safe_decode(result.stdout.strip()))
+            return cls._GitOutput(0, cls._safe_decode(result.stdout.strip()))
 
-        @classmethod
-        def _is_repo_dir(cls, repo_path: str) -> bool:
+        def _is_within_repo(self) -> bool:
             """
-            Checks if the given directory is a git repository
+            Checks if we're within a git repository
             """
-            result = cls._exec_git("rev-parse", "--is-inside-work-tree", cwd=repo_path)
+            if not os.path.isdir(os.path.join(self._repo_path, ".git")):
+                return False
+
+            result = self._exec_git("rev-parse", "--is-inside-work-tree", cwd=self._repo_path)
             return result.return_code == 0 and result.output == "true"
 
-        @classmethod
-        def _get_tags(cls, repo_path: str) -> list[str]:
+        def _fetch(self) -> bool:
             """
-            Fetches and lists all tags
+            Fetches the remote
+
+            OUT:
+                True if success
+                False otherwise
+            """
+            result = self._exec_git("fetch", "--prune", "--prune-tags", "--tags", cwd=self._repo_path)
+            return result.return_code == 0
+
+        def _get_tags(self) -> list[str]:
+            """
+            Retrieves all tags from the remote
 
             OUT:
                 list of tags
             """
-            result = cls._exec_git("fetch", "--tags", cwd=repo_path)
-            if result.return_code != 0:
+            if not self._fetch():
                 return []
-            result = cls._exec_git("tag", "--list", cwd=repo_path)
+            result = self._exec_git("tag", "--list", cwd=self._repo_path)
             if result.return_code != 0:
                 return []
             return result.output.split("\n")
 
-        @classmethod
-        def _checkout(cls, repo_path: str, index: str) -> None:
+        def _checkout(self, index: str) -> bool:
             """
             Checkouts to the given commit/tag/branch
+
+            OUT:
+                True if checout was successful
+                False otherwise
             """
-            result = cls._exec_git("fetch", "--tags", cwd=repo_path)
+            if not self._fetch():
+                return False
+            result = self._exec_git("checkout", "--force", "--detach", index, cwd=self._repo_path)
+            return result.return_code == 0
+
+        def _init(self, url: str, index: str) -> bool:
+            """
+            Sets up a repository
+
+            OUT:
+                True if success
+                False otherwise
+            """
+            # if self._is_within_repo():
+            #     return True
+
+            result = self._exec_git("init", "--initial-branch=master", ".", cwd=self._repo_path)
             if result.return_code != 0:
-                return
-            result = cls._exec_git("checkout", "--detach", index, cwd=repo_path)
+                return False
+            result = self._exec_git("remote", "add", "origin", self._remote_url, cwd=self._repo_path)
+            if result.return_code != 0:
+                return False
 
-        @classmethod
-        def _clone(cls, repo_path: str, url: str, index: str) -> None:
-            """
-            Clones a repo at the given commit/tag/branch from the given url into repo_path
-            """
-            cls._exec_git("clone", "--branch", index, "--depth", "1", url, repo_path)
+            return self._checkout(index)
 
+        def _clone(self, url: str, index: str) -> None:
+            """
+            Clones a repo at the given tag from the given url
+
+            IN:
+                url - repository url
+                index - git object to checkout
+
+            OUT:
+                True if checout was successful
+                False otherwise
+            """
+            result = self._exec_git("clone", "--branch", index, "--depth", "1", url, self._repo_path)
+            return result.return_code == 0
+
+        def _fetch_latest_version(self) -> "tuple[int, ...] | None":
+            """
+            Fetches tags from the remote and returns the latest version
+            """
+            if not self._is_within_repo():
+                submod_log.warning(f"submod '{self._name}' doesn't appear to be within a git repository, we will attempt to fix this")
+                if not self._init(self._remote_url, _serialize_version(self._current_version)):
+                    submod_log.error(f"failed to init repository for submod '{self._name}'")
+                    return None
+                submod_log.info(f"successfully inited repository for submod '{self._name}'")
+
+            all_versions = []  # type: list[tuple[int, ...]]
+            for tag in self._get_tags():
+                # Check for both None and empty tags
+                if ver := _safe_parse_version(tag):
+                    # TODO: log bad tags?
+                    all_versions.append(ver)
+
+            if not all_versions:
+                submod_log.error(f"failed to fetch latest version for submod '{self._name}', no valid tags found")
+                return None
+
+            return _sort_versions(all_versions)[-1]
+
+        def _update_latest_version(self, now: float | None = None) -> None:
+            """
+            Checks and updates the latest version
+
+            IN:
+                now - current time in seconds, by default uses system time
+            """
+            if now is None:
+                now = time.time()
+            if self._latest_version is None or (now - self._last_update_check) > self.UPDATE_CHECK_INTERVAL:
+                self._latest_version = self._fetch_latest_version()
+                self._last_update_check = now
+
+        def get_latest_version(self) -> tuple[int, ...]:
+            """
+            Returns the latest available version for the submod
+            """
+            self._update_latest_version()
+            if self._latest_version is None:
+                # This is bad, fallback
+                return ()
+
+            return self._latest_version
+
+        def has_update(self) -> bool:
+            return not self._has_updated and mas_utils.compare_versions(self._current_version, self.get_latest_version()) < 0
+
+        def update(self) -> bool:
+            if not self.has_update():
+                return False
+
+            if not self._checkout(_serialize_version(self._latest_version)):
+                submod_log.error(f"failed to update submod '{self._name}'")
+                return False
+
+            self._has_updated = True
+            submod_log.info(f"updated submod '{self._name}' {_serialize_version(self._current_version)} >>> {_serialize_version(self._latest_version)}")
+            return True
 
     @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
     class _UpdaterSchema(python_object):
@@ -398,7 +539,7 @@ init -1000 python in mas_submod_utils:
 
         def validate_updater(self) -> None:
             if self.updater is None:
-                submod_log.warning(f"Submod '{self.name}' has no updater defined and won't be able to update")
+                submod_log.warning(f"submod '{self.name}' has no updater defined and won't be able to update")
                 return
 
             if not isinstance(self.updater, (dict, python_dict)):
@@ -503,15 +644,31 @@ init -1000 python in mas_submod_utils:
         """
         Parses a string version number to list format.
 
+        NOTE: Does not handle errors
+
         IN:
             version - version string to parse
 
         OUT:
             tuple - representing the parsed version number
-
-        NOTE: Does not handle errors as to get here, formats must be correct regardless
         """
         return tuple(map(int, version.split('.')))
+
+    def _safe_parse_version(version: str) -> tuple[int, ...] | None:
+        """
+        Parses a string version number to list format.
+
+        IN:
+            version - version string to parse
+
+        OUT:
+            tuple - representing the parsed version number
+            None if version is invalid
+        """
+        try:
+            return tuple(map(int, version.split('.')))
+        except ValueError:
+            return None
 
     def _is_valid_version(version: str) -> bool:
         """
@@ -523,12 +680,31 @@ init -1000 python in mas_submod_utils:
         OUT:
             boolean
         """
-        try:
-            _parse_version(version)
-        except ValueError:
-            return False
+        return _safe_parse_version(version) is not None
 
-        return True
+    def _serialize_version(version: tuple[int, ...]) -> str:
+        """
+        Parses a version tuple back into a str
+
+        IN:
+            version - version tuple
+
+        OUT:
+            str
+        """
+        return ".".join(map(str, version))
+
+    def _sort_versions(versions: Sequence[tuple[int, ...]]) -> Sequence[tuple[int, ...]]:
+        """
+        Takes a sequence of versions and returns a sorted list of those versions
+
+        IN:
+            versions - list of version tuples
+
+        OUT:
+            list of version tuples where at index 0 is the oldest and at index -1 is the latest
+        """
+        return sorted(versions, key=functools.cmp_to_key(mas_utils.compare_versions))
 
     def _generate_update_label(author: str, name: str, version: str) -> str:
         """
@@ -811,6 +987,8 @@ init -1000 python in mas_submod_utils:
         ):
             """
             Submod object constructor
+
+            TODO: cache/store version as a tuple instead of str
 
             RAISES:
                 SubmodError
