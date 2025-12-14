@@ -857,7 +857,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils._Submod.hasSubmods():
+        if store.mas_submod_utils._Submod.has_any_submods():
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -919,7 +919,7 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils._Submod.hasSubmods():
+        if store.mas_submod_utils._Submod.has_any_submods():
             textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:

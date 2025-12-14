@@ -1,16 +1,18 @@
 init -1000:
+    # NOTE: For historical reasons we keep strings here instead of tuples
     default persistent._mas_submod_version_data = {}
     default persistent._mas_submod_settings = {}
 
 init 10 python in mas_submod_utils:
     #Run updates if need be
-    _Submod._run_submods_updates()
+    _Submod._run_submods_update_hooks()
 
 init -999 python in mas_submod_utils:
     # Init submods
     _init_and_load_submods()
 
 init -1000 python in mas_submod_utils:
+    import bisect
     import glob
     import re
     import os
@@ -30,6 +32,7 @@ init -1000 python in mas_submod_utils:
         Self,
     )
     from collections.abc import (
+        Callable,
         Iterator,
         Sequence,
     )
@@ -156,6 +159,10 @@ init -1000 python in mas_submod_utils:
         @property
         def _current_version(self) -> tuple[int, ...]:
             return self._submod.version
+
+        @property
+        def _current_version_str(self) -> str:
+            return self._submod.version_str
 
         @property
         def _remote_url(self) -> str:
@@ -339,7 +346,7 @@ init -1000 python in mas_submod_utils:
             """
             if not self._is_within_repo():
                 submod_log.warning(f"submod '{self._name}' doesn't appear to be within a git repository, we will attempt to fix this")
-                if not self._init(self._remote_url, _serialize_version(self._current_version)):
+                if not self._init(self._remote_url, self._current_version_str):
                     submod_log.error(f"failed to init repository for submod '{self._name}'")
                     return None
                 submod_log.info(f"successfully inited repository for submod '{self._name}'")
@@ -385,12 +392,12 @@ init -1000 python in mas_submod_utils:
             if not self.has_update():
                 return False
 
-            if not self._checkout(_serialize_version(self._latest_version)):
+            if not self._checkout(_dump_version(self._latest_version)):
                 submod_log.error(f"failed to update submod '{self._name}'")
                 return False
 
             self._has_updated = True
-            submod_log.info(f"updated submod '{self._name}' {_serialize_version(self._current_version)} >>> {_serialize_version(self._latest_version)}")
+            submod_log.info(f"updated submod '{self._name}' {self._current_version_str} >>> {_dump_version(self._latest_version)}")
             return True
 
 
@@ -690,7 +697,7 @@ init -1000 python in mas_submod_utils:
             None if version is invalid
         """
         try:
-            return tuple(map(int, version.split('.')))
+            return tuple(map(int, version.split(".")))
         except ValueError:
             return None
 
@@ -706,9 +713,9 @@ init -1000 python in mas_submod_utils:
         """
         return _safe_parse_version(version) is not None
 
-    def _serialize_version(version: tuple[int, ...]) -> str:
+    def _dump_version(version: tuple[int, ...]) -> str:
         """
-        Parses a version tuple back into a str
+        Dumps a version tuple back into a str
 
         IN:
             version - version tuple
@@ -718,7 +725,7 @@ init -1000 python in mas_submod_utils:
         """
         return ".".join(map(str, version))
 
-    def _sort_versions(versions: Sequence[tuple[int, ...]]) -> Sequence[tuple[int, ...]]:
+    def _sort_versions(versions: Sequence[tuple[int, ...]]) -> list[tuple[int, ...]]:
         """
         Takes a sequence of versions and returns a sorted list of those versions
 
@@ -729,6 +736,32 @@ init -1000 python in mas_submod_utils:
             list of version tuples where at index 0 is the oldest and at index -1 is the latest
         """
         return sorted(versions, key=functools.cmp_to_key(mas_utils.compare_versions))
+
+    class _ComparableVersionWrapper(python_object):
+        """
+        See implementation of functools.cmp_to_key
+        this is used for bisect as a workaround its limitations
+        """
+        __slots__ = ("version",)
+        def __init__(self, version):
+            self.version = version
+        def __lt__(self, other):
+            return mas_utils.compare_versions(self.version, other.version) < 0
+        def __gt__(self, other):
+            return mas_utils.compare_versions(self.version, other.version) > 0
+        def __eq__(self, other):
+            return mas_utils.compare_versions(self.version, other.version) == 0
+        def __le__(self, other):
+            return mas_utils.compare_versions(self.version, other.version) <= 0
+        def __ge__(self, other):
+            return mas_utils.compare_versions(self.version, other.version) >= 0
+        __hash__ = None
+
+    def _sort_by_version():
+        """
+        This is functools.cmp_to_key for the poor
+        """
+        return _ComparableVersionWrapper
 
     def _generate_update_label(author: str, name: str, version: str) -> str:
         """
@@ -877,11 +910,11 @@ init -1000 python in mas_submod_utils:
             _try_init_submod(fn)
 
     def _log_inited_submods() -> None:
-        if _Submod.hasSubmods():
+        if _Submod.has_any_submods():
             submod_log.info(
                 "INITED SUBMODS:\n{}".format(
                     ",\n".join(
-                        f"    '{submod.name}' v{submod.version}"
+                        f"    '{submod.name}' v{submod.version_str}"
                         for submod in _Submod._iterSubmods()
                     )
                 )
@@ -909,6 +942,7 @@ init -1000 python in mas_submod_utils:
 
         def __str__(self):
             return self.msg
+
 
     class _SubmodSettings():
         """
@@ -1026,7 +1060,10 @@ init -1000 python in mas_submod_utils:
         #The fallback version string, used in case we don't have valid data
         FB_VERS_STR = "0.0.0"
 
+        # SubmodName: Submod
         _submod_map: "dict[str, _Submod]" = {}
+        # SubmodName: (Version: Functions)
+        _submod_update_hooks: "dict[str, dict[str, list[Callable[[SubmodUpdateInfo], None]]]]" = {}
 
         def __init__(
             self,
@@ -1079,15 +1116,45 @@ init -1000 python in mas_submod_utils:
 
         @property
         def version_str(self) -> str:
-            return _serialize_version(self.version)
+            return _dump_version(self.version)
 
         def __repr__(self) -> str:
-            """
-            Representation of this object
-            """
-            return f"<Submod: ('{self.name}' v{self.version} by {self.author})>"
+            return f"<{type(self).__qualname__}('{self.name}' v{self.version_str} by {self.author})>"
 
-        def _can_update(self) -> bool:
+        def register_update_hook(self, version: tuple[int, ...], func: "Callable[[SubmodUpdateInfo], None]") -> None:
+            """
+            Registers a function to run on an update
+
+            IN:
+                version - update version
+                func - the function to call on update
+            """
+            if self.name not in self._submod_update_hooks:
+                self._submod_update_hooks[self.name] = {}
+            if version not in self._submod_update_hooks[self.name]:
+                self._submod_update_hooks[self.name][version] = []
+
+            self._submod_update_hooks[self.name][version].append(func)
+
+        def _compare_versions(self, comparative_vers: tuple[int, ...]) -> Literal[-1, 0, 1]:
+            """
+            Generic version checker for submods
+
+            IN:
+                comparative_vers - the version we're comparing to (or need the current version to be at or greater than)
+
+            OUT:
+                integer:
+                    - (-1) if the current version number is less than the comparitive version
+                    - 0 if the current version is the same as the comparitive version
+                    - 1 if the current version is greater than the comparitive version
+            """
+            return mas_utils.compare_versions(
+                self.version,
+                comparative_vers
+            )
+
+        def _should_run_update_hooks(self) -> bool:
             """
             Checks if this submod instance can be updated (its version number has incremented since last load)
 
@@ -1096,81 +1163,104 @@ init -1000 python in mas_submod_utils:
                     - True if the version number has incremented from the persistent one
                     - False otherwise
             """
-            old_vers = persistent._mas_submod_version_data.get(self.name, None)
-
+            old_version_str = persistent._mas_submod_version_data.get(self.name, None)
             #If we don't have an old vers, we're installing for the first time and aren't updating at all
-            if old_vers is None:
+            if old_version_str is None:
                 return False
 
-            try:
-                old_vers = list(_parse_version(old_vers))
-
-            #Persist data was bad, we'll replace it with something safe and return False as we need not check more
-            except Exception:
+            old_version_tuple = _safe_parse_version(old_version_str)
+            #Persist data was bad, return False
+            if old_version_tuple is None:
                 submod_log.error(
                     (
-                        "Unexpected exception occured while parsing version data "
-                        f"for submod '{self.name}'\n    Data: '{old_vers}'"
+                        "unexpected exception occured while parsing version data "
+                        f"for submod '{self.name}', update hooks will NOT be called. Version data: '{old_version_str!r}'"
                     ),
-                    exc_info=True
                 )
-                persistent._mas_submod_version_data[self.name] = self.FB_VERS_STR
                 return False
 
-            return self._compare_versions(old_vers) > 0
+            cmp_result = self._compare_versions(old_version_tuple)
+            if cmp_result < 0:
+                submod_log.warning(
+                    (
+                        f"submod '{self.name}' appears to have been downgraded from '{old_version_str}' to "
+                        f"'{self.version_str}'. THIS COULD UNPREDICTABLY CORRUPT SAVES"
+                    ),
+                )
+            # If current submod version is higher than the last known, then the submod has been updated
+            return cmp_result > 0
 
-        def _update_from_version(self, version: str):
+        def _run_update_hooks(self, last_update_version: str) -> None:
             """
-            Updates the submod, starting at the given start version
+            Runs update hooks for the submod, starting after the given version
 
             IN:
-                version - the version number in the parsed format ('author_name_v#_#_#')
+                last_update_version - the version of the last installed update in string format like "1.2.3"
+
+            ASSUMES:
+                last_update_version is valid version
             """
-            while version in self.version_updates:
-                updateTo = self.version_updates[version]
+            # Get all version + hooks for this submod
+            versions_to_hooks = self._submod_update_hooks.get(self.name, None)
+            if not versions_to_hooks:
+                return
 
-                # we should only call update labels that we have
-                if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
-                    renpy.call_in_new_context(updateTo, updateTo)
-                version = self.version_updates[version]
-
-        def _compare_versions(self, comparative_vers: list[int]) -> Literal[-1, 0, 1]:
-            """
-            Generic version checker for submods
-
-            IN:
-                comparative_vers - the version we're comparing to (or need the current version to be at or greater than) as a list
-
-            OUT:
-                integer:
-                    - (-1) if the current version number is less than the comparitive version
-                    - 0 if the current version is the same as the comparitive version
-                    - 1 if the current version is greater than the comparitive version
-            """
-            return mas_utils.compareVersionLists(
-                self.version,
-                comparative_vers
+            # Sort versions from oldest to newest
+            update_versions = _sort_versions(versions_to_hooks.keys())
+            # Find the next update version we need to run
+            next_update_index = bisect.bisect_right(
+                update_versions,
+                # NOTE: bisect doesn't call the key function for the search value,
+                # for some usecases it makes sense, and for others you can call the key function yourself.
+                # Sadly in our case due to how functools.cmp_to_key works,
+                # we can't do that, so we use our own implementation with a workaround
+                _ComparableVersionWrapper(_parse_version(last_update_version)),
+                # TODO: Consider caching if submods ever get *a lot* of updates (maybe above 1k?)
+                key=_ComparableVersionWrapper,
             )
+            if next_update_index >= len(update_versions):
+                # If index is out of bounds, it means we don't have an update hook registered for the update
+                return
+
+            for idx in range(next_update_index, len(update_versions)):
+                ver = update_versions[idx]
+                if self._compare_versions(ver) < 0:
+                    # If the version from the update hooks is somehow higher than the currently installed,
+                    # we stop runing hooks. This shouldn't happen because we're checking for this in the decorator, but just in case
+                    submod_log.error(f"submod '{self.name}' has update hook for version '{_dump_version(versions_hooks)}', but submod version is lower '{self.version_str}'")
+                    return
+
+                for hook in versions_to_hooks[ver]:
+                    try:
+                        hook(SubmodUpdateInfo(last_update_version, _dump_version(ver), self.version_str))
+
+                    # Catch base exc to handle as many cases as possible
+                    except BaseException as e:
+                        func_mod = getattr(hook, "__module__", "")
+                        func_name = getattr(hook, "__qualname__", hook.__name__)
+                        func_fullname = ".".join((func_mod, func_name))
+                        submod_log.error(
+                            f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{ver}'",
+                            exc_info=True,
+                    )
+                # We ran all the hooks for this version, bump version saved in persistent to avoid running the same hooks later
+                # This is just in case of a crash mid-update
+                persistent._mas_submod_version_data[self.name] = _dump_version(ver)
 
         @classmethod
-        def _run_submods_updates(cls):
+        def _run_submods_update_hooks(cls) -> None:
             """
-            Checks if submods have updated and sets the appropriate update scripts for them to run
+            Checks if submods have updated and runs the appropriate update hooks for them
             """
+            # TODO: sort submods in total order, first update the submods that other submods depend on
             #Iter thru all submods we've got stored
             for submod in cls._iterSubmods():
                 #If it has updated, we need to call their update scripts and adjust the version data value
-                if submod._can_update():
-                    submod._update_from_version(
-                        "{0}_{1}_v{2}".format(
-                            submod.author,
-                            submod.name,
-                            persistent._mas_submod_version_data.get(submod.name, cls.FB_VERS_STR).replace('.', '_')
-                        ).lower().replace(' ', '_')
-                    )
+                if submod._should_run_update_hooks():
+                    submod._run_update_hooks(persistent._mas_submod_version_data[submod.name])
 
                 #Even if this hasn't updated, we should adjust its value to reflect the correct version
-                persistent._mas_submod_version_data[submod.name] = submod.version
+                persistent._mas_submod_version_data[submod.name] = submod.version_str
 
         def _check_dependencies(self):
             """
@@ -1199,7 +1289,7 @@ init -1000 python in mas_submod_utils:
                         "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
                             dependency_submod.name,
                             minimum_version,
-                            dependency_submod.version
+                            dependency_submod.version_str
                         )
                     )
 
@@ -1213,7 +1303,7 @@ init -1000 python in mas_submod_utils:
                         "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
                             dependency_submod.name,
                             maximum_version,
-                            dependency_submod.version
+                            dependency_submod.version_str
                         )
                     )
 
@@ -1222,6 +1312,7 @@ init -1000 python in mas_submod_utils:
             """
             Checks to see if all the submods dependencies are met
             """
+            # Can't use an iterator here, we're modifying the map
             for submod in cls._getSubmods():
                 try:
                     submod._check_dependencies()
@@ -1243,10 +1334,9 @@ init -1000 python in mas_submod_utils:
                     cls._submod_map.pop(submod.name, None)
 
                 else:
-                    # No error means we passed
-                    # NOTE: We check for things having updated later so all update scripts get called together
-                    if submod.name not in persistent._mas_submod_version_data:
-                        persistent._mas_submod_version_data[submod.name] = submod.version
+                    # TODO: this is not needed, we set it when we run the updates
+                    # if submod.name not in persistent._mas_submod_version_data:
+                    #     persistent._mas_submod_version_data[submod.name] = submod.version_str
                     continue
 
         def _check_os_compatibility(self):
@@ -1331,7 +1421,7 @@ init -1000 python in mas_submod_utils:
                 submod._load()
 
         @classmethod
-        def hasSubmods(cls) -> bool:
+        def has_any_submods(cls) -> bool:
             """
             Checks if any submods were loaded
 
@@ -1339,6 +1429,20 @@ init -1000 python in mas_submod_utils:
                 bool
             """
             return bool(cls._submod_map)
+
+        @classmethod
+        def _has_submod(cls, name: str) -> bool:
+            """
+            Checks if a submod exists
+
+            IN:
+                name - submod name
+
+            OUT:
+                True if exists
+                False otherwise
+            """
+            return name in cls._submod_map
 
         @classmethod
         def _getSubmod(cls, name: str) -> "_Submod | None":
@@ -1349,7 +1453,7 @@ init -1000 python in mas_submod_utils:
                 name - name of the submod to get
 
             OUT:
-                Submod object representing the submod by name if installed and registered
+                Submod object if the submod is installed and registered
                 None if not found
             """
             return cls._submod_map.get(name, None)
@@ -1367,7 +1471,7 @@ init -1000 python in mas_submod_utils:
         @classmethod
         def _getSubmods(cls) -> "list[_Submod]":
             """
-            Returns a list of the submods
+            Returns a list of all the submods
 
             OUT:
                 list of Submod objects
@@ -1377,8 +1481,83 @@ init -1000 python in mas_submod_utils:
 
     ### Common submod functions
 
-    @mas_utils.deprecated(use_instead="is_submod_installed")
-    def isSubmodInstalled(name: str, version: "str | None" = None) -> bool:
+    class SubmodUpdateInfo(python_object):
+        """
+        This gets passed as the first argument to update hooks, it holds
+        information about the submod and applied update which might be useful
+        in update scripts
+        """
+        __slots__ = ("from_version", "to_version", "current_version")
+
+        def __init__(self, from_version: str, to_version: str, current_version: str):
+            """
+            Constructor
+
+            IN:
+                from_version - the previously installed submod version
+                    NOTE: this might NOT be equal to the version that came before 'to_version'
+                        in case the user updates through multiple versions
+                to_version - the version of the update
+                current_version - the version of the currently installed submod
+                    NOTE: this might NOT be equal to 'to_version' in case the user
+                        updates through multiple versions
+            """
+            self.from_version = from_version
+            self.to_version = to_version
+            self.current_version = current_version
+
+        def __repr__(self) -> str:
+            from_version = self.from_version
+            to_version = self.to_version
+            current_version = self.current_version
+            return f"<{type(self).__qualname__}({from_version=}, {to_version=}, {current_version=})>"
+
+    def on_submod_update(name: str, version: str) -> Callable[[SubmodUpdateInfo], None]:
+        """
+        Decorator to register a function to run when a submod named 'name' updates
+        to version 'version' or higher
+
+        Usage:
+            ```py
+            @mas_submod_utils.on_submod_update("Example", "0.1.0")
+            def on_update_0_1_0(update: mas_submod_utils.SubmodUpdateInfo) -> None:
+                ...
+            ```
+
+        IN:
+            name - submod name
+            version - the version to update to
+
+        OUT:
+            returns the original function
+        """
+        def decorator(func: Callable[[SubmodUpdateInfo], None]) -> Callable[[SubmodUpdateInfo], None]:
+            submod = _Submod._getSubmod(name)
+            if submod is None:
+                submod_log.error(f"trying to register an update hook for the submod '{name}' which is not installed")
+                return func
+
+            version_tuple = _safe_parse_version(version)
+            if version_tuple is None:
+                submod_log.error(f"update hook for the submod '{name}' has invalid version '{version}'")
+                return func
+
+            if submod._compare_versions(version_tuple) < 0:
+                submod_log.error(
+                    (
+                        f"trying to register an update hook '{version}' for the submod '{name}', "
+                        f"but current submod version is '{submod.version_str}' (lower than the update hook)"
+                    ),
+                )
+                return func
+
+            submod.register_update_hook(version_tuple, func)
+
+            return func
+
+        return decorator
+
+    def is_submod_installed(name: str, version: "str | None" = None) -> bool:
         """
         Checks if a submod with `name` is installed
 
@@ -1402,7 +1581,9 @@ init -1000 python in mas_submod_utils:
 
         return True
 
-    is_submod_installed = isSubmodInstalled
+    @mas_utils.deprecated(use_instead="is_submod_installed")
+    def isSubmodInstalled(*args, **kwargs):
+        return isSubmodInstalled(*args, **kwargs)
 
     def get_submod_directory(name: str) -> "str | None":
         """
