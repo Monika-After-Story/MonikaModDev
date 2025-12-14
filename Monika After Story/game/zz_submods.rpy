@@ -1016,8 +1016,8 @@ init -1000 python in mas_submod_utils:
 
         # SubmodName: Submod
         _submod_map: "dict[str, _Submod]" = {}
-        # SubmodName: (Version: Functions)
-        _submod_update_hooks: "dict[str, dict[str, list[Callable[[SubmodUpdateInfo], None]]]]" = {}
+        # SubmodName: (Version: Function)
+        _submod_update_hooks: "dict[str, dict[str, Callable[[SubmodUpdateInfo], None]]]" = {}
 
         def __init__(
             self,
@@ -1071,6 +1071,15 @@ init -1000 python in mas_submod_utils:
         def __repr__(self) -> str:
             return f"<{type(self).__qualname__}('{self.name}' v{self.version_str} by {self.author})>"
 
+        def has_update_hook_for(self, version: tuple[int, ...]) -> bool:
+            """
+            Checks if an update hook has been registered for the given version
+
+            IN:
+                version - update version
+            """
+            return self.name in self._submod_update_hooks and version in self._submod_update_hooks[self.name]
+
         def register_update_hook(self, version: tuple[int, ...], func: "Callable[[SubmodUpdateInfo], None]") -> None:
             """
             Registers a function to run on an update
@@ -1082,9 +1091,7 @@ init -1000 python in mas_submod_utils:
             if self.name not in self._submod_update_hooks:
                 self._submod_update_hooks[self.name] = {}
             if version not in self._submod_update_hooks[self.name]:
-                self._submod_update_hooks[self.name][version] = []
-
-            self._submod_update_hooks[self.name][version].append(func)
+                self._submod_update_hooks[self.name][version] = func
 
         def _compare_versions(self, comparative_vers: tuple[int, ...]) -> Literal[-1, 0, 1]:
             """
@@ -1180,19 +1187,19 @@ init -1000 python in mas_submod_utils:
                     submod_log.error(f"submod '{self.name}' has update hook for version '{_dump_version(versions_hooks)}', but submod version is lower '{self.version_str}'")
                     return
 
-                for hook in versions_to_hooks[ver]:
-                    try:
-                        hook(SubmodUpdateInfo(last_update_version, _dump_version(ver), self.version_str))
+                hook = versions_to_hooks[ver]
+                try:
+                    hook(SubmodUpdateInfo(last_update_version, _dump_version(ver), self.version_str))
 
-                    # Catch base exc to handle as many cases as possible
-                    except BaseException as e:
-                        func_mod = getattr(hook, "__module__", "")
-                        func_name = getattr(hook, "__qualname__", hook.__name__)
-                        func_fullname = ".".join((func_mod, func_name))
-                        submod_log.error(
-                            f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{ver}'",
-                            exc_info=True,
-                    )
+                # Catch base exc to handle as many cases as possible
+                except BaseException as e:
+                    func_mod = getattr(hook, "__module__", "")
+                    func_name = getattr(hook, "__qualname__", hook.__name__)
+                    func_fullname = ".".join((func_mod, func_name))
+                    submod_log.error(
+                        f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{ver}'",
+                        exc_info=True,
+                )
                 # We ran all the hooks for this version, bump version saved in persistent to avoid running the same hooks later
                 # This is just in case of a crash mid-update
                 persistent._mas_submod_version_data[self.name] = _dump_version(ver)
@@ -1499,6 +1506,10 @@ init -1000 python in mas_submod_utils:
                         f"but current submod version is '{submod.version_str}' (lower than the update hook)"
                     ),
                 )
+                return func
+
+            if submod.has_update_hook_for(version_tuple):
+                submod_log.error(f"can't register an update hook for submod '{name}' for version '{version}', a hook has already been registered")
                 return func
 
             submod.register_update_hook(version_tuple, func)
