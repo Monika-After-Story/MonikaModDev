@@ -1018,6 +1018,7 @@ init -1000 python in mas_submod_utils:
         _submod_map: "dict[str, _Submod]" = {}
         # SubmodName: (Version: Function)
         _submod_update_hooks: "dict[str, dict[str, Callable[[SubmodUpdateInfo], None]]]" = {}
+        _submod_first_install_hooks: "dict[str, Callable[[], None]]" = {}
 
         def __init__(
             self,
@@ -1077,6 +1078,10 @@ init -1000 python in mas_submod_utils:
 
             IN:
                 version - update version
+
+            OUT:
+                True if there's a hook
+                False otherwise
             """
             return self.name in self._submod_update_hooks and version in self._submod_update_hooks[self.name]
 
@@ -1092,6 +1097,26 @@ init -1000 python in mas_submod_utils:
                 self._submod_update_hooks[self.name] = {}
             if version not in self._submod_update_hooks[self.name]:
                 self._submod_update_hooks[self.name][version] = func
+
+        def has_first_install_hook(self) -> bool:
+            """
+            Checks if a first-time-install hook has been registered for this submod
+
+            OUT:
+                True if there's a hook
+                False otherwise
+            """
+            return self.name in self._submod_first_install_hooks
+
+        def register_first_install_hook(self, func: Callable[[], None]) -> None:
+            """
+            Registers a function to run on first install
+
+            IN:
+                func - the function to call on first install
+            """
+            if self.name not in self._submod_first_install_hooks:
+                self._submod_first_install_hooks[self.name] = func
 
         def _compare_versions(self, comparative_vers: tuple[int, ...]) -> Literal[-1, 0, 1]:
             """
@@ -1111,14 +1136,50 @@ init -1000 python in mas_submod_utils:
                 comparative_vers
             )
 
-        def _should_run_update_hooks(self) -> bool:
+        def _has_just_installed_for_first_time(self) -> bool:
             """
-            Checks if this submod instance can be updated (its version number has incremented since last load)
+            Checks if this submod has just been installed for the first time
 
             OUT:
-                boolean:
-                    - True if the version number has incremented from the persistent one
-                    - False otherwise
+                bool
+            """
+            return self.name not in persistent._mas_submod_version_data
+
+        def _run_first_time_install_hook(self) -> None:
+            """
+            Runs first-time-install hook for the submod
+            """
+            hook = self._submod_first_install_hooks.get(self.name, None)
+            if hook is None:
+                return
+
+            try:
+                hook()
+
+            # Catch base exc to handle as many cases as possible
+            except BaseException as e:
+                func_mod = getattr(hook, "__module__", "")
+                func_name = getattr(hook, "__qualname__", hook.__name__)
+                func_fullname = ".".join((func_mod, func_name))
+                submod_log.error(
+                    f"Exception while running submod '{self.name}' hook '{func_fullname}' on first install",
+                    exc_info=True,
+            )
+
+            else:
+                submod_log.info(f"successfully executed first-install hook for submod '{self.name}'")
+
+            # Set version to avoid executing this again
+            persistent._mas_submod_version_data[self.name] = self.version_str
+
+        def _should_run_update_hooks(self) -> bool:
+            """
+            Checks if this submod instance has been be updated (its version number has incremented since last load)
+            and whether we should call its update hooks
+
+            OUT:
+                True if the version number has incremented from the persistent one
+                False otherwise
             """
             old_version_str = persistent._mas_submod_version_data.get(self.name, None)
             #If we don't have an old vers, we're installing for the first time and aren't updating at all
@@ -1184,7 +1245,7 @@ init -1000 python in mas_submod_utils:
                 if self._compare_versions(ver) < 0:
                     # If the version from the update hooks is somehow higher than the currently installed,
                     # we stop runing hooks. This shouldn't happen because we're checking for this in the decorator, but just in case
-                    submod_log.error(f"submod '{self.name}' has update hook for version '{_dump_version(versions_hooks)}', but submod version is lower '{self.version_str}'")
+                    submod_log.error(f"submod '{self.name}' has update hook for version '{_dump_version(ver)}', but submod version is lower '{self.version_str}'")
                     return
 
                 hook = versions_to_hooks[ver]
@@ -1197,11 +1258,14 @@ init -1000 python in mas_submod_utils:
                     func_name = getattr(hook, "__qualname__", hook.__name__)
                     func_fullname = ".".join((func_mod, func_name))
                     submod_log.error(
-                        f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{ver}'",
+                        f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{_dump_version(ver)}'",
                         exc_info=True,
                 )
-                # We ran all the hooks for this version, bump version saved in persistent to avoid running the same hooks later
-                # This is just in case of a crash mid-update
+                else:
+                    submod_log.info(f"successfully executed update hook '{_dump_version(ver)}' for submod '{self.name}'")
+
+                # We ran the hook for this version, bump version in persistent to avoid running the same hook again
+                # This is just in case of a crash or power outage mid-update
                 persistent._mas_submod_version_data[self.name] = _dump_version(ver)
 
         @classmethod
@@ -1212,11 +1276,12 @@ init -1000 python in mas_submod_utils:
             # TODO: sort submods in total order, first update the submods that other submods depend on
             #Iter thru all submods we've got stored
             for submod in cls._iterSubmods():
-                #If it has updated, we need to call their update scripts and adjust the version data value
-                if submod._should_run_update_hooks():
+                if submod._has_just_installed_for_first_time():
+                    submod._run_first_time_install_hook()
+                elif submod._should_run_update_hooks():
                     submod._run_update_hooks(persistent._mas_submod_version_data[submod.name])
 
-                #Even if this hasn't updated, we should adjust its value to reflect the correct version
+                # Always adjust the value to reflect the correct version
                 persistent._mas_submod_version_data[submod.name] = submod.version_str
 
         def _check_dependencies(self):
@@ -1491,7 +1556,7 @@ init -1000 python in mas_submod_utils:
         def decorator(func: Callable[[SubmodUpdateInfo], None]) -> Callable[[SubmodUpdateInfo], None]:
             submod = _Submod._getSubmod(name)
             if submod is None:
-                submod_log.error(f"trying to register an update hook for the submod '{name}' which is not installed")
+                submod_log.error(f"trying to add an update hook for the submod '{name}' that doesn't exist")
                 return func
 
             version_tuple = _safe_parse_version(version)
@@ -1502,17 +1567,52 @@ init -1000 python in mas_submod_utils:
             if submod._compare_versions(version_tuple) < 0:
                 submod_log.error(
                     (
-                        f"trying to register an update hook '{version}' for the submod '{name}', "
+                        f"trying to add an update hook '{version}' for the submod '{name}', "
                         f"but current submod version is '{submod.version_str}' (lower than the update hook)"
                     ),
                 )
                 return func
 
             if submod.has_update_hook_for(version_tuple):
-                submod_log.error(f"can't register an update hook for submod '{name}' for version '{version}', a hook has already been registered")
+                submod_log.error(f"can't register an update hook for submod '{name}' for version '{version}', a hook has already been added")
                 return func
 
             submod.register_update_hook(version_tuple, func)
+
+            return func
+
+        return decorator
+
+    def on_submod_first_install(name: str) -> Callable[[], None]:
+        """
+        Decorator to register a function to run when the user first time installs
+        the given submod
+
+        Usage:
+            ```py
+            @mas_submod_utils.on_submod_first_install("Example")
+            def on_first_install() -> None:
+                ...
+            ```
+
+        IN:
+            name - submod name
+
+        OUT:
+            returns the original function
+        """
+        def decorator(func: Callable[[], None]) -> Callable[[], None]:
+            submod = _Submod._getSubmod(name)
+            if submod is None:
+                submod_log.error(f"trying to add an installation hook for the submod '{name}' that doesn't exist")
+                return func
+
+
+            if submod.has_first_install_hook():
+                submod_log.error(f"can't add an installation hook for submod '{name}', a hook has already been added")
+                return func
+
+            submod.register_first_install_hook(func)
 
             return func
 
