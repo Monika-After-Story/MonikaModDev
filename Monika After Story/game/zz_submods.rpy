@@ -2,6 +2,7 @@ init -1000:
     # NOTE: For historical reasons we keep strings here instead of tuples
     default persistent._mas_submod_version_data = {}
     default persistent._mas_submod_settings = {}
+    default persistent._mas_submod_install_history = set()
 
 init 10 python in mas_submod_utils:
     #Run updates if need be
@@ -10,6 +11,10 @@ init 10 python in mas_submod_utils:
 init -999 python in mas_submod_utils:
     # Init submods
     _init_and_load_submods()
+
+init -995 python in mas_submod_utils:
+    # Runs hooks at -995, the creators should have defined their hooks by now
+    _Submod._run_submods_install_hooks()
 
 init -1000 python in mas_submod_utils:
     import bisect
@@ -1511,6 +1516,28 @@ init -1000 python in mas_submod_utils:
 
             for submod in submods:
                 submod._load()
+
+        @classmethod
+        def _run_submods_install_hooks(cls):
+            """
+            NOTE: MUST BE USED IN A NODE AFTER _load_submods AS EARLY AS POSSIBLE
+
+            Runs installation hooks for the new submods that weren't found in the last session,
+            this includes submods that were installed for the first time and reinstalled submods
+            """
+            # TODO: sort submods in total order, first run hooks for the dependencies
+            submods = cls._get_submods()
+            submods.sort(key=lambda s: s.name)
+
+            previous_install_history = frozenset(persistent._mas_submod_install_history)
+            new_install_history = set()
+
+            for submod in submods:
+                if submod.name not in previous_install_history:
+                    submod._run_install_hook()
+                new_install_history.add(submod.name)
+
+            persistent._mas_submod_install_history = new_install_history
 
         @classmethod
         def has_any_submods(cls) -> bool:
