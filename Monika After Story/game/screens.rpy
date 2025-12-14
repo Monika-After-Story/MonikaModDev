@@ -3177,20 +3177,14 @@ screen submods():
                             xalign 0
                             text_text_align 0.0
 
-                        if submod.coauthors:
-                            $ details = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
-
-                        else:
-                            $ details = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
-
-                        text "[details]":
+                        text _("v[submod.version_str]{space=20}by [submod.fmt_author_str()]"):
                             yanchor 0
                             xalign 0
                             text_align 0.0
                             layout "greedy"
                             style "main_menu_version"
 
-                        if store.mas_submod_utils._SubmodSettings.is_submod_enabled(submod):
+                        if submod.is_enabled:
                             textbutton _("Disable submod"):
                                 style "mas_button_simple"
                                 action Function(store.mas_submod_utils._SubmodSettings.disable_submod, submod)
@@ -3198,6 +3192,7 @@ screen submods():
                         else:
                             textbutton _("Enable submod"):
                                 style "mas_button_simple"
+                                sensitive not submod.is_loading_failure
                                 action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
 
                         if submod.description:

@@ -66,7 +66,7 @@ init -1000 python in mas_submod_utils:
         unknown = ""
         windows = "windows"
         linux = "linux"
-        macintosh = "darwin"
+        mac = "mac"
 
         @classmethod
         def get_current_os(cls) -> Self:
@@ -77,7 +77,7 @@ init -1000 python in mas_submod_utils:
                 return cls.linux
 
             elif renpy.macintosh:
-                return cls.macintosh
+                return cls.mac
 
             return cls.unknown
 
@@ -185,7 +185,7 @@ init -1000 python in mas_submod_utils:
                     return "bin/windows/cmd/git.exe"
                 case _Platform.linux:
                     return "bin/linux/git"
-                case _Platform.macintosh:
+                case _Platform.mac:
                     # TODO: Somehow build git for mac?
                     raise NotImplementedError("git updater doesn't support mac os")
                 case _:
@@ -870,10 +870,12 @@ init -1000 python in mas_submod_utils:
 
     def _log_inited_submods() -> None:
         if _Submod.has_any_submods():
+            disabled_txt = " (disabled)"
+            empty_txt = ""
             submod_log.info(
-                "INITED SUBMODS:\n{}".format(
+                "INSTALLED SUBMODS:\n{}".format(
                     ",\n".join(
-                        f"    '{submod.name}' v{submod.version_str}"
+                        f"    '{submod.name}' v{submod.version_str}{disabled_txt if not submod.is_enabled else empty_txt}"
                         for submod in _Submod._iter_submods()
                     )
                 )
@@ -1012,7 +1014,11 @@ init -1000 python in mas_submod_utils:
             "coauthors",
             "os_whitelist",
             "os_blacklist",
+            "_is_loading_failure",
         )
+
+        # The string is used to join author and coauthors strings together, moved here so submods can translate it
+        AND_STR = _("and")
 
         # SubmodName: Submod
         _submod_map: "dict[str, _Submod]" = {}
@@ -1062,6 +1068,9 @@ init -1000 python in mas_submod_utils:
             self.os_whitelist = os_whitelist
             self.os_blacklist = os_blacklist
 
+            # If for whatever reason this submod doesn't work, mark it as such
+            self._is_loading_failure = False
+
             self._submod_map[name] = self
 
         @property
@@ -1071,6 +1080,33 @@ init -1000 python in mas_submod_utils:
         @property
         def version_str(self) -> str:
             return _dump_version(self.version)
+
+        @property
+        def is_loading_failure(self) -> bool:
+            return self._is_loading_failure
+
+        @property
+        def is_enabled(self) -> bool:
+            return not self.is_loading_failure and _SubmodSettings.is_submod_enabled(self)
+
+        def _mark_broken(self) -> None:
+            """
+            Marks submod as invalid and disables its loading so the user can safely boot up the game next time
+            """
+            self._is_loading_failure = True
+            _SubmodSettings.disable_submod(self)
+
+        def fmt_author_str(self) -> str:
+            """
+            Returns human-readable prettified string containing the author and coauthors
+            """
+            if not self.coauthors:
+                return self.author
+
+            if len(self.coauthors) == 1:
+                return f"{self.author} {self.AND_STR} {self.coauthors[0]}"
+
+            return f"{self.author}, {', '.join(self.coauthors[:-1])} {self.AND_STR} {self.coauthors[-1]}"
 
         def __repr__(self) -> str:
             return f"<{type(self).__qualname__}('{self.name}' v{self.version_str} by {self.author})>"
@@ -1334,7 +1370,6 @@ init -1000 python in mas_submod_utils:
         def _check_dependencies(self):
             """
             Checks to see if the dependencies for this submod are met
-            TODO: check the dependency is enabled!
 
             RAISES:
                 SubmodError - on dependency check fail
@@ -1345,6 +1380,11 @@ init -1000 python in mas_submod_utils:
                 if dependency_submod is None:
                     raise SubmodError(
                         f"Dependency '{dependency_name}' is not installed and is required"
+                    )
+
+                if not dependency_submod.is_enabled:
+                    raise SubmodError(
+                        f"Dependency '{dependency_name}' is disabled and cannot be loaded"
                     )
 
                 #Now we need to split our minmax
@@ -1381,7 +1421,6 @@ init -1000 python in mas_submod_utils:
         def _remove_unmet_dependency_submods(cls):
             """
             Checks to see if all the submods dependencies are met
-            TODO: instead of removing, just disable them without user being able to enable
             """
             # Can't use an iterator here, we're modifying the map
             for submod in cls._get_submods():
@@ -1400,15 +1439,7 @@ init -1000 python in mas_submod_utils:
                             f"Critical error while validating dependencies for submod '{submod.name}'",
                             exc_info=True
                         )
-                    # If we're here, we failed for any reason
-                    # Let's remove this submod as it cannot be loaded
-                    cls._submod_map.pop(submod.name, None)
-
-                else:
-                    # TODO: this is not needed, we set it when we run the updates
-                    # if submod.name not in persistent._mas_submod_version_data:
-                    #     persistent._mas_submod_version_data[submod.name] = submod.version_str
-                    continue
+                    submod._mark_broken()
 
         def _check_os_compatibility(self):
             """
@@ -1438,11 +1469,10 @@ init -1000 python in mas_submod_utils:
                     submod._check_os_compatibility()
 
                 except SubmodError as e:
-                    # Submod cannot be loaded
                     submod_log.error(
                         f"OS check for submod '{submod.name}' failed:\n    {e}"
                     )
-                    cls._submod_map.pop(submod.name, None)
+                    submod._mark_broken()
 
         def _load(self):
             """
@@ -1453,14 +1483,8 @@ init -1000 python in mas_submod_utils:
             RAISES:
                 SubmodError - on module failure
             """
-            if not _SubmodSettings.is_submod_enabled(self):
+            if not self.is_enabled:
                 return
-
-            # pypacks = os.path.join(self.abs_directory, "python-packages")
-            # TODO: Not sure if we should dynamically expand path like this?
-            # if os.path.exists(pypacks):
-            #     # renpy.add_python_directory(pypacks)
-            #     sys.path.append(pypacks)
 
             for mod_name in self.modules:
                 full_mod_name = f"{self.directory}/{mod_name}"
@@ -1474,7 +1498,7 @@ init -1000 python in mas_submod_utils:
                     msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e!r}"
                     submod_log.critical(msg)
                     # Disable broken submod so the user can boot the game next time
-                    _SubmodSettings.disable_submod(self)
+                    self._mark_broken()
                     raise SubmodError(msg) from e
 
         @classmethod
