@@ -1288,9 +1288,7 @@ init 200 python in mas_dockstat:
             return True
 
         except Exception as e:
-            log.write(
-                "[ERROR]: failed to pickle data: {0}".format(repr(e))
-            )
+            log.write(f"[ERROR]: failed to pickle data: {e!r}")
             return False
 
 
@@ -1481,14 +1479,13 @@ init 200 python in mas_dockstat:
             _buildMetaDataList(moni_buffer)
 
         ### monikachr
-        moni_chr = None
         try:
-            moni_chr = open(os.path.normcase(
-                renpy.config.basedir + "/game/mod_assets/monika/mbase"
-            ), "rb")
-
-            # NOTE: moin_chr is going to be less than 200KB, this be fine
-            moni_buffer.write(moni_chr.read().decode("utf-8"))
+            with open(
+                os.path.normcase(renpy.config.basedir + "/game/mod_assets/monika/mbase"),
+                "rb",
+            ) as moni_chr:
+                # NOTE: moin_chr is going to be less than 200KB, this be fine
+                moni_buffer.write(moni_chr.read().decode("utf-8"))
 
         except Exception as e:
             cr_log.error("mbase copy failed | {0}".format(
@@ -1496,11 +1493,6 @@ init 200 python in mas_dockstat:
             ))
             moni_buffer.close()
             return False
-
-        finally:
-            # always close moni_chr
-            if moni_chr is not None:
-                moni_chr.close()
 
         ### now we must do the streamlined write system to file
         moni_path = dockstat._trackPackage("monika")
