@@ -883,17 +883,14 @@ init -1000 python in mas_submod_utils:
 
     def _init_and_load_submods() -> None:
         """
-        Loads submods
+        Finds and loads submods
         """
-        # Init submods
         _init_submods()
         # Verify we can run all the submods
-        _Submod._remove_os_incompatible_submods()
-        # Verify installed dependencies
-        _Submod._remove_unmet_dependency_submods()
-        # Log
+        _Submod._disable_os_incompatible_submods()
+        # Verify the dependencies are met
+        _Submod._disable_unmet_dependency_submods()
         _log_inited_submods()
-        # Finally load submods
         _Submod._load_submods()
 
 
@@ -1418,9 +1415,9 @@ init -1000 python in mas_submod_utils:
                     )
 
         @classmethod
-        def _remove_unmet_dependency_submods(cls):
+        def _disable_unmet_dependency_submods(cls):
             """
-            Checks to see if all the submods dependencies are met
+            Disables the submods that are missing dependencies
             """
             # Can't use an iterator here, we're modifying the map
             for submod in cls._get_submods():
@@ -1460,9 +1457,9 @@ init -1000 python in mas_submod_utils:
                 )
 
         @classmethod
-        def _remove_os_incompatible_submods(cls):
+        def _disable_os_incompatible_submods(cls):
             """
-            Removes submods that do not support user OS
+            Disables the submods that do not support user OS
             """
             for submod in cls._get_submods():
                 try:
