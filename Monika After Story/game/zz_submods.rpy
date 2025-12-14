@@ -476,18 +476,6 @@ init -1000 python in mas_submod_utils:
         dependencies: "dict[str, tuple[str | None, str | None]]" = dataclasses.field(default_factory=dict)
         # String referring to the screen used for the submod's settings
         settings_pane: str = dataclasses.field(default="")
-        # Dictionary of the format {'old_version_update_label_name': 'new_version_update_label_name'}
-        # NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submods
-        # NOTE: capital letters will be forced to lower and spaces will be replaced with underscores
-        # NOTE: Update labels MUST accept a version parameter, defaulted to the version of the label
-        # For example:
-        #     author name: MonikaAfterStory
-        #     submod name: Example Submod
-        #     submod vers: 1.2.3
-        # becomes:
-        #     label monikaafterstory_example_submod_v1_2_3(version='v1_2_3')
-        # TODO: replace with functional updates and decorators
-        version_updates: dict[str, str] = dataclasses.field(default_factory=dict)
         # List of co-authors who helped work on this submod
         coauthors: list[str] = dataclasses.field(default_factory=list)
         # Set of OS that are supported by the submod
@@ -505,7 +493,6 @@ init -1000 python in mas_submod_utils:
             self.validate_updater()
             self.validate_dependencies()
             self.validate_settings_pane()
-            self.validate_version_updates()
             self.validate_coauthors()
             self.validate_os_whitelist()
             self.validate_os_blacklist()
@@ -602,32 +589,6 @@ init -1000 python in mas_submod_utils:
         def validate_settings_pane(self) -> None:
             if not isinstance(self.settings_pane, str):
                 raise ValueError("Submod settings_pane must be a str")
-
-        def validate_version_updates(self) -> None:
-            if not self.version_updates:
-                return
-
-            try:
-                update_label = _generate_update_label(self.author, self.name, self.version)
-
-            except KeyError:
-                # This means that one of the other fields has failed, so we can't parse this one either
-                raise ValueError("Submod author/name/version is invalid") from None
-
-            else:
-                author_name, _, version = update_label.rpartition("v")
-
-                if not isinstance(self.version_updates, (dict, python_dict)):
-                    raise ValueError("Submod version_updates must be a dict")
-
-                for pair in self.version_updates.items():
-                    for item in pair:
-                        if not isinstance(item, str):
-                            raise ValueError("Submod version_updates must contain strings")
-
-                        i_author_name, _, i_version = item.rpartition("v")
-                        if i_author_name != author_name or not _is_valid_version(i_version):
-                            raise ValueError(f"Update label '{item}' is invalid")
 
         def validate_coauthors(self) -> None:
             if not isinstance(self.coauthors, (list, python_list)):
@@ -873,8 +834,6 @@ init -1000 python in mas_submod_utils:
                 updater=None,
                 dependencies=header.dependencies,
                 settings_pane=header.settings_pane,
-                # TODO: rm this
-                version_updates=header.version_updates,
                 coauthors=header.coauthors,
                 os_whitelist=header.os_whitelist,
                 os_blacklist=header.os_blacklist,
@@ -1050,15 +1009,10 @@ init -1000 python in mas_submod_utils:
             "updater",
             "dependencies",
             "settings_pane",
-            # TODO: rm this
-            "version_updates",
             "coauthors",
             "os_whitelist",
             "os_blacklist",
         )
-
-        #The fallback version string, used in case we don't have valid data
-        FB_VERS_STR = "0.0.0"
 
         # SubmodName: Submod
         _submod_map: "dict[str, _Submod]" = {}
@@ -1076,8 +1030,6 @@ init -1000 python in mas_submod_utils:
             updater: "_BaseUpdateProvider | None",
             dependencies: "dict[str, tuple[str | None, str | None]]",
             settings_pane: str,
-            # TODO: rm this
-            version_updates: dict[str, str],
             coauthors: list[str],
             os_whitelist: frozenset[_Platform],
             os_blacklist: frozenset[_Platform],
@@ -1102,8 +1054,6 @@ init -1000 python in mas_submod_utils:
             self.updater = updater
             self.dependencies = dependencies
             self.settings_pane = settings_pane
-            # TODO: rm this
-            self.version_updates = version_updates
             self.coauthors = coauthors
             self.os_whitelist = os_whitelist
             self.os_blacklist = os_blacklist
