@@ -3154,7 +3154,9 @@ screen submods():
 
     use game_menu(("Submods")):
 
-        default tooltip = Tooltip("")
+        default TOOLTIP_CANNOT_LOAD_SUBMOD = _("This submod cannot be loaded, check submod_log.log for details")
+        default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled, click to disable and restart the game")
+        default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled, click to enable and restart the game")
         default submods = sorted(store.mas_submod_utils._Submod._get_submods(), key=lambda x: x.name)
 
         viewport id "scrollme":
@@ -3163,7 +3165,7 @@ screen submods():
             draggable True
 
             vbox:
-                style_prefix "check"
+                style_prefix "generic_fancy_check"
                 xfill True
                 xmaximum 1000
 
@@ -3185,14 +3187,26 @@ screen submods():
                             style "main_menu_version"
 
                         if submod.is_enabled:
-                            textbutton _("Disable submod"):
-                                style "mas_button_simple"
+                            textbutton _("Enable submod"):
+                                tooltip "[TOOLTIP_SUBMOD_ENABLED]"
+                                selected True
                                 action Function(store.mas_submod_utils._SubmodSettings.disable_submod, submod)
+
+                        elif submod.is_loading_failure:
+                            textbutton _("Enable submod"):
+                                # NOTE: renpy doesn't support tooltips for insensitive buttons
+                                # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
+                                # so as always we have to do it ourselves with a hack
+                                style "generic_fancy_check_button_disabled"
+                                text_style "generic_fancy_check_button_disabled_text"
+                                tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD]"
+                                selected False
+                                sensitive True
+                                action NullAction()
 
                         else:
                             textbutton _("Enable submod"):
-                                style "mas_button_simple"
-                                sensitive not submod.is_loading_failure
+                                tooltip "[TOOLTIP_SUBMOD_DISABLED]"
                                 action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
 
                         if submod.description:
@@ -3202,10 +3216,12 @@ screen submods():
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):
                         use expression submod.settings_pane
 
-    text tooltip.value:
-        xalign 0 yalign 1.0
-        xoffset 300 yoffset -10
-        style "main_menu_version"
+    $ tooltip = GetTooltip()
+    if tooltip:
+        text "[tooltip!i]":
+            xalign 0 yalign 1.0
+            xoffset 300 yoffset -10
+            style "main_menu_version"
 
 
 screen mas_apikeys():
