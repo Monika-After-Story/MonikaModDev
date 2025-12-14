@@ -3155,7 +3155,7 @@ screen submods():
     use game_menu(("Submods")):
 
         default tooltip = Tooltip("")
-        default submods = sorted(store.mas_submod_utils._Submod._getSubmods(), key=lambda x: x.name)
+        default submods = sorted(store.mas_submod_utils._Submod._get_submods(), key=lambda x: x.name)
 
         viewport id "scrollme":
             scrollbars "vertical"

@@ -874,7 +874,7 @@ init -1000 python in mas_submod_utils:
                 "INITED SUBMODS:\n{}".format(
                     ",\n".join(
                         f"    '{submod.name}' v{submod.version_str}"
-                        for submod in _Submod._iterSubmods()
+                        for submod in _Submod._iter_submods()
                     )
                 )
             )
@@ -907,7 +907,7 @@ init -1000 python in mas_submod_utils:
         """
         Static class for managing submod settings
         """
-        SETTING_IS_SUBMOD_ENABLED = "is_enabled"
+        _SETTING_IS_SUBMOD_ENABLED = "is_enabled"
 
         @classmethod
         def _create_setting(cls, submod: "_Submod", key: str, default) -> bool:
@@ -975,15 +975,15 @@ init -1000 python in mas_submod_utils:
 
         @classmethod
         def is_submod_enabled(cls, submod: "_Submod") -> bool:
-            return cls._get_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+            return cls._get_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
         def enable_submod(cls, submod: "_Submod"):
-            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, True)
+            cls._set_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
         def disable_submod(cls, submod: "_Submod"):
-            cls._set_setting(submod, cls.SETTING_IS_SUBMOD_ENABLED, False)
+            cls._set_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, False)
 
         @classmethod
         def toggle_submod(cls, submod: "_Submod") -> bool:
@@ -1018,7 +1018,10 @@ init -1000 python in mas_submod_utils:
         _submod_map: "dict[str, _Submod]" = {}
         # SubmodName: (Version: Function)
         _submod_update_hooks: "dict[str, dict[str, Callable[[SubmodUpdateInfo], None]]]" = {}
+        # SubmodName: Function
         _submod_first_install_hooks: "dict[str, Callable[[], None]]" = {}
+        # SubmodName: Function
+        _submod_install_hooks: "dict[str, Callable[[], None]]" = {}
 
         def __init__(
             self,
@@ -1117,6 +1120,50 @@ init -1000 python in mas_submod_utils:
             """
             if self.name not in self._submod_first_install_hooks:
                 self._submod_first_install_hooks[self.name] = func
+
+        def has_install_hook(self) -> bool:
+            """
+            Checks if an install hook has been registered for this submod
+
+            OUT:
+                True if there's a hook
+                False otherwise
+            """
+            return self.name in self._submod_install_hooks
+
+        def register_install_hook(self, func: Callable[[], None]) -> None:
+            """
+            Registers a function to run on successful install
+
+            IN:
+                func - the function to call on first install
+            """
+            if self.name not in self._submod_install_hooks:
+                self._submod_install_hooks[self.name] = func
+
+        def _run_install_hook(self) -> None:
+            """
+            Runs on-install hook for the submod
+            """
+            hook = self._submod_install_hooks.get(self.name, None)
+            if hook is None:
+                return
+
+            try:
+                hook()
+
+            # Catch base exc to handle as many cases as possible
+            except BaseException as e:
+                func_mod = getattr(hook, "__module__", "")
+                func_name = getattr(hook, "__qualname__", hook.__name__)
+                func_fullname = ".".join((func_mod, func_name))
+                submod_log.error(
+                    f"Exception while running submod '{self.name}' on-install hook '{func_fullname}'",
+                    exc_info=True,
+            )
+
+            else:
+                submod_log.info(f"successfully executed on-install hook for submod '{self.name}'")
 
         def _compare_versions(self, comparative_vers: tuple[int, ...]) -> Literal[-1, 0, 1]:
             """
@@ -1275,7 +1322,7 @@ init -1000 python in mas_submod_utils:
             """
             # TODO: sort submods in total order, first update the submods that other submods depend on
             #Iter thru all submods we've got stored
-            for submod in cls._iterSubmods():
+            for submod in cls._iter_submods():
                 if submod._has_just_installed_for_first_time():
                     submod._run_first_time_install_hook()
                 elif submod._should_run_update_hooks():
@@ -1287,12 +1334,13 @@ init -1000 python in mas_submod_utils:
         def _check_dependencies(self):
             """
             Checks to see if the dependencies for this submod are met
+            TODO: check the dependency is enabled!
 
             RAISES:
                 SubmodError - on dependency check fail
             """
             for dependency_name, minmax_version_tuple in self.dependencies.items():
-                dependency_submod = self._getSubmod(dependency_name)
+                dependency_submod = self._get_submod(dependency_name)
 
                 if dependency_submod is None:
                     raise SubmodError(
@@ -1333,9 +1381,10 @@ init -1000 python in mas_submod_utils:
         def _remove_unmet_dependency_submods(cls):
             """
             Checks to see if all the submods dependencies are met
+            TODO: instead of removing, just disable them without user being able to enable
             """
             # Can't use an iterator here, we're modifying the map
-            for submod in cls._getSubmods():
+            for submod in cls._get_submods():
                 try:
                     submod._check_dependencies()
 
@@ -1384,7 +1433,7 @@ init -1000 python in mas_submod_utils:
             """
             Removes submods that do not support user OS
             """
-            for submod in cls._getSubmods():
+            for submod in cls._get_submods():
                 try:
                     submod._check_os_compatibility()
 
@@ -1399,8 +1448,7 @@ init -1000 python in mas_submod_utils:
             """
             NOTE: SHOULD NEVER BE CALLED DIRECTLY
 
-            Loads modules of this submod and adds local py-packs
-                to the global scope to be importable
+            Loads modules of this submod
 
             RAISES:
                 SubmodError - on module failure
@@ -1419,7 +1467,7 @@ init -1000 python in mas_submod_utils:
                 try:
                     renpy.include_module(full_mod_name)
 
-                except Exception as e:
+                except BaseException as e:
                     # We can't abort loading at this point,
                     # and ignoring doesn't sit right with me
                     # it can cause more issues down the pipeline
@@ -1436,7 +1484,8 @@ init -1000 python in mas_submod_utils:
 
             Loads modules for every submod
             """
-            submods = cls._getSubmods()
+            # TODO: sort submods in total order, first load the dependencies
+            submods = cls._get_submods()
             submods.sort(key=lambda s: s.name)
 
             for submod in submods:
@@ -1467,7 +1516,7 @@ init -1000 python in mas_submod_utils:
             return name in cls._submod_map
 
         @classmethod
-        def _getSubmod(cls, name: str) -> "_Submod | None":
+        def _get_submod(cls, name: str) -> "_Submod | None":
             """
             Gets the submod with the name provided
 
@@ -1481,7 +1530,7 @@ init -1000 python in mas_submod_utils:
             return cls._submod_map.get(name, None)
 
         @classmethod
-        def _iterSubmods(cls) -> "Iterator[_Submod]":
+        def _iter_submods(cls) -> "Iterator[_Submod]":
             """
             Returns an iterator over the submods
 
@@ -1491,7 +1540,7 @@ init -1000 python in mas_submod_utils:
             return iter(cls._submod_map.values())
 
         @classmethod
-        def _getSubmods(cls) -> "list[_Submod]":
+        def _get_submods(cls) -> "list[_Submod]":
             """
             Returns a list of all the submods
 
@@ -1534,7 +1583,7 @@ init -1000 python in mas_submod_utils:
             current_version = self.current_version
             return f"<{type(self).__qualname__}({from_version=}, {to_version=}, {current_version=})>"
 
-    def on_submod_update(name: str, version: str) -> Callable[[SubmodUpdateInfo], None]:
+    def on_submod_update(name: str, version: str) -> Callable[[Callable[[SubmodUpdateInfo], None]], Callable[[SubmodUpdateInfo], None]]:
         """
         Decorator to register a function to run when a submod named 'name' updates
         to version 'version' or higher
@@ -1554,7 +1603,7 @@ init -1000 python in mas_submod_utils:
             returns the original function
         """
         def decorator(func: Callable[[SubmodUpdateInfo], None]) -> Callable[[SubmodUpdateInfo], None]:
-            submod = _Submod._getSubmod(name)
+            submod = _Submod._get_submod(name)
             if submod is None:
                 submod_log.error(f"trying to add an update hook for the submod '{name}' that doesn't exist")
                 return func
@@ -1583,7 +1632,7 @@ init -1000 python in mas_submod_utils:
 
         return decorator
 
-    def on_submod_first_install(name: str) -> Callable[[], None]:
+    def on_submod_first_install(name: str) -> Callable[[Callable[[], None]], Callable[[], None]]:
         """
         Decorator to register a function to run when the user first time installs
         the given submod
@@ -1602,17 +1651,49 @@ init -1000 python in mas_submod_utils:
             returns the original function
         """
         def decorator(func: Callable[[], None]) -> Callable[[], None]:
-            submod = _Submod._getSubmod(name)
+            submod = _Submod._get_submod(name)
             if submod is None:
-                submod_log.error(f"trying to add an installation hook for the submod '{name}' that doesn't exist")
+                submod_log.error(f"trying to add an installation hook to the submod '{name}' that doesn't exist")
                 return func
 
-
             if submod.has_first_install_hook():
-                submod_log.error(f"can't add an installation hook for submod '{name}', a hook has already been added")
+                submod_log.error(f"can't add an installation hook to the submod '{name}', a hook has already been added")
                 return func
 
             submod.register_first_install_hook(func)
+
+            return func
+
+        return decorator
+
+    def on_submod_install(name: str) -> Callable[[Callable[[], None]], Callable[[], None]]:
+        """
+        Decorator to register a function to run on submod installation
+
+        Usage:
+            ```py
+            @mas_submod_utils.on_submod_install("Example")
+            def submod_setup() -> None:
+                ...
+            ```
+
+        IN:
+            name - submod name
+
+        OUT:
+            returns the original function
+        """
+        def decorator(func: Callable[[], None]) -> Callable[[], None]:
+            submod = _Submod._get_submod(name)
+            if submod is None:
+                submod_log.error(f"trying to add an installation hook to the submod '{name}' that doesn't exist")
+                return func
+
+            if submod.has_install_hook():
+                submod_log.error(f"can't add an installation hook to the submod '{name}', a hook has already been added")
+                return func
+
+            submod.register_install_hook(func)
 
             return func
 
@@ -1632,7 +1713,7 @@ init -1000 python in mas_submod_utils:
                 - True if submod with name is installed
                 - False otherwise
         """
-        submod = _Submod._getSubmod(name)
+        submod = _Submod._get_submod(name)
 
         if submod is None:
             return False
@@ -1657,7 +1738,7 @@ init -1000 python in mas_submod_utils:
             str - relative path to the submod
             None - no submod with the given name was found
         """
-        if (submod := _Submod._getSubmod(name)) is None:
+        if (submod := _Submod._get_submod(name)) is None:
             return None
 
         return submod.directory
