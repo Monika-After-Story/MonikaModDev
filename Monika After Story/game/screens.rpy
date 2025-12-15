@@ -3155,8 +3155,9 @@ screen submods():
     use game_menu(("Submods")):
 
         default TOOLTIP_CANNOT_LOAD_SUBMOD = _("This submod cannot be loaded, check submod_log.log for details")
-        default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled, click to disable and restart the game")
-        default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled, click to enable and restart the game")
+        default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled. Click to disable it and restart the game")
+        default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled. Click to enable it and restart the game")
+        # This is slow,, maybe we should cache it after loading submods?
         default submods = sorted(store.mas_submod_utils._Submod._get_submods(), key=lambda x: x.name)
 
         viewport id "scrollme":
@@ -3186,13 +3187,7 @@ screen submods():
                             layout "greedy"
                             style "main_menu_version"
 
-                        if submod.is_enabled:
-                            textbutton _("Enable submod"):
-                                tooltip "[TOOLTIP_SUBMOD_ENABLED]"
-                                selected True
-                                action Function(store.mas_submod_utils._SubmodSettings.disable_submod, submod)
-
-                        elif submod.is_loading_failure:
+                        if submod.is_loading_failure:
                             textbutton _("Enable submod"):
                                 # NOTE: renpy doesn't support tooltips for insensitive buttons
                                 # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
@@ -3206,11 +3201,12 @@ screen submods():
 
                         else:
                             textbutton _("Enable submod"):
-                                tooltip "[TOOLTIP_SUBMOD_DISABLED]"
-                                action Function(store.mas_submod_utils._SubmodSettings.enable_submod, submod)
+                                tooltip ("[TOOLTIP_SUBMOD_ENABLED]" if submod.is_enabled else "[TOOLTIP_SUBMOD_DISABLED]")
+                                selected submod.is_enabled
+                                action Function(store.mas_submod_utils._SubmodSettings.toggle_submod, submod)
 
                         if submod.description:
-                            text "[submod.description]":
+                            text "[submod.description!i]":
                                 text_align 0.0
 
                     if submod.settings_pane and renpy.has_screen(submod.settings_pane):

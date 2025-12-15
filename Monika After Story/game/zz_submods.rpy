@@ -942,7 +942,7 @@ init -1000 python in mas_submod_utils:
             return False
 
         @classmethod
-        def _get_setting(cls, submod: "_Submod", key: str, default):
+        def _get_setting(cls, submod: "_Submod", key: str, default: Any) -> Any:
             """
             Returns a setting for a submod
 
@@ -982,21 +982,19 @@ init -1000 python in mas_submod_utils:
             return cls._get_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
-        def enable_submod(cls, submod: "_Submod"):
+        def enable_submod(cls, submod: "_Submod") -> None:
             cls._set_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
-        def disable_submod(cls, submod: "_Submod"):
+        def disable_submod(cls, submod: "_Submod") -> None:
             cls._set_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, False)
 
         @classmethod
-        def toggle_submod(cls, submod: "_Submod") -> bool:
+        def toggle_submod(cls, submod: "_Submod") -> None:
             if cls.is_submod_enabled(submod):
                 cls.disable_submod(submod)
-                return False
-
-            cls.enable_submod(submod)
-            return True
+            else:
+                cls.enable_submod(submod)
 
 
     class _Submod(python_object):
