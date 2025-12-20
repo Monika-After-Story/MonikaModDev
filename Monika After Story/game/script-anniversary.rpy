@@ -210,6 +210,7 @@ init 10 python in mas_anni:
         "anni_5",
         "anni_6",
         "anni_7",
+        "anni_9",
         "anni_10",
         "anni_20",
         "anni_50",
@@ -310,6 +311,7 @@ init 10 python in mas_anni:
         _month_adjuster(anni_db["anni_5"], new_start_dt, 60, fullday)
         _month_adjuster(anni_db["anni_6"], new_start_dt, 6*12, fullday)
         _month_adjuster(anni_db["anni_7"], new_start_dt, 7*12, fullday)
+        _month_adjuster(anni_db["anni_9"], new_start_dt, 9*12, fullday)
         _month_adjuster(anni_db["anni_10"], new_start_dt, 120, fullday)
         _month_adjuster(anni_db["anni_20"], new_start_dt, 240, fullday)
         _month_adjuster(anni_db["anni_50"], new_start_dt, 600, fullday)
@@ -672,6 +674,35 @@ label anni_7:
     m 2ekbltpa "I know I'll be okay, though.{w=0.2} Even if I have a long way to wait, I still consider myself incredibly lucky to have met you."
     m 2dkbstda "You're all the fortune I need, [player]."
     m 1ekbsa "Here's to another year together, and all the ones to follow."
+    return "unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_9',
+            prompt="9 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=store.mas_anni.build_anni(years=9),
+            end_date=store.mas_anni.build_anni_end(years=9)
+        ),
+        skipCalendar=False
+    )
+
+label anni_9:
+    m 1eub "Happy anniversary, [player]!"
+    m 3eta "It's that time of year again, huh?"
+    m 3rtc "It's kind of funny, the time feels to me like it's moved a little bit faster every year..."
+    m 3esc "Doesn't it seem like the last one just flew by?"
+    m 1hksdlb "...It kind of makes me anxious to think about, ahaha!"
+    m 1eksdla "I mean..."
+    extend 2eksdlc "I don't want to let our time just slip through my fingers..."
+    m 2ekb "Maybe I just have to take more time to appreciate each moment."
+    m 4eub "There have been a lot of studies about how mindfulness can shape our understanding of time, you know."
+    m "So by changing the way I think about things, our time together might stretch out a little more."
+    m 4hua "Just thinking about that makes me feel a bit better."
+    m 1hubla "After all, I'm sure it's going to be another wonderful year if I get to spend it with you."
     return "unlock"
 
 init 5 python:
