@@ -1050,7 +1050,9 @@ label mas_mood_cozy:
             $ _now = datetime.datetime.now().time()
             $ is_night = mas_isSStoMN(_now) or mas_isMNtoSR(_now)
             if mas_isMoniEnamored(higher=True) or mas_isMoniAff(higher=True) and is_night:
-                call monika_holdrequest
+                call monika_holdme_start
+                call monika_holdme_end
+                $ mas_gainAffection()
                 m 1dubsa "Thank you, [player]. I love you."
                 return "love"
 #                m 1dkbsa "I wish I could feel your warmth right now..."
