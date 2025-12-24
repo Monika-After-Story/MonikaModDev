@@ -1049,11 +1049,21 @@ label mas_mood_cozy:
             m 1dkbsa "You being cozy makes me feel cozy as well..."
             $ _now = datetime.datetime.now().time()
             $ is_night = mas_isSStoMN(_now) or mas_isMNtoSR(_now)
-            if mas_isMoniEnamored(higher=True) or mas_isMoniAff(higher=True) and is_night:
-                call monika_holdme_start
-                call monika_holdme_end
-                $ mas_gainAffection()
-                m 1dubsa "Thank you, [player]. I love you."
+            if mas_isMoniEnamored(higher=True) or mas_isMoniAff(higher=True) and (is_night or mas_is_raining):
+                m "Would you like to hold me?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Would you like to hold me?{fast}"
+                    "Yes, please.":
+                        call monika_holdme_prep
+                        call monika_holdme_start
+                        call monika_holdme_end
+                        $ mas_gainAffection(modifier=0.25)
+                        m 1dubsa "Thank you, [player]. I love you."
+
+                    "Not right now.":
+                        m 1ekbsb "That's okay, [player].{w=0.3} I'm just happy to know that I make you feel cozy."
+                        m "I love you."
             else:
                 m 1eubsb "I love you, [player]."
             return "love"
@@ -1068,4 +1078,8 @@ label mas_mood_cozy:
             m 3eua "Mmm, a hot drink sounds perfect! {w=0.3}Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
             m 1hubla "I love a warm cup of coffee..."
             m 1eubla "It's a little moment of comfort in a busy day."
+
+        "It's something else.":
+            m "I wonder what it could be...{w=0.3} Maybe it's just the atmosphere around you."
+            m 1hub "Either way, I'm happy for you. It's a positive feeling!"
     return
