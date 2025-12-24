@@ -1024,3 +1024,62 @@ label mas_mood_guilty:
     m 1ekbsu "I love you.{w=0.2} Don't be so hard on yourself, okay?"
     $ mas_moni_idle_disp.force_by_code("1ekbla", duration=5, skip_dissolve=True)
     return "love"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            eventlabel="mas_mood_cozy",
+            prompt="...cozy.",
+            category=[store.mas_moods.TYPE_GOOD],
+            unlocked=True
+        ),
+        code="MOO"
+    )
+
+label mas_mood_cozy:
+    m 1eua "Oh?{w=0.3} What makes you feel cozy?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Oh? What makes you feel cozy?{fast}"
+
+        "Being with you.":
+            m 1ekbsb "Aww, [player].{w=0.3} I am so happy I'm making you feel that way."
+            m 1eubsb "I love spending time with you too."
+            m 1dkbsa "You being cozy makes me feel cozy as well..."
+            $ _now = datetime.datetime.now().time()
+            $ is_night = mas_isSStoMN(_now) or mas_isMNtoSR(_now)
+            if mas_isMoniEnamored(higher=True) or mas_isMoniAff(higher=True) and (is_night or mas_is_raining):
+                m "Would you like to hold me?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Would you like to hold me?{fast}"
+                    "Yes, please.":
+                        call monika_holdme_prep
+                        call monika_holdme_start
+                        call monika_holdme_end
+                        $ mas_gainAffection(modifier=0.25)
+                        m 1dubsa "Thank you, [player]. I love you."
+
+                    "Not right now.":
+                        m 1ekbsb "That's okay, [player].{w=0.3} I'm just happy to know that I make you feel cozy."
+                        m "I love you."
+            else:
+                m 1eubsb "I love you, [player]."
+            return "love"
+
+        "A warm blanket." if not mas_isSummer():
+            m 1eub "Oh, I love warm blankets too! {w=0.3}They make everything feel so snug and comfortable."
+            m 1hua "There's nothing like wrapping yourself up in a cozy blanket."
+            m 1ekbla "It's like a warm hug that lasts forever..."
+            m 3hublb "I wish I could wrap you up in a blanket and keep you warm all the time!"
+
+        "A hot drink." if not mas_isSummer():
+            m 3eua "Mmm, a hot drink sounds perfect! {w=0.3}Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
+            m 1hubla "I love a warm cup of coffee..."
+            m 1eubla "It's a little moment of comfort in a busy day."
+
+        "It's something else.":
+            m "I wonder what it could be...{w=0.3} Maybe it's just the atmosphere around you."
+            m 1hub "Either way, I'm happy for you. It's a positive feeling!"
+    return
