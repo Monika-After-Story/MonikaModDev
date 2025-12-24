@@ -1054,50 +1054,18 @@ label mas_mood_cozy:
                 call monika_holdme_end
                 $ mas_gainAffection()
                 m 1dubsa "Thank you, [player]. I love you."
-                return "love"
-#                m 1dkbsa "I wish I could feel your warmth right now..."
-#                m 1fubsa "I know I can't physically reach you in your reality, but..."
-#
-#                m 1fubsb "Would you like to {w=0.3}hold me in your arms for a while?{w=0.3}{nw}"
-#                $ _history_list.pop()
-#                menu:
-#                    m "Would you like to hold me in your arms for a while?{fast}"
-#                    "Hold Monika.":
-#                        m 5dubfa ".{w=0.3}.{w=0.3}.{w=0.3}"
-#                        if mas_is_raining and renpy.random.randint(0,1):
-#                            m 5dubfc ".{w=0.3} .{w=0.3} .{w=0.3}"
-#                            label mas_cozy_holding_rain:
-#                            $ _history_list.pop()
-#                            menu:
-#                                m "...{fast}"
-#
-#                                "Monika..?":
-#                                    m 5dkbfc "Mmh..."
-#                                    m 5eubsb "Ah! {w=0.3} Almost fell asleep there."
-#                                    m 1eubsa "The sound of the rain is so relaxing..."
-#
-#                                "Let her rest.":
-#                                    m 5dubfc ".{w=1}.{w=1}.{w=1}"
-#                                    jump mas_cozy_holding_rain
-#                        else:
-#                            m 5mubfa "Don't let go yet..."
-#                            m 5fubfa "This moment is perfect."
-#                            m 5dubfa ".{w=0.3}.{w=0.3}.{w=0.3}"
-#                        m 1dubsa "Thank you, [player]. I love you."
-#                        return
-
-            m 1eubsb "I love you, [player]."
+            else:
+                m 1eubsb "I love you, [player]."
             return "love"
 
-        "A warm blanket.":
+        "A warm blanket." if not mas_isSummer():
             m 1eub "Oh, I love warm blankets too! {w=0.3}They make everything feel so snug and comfortable."
             m 1hua "There's nothing like wrapping yourself up in a cozy blanket."
             m 1ekbla "It's like a warm hug that lasts forever..."
-            m 3hubsb "I wish I could wrap you up in a blanket and keep you warm all the time!"
-            return
+            m 3hublb "I wish I could wrap you up in a blanket and keep you warm all the time!"
 
-        "A hot drink.":
-            m 1eub "Mmm, a hot drink sounds perfect! {w=0.3}Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
+        "A hot drink." if not mas_isSummer():
+            m 3eua "Mmm, a hot drink sounds perfect! {w=0.3}Whether it's coffee, hot chocolate, or tea, it warms you up from the inside out."
             m 1hubla "I love a warm cup of coffee..."
-            m 1eubla "It's like a little moment of comfort in a busy day."
-            return
+            m 1eubla "It's a little moment of comfort in a busy day."
+    return
