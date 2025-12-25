@@ -4,9 +4,6 @@ init -1000:
     default persistent._mas_submod_settings = {}
     default persistent._mas_submod_install_history = set()
 
-init 10 python in mas_submod_utils:
-    #Run updates if need be
-    _Submod._run_submods_update_hooks()
 
 init -999 python in mas_submod_utils:
     # Init submods
@@ -15,6 +12,11 @@ init -999 python in mas_submod_utils:
 init -995 python in mas_submod_utils:
     # Runs hooks at -995, the creators should have defined their hooks by now
     _Submod._run_submods_install_hooks()
+
+init 10 python in mas_submod_utils:
+    # Run updates if need be
+    _Submod._run_submods_update_hooks()
+
 
 init -1000 python in mas_submod_utils:
     import bisect
@@ -775,14 +777,14 @@ init -1000 python in mas_submod_utils:
 
         except Exception as e:
             submod_log.error(
-                f"Failed to load submod from {_fmt_path(header_path)}:\n    Failed to read header",
+                f"failed to load submod from {_fmt_path(header_path)}:\n    Failed to read header",
                 exc_info=True
             )
             return None
 
         if not header_json:
             submod_log.error(
-                f"Failed to load submod from {_fmt_path(header_path)}:\n    Empty header"
+                f"failed to load submod from {_fmt_path(header_path)}:\n    Empty header"
             )
             return None
 
@@ -811,7 +813,7 @@ init -1000 python in mas_submod_utils:
             return _SubmodSchema.from_json(raw_header)
 
         except Exception as e:
-            submod_log.error(f"Failed to load submod from {_fmt_path(header_path)}: {e}")
+            submod_log.error(f"failed to load submod from {_fmt_path(header_path)}: {e}")
             return None
 
     def _try_init_submod(header_path: str) -> None:
@@ -857,12 +859,12 @@ init -1000 python in mas_submod_utils:
 
         except SubmodError as e:
             submod_log.error(
-                f"Failed to load submod at: {_fmt_path(header_path)}:\n    {e}",
+                f"failed to load submod at: {_fmt_path(header_path)}:\n    {e}",
             )
 
         except Exception as e:
             submod_log.critical(
-                f"Critical error while validating submod at: {_fmt_path(header_path)}",
+                f"critical error while validating submod at: {_fmt_path(header_path)}",
                 exc_info=True,
             )
 
@@ -892,6 +894,8 @@ init -1000 python in mas_submod_utils:
         Finds and loads submods
         """
         _init_submods()
+        # Verify topological order is possible
+        _Submod._disable_circular_dependency_submods()
         # Verify we can run all the submods
         _Submod._disable_os_incompatible_submods()
         # Verify the dependencies are met
@@ -909,7 +913,7 @@ init -1000 python in mas_submod_utils:
 
     class DependencyCycleError(SubmodError):
         def __init__(self, submod: "_Submod") -> None:
-            super().__init__("cycle detected")
+            super().__init__("cycle: ")
             self.chain = []
             self.add(submod)
 
@@ -917,7 +921,7 @@ init -1000 python in mas_submod_utils:
             self.chain.append(submod)
 
         def __str__(self) -> str:
-            return super().__str__() + ": " + " < ".join(f"'{s.name} v{s.version_str}'" for s in self.chain)
+            return super().__str__() + " < ".join(f"'{s.name} v{s.version_str}'" for s in self.chain)
 
 
     class _SubmodSettings():
@@ -1027,7 +1031,7 @@ init -1000 python in mas_submod_utils:
             "coauthors",
             "os_whitelist",
             "os_blacklist",
-            "_is_loading_failure",
+            "_failed_to_load",
         )
 
         # The string is used to join author and coauthors strings together, moved here so submods can translate it
@@ -1065,7 +1069,7 @@ init -1000 python in mas_submod_utils:
             """
             if name in self._submod_map:
                 raise SubmodError(
-                    f"Submod '{name}' has been installed twice. Please, uninstall the duplicate.",
+                    f"submod '{name}' has been installed twice. Please, uninstall the duplicate.",
                 )
 
             self.author = author
@@ -1082,7 +1086,7 @@ init -1000 python in mas_submod_utils:
             self.os_blacklist = os_blacklist
 
             # If for whatever reason this submod doesn't work, mark it as such
-            self._is_loading_failure = False
+            self._failed_to_load = False
 
             self._submod_map[name] = self
 
@@ -1095,18 +1099,18 @@ init -1000 python in mas_submod_utils:
             return _dump_version(self.version)
 
         @property
-        def is_loading_failure(self) -> bool:
-            return self._is_loading_failure
+        def failed_to_load(self) -> bool:
+            return self._failed_to_load
 
         @property
         def is_enabled(self) -> bool:
-            return not self.is_loading_failure and _SubmodSettings.is_submod_enabled(self)
+            return not self.failed_to_load and _SubmodSettings.is_submod_enabled(self)
 
         def _mark_broken(self) -> None:
             """
             Marks submod as invalid and disables its loading so the user can safely boot up the game next time
             """
-            self._is_loading_failure = True
+            self._failed_to_load = True
             _SubmodSettings.disable_submod(self)
 
         def fmt_author_str(self) -> str:
@@ -1160,11 +1164,16 @@ init -1000 python in mas_submod_utils:
             return sorted(cls._submod_map.values(), key=lambda x: x.name)
 
         @classmethod
-        def _get_topologically_sorted_submods(cls) -> "list[_Submod]":
+        def _get_topologically_sorted_submods(cls, only_enabled: bool) -> "list[_Submod]":
             """
             Topologically sorts the submods from dependencies to dependents
             NOTE: load order of independent submods is not declared, not stable,
                 and no guarantees are made
+            NOTE: this doesn't account of missing dependencies, versions mismatches, or anything of sorts,
+                it just sorts and returns the submods, everything else is done in other methods
+
+            IN:
+                only_enabled - whether to only sort and return enabled submods
 
             OUT:
                 list of sorted submod objects
@@ -1172,7 +1181,11 @@ init -1000 python in mas_submod_utils:
             out: "list[_Submod]" = []
             finished: "set[str]" = set()
             processing: "set[str]" = set()
-            unvisited: "set[_Submod]" = set(cls._submod_map.values())
+            unvisited: "set[_Submod]" = set(
+                submod
+                for submod in cls._submod_map.values()
+                if submod.is_enabled or not only_enabled
+            )
 
             def visit(submod: "_Submod") -> None:
                 if submod.name in finished:
@@ -1184,8 +1197,9 @@ init -1000 python in mas_submod_utils:
 
                 for dependency_name in submod.dependencies.keys():
                     dependency = cls._get_submod(dependency_name)
-                    if dependency is None:
-                        # The dependency is missing, but we don't care about it here
+                    # If the dependency is missing, we don't care about it here
+                    # If it's disabled, then it depends on the provided flag
+                    if dependency is None or (not dependency.is_enabled and only_enabled):
                         continue
 
                     try:
@@ -1276,6 +1290,9 @@ init -1000 python in mas_submod_utils:
             """
             Runs on-install hook for the submod
             """
+            if not self.is_enabled:
+                return
+
             hook = self._submod_install_hooks.get(self.name, None)
             if hook is None:
                 return
@@ -1289,7 +1306,7 @@ init -1000 python in mas_submod_utils:
                 func_name = getattr(hook, "__qualname__", hook.__name__)
                 func_fullname = ".".join((func_mod, func_name))
                 submod_log.error(
-                    f"Exception while running submod '{self.name}' on-install hook '{func_fullname}'",
+                    f"exception while running submod '{self.name}' on-install hook '{func_fullname}'",
                     exc_info=True,
             )
 
@@ -1327,6 +1344,9 @@ init -1000 python in mas_submod_utils:
             """
             Runs first-time-install hook for the submod
             """
+            if not self.is_enabled:
+                return
+
             hook = self._submod_first_install_hooks.get(self.name, None)
             if hook is None:
                 return
@@ -1340,7 +1360,7 @@ init -1000 python in mas_submod_utils:
                 func_name = getattr(hook, "__qualname__", hook.__name__)
                 func_fullname = ".".join((func_mod, func_name))
                 submod_log.error(
-                    f"Exception while running submod '{self.name}' hook '{func_fullname}' on first install",
+                    f"exception while running submod '{self.name}' hook '{func_fullname}' on first install",
                     exc_info=True,
             )
 
@@ -1396,6 +1416,9 @@ init -1000 python in mas_submod_utils:
             ASSUMES:
                 last_update_version is valid version
             """
+            if not self.is_enabled:
+                return
+
             # Get all version + hooks for this submod
             versions_to_hooks = self._submod_update_hooks.get(self.name, None)
             if not versions_to_hooks:
@@ -1436,7 +1459,7 @@ init -1000 python in mas_submod_utils:
                     func_name = getattr(hook, "__qualname__", hook.__name__)
                     func_fullname = ".".join((func_mod, func_name))
                     submod_log.error(
-                        f"Exception while running submod '{self.name}' hook '{func_fullname}' for version '{_dump_version(ver)}'",
+                        f"exception while running submod '{self.name}' hook '{func_fullname}' for version '{_dump_version(ver)}'",
                         exc_info=True,
                 )
                 else:
@@ -1451,7 +1474,7 @@ init -1000 python in mas_submod_utils:
             """
             Checks if submods have updated and runs the appropriate update hooks for them
             """
-            for submod in cls._get_topologically_sorted_submods():
+            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
                 if submod._has_just_installed_for_first_time():
                     submod._run_first_time_install_hook()
                 elif submod._should_run_update_hooks():
@@ -1460,7 +1483,7 @@ init -1000 python in mas_submod_utils:
                 # Always adjust the value to reflect the correct version
                 persistent._mas_submod_version_data[submod.name] = submod.version_str
 
-        def _check_dependencies(self):
+        def _check_dependencies(self) -> None:
             """
             Checks to see if the dependencies for this submod are met
 
@@ -1472,12 +1495,12 @@ init -1000 python in mas_submod_utils:
 
                 if dependency_submod is None:
                     raise SubmodError(
-                        f"Dependency '{dependency_name}' is not installed and is required"
+                        f"dependency '{dependency_name}' is not installed and is required"
                     )
 
                 if not dependency_submod.is_enabled:
                     raise SubmodError(
-                        f"Dependency '{dependency_name}' is disabled and cannot be loaded"
+                        f"dependency '{dependency_name}' is disabled or cannot be loaded"
                     )
 
                 #Now we need to split our minmax
@@ -1489,7 +1512,7 @@ init -1000 python in mas_submod_utils:
                     and dependency_submod._compare_versions(_parse_version(minimum_version)) < 0
                 ):
                     raise SubmodError(
-                        "Dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
+                        "dependency '{}' is out of date. Version '{}' is required. Installed version is '{}'".format(
                             dependency_submod.name,
                             minimum_version,
                             dependency_submod.version_str
@@ -1503,7 +1526,7 @@ init -1000 python in mas_submod_utils:
                     and dependency_submod._compare_versions(_parse_version(maximum_version)) > 0
                 ):
                     raise SubmodError(
-                        "Dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
+                        "dependency '{}' is incompatible. Version '{}' is compatible. Installed version is '{}'".format(
                             dependency_submod.name,
                             maximum_version,
                             dependency_submod.version_str
@@ -1511,11 +1534,11 @@ init -1000 python in mas_submod_utils:
                     )
 
         @classmethod
-        def _disable_unmet_dependency_submods(cls):
+        def _disable_unmet_dependency_submods(cls) -> None:
             """
             Disables the submods that are missing dependencies
             """
-            for submod in cls._get_topologically_sorted_submods():
+            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
                 try:
                     submod._check_dependencies()
 
@@ -1524,16 +1547,16 @@ init -1000 python in mas_submod_utils:
                 except Exception as e:
                     if isinstance(e, SubmodError):
                         submod_log.error(
-                            f"Dependency check failed for submod '{submod.name}':\n    {e}"
+                            f"dependency check failed for submod '{submod.name}':\n    {e}"
                         )
                     else:
                         submod_log.critical(
-                            f"Critical error while validating dependencies for submod '{submod.name}'",
+                            f"critical error while validating dependencies for submod '{submod.name}'",
                             exc_info=True
                         )
                     submod._mark_broken()
 
-        def _check_os_compatibility(self):
+        def _check_os_compatibility(self) -> None:
             """
             Checks if this submod supports user OS
 
@@ -1548,15 +1571,15 @@ init -1000 python in mas_submod_utils:
                 or (self.os_blacklist and current_os in self.os_blacklist)
             ):
                 raise SubmodError(
-                    f"Submod '{self.name}' does not support current operating system."
+                    f"submod '{self.name}' does not support current operating system."
                 )
 
         @classmethod
-        def _disable_os_incompatible_submods(cls):
+        def _disable_os_incompatible_submods(cls) -> None:
             """
             Disables the submods that do not support user OS
             """
-            for submod in cls._get_topologically_sorted_submods():
+            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
                 try:
                     submod._check_os_compatibility()
 
@@ -1566,7 +1589,30 @@ init -1000 python in mas_submod_utils:
                     )
                     submod._mark_broken()
 
-        def _load(self):
+        @classmethod
+        def _disable_circular_dependency_submods(cls) -> None:
+            """
+            Disables the submods that cause cyclic dependency, for example:
+                submod A depends on itself
+                submod A depends on submod B while submod B depends on submod A
+            """
+            while True:
+                try:
+                    cls._get_topologically_sorted_submods(only_enabled=True)
+
+                except DependencyCycleError as e:
+                    submod_log.error(
+                        f"circular dependencies detected:\n    {e}"
+                    )
+                    submod_log.info(f"we will attempt to disable bad actor submods and load again")
+                    for submod in e.chain:
+                        submod._mark_broken()
+
+                else:
+                    # No circular dependencies, we can continue load process
+                    break
+
+        def _load(self) -> None:
             """
             NOTE: SHOULD NEVER BE CALLED DIRECTLY
 
@@ -1587,24 +1633,24 @@ init -1000 python in mas_submod_utils:
                     # We can't abort loading at this point,
                     # and ignoring doesn't sit right with me
                     # it can cause more issues down the pipeline
-                    msg = f"Critical error while loading module '{mod_name}' for submod '{self.name}': {e!r}"
+                    msg = f"critical error while loading module '{mod_name}' for submod '{self.name}': {e!r}"
                     submod_log.critical(msg)
                     # Disable broken submod so the user can boot the game next time
                     self._mark_broken()
                     raise SubmodError(msg) from e
 
         @classmethod
-        def _load_submods(cls):
+        def _load_submods(cls) -> None:
             """
             NOTE: SHOULD NEVER BE CALLED DIRECTLY
 
             Loads modules for every submod
             """
-            for submod in cls._get_topologically_sorted_submods():
+            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
                 submod._load()
 
         @classmethod
-        def _run_submods_install_hooks(cls):
+        def _run_submods_install_hooks(cls) -> None:
             """
             NOTE: MUST BE USED IN A NODE AFTER _load_submods AS EARLY AS POSSIBLE
 
@@ -1614,7 +1660,7 @@ init -1000 python in mas_submod_utils:
             previous_install_history = frozenset(persistent._mas_submod_install_history)
             new_install_history = set()
 
-            for submod in cls._get_topologically_sorted_submods():
+            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
                 if submod.name not in previous_install_history:
                     submod._run_install_hook()
                 new_install_history.add(submod.name)

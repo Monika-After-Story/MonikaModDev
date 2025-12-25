@@ -3187,7 +3187,7 @@ screen submods():
                             layout "greedy"
                             style "main_menu_version"
 
-                        if submod.is_loading_failure:
+                        if submod.failed_to_load:
                             textbutton _("Enable submod"):
                                 # NOTE: renpy doesn't support tooltips for insensitive buttons
                                 # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
