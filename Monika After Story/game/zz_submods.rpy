@@ -39,6 +39,7 @@ init -1000 python in mas_submod_utils:
     from collections.abc import (
         Callable,
         Iterator,
+        Iterable,
         Sequence,
     )
     from enum import Enum
@@ -881,7 +882,7 @@ init -1000 python in mas_submod_utils:
                 "INSTALLED SUBMODS:\n{}".format(
                     ",\n".join(
                         f"    '{submod.name}' v{submod.version_str}{disabled_txt if not submod.is_enabled else empty_txt}"
-                        for submod in _Submod._iter_submods()
+                        for submod in _Submod._get_alpha_sorted_submods()
                     )
                 )
             )
@@ -900,11 +901,23 @@ init -1000 python in mas_submod_utils:
 
 
     class SubmodError(Exception):
-        def __init__(self, msg: str):
+        def __init__(self, msg: str) -> None:
             self.msg = msg
 
-        def __str__(self):
+        def __str__(self) -> str:
             return self.msg
+
+    class DependencyCycleError(SubmodError):
+        def __init__(self, submod: "_Submod") -> None:
+            super().__init__("cycle detected")
+            self.chain = []
+            self.add(submod)
+
+        def add(self, submod: "_Submod") -> None:
+            self.chain.append(submod)
+
+        def __str__(self) -> str:
+            return super().__str__() + ": " + " < ".join(f"'{s.name} v{s.version_str}'" for s in self.chain)
 
 
     class _SubmodSettings():
@@ -979,6 +992,7 @@ init -1000 python in mas_submod_utils:
 
         @classmethod
         def is_submod_enabled(cls, submod: "_Submod") -> bool:
+            # TODO: disable submods by default
             return cls._get_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
 
         @classmethod
@@ -1098,7 +1112,7 @@ init -1000 python in mas_submod_utils:
 
         def fmt_author_str(self) -> str:
             """
-            Returns human-readable prettified string containing the author and coauthors
+            Returns a human-readable prettified string containing the author and coauthors
             """
             if not self.coauthors:
                 return self.author
@@ -1110,6 +1124,88 @@ init -1000 python in mas_submod_utils:
 
         def __repr__(self) -> str:
             return f"<{type(self).__qualname__}('{self.name}' v{self.version_str} by {self.author})>"
+
+        @classmethod
+        def has_any_submods(cls) -> bool:
+            """
+            Checks if any submods were loaded
+
+            OUT:
+                bool
+            """
+            return bool(cls._submod_map)
+
+        @classmethod
+        def _get_submod(cls, name: str) -> "_Submod | None":
+            """
+            Gets the submod with the name provided
+
+            IN:
+                name - name of the submod to get
+
+            OUT:
+                Submod object if the submod is installed and registered
+                None if not found
+            """
+            return cls._submod_map.get(name, None)
+
+        @classmethod
+        def _get_alpha_sorted_submods(cls) -> "list[_Submod]":
+            """
+            Returns a list of all the submods sorted alphabetically by name
+            NOTE: this is intended to be used for UI/display only
+
+            OUT:
+                list of Submod objects
+            """
+            return sorted(cls._submod_map.values(), key=lambda x: x.name)
+
+        @classmethod
+        def _get_topologically_sorted_submods(cls) -> "list[_Submod]":
+            """
+            Topologically sorts the submods from dependencies to dependents
+            NOTE: load order of independent submods is not declared, not stable,
+                and no guarantees are made
+
+            OUT:
+                list of sorted submod objects
+            """
+            out: "list[_Submod]" = []
+            finished: "set[str]" = set()
+            processing: "set[str]" = set()
+            unvisited: "set[_Submod]" = set(cls._submod_map.values())
+
+            def visit(submod: "_Submod") -> None:
+                if submod.name in finished:
+                    return
+                if submod.name in processing:
+                    raise DependencyCycleError(submod)
+
+                processing.add(submod.name)
+
+                for dependency_name in submod.dependencies.keys():
+                    dependency = cls._get_submod(dependency_name)
+                    if dependency is None:
+                        # The dependency is missing, but we don't care about it here
+                        continue
+
+                    try:
+                        visit(dependency)
+
+                    except DependencyCycleError as e:
+                        e.add(submod)
+                        raise
+
+                unvisited.discard(submod.name)
+                processing.remove(submod.name)
+                finished.add(submod.name)
+                out.append(submod)
+
+            while unvisited:
+                submod = unvisited.pop()
+                visit(submod)
+
+            return out
 
         def has_update_hook_for(self, version: tuple[int, ...]) -> bool:
             """
@@ -1356,9 +1452,7 @@ init -1000 python in mas_submod_utils:
             """
             Checks if submods have updated and runs the appropriate update hooks for them
             """
-            # TODO: sort submods in total order, first update the submods that other submods depend on
-            #Iter thru all submods we've got stored
-            for submod in cls._iter_submods():
+            for submod in cls._get_topologically_sorted_submods():
                 if submod._has_just_installed_for_first_time():
                     submod._run_first_time_install_hook()
                 elif submod._should_run_update_hooks():
@@ -1422,8 +1516,7 @@ init -1000 python in mas_submod_utils:
             """
             Disables the submods that are missing dependencies
             """
-            # Can't use an iterator here, we're modifying the map
-            for submod in cls._get_submods():
+            for submod in cls._get_topologically_sorted_submods():
                 try:
                     submod._check_dependencies()
 
@@ -1464,7 +1557,7 @@ init -1000 python in mas_submod_utils:
             """
             Disables the submods that do not support user OS
             """
-            for submod in cls._get_submods():
+            for submod in cls._get_topologically_sorted_submods():
                 try:
                     submod._check_os_compatibility()
 
@@ -1508,11 +1601,7 @@ init -1000 python in mas_submod_utils:
 
             Loads modules for every submod
             """
-            # TODO: sort submods in total order, first load the dependencies
-            submods = cls._get_submods()
-            submods.sort(key=lambda s: s.name)
-
-            for submod in submods:
+            for submod in cls._get_topologically_sorted_submods():
                 submod._load()
 
         @classmethod
@@ -1523,77 +1612,15 @@ init -1000 python in mas_submod_utils:
             Runs installation hooks for the new submods that weren't found in the last session,
             this includes submods that were installed for the first time and reinstalled submods
             """
-            # TODO: sort submods in total order, first run hooks for the dependencies
-            submods = cls._get_submods()
-            submods.sort(key=lambda s: s.name)
-
             previous_install_history = frozenset(persistent._mas_submod_install_history)
             new_install_history = set()
 
-            for submod in submods:
+            for submod in cls._get_topologically_sorted_submods():
                 if submod.name not in previous_install_history:
                     submod._run_install_hook()
                 new_install_history.add(submod.name)
 
             persistent._mas_submod_install_history = new_install_history
-
-        @classmethod
-        def has_any_submods(cls) -> bool:
-            """
-            Checks if any submods were loaded
-
-            OUT:
-                bool
-            """
-            return bool(cls._submod_map)
-
-        @classmethod
-        def _has_submod(cls, name: str) -> bool:
-            """
-            Checks if a submod exists
-
-            IN:
-                name - submod name
-
-            OUT:
-                True if exists
-                False otherwise
-            """
-            return name in cls._submod_map
-
-        @classmethod
-        def _get_submod(cls, name: str) -> "_Submod | None":
-            """
-            Gets the submod with the name provided
-
-            IN:
-                name - name of the submod to get
-
-            OUT:
-                Submod object if the submod is installed and registered
-                None if not found
-            """
-            return cls._submod_map.get(name, None)
-
-        @classmethod
-        def _iter_submods(cls) -> "Iterator[_Submod]":
-            """
-            Returns an iterator over the submods
-
-            OUT:
-                iterator of Submod objects
-            """
-            return iter(cls._submod_map.values())
-
-        @classmethod
-        def _get_submods(cls) -> "list[_Submod]":
-            """
-            Returns a list of all the submods
-
-            OUT:
-                list of Submod objects
-            """
-            return list(cls._submod_map.values())
 
 
     ### Common submod functions

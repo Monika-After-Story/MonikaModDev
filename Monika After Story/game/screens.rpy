@@ -3157,8 +3157,8 @@ screen submods():
         default TOOLTIP_CANNOT_LOAD_SUBMOD = _("This submod cannot be loaded, check submod_log.log for details")
         default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled. Click to disable it and restart the game")
         default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled. Click to enable it and restart the game")
-        # This is slow,, maybe we should cache it after loading submods?
-        default submods = sorted(store.mas_submod_utils._Submod._get_submods(), key=lambda x: x.name)
+        # This is slow, maybe we should cache it after loading submods?
+        default submods = store.mas_submod_utils._Submod._get_alpha_sorted_submods()
 
         viewport id "scrollme":
             scrollbars "vertical"
