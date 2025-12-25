@@ -992,8 +992,7 @@ init -1000 python in mas_submod_utils:
 
         @classmethod
         def is_submod_enabled(cls, submod: "_Submod") -> bool:
-            # TODO: disable submods by default
-            return cls._get_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, True)
+            return cls._get_setting(submod, cls._SETTING_IS_SUBMOD_ENABLED, False)
 
         @classmethod
         def enable_submod(cls, submod: "_Submod") -> None:
