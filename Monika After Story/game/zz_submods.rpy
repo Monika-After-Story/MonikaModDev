@@ -214,7 +214,7 @@ init -1000 python in mas_submod_utils:
                 return str(data)
 
         @classmethod
-        def _exec_git(cls, command: str, *options: list[str], cwd: str | None = None, timeout: int | None = 10) -> "_GitUpdateProvider._GitOutput":
+        def _exec_git(cls, command: str, *options: list[str], cwd: str | None = None, timeout: int | None = 30) -> "_GitUpdateProvider._GitOutput":
             """
             Runs git with the given arguments
 
