@@ -55,11 +55,16 @@ cp -f "$DDLC_GAME/audio.rpa" "$RPY_FOLDER/game/"
 cp -f "$DDLC_GAME/fonts.rpa" "$RPY_FOLDER/game/"
 cp -f "$DDLC_GAME/images.rpa" "$RPY_FOLDER/game/"
 cp -f "$DDLC_GAME/firstrun" "$RPY_FOLDER/game/"
+cp -f "$DDLC_GAME/scripts.rpa" "$RPY_FOLDER/game/"
 cp -Rf "$DDLC_GAME/python-packages" "$RPY_FOLDER/game/"
 cp -f "$DDLC_FOLDER/COPYRIGHT.txt" "$RPY_FOLDER/"
 
 echo "Copying dev... ($DEV_FOLDER -> $RPY_FOLDER)"
 cp -Ruf "$DEV_FOLDER/." "$RPY_FOLDER"
+
+# setting up overrides
+echo "pass" >> "$RPY_FOLDER/game/script-poemgame.rpy"
+echo "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT=Yes, I will regret this! Enable DBUG!" >> "$RPY_FOLDER/.env"
 
 echo "Done"
 
