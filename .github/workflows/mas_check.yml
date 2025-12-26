@@ -25,6 +25,7 @@ jobs:
 
     env:
       I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT: ${{ secrets.DEV_MODE }}
+      CI_BUILD: yes
       MAS_RENPY_VER: 8.5.0
       MAS_BASE_DIR: masbase
       MAS_DIR: mas

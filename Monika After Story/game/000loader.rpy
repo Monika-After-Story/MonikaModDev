@@ -138,6 +138,7 @@ python early in _mas_root:
     __DBUG_ENV_VALUE = "Yes, I will regret this! Enable DBUG!"
     __CNSL_ENV_VALUE = "Yes, I will regret this! Enable CNSL!"
 
+    __BUILD_KEY = "CI_BUILD"
 
     def __get_env_var(key: str) -> "str | None":
         """
@@ -189,6 +190,12 @@ python early in _mas_root:
 
         __dbug_disabled_callback()
         return False
+
+    def in_ci_build() -> bool:
+        """
+        :return: True if building in CI
+        """
+        return bool(__get_env_var(__BUILD_KEY))
 
 
 python early in _mas_loader:

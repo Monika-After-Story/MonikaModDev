@@ -120,7 +120,7 @@ init python:
     ## Classify files as None to exclude them from the built distributions.
 
     ##This tells Renpy to build an updater file
-    build.include_update = True
+    build.include_update = not _mas_root.in_ci_build()
     build.update_formats.append("zsync")
 
     ## Define the archives to use
