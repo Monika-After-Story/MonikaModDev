@@ -95,12 +95,12 @@ jobs:
           ./renpy.sh "../$MAS_DIR/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
       # setup open GL for distribute
-      - name: setup openGL
-        run: |
-          sudo apt-get install cmake pkg-config
-          sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-          sudo apt-get install libglew-dev libglfw3-dev libglm-dev
-          sudo apt-get install libao-dev libmpg123-dev
+      # - name: setup openGL
+      #  run: |
+      #    sudo apt-get install cmake pkg-config
+      #    sudo apt-get install mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+      #    sudo apt-get install libglew-dev libglfw3-dev libglm-dev
+      #    sudo apt-get install libao-dev libmpg123-dev
 
       # distribute
       - name: rpy distribute
