@@ -5,14 +5,9 @@ default persistent._mas_can_update = True
 # flag used so we know we just updated through the internal updater
 default persistent._mas_just_updated = False
 
-# legacy. These will be redirected to the s3 links after 090
-#define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
-#define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
-
-# new s3 links
-define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
-define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
-define mas_updater.r7 = "http://d1j8x24k8p6koi.cloudfront.net/updates.json"
+# new s3 links (v0.13.0+)
+define mas_updater.regular = "http://d24r4ac2pb37di.cloudfront.net/updates.json"
+define mas_updater.unstable = "http://d2py13jmjxq1ku.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default

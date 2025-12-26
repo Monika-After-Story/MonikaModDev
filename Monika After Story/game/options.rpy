@@ -137,7 +137,8 @@ init python:
     # Add README
     build.classify("README.html", "all")
 
-    # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
+    # the package
+    build.package(build.directory_name + "Mod", "zip", "windows linux renpy all", description="MAS Mod")
 
     ## These files will be excluded
     # Remove everything else from the game folder
