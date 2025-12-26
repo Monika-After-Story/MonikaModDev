@@ -2596,7 +2596,7 @@ init python:
             change,
             modifier=modifier,
             reason=reason,
-            ev_label=None,
+            ev_label=ev_label,
             apology_active_expiry=apology_active_expiry,
             apology_overall_expiry=apology_overall_expiry,
             current_evlabel=current_evlabel
@@ -2924,6 +2924,7 @@ label monika_affection_nickname:
                     else:
                         #Remove the apology reason from this as we're handling the apology differently now.
                         $ mas_loseAffectionFraction(min_amount=25, modifier=2.0, ev_label="mas_apology_bad_nickname")
+
                         if lowername in ["yuri", "sayori", "natsuki"]:
                             m 1wud "...!"
                             m 2wfw "I..."
@@ -2957,7 +2958,7 @@ label monika_affection_nickname:
                             else:
                                 m 2efc "Please don't do that again."
 
-                        $ persistent._mas_called_moni_a_bad_name = True
+                        $ persistent._mas_pm_called_moni_a_bad_name = True
 
                         #reset nickname if not Monika
                         if m_name.lower() != "monika":
