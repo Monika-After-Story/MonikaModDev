@@ -138,7 +138,7 @@ init python:
     build.classify("README.html", "all")
 
     # the package
-    build.package(build.directory_name + "Mod", "zip", "windows linux renpy all", description="MAS Mod")
+    build.package(build.directory_name + "Mod", "zip", "windows mac linux renpy all", description="MAS Mod")
 
     ## These files will be excluded
     # Remove everything else from the game folder
