@@ -21,11 +21,11 @@ jobs:
     environment: ci
 
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-slim
 
     env:
       I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT: ${{ secrets.DEV_MODE }}
-      MAS_RENPY_VER: 8.3.4
+      MAS_RENPY_VER: 8.5.0
       MAS_BASE_DIR: masbase
       MAS_DIR: mas
       RENPY_DIR: renpy
@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 3.10.4 # optional, default is 3.x
+          python-version: 3.12.12 # optional, default is 3.x
 
       # get/dl renpy src
       - name: cache rpy source
@@ -78,7 +78,7 @@ jobs:
         run: |
           mkdir $MAS_DIR
           cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
-          rm $MAS_DIR/game/scripts.rpa # remove when we can handle scripts rpa
+          echo "pass" >> "$MAS_DIR/game/script-poemgame.rpy" # prevents scripts.rpa from causing a crash
 
       # copy over gh files to base
       - name: copy source over
@@ -106,4 +106,4 @@ jobs:
       - name: rpy distribute
         run: |
           cd $RENPY_DIR
-          ./renpy.sh launcher distribute "../$MAS_DIR/" --package linux
+          ./renpy.sh launcher distribute "../$MAS_DIR/" --package "MAS Mod" -- package mac
