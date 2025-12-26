@@ -819,6 +819,7 @@ init 999 python in mas_reset:
     import store.mas_utils as mas_utils
     import store.mas_windowutils as mas_windowutils
     import store.mas_xp as mas_xp
+    import store.mas_compliments as mas_compliments
 
     #Simple persist handling for cleanliness
     from store import persistent
@@ -1355,6 +1356,15 @@ init 999 python in mas_reset:
             mas_utils.mas_log.info("Detected a restored backup")
             persistent._mas_is_backup = False
 
+    @ch30_reset(-100)
+    def compliments():
+        """
+        Runs reset for compliments
+        """
+        # this is in case of crashes mid compliment
+        mas_compliments.thanks_quip = renpy.substitute(renpy.random.choice(
+            mas_compliments.thanking_quips
+        ))
 
     def final():
         """
