@@ -37,6 +37,9 @@ python early:
 
     ### R8+ Config Var adjustments
 
+    # 8.2.0
+    renpy.config.interpolate_exprs = True
+
     # 8.0
     renpy.config.always_shown_screens.append("mas_dbug")
 
