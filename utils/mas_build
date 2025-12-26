@@ -19,8 +19,6 @@ mv ${FOLDERNAME}/${MASVER}-Mod.zip modzip/
 cd modzip
 unzip -d files ${MASVER}-Mod.zip
 cd files/${MASVER}-Mod/
-# mv game/* . 
-# rmdir game
 7z a mod.zip *
 mv mod.zip ../${MASVER}-Mod.zip
 
