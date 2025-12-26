@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Usage:
-#   mas_dev_setup <base ddlc folder> <dev (repo) folder> <rpy folder>
+#   mas_dev_setup <base ddlc folder> <dev (repo) folder> <output folder>
 #   
 #   <base ddlc folder> - the folder containing DDLC (expects game/ and DDLC.exe)
 #   <dev (repo) folder> - the folder containing git/repo code (dev env)
 #       - expects either "Monika After Story/game/*.rpy" or "game/*.rpy"
-#   <rpy folder> - can be anything - set it to whatever renpy will see
+#   <output folder> - can be anything - set it to whatever the renpy sdk will see
 
 
 if [[ $# -ne 3 ]]; then
@@ -41,30 +41,30 @@ elif [[ ! "$DEV_FOLDER" == */"Monika After Story" ]]; then
     exit 1
 fi
 
-RPY_FOLDER="${3%/}"
-RPY_FOLDER="${RPY_FOLDER%\\}"
-if [[ ! -d "$RPY_FOLDER" ]]; then
-    echo "$RPY_FOLDER does not exist, creating directory"
-    mkdir "$RPY_FOLDER"
-    mkdir "$RPY_FOLDER/game"
+OUT_FOLDER="${3%/}"
+OUT_FOLDER="${OUT_FOLDER%\\}"
+if [[ ! -d "$OUT_FOLDER" ]]; then
+    echo "$OUT_FOLDER does not exist, creating directory"
+    mkdir "$OUT_FOLDER"
+    mkdir "$OUT_FOLDER/game"
 fi
 
 # copying
-echo "Copying DDLC... ($DDLC_FOLDER -> $RPY_FOLDER)"
-cp -f "$DDLC_GAME/audio.rpa" "$RPY_FOLDER/game/"
-cp -f "$DDLC_GAME/fonts.rpa" "$RPY_FOLDER/game/"
-cp -f "$DDLC_GAME/images.rpa" "$RPY_FOLDER/game/"
-cp -f "$DDLC_GAME/firstrun" "$RPY_FOLDER/game/"
-cp -f "$DDLC_GAME/scripts.rpa" "$RPY_FOLDER/game/"
-cp -Rf "$DDLC_GAME/python-packages" "$RPY_FOLDER/game/"
-cp -f "$DDLC_FOLDER/COPYRIGHT.txt" "$RPY_FOLDER/"
+echo "Copying DDLC... ($DDLC_FOLDER -> $OUT_FOLDER)"
+cp -f "$DDLC_GAME/audio.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/fonts.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/images.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/firstrun" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/scripts.rpa" "$OUT_FOLDER/game/"
+cp -Rf "$DDLC_GAME/python-packages" "$OUT_FOLDER/game/"
+cp -f "$DDLC_FOLDER/COPYRIGHT.txt" "$OUT_FOLDER/"
 
-echo "Copying dev... ($DEV_FOLDER -> $RPY_FOLDER)"
-cp -Ruf "$DEV_FOLDER/." "$RPY_FOLDER"
+echo "Copying dev... ($DEV_FOLDER -> $OUT_FOLDER)"
+cp -Ruf "$DEV_FOLDER/." "$OUT_FOLDER"
 
 # setting up overrides
-echo "pass" >> "$RPY_FOLDER/game/script-poemgame.rpy"
-echo "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT=Yes, I will regret this! Enable DBUG!" >> "$RPY_FOLDER/.env"
+echo "pass" >> "$OUT_FOLDER/game/script-poemgame.rpy"
+echo "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT=Yes, I will regret this! Enable DBUG!" >> "$OUT_FOLDER/.env"
 
 echo "Done"
 
