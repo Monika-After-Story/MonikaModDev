@@ -94,6 +94,12 @@ jobs:
           cd $RENPY_DIR
           ./renpy.sh "../$MAS_DIR/" lint | grep -E -v "^$|Could not find image \(monika [0-9][^[:space:]]+ corresponding to attributes on say statement\.|'monika [0-9][^[:space:]]+' is not an image\.|The image named 'monika [0-9][^[:space:]]+ was not declared\."
 
+      # compile 
+      - name: rpy compile
+        run: |
+          cd $RENPY_DIR
+          ./renpy.sh "../$MAS_DIR/" compile
+
       # setup open GL for distribute
       # - name: setup openGL
       #  run: |
@@ -106,4 +112,4 @@ jobs:
       - name: rpy distribute
         run: |
           cd $RENPY_DIR
-          ./renpy.sh launcher distribute "../$MAS_DIR/" --package "MAS Mod" --package mac
+          ./renpy.sh launcher distribute "../$MAS_DIR/" --package Mod --package mac
