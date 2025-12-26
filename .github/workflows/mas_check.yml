@@ -106,4 +106,4 @@ jobs:
       - name: rpy distribute
         run: |
           cd $RENPY_DIR
-          ./renpy.sh launcher distribute "../$MAS_DIR/" --package "MAS Mod" -- package mac
+          ./renpy.sh launcher distribute "../$MAS_DIR/" --package "MAS Mod" --package mac
