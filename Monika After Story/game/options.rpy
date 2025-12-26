@@ -121,6 +121,7 @@ init python:
 
     ##This tells Renpy to build an updater file
     build.include_update = True
+    build.update_formats.append("zsync")
 
     ## Define the archives to use
     build.archive("scripts", "all")
@@ -137,8 +138,8 @@ init python:
     # Add README
     build.classify("README.html", "all")
 
-    # the package
-    build.package(build.directory_name + "Mod", "zip", "windows mac linux renpy all", description="MAS Mod")
+    # the package (mac is separate)
+    build.package(build.directory_name + "Mod", "zip", "windows linux renpy all", description="MAS Mod")
 
     ## These files will be excluded
     # Remove everything else from the game folder
