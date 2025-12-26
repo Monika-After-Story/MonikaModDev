@@ -5,6 +5,12 @@ MAS="Monika_After_Story"
 MASVER="${FOLDERNAME%-dists}"
 MASNAME="${MASVER%*-*}"
 VERE="${MASVER#*-*}"
+MOD_FOLDER="${MASVER}-Mod"
+MAC_FOLDER="${MASVER}-mac"
+MODZIP="${MOD_FOLDER}.zip"
+MACZIP="${MAC_FOLDER}.zip"
+MODZIP_DLX="${MOD_FOLDER}-Dlx.zip"
+MACZIP_DLX="${MAC_FOLDER}-Dlx.zip"
 
 # check for MAS folder
 if [ "${MASNAME}" != "${MAS}" ]; then
@@ -13,29 +19,54 @@ if [ "${MASNAME}" != "${MAS}" ]; then
 fi
 
 # mas folder found, lets go
+
+# make dirs
 mkdir modzip
 mkdir modzip/files
-mv ${FOLDERNAME}/${MASVER}-Mod.zip modzip/
+mkdir maczip
+mkdir maczip/files
+
+# move the zips over
+mv ${FOLDERNAME}/${MODZIP} modzip/
+mv ${FOLDERNAME}/${MACZIP} maczip/
+
+# process mod zip
 cd modzip
-unzip -d files ${MASVER}-Mod.zip
-cd files/${MASVER}-Mod/
+unzip -d files ${MODZIP}
+cd files/${MOD_FOLDER}/
 7z a mod.zip *
-mv mod.zip ../${MASVER}-Mod.zip
+mv mod.zip ../${MODZIP}
+
+# process mac zip
+cd ../../../maczip
+unzip -d files ${MACZIP}
+cd files/${MAC_FOLDER}/
+7z a mac.zip *
+mv mac.zip ../${MACZIP}
 
 # say where file is
-echo "build at modzip/files/${MASVER}-Mod.zip"
+echo "build at modzip/files/${MODZIP}"
+echo "build at maczip/files/${MACZIP}"
 
 # now grab all spritepacks and combo install
-# 4 levels up then spacks
-for dir in ../../../../spacks/*; do
+# 1 levels up then spacks
+cd ../../../ # necessary to make sure modzip/maczip is in right folder
+for dir in ../spacks/*; do
     if [ -d "$dir" ]; then
-        cp -r "$dir"/mod_assets game/
+        cp -r "$dir"/mod_assets modzip/files/${MOD_FOLDER}/game/
+        cp -r "$dir"/mod_assets maczip/files/${MAC_FOLDER}/game/
     fi
 done
 
 # and compile again
+cd modzip/files/${MOD_FOLDER}
 7z a mod.zip *
-mv mod.zip ../${MASVER}-Mod-Dlx.zip
+mv mod.zip ../${MODZIP_DLX}
+
+cd ../../../maczip/files/${MAC_FOLDER}
+7z a mac.zip *
+mv mac.zip ../${MACZIP_DLX}
 
 # say where new file is
-echo "full build at modzip/files/${MASVER}-Mod-Dlx.zip"
+echo "full build at modzip/files/${MODZIP_DLX}"
+echo "full build at maczip/files/${MACZIP_DLX}"
