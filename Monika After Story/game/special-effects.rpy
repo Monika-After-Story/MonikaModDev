@@ -545,16 +545,43 @@ init -500 python in mas_parallax:
             """
             Updates the offsets of this parallax sprite
             """
+            new_xoffset, new_yoffset = self._calculate_offsets(
+                self._x,
+                self._y,
+                self._z,
+                self._zoom,
+                self._container.offsets[0],
+                self._container.offsets[1],
+                self._mouse_x,
+                self._mouse_y,
+            )
+            if new_xoffset != self._xoffset or new_yoffset != self._yoffset:
+                self._xoffset = new_xoffset
+                self._yoffset = new_yoffset
+                # Now update the displayable
+                renpy.redraw(self, 0.0)
+
+        def _calculate_offsets(
+            self,
+            x,
+            y,
+            z,
+            zoom,
+            container_offset_x,
+            container_offset_y,
+            mouse_x,
+            mouse_y,
+        ):
             screen_width = renpy.config.screen_width
             screen_height = renpy.config.screen_height
 
             # Basically how much zoom is currently going on
-            zoom_factor = abs(self._zoom - ParallaxSprite.NORMAL_ZOOM)
+            zoom_factor = abs(zoom - ParallaxSprite.NORMAL_ZOOM)
 
             # We use screen_width and screen_height for our parallax
             # determines how far away from center can the parallax shift be
-            available_x_shift = screen_width / float(self._z)
-            available_y_shift = screen_height / float(self._z)
+            available_x_shift = screen_width / float(z)
+            available_y_shift = screen_height / float(z)
 
             half_screen_width = screen_width / 2.0
             half_screen_height = screen_height / 2.0
@@ -563,12 +590,12 @@ init -500 python in mas_parallax:
             # 1.0 - left / top
             # 0.0 - center
             # -1.0 - right / bottom
-            mouse_x_factor = 1.0 - self._mouse_x / half_screen_width
-            mouse_y_factor = 1.0 - self._mouse_y / half_screen_height
+            mouse_x_factor = 1.0 - mouse_x / half_screen_width
+            mouse_y_factor = 1.0 - mouse_y / half_screen_height
 
             # Offsets from the container
-            container_offset_x = abs(self._container.offsets[0])
-            container_offset_y = abs(self._container.offsets[1])
+            container_offset_x = abs(container_offset_x)
+            container_offset_y = abs(container_offset_y)
 
             # Offsets from the transform. That's so if the sprite has a custom func
             # for its transform which modifies these params, we don't have to
@@ -582,25 +609,21 @@ init -500 python in mas_parallax:
             # - offsets from the container (depend on zoom level)
             # - offsets from the transfrom xpos, ypos, xanchor, yanchor (depend on zoom level)
             new_xoffset = (
-                self._x*(1.0 + zoom_factor)
+                x*(1.0 + zoom_factor)
                 + available_x_shift*mouse_x_factor
-                - zoom_factor*self._mouse_x
+                - zoom_factor*mouse_x
                 - container_offset_x*(1.0 + zoom_factor)
                 + transform_offset_x*zoom_factor
             )
             new_yoffset = (
-                self._y*(1.0 + zoom_factor)
+                y*(1.0 + zoom_factor)
                 + available_y_shift*mouse_y_factor
-                - zoom_factor*self._mouse_y
+                - zoom_factor*mouse_y
                 - container_offset_y*(1.0 + zoom_factor)
                 + transform_offset_y*zoom_factor
             )
 
-            if new_xoffset != self._xoffset or new_yoffset != self._yoffset:
-                self._xoffset = new_xoffset
-                self._yoffset = new_yoffset
-                # Now update the displayable
-                renpy.redraw(self, 0.0)
+            return (new_xoffset, new_yoffset)
 
         def event(self, ev, x, y, st):
             """
@@ -644,21 +667,7 @@ init -500 python in mas_parallax:
 
             return None
 
-        def __debug_info_render(self, width, height, st, at, render):
-            """
-            Renders debug info on a render. This is slow,
-            but it's only for debugging (obviously)
-
-            IN:
-                width - render width
-                height - render height
-                st - current st
-                at - current at
-                render - the render to render onto
-
-            ASSUMES:
-                Debug mode is on
-            """
+        def _render_debug_trace(self, width, height, st, at, render):
             threshold = 1.0
 
             # Only add the new offset, if it's changed since last time
@@ -702,7 +711,63 @@ init -500 python in mas_parallax:
                     blit_coords
                 )
 
-            # We want redraw asap in this case
+        def _render_debug_parallax_power(self, width, height, st, at, render):
+            min_xoffset, min_yoffset = self._calculate_offsets(
+                self._x,
+                self._y,
+                self._z,
+                self._zoom,
+                self._container.offsets[0],
+                self._container.offsets[1],
+                0,
+                0,
+            )
+            max_xoffset, max_yoffset = self._calculate_offsets(
+                self._x,
+                self._y,
+                self._z,
+                self._zoom,
+                self._container.offsets[0],
+                self._container.offsets[1],
+                renpy.config.screen_width,
+                renpy.config.screen_height,
+            )
+            ar = lambda i: abs(round(i, 2))
+            dbg_txt = renpy.text.text.Text(
+                "dx: {}\ndy: {}".format(
+                    ar(min_xoffset-max_xoffset),
+                    ar(min_yoffset-max_yoffset),
+                ),
+                color=(255, 0, 0, 255),
+                xanchor=0.5,
+                yanchor=0.5,
+                size=16,
+            )
+            render.place(
+                dbg_txt,
+                x=self._xoffset+self._container.size[0]/2,
+                y=self._yoffset+self._container.size[1]/2,
+                render=renpy.render(dbg_txt, width, height, st, at),
+            )
+
+        def _render_debug_info(self, width, height, st, at, render):
+            """
+            Renders debug info on a render. This is slow,
+            but it's only for debugging (obviously)
+
+            IN:
+                width - render width
+                height - render height
+                st - current st
+                at - current at
+                render - the render to render onto
+
+            ASSUMES:
+                Debug mode is on
+            """
+            self._render_debug_trace(width, height, st, at, render)
+            self._render_debug_parallax_power(width, height, st, at, render)
+            # We want redraw soon in this case
             renpy.redraw(self, 0.1)
 
         def render(self, width, height, st, at):
@@ -716,11 +781,11 @@ init -500 python in mas_parallax:
 
             # Add debug info if needed
             if self._debug:
-                self.__debug_info_render(width, height, st, at, render)
+                self._render_debug_info(width, height, st, at, render)
 
             # Set zoom
             render.zoom(self._zoom, self._zoom)
-            # Same the matrix for events
+            # Save the matrix for events
             self._forward_matrix = render.forward
             # self._reverse_matrix = render.reverse
 
