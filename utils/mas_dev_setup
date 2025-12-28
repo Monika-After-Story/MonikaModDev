@@ -55,7 +55,6 @@ cp -f "$DDLC_GAME/audio.rpa" "$OUT_FOLDER/game/"
 cp -f "$DDLC_GAME/fonts.rpa" "$OUT_FOLDER/game/"
 cp -f "$DDLC_GAME/images.rpa" "$OUT_FOLDER/game/"
 cp -f "$DDLC_GAME/firstrun" "$OUT_FOLDER/game/"
-cp -f "$DDLC_GAME/scripts.rpa" "$OUT_FOLDER/game/"
 cp -Rf "$DDLC_GAME/python-packages" "$OUT_FOLDER/game/"
 cp -f "$DDLC_FOLDER/COPYRIGHT.txt" "$OUT_FOLDER/"
 
