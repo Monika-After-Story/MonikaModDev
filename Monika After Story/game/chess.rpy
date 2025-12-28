@@ -3412,7 +3412,7 @@ init python:
                     path - filepath to the stockfish application
                     startupinfo - startup flags
                 """
-                def start_stockfish_proc(path: str, startupinfo: subprocess.STARTUPINFO) -> subprocess.Popen:
+                def start_stockfish_proc(path: str, startupinfo: "subprocess.STARTUPINFO") -> subprocess.Popen:
                     """
                     Tries to launch a stockfish subprocess, can raise exceptions
                     """
