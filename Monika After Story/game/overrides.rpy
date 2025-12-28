@@ -26,7 +26,7 @@ python early in mas_overrides:
     import renpy.savelocation as savelocation
 
 
-    def verify_data_override(data, signatures, check_verifying=True):
+    def verify_data_override(*args, **kwargs):
         """
         Verify the data in a save token.
 
@@ -47,6 +47,9 @@ python early in mas_overrides:
 
         The only difference here is that this skips over game savedirs and
         'extra' save dirs (so just omissions)
+
+        TODO: Find a way to avoid overriding the entire function just
+        to disable 2 save locations, this is more bug prone
         """
         savelocation.quit()
         savelocation.quit_scan_thread = False
@@ -65,6 +68,7 @@ python early in mas_overrides:
         # for i in renpy.config.extra_savedirs:
         #     location_add(i)
 
+        # Scan the location once.
         location.scan()
 
         renpy.loadsave.location = location
