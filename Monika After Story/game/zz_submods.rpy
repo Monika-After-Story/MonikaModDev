@@ -3,6 +3,7 @@ init -1000:
     default persistent._mas_submod_version_data = {}
     default persistent._mas_submod_settings = {}
     default persistent._mas_submod_install_history = set()
+    default persistent._mas_submod_last_update_check = {}
 
 
 init -999 python in mas_submod_utils:
@@ -27,7 +28,9 @@ init -1000 python in mas_submod_utils:
     import sys
     import subprocess
     import dataclasses
+    import datetime
     import time
+    import threading
     import functools
     import typing
 
@@ -64,8 +67,9 @@ init -1000 python in mas_submod_utils:
     HEADER_GLOB = "**/header.json"
     SUBMODS_DIR = "Submods"
 
-    # String must start with an alpha/underscore character, and can contain only alphanumerics and underscores
-    LABEL_SAFE_NAME = re.compile(r'^[a-zA-Z_][ 0-9a-zA-Z_]*$')
+    # A string that can be used as a stable identifier
+    RE_SAFE_NAME = re.compile(r"^[^\W\d][ \w\d]*[\w\d]$")
+
 
     class _Platform(str, Enum):
         """
@@ -89,6 +93,7 @@ init -1000 python in mas_submod_utils:
 
             return cls.unknown
 
+
     class _UpdateProviders(str, Enum):
         """
         Enum represents supported update providers
@@ -96,31 +101,159 @@ init -1000 python in mas_submod_utils:
         git = "git"
 
 
-    class _BaseUpdateProvider(python_object):
-        __slots__ = ("_submod", "_settings")
+    class NonBlockingLock(python_object):
+        """
+        Allows to use locks without blocking the thread and utilise the with statement
 
-        def __init__(self, submod: "_Submod", settings: dict[str, Any]) -> None:
-            self._submod = submod
-            self._settings = settings
+        Example:
+        ```python
+        lock = NonBlockingLock(threading.Lock())
+        with lock as has_grabbed:
+            if not has_grabbed:
+                # Lock is busy
+                return
+            # Lock is ours
+            work_with_shared_state()
+        ```
+        """
+        __slots__ = ("lock",)
 
-        def get_latest_version(self) -> tuple[int, ...]:
+        def __init__(self, lock) -> None:
+            self.lock = lock
+
+        def __enter__(self) -> bool:
+            return self.lock.acquire(blocking=False)
+
+        def __exit__(self, exc_type, exc_value, traceback) -> bool:
+            self.lock.release()
+            return False
+
+
+    class Updater(python_object):
+        __slots__ = (
+            "submod",
+            "provider",
+            "_lock",
+            "_latest_version",
+            "_has_updated",
+            "_is_idle",
+        )
+
+        UPDATE_CHECK_INTERVAL = datetime.timedelta(hours=0.5).total_seconds()
+
+        def __init__(self, submod: "_Submod", provider: "_BaseUpdateProvider") -> None:
+            self.submod = submod
+            self.provider = provider
+            self._lock = NonBlockingLock(threading.RLock())
+            self._latest_version: tuple[int, ...] = ()
+            self._has_updated = False
+            self._is_idle = True
+
+        @property
+        def name(self) -> str:
+            return self.submod.name
+
+        @property
+        def _last_update_check(self) -> float:
+            return persistent._mas_submod_last_update_check.get(self.name, 1506038400.0)
+
+        @_last_update_check.setter
+        def _last_update_check(self, value: float) -> None:
+            persistent._mas_submod_last_update_check[self.name] = value
+
+        @property
+        def current_version(self) -> tuple[int, ...]:
+            return self.submod.version
+
+        @property
+        def current_version_str(self) -> str:
+            return self.submod.version_str
+
+        @property
+        def latest_version(self) -> tuple[int, ...]:
+            return self._latest_version
+
+        @property
+        def latest_version_str(self) -> tuple[int, ...]:
+            return _dump_version(self._latest_version)
+
+        def __repr__(self) -> str:
+            return (
+                f"<{type(self).__qualname__}(submod='{self.name}', provider='{type(self.provider).__qualname__}', "
+                f"latest={self.latest_version_str}, last_check={datetime.datetime.fromtimestamp(self._last_update_check)}, "
+                f"updated={self._has_updated}, idle={self._is_idle})>"
+            )
+
+        def _reset(self) -> None:
+            with self._lock as has_grabbed:
+                if not has_grabbed:
+                    return
+                self._latest_version = ()
+                self._last_update_check = 1506038400.0
+                self._has_updated = False
+
+        def is_idle(self) -> bool:
             """
-            Returns the latest available version for the submod
+            Returns current status of the updater
 
             OUT:
-                version tuple
+                True if the updater is idling
+                False if we're updating/fetching/etc
             """
-            raise NotImplementedError()
+            return self._is_idle
+
+        def can_check_for_updates(self, now: float | None = None) -> bool:
+            """
+            Checks if enough time has passed since last update check
+
+            IN:
+                now - current timestamp, if None we fetch time here
+
+            OUT:
+                True we should check for update
+                False we shouldn't to avoid overloading
+            """
+            if now is None:
+                now = time.time()
+            return (now - self._last_update_check) > self.UPDATE_CHECK_INTERVAL
+
+        def check_for_updates(self, now: float | None = None) -> None:
+            """
+            Fetchest latest available version for the submod
+
+            OUT:
+                version tuple or None if failed to fetch
+            """
+            with self._lock as has_grabbed:
+                if not has_grabbed or not self._is_idle:
+                    return
+
+                self._is_idle = False
+                try:
+                    if now is None:
+                        now = time.time()
+
+                    if not self.can_check_for_updates(now):
+                        return
+
+                    self._latest_version = self.provider.fetch_latest_version()
+                    self._last_update_check = now
+
+                finally:
+                    self._is_idle = True
 
         def has_update(self) -> bool:
             """
-            Checks if there's an update available
+            Returns latest known status of update availability, does not check for update itself
 
             OUT:
                 True if there's an update
                 False otherwise
             """
-            raise NotImplementedError()
+            return (
+                not self._has_updated
+                and mas_utils.compare_versions(self.current_version, self.latest_version) < 0
+            )
 
         def update(self) -> bool:
             """
@@ -130,55 +263,48 @@ init -1000 python in mas_submod_utils:
                 True if successfully updated
                 False otherwise
             """
+            with self._lock as has_grabbed:
+                if not has_grabbed or not self._is_idle:
+                    # Already updating
+                    return False
+
+                self._is_idle = False
+                try:
+                    self.check_for_updates()
+
+                    if not self.has_update():
+                        return False
+
+                    if not self.provider.update(self.latest_version):
+                        submod_log.error(f"failed to update submod '{self.name}'")
+                        return False
+
+                    self._has_updated = True
+                    submod_log.info(f"updated submod '{self.name}' v{self.current_version_str} >>> v{_dump_version(self.latest_version)}")
+                    return True
+
+                finally:
+                    self._is_idle = True
+
+    class _BaseUpdateProvider(python_object):
+        __slots__ = ()
+
+        def fetch_latest_version(self) -> "tuple[int, ...] | None":
+            raise NotImplementedError()
+
+        def update(self, version: tuple[int, ...]) -> bool:
             raise NotImplementedError()
 
     class _GitUpdateProvider(_BaseUpdateProvider):
-        """
-        Updater utilising git
-        """
-        __slots__ = (
-            "_latest_version",
-            "_last_update_check",
-            "_has_updated",
-        )
+        __slots__ = ("_remote_url", "_repo_path")
 
         class _GitOutput(typing.NamedTuple):
             return_code: int
             output: str
 
-        # In seconds
-        UPDATE_CHECK_INTERVAL = 3600 * 6
-
-        def __init__(self, submod: "_Submod", settings: dict[str, Any]) -> None:
-            super().__init__(submod, settings)
-            self._latest_version = None  # type: tuple[int, ...] | None
-            self._last_update_check = 0
-            self._has_updated = False
-
-        def _reset(self) -> None:
-            self._latest_version = None
-            self._last_update_check = 0
-            self._has_updated = False
-
-        @property
-        def _name(self) -> str:
-            return self._submod.name
-
-        @property
-        def _current_version(self) -> tuple[int, ...]:
-            return self._submod.version
-
-        @property
-        def _current_version_str(self) -> str:
-            return self._submod.version_str
-
-        @property
-        def _remote_url(self) -> str:
-            return self._settings["url"]
-
-        @property
-        def _repo_path(self) -> str:
-            return self._submod.abs_directory
+        def __init__(self, remote_url: str, repo_path: str) -> None:
+            self._remote_url = remote_url
+            self._repo_path = repo_path
 
         @classmethod
         def _get_git_binaries(cls) -> str:
@@ -190,11 +316,12 @@ init -1000 python in mas_submod_utils:
             """
             match _Platform.get_current_os():
                 case _Platform.windows:
-                    return "bin/windows/cmd/git.exe"
+                    return "bin/git/windows/cmd/git.exe"
                 case _Platform.linux:
-                    return "bin/linux/git"
+                    return "bin/git/linux/git"
                 case _Platform.mac:
                     # TODO: Somehow build git for mac?
+                    # return "bin/git/mac/git"
                     raise NotImplementedError("git updater doesn't support mac os")
                 case _:
                     raise NotImplementedError("git updater couldn't detect current os")
@@ -348,18 +475,30 @@ init -1000 python in mas_submod_utils:
             result = self._exec_git("clone", "--branch", index, "--depth", "1", url, self._repo_path)
             return result.return_code == 0
 
-        def _fetch_latest_version(self) -> "tuple[int, ...] | None":
+        def _ensure_within_repo(self) -> bool:
             """
-            Fetches tags from the remote and returns the latest version
-            """
-            if not self._is_within_repo():
-                submod_log.warning(f"submod '{self._name}' doesn't appear to be within a git repository, we will attempt to fix this")
-                if not self._init(self._remote_url, self._current_version_str):
-                    submod_log.error(f"failed to init repository for submod '{self._name}'")
-                    return None
-                submod_log.info(f"successfully inited repository for submod '{self._name}'")
+            Checks if the submod is within a git repository, if not, attempts to create it
 
-            all_versions = []  # type: list[tuple[int, ...]]
+            OUT:
+                True if we're within a repo and can proceed
+                False if we're not within a repo
+            """
+            if self._is_within_repo():
+                return True
+
+            submod_log.warning(f"'{self._repo_path}' doesn't appear to be a git repository, we will attempt to fix this")
+            if not self._init(self._remote_url, self.current_version_str):
+                submod_log.error(f"failed to init repository at '{self._repo_path}'")
+                return False
+
+            submod_log.info(f"successfully inited repository at '{self._repo_path}'")
+            return True
+
+        def fetch_latest_version(self) -> "tuple[int, ...] | None":
+            if not self._ensure_within_repo():
+                return None
+
+            all_versions: list[tuple[int, ...]] = []
             for tag in self._get_tags():
                 # Check for both None and empty tags
                 if ver := _safe_parse_version(tag):
@@ -367,46 +506,13 @@ init -1000 python in mas_submod_utils:
                     all_versions.append(ver)
 
             if not all_versions:
-                submod_log.error(f"failed to fetch latest version for submod '{self._name}', no valid tags found")
+                submod_log.error(f"failed to fetch latest version in '{self._repo_path}', no valid tags found")
                 return None
 
             return _sort_versions(all_versions)[-1]
 
-        def _update_latest_version(self, now: float | None = None) -> None:
-            """
-            Checks and updates the latest version
-
-            IN:
-                now - current time in seconds, by default uses system time
-            """
-            if now is None:
-                now = time.time()
-            if self._latest_version is None or (now - self._last_update_check) > self.UPDATE_CHECK_INTERVAL:
-                self._latest_version = self._fetch_latest_version()
-                self._last_update_check = now
-
-        def get_latest_version(self) -> tuple[int, ...]:
-            self._update_latest_version()
-            if self._latest_version is None:
-                # This is bad, fallback
-                return ()
-
-            return self._latest_version
-
-        def has_update(self) -> bool:
-            return not self._has_updated and mas_utils.compare_versions(self._current_version, self.get_latest_version()) < 0
-
-        def update(self) -> bool:
-            if not self.has_update():
-                return False
-
-            if not self._checkout(_dump_version(self._latest_version)):
-                submod_log.error(f"failed to update submod '{self._name}'")
-                return False
-
-            self._has_updated = True
-            submod_log.info(f"updated submod '{self._name}' {self._current_version_str} >>> {_dump_version(self._latest_version)}")
-            return True
+        def update(self, version: tuple[int, ...]) -> bool:
+            return self._checkout(_dump_version(version))
 
 
     @dataclasses.dataclass(init=True, repr=True, eq=False, slots=True)
@@ -524,23 +630,23 @@ init -1000 python in mas_submod_utils:
                 )
 
         @staticmethod
-        def _is_str_label_safe(value: str) -> None:
-            return re.match(LABEL_SAFE_NAME, value) is not None
+        def _is_str_safe(value: str) -> None:
+            return re.match(RE_SAFE_NAME, value) is not None
 
         def validate_author(self) -> None:
             if not isinstance(self.author, str):
                 raise ValueError("Submod author name must be a str")
-            if not self._is_str_label_safe(self.author):
+            if not self._is_str_safe(self.author):
                 raise ValueError(f"Submod author name '{self.author}' contains unsafe characters")
 
         def validate_name(self) -> None:
             if not isinstance(self.name, str):
                 raise ValueError("Submod name must be a str")
-            if not self._is_str_label_safe(self.name):
+            if not self._is_str_safe(self.name):
                 raise ValueError(f"Submod name '{self.name}' contains unsafe characters")
+            self.name = self.name.strip()
 
         def validate_version(self) -> None:
-            # TODO: regex check version r'^[0-9]+(\.[0-9]+)*$'
             if not _is_valid_version(self.version):
                 raise ValueError(f"Submod version number '{self.version}' is invalid")
 
@@ -605,7 +711,7 @@ init -1000 python in mas_submod_utils:
             for item in self.coauthors:
                 if not isinstance(item, str):
                     raise ValueError("Submod coauthors items must be strings")
-                if not self._is_str_label_safe(item):
+                if not self._is_str_safe(item):
                     raise ValueError(f"Submod coauthor '{item}' contains unsafe characters")
 
         def validate_os_whitelist(self) -> None:
@@ -850,12 +956,12 @@ init -1000 python in mas_submod_utils:
                 return
 
             if header.updater.provider is _UpdateProviders.git:
-                updater = _GitUpdateProvider(submod, header.updater.settings)
+                provider = _GitUpdateProvider(header.updater.settings["url"], submod.abs_directory)
 
             else:
                 raise RuntimeError("unreachable code")
 
-            submod.updater = updater
+            submod.updater = Updater(submod, provider)
 
         except SubmodError as e:
             submod_log.error(
@@ -928,7 +1034,8 @@ init -1000 python in mas_submod_utils:
         """
         Static class for managing submod settings
         """
-        _SETTING_IS_SUBMOD_ENABLED = "is_enabled"
+        _SETTING_IS_SUBMOD_ENABLED = "is_submod_enabled"
+        _SETTING_IS_AUTO_UPDATE_CHECK_ENABLED = "is_auto_update_check_enabled"
 
         @classmethod
         def _create_setting(cls, submod: "_Submod", key: str, default) -> bool:
@@ -1013,6 +1120,25 @@ init -1000 python in mas_submod_utils:
             else:
                 cls.enable_submod(submod)
 
+        @classmethod
+        def is_auto_update_check_enabled(cls, submod: "_Submod") -> bool:
+            return cls._get_setting(submod, cls._SETTING_IS_AUTO_UPDATE_CHECK_ENABLED, True)
+
+        @classmethod
+        def enable_auto_update_check(cls, submod: "_Submod") -> None:
+            cls._set_setting(submod, cls._SETTING_IS_AUTO_UPDATE_CHECK_ENABLED, True)
+
+        @classmethod
+        def disable_auto_update_check(cls, submod: "_Submod") -> None:
+            cls._set_setting(submod, cls._SETTING_IS_AUTO_UPDATE_CHECK_ENABLED, False)
+
+        @classmethod
+        def toggle_auto_update_check(cls, submod: "_Submod") -> None:
+            if cls.is_auto_update_check_enabled(submod):
+                cls.disable_auto_update_check(submod)
+            else:
+                cls.enable_auto_update_check(submod)
+
 
     class _Submod(python_object):
         """
@@ -1054,7 +1180,7 @@ init -1000 python in mas_submod_utils:
             directory: str,
             modules: list[str],
             description: str,
-            updater: "_BaseUpdateProvider | None",
+            updater: "Updater | None",
             dependencies: "dict[str, tuple[str | None, str | None]]",
             settings_pane: str,
             coauthors: list[str],
@@ -1089,6 +1215,14 @@ init -1000 python in mas_submod_utils:
             self._failed_to_load = False
 
             self._submod_map[name] = self
+
+        # @staticmethod
+        # def convert_name_to_id(name: str) -> str:
+        #     return re.sub(r"[  ]+", " ", name.lower()).replace(" ", "_")
+
+        # @property
+        # def id(self) -> str:
+        #     return self.convert_name_to_id(self.name)
 
         @property
         def abs_directory(self) -> str:
@@ -1666,6 +1800,94 @@ init -1000 python in mas_submod_utils:
                 new_install_history.add(submod.name)
 
             persistent._mas_submod_install_history = new_install_history
+
+        def is_updatable(self) -> bool:
+            """
+            Checks if this submod has an updater
+
+            OUT:
+                bool
+            """
+            return self.updater is not None
+
+        def can_check_for_update(self) -> bool:
+            """
+            Checks if we can fetch new updates
+
+            OUT:
+                bool
+            """
+            return self.is_updatable() and self.updater.is_idle() and self.updater.can_check_for_updates()
+
+        def can_update(self) -> bool:
+            """
+            Checks if we can update the submod
+
+            OUT:
+                bool
+            """
+            return self.is_updatable() and self.updater.is_idle() and self.updater.has_update()
+
+        def check_for_updates_in_background(self) -> None:
+            """
+            Checks for new update for the submod in a thread
+            """
+            if self.updater is None or not self.updater.is_idle():
+                return
+
+            def worker() -> None:
+                try:
+                    self.updater.check_for_updates()
+                except BaseException:
+                    submod_log.error(f"failed to check for update for '{self.name}'", exc_info=True)
+
+            thread = threading.Thread(target=worker, name=f"submod '{self.name}' update checker")
+            thread.daemon = True
+            thread.start()
+
+        def install_update_in_background(self) -> None:
+            """
+            Installs new update for the submod in a thread
+            """
+            if self.updater is None or not self.updater.is_idle():
+                return
+
+            def worker() -> None:
+                try:
+                    self.updater.update()
+                except BaseException:
+                    submod_log.error(f"failed to install update for '{self.name}'", exc_info=True)
+
+            thread = threading.Thread(target=worker, name=f"submod '{self.name}' update installer")
+            thread.daemon = True
+            thread.start()
+
+        @classmethod
+        def notify_about_submods_updates_in_background(cls) -> None:
+            """
+            Checks for new updates and shows a notification in a thread
+            """
+            def worker() -> None:
+                try:
+                    update_lines = []
+                    for submod in cls._get_alpha_sorted_submods():
+                        if _SubmodSettings.is_auto_update_check_enabled(submod) and submod.can_check_for_update():
+                            submod.updater.check_for_updates()
+                            if submod.can_update():
+                                new_version_str = _dump_version(submod.updater.latest_version)
+                                update_lines.append(f"'{submod.name}' has an update to v{new_version_str}")
+
+                    if not update_lines:
+                        return
+
+                    renpy.notify("\n".join(update_lines))
+
+                except BaseException:
+                    submod_log.error("failed to check and notify for updates", exc_info=True)
+
+            thread = threading.Thread(target=worker, name="submods update notifier")
+            thread.daemon = True
+            thread.start()
 
 
     ### Common submod functions

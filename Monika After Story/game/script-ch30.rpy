@@ -1356,6 +1356,13 @@ init 999 python in mas_reset:
             mas_utils.mas_log.info("Detected a restored backup")
             persistent._mas_is_backup = False
 
+    @ch30_reset(-300)
+    def submods():
+        """
+        Checks for submod updates
+        """
+        store.mas_submod_utils._Submod.notify_about_submods_updates_in_background()
+
     @ch30_reset(-100)
     def compliments():
         """
@@ -2374,6 +2381,8 @@ label ch30_day:
 
         # Give the bonus
         mas_affection._withdraw_aff()
+
+        store.mas_submod_utils._Submod.notify_about_submods_updates_in_background()
 
     return
 

@@ -3160,6 +3160,10 @@ screen submods():
         # This is slow, maybe we should cache it after loading submods?
         default submods = store.mas_submod_utils._Submod._get_alpha_sorted_submods()
 
+        timer 1.0:
+            repeat True
+            action Function(renpy.restart_interaction)
+
         viewport id "scrollme":
             scrollbars "vertical"
             mousewheel True
@@ -3187,23 +3191,40 @@ screen submods():
                             layout "greedy"
                             style "main_menu_version"
 
-                        if submod.failed_to_load:
-                            textbutton _("Enable submod"):
-                                # NOTE: renpy doesn't support tooltips for insensitive buttons
-                                # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
-                                # so as always we have to do it ourselves with a hack
-                                style "generic_fancy_check_button_disabled"
-                                text_style "generic_fancy_check_button_disabled_text"
-                                tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD]"
-                                selected False
-                                sensitive True
-                                action NullAction()
+                        hbox:
+                            spacing 10
 
-                        else:
-                            textbutton _("Enable submod"):
-                                tooltip ("[TOOLTIP_SUBMOD_ENABLED]" if submod.is_enabled else "[TOOLTIP_SUBMOD_DISABLED]")
-                                selected submod.is_enabled
-                                action Function(store.mas_submod_utils._SubmodSettings.toggle_submod, submod)
+                            if submod.failed_to_load:
+                                textbutton _("Enable submod"):
+                                    # NOTE: renpy doesn't support tooltips for insensitive buttons
+                                    # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
+                                    # so as always we have to do it ourselves with a hack
+                                    style "generic_fancy_check_button_disabled"
+                                    text_style "generic_fancy_check_button_disabled_text"
+                                    tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD]"
+                                    selected False
+                                    sensitive True
+                                    action NullAction()
+                            else:
+                                textbutton _("Enable submod"):
+                                    tooltip ("[TOOLTIP_SUBMOD_ENABLED]" if submod.is_enabled else "[TOOLTIP_SUBMOD_DISABLED]")
+                                    selected submod.is_enabled
+                                    action Function(store.mas_submod_utils._SubmodSettings.toggle_submod, submod)
+
+                            if submod.is_updatable():
+                                textbutton _("Check for updates"):
+                                    style "mas_button_simple"
+                                    sensitive submod.can_check_for_update()
+                                    action Function(submod.check_for_updates_in_background)
+
+                                textbutton _("Update"):
+                                    style "mas_button_simple"
+                                    sensitive submod.can_update()
+                                    action Function(submod.install_update_in_background)
+
+                                textbutton _("Enable notifications"):
+                                    selected store.mas_submod_utils._SubmodSettings.is_auto_update_check_enabled(submod)
+                                    action Function(store.mas_submod_utils._SubmodSettings.toggle_auto_update_check, submod)
 
                         if submod.description:
                             text "[submod.description!i]":
