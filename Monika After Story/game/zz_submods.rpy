@@ -23,6 +23,7 @@ init -1000 python in mas_submod_utils:
     import bisect
     import glob
     import re
+    import random
     import os
     import json
     import sys
@@ -1238,6 +1239,7 @@ init -1000 python in mas_submod_utils:
 
         @property
         def is_enabled(self) -> bool:
+            # TODO: rename to is_active?
             return not self.failed_to_load and _SubmodSettings.is_submod_enabled(self)
 
         def _mark_broken(self) -> None:
@@ -1803,12 +1805,12 @@ init -1000 python in mas_submod_utils:
 
         def is_updatable(self) -> bool:
             """
-            Checks if this submod has an updater
+            Checks if this submod has an updater and the submod is enabled
 
             OUT:
                 bool
             """
-            return self.updater is not None
+            return self.updater is not None and _SubmodSettings.is_submod_enabled(self)
 
         def can_check_for_update(self) -> bool:
             """
@@ -1832,7 +1834,7 @@ init -1000 python in mas_submod_utils:
             """
             Checks for new update for the submod in a thread
             """
-            if self.updater is None or not self.updater.is_idle():
+            if not self.can_check_for_update():
                 return
 
             def worker() -> None:
@@ -1849,7 +1851,7 @@ init -1000 python in mas_submod_utils:
             """
             Installs new update for the submod in a thread
             """
-            if self.updater is None or not self.updater.is_idle():
+            if not self.can_update():
                 return
 
             def worker() -> None:
@@ -1866,21 +1868,33 @@ init -1000 python in mas_submod_utils:
         def notify_about_submods_updates_in_background(cls) -> None:
             """
             Checks for new updates and shows a notification in a thread
+
+            ASSUMES: we're in runtime
             """
             def worker() -> None:
                 try:
                     update_lines = []
                     for submod in cls._get_alpha_sorted_submods():
-                        if _SubmodSettings.is_auto_update_check_enabled(submod) and submod.can_check_for_update():
+                        # NOTE: We don't check for updates submods that the user has disabled
+                        # However we allow updating submods that are marked as broken - for example to install a fix
+                        if submod.can_check_for_update() and _SubmodSettings.is_auto_update_check_enabled(submod):
                             submod.updater.check_for_updates()
                             if submod.can_update():
                                 new_version_str = _dump_version(submod.updater.latest_version)
-                                update_lines.append(f"'{submod.name}' has an update to v{new_version_str}")
+                                update_lines.append(_(f"Submod '{submod.name}' has an update to v{new_version_str}"))
 
                     if not update_lines:
                         return
 
-                    renpy.notify("\n".join(update_lines))
+                    if store.mas_isMoniAff(higher=True):
+                        if store.mas_isA01():
+                            chance = 10.0
+                        else:
+                            chance = 365.0
+                        with_chibi = random.random() < 1.0/chance
+                    else:
+                        with_chibi = False
+                    _display_submod_update_notify(update_lines, with_chibi)
 
                 except BaseException:
                     submod_log.error("failed to check and notify for updates", exc_info=True)
@@ -1891,6 +1905,22 @@ init -1000 python in mas_submod_utils:
 
 
     ### Common submod functions
+
+    def _display_submod_update_notify(messages: Iterable[str], with_chibi: bool = False) -> None:
+        if not messages:
+            return
+        renpy.hide_screen("mas_submod_update_notify", immediately=True)
+        renpy.show_screen("mas_submod_update_notify", messages=messages, with_chibi=with_chibi)
+        if with_chibi:
+            renpy.music.play(
+                ("<silence 6.0>", "mod_assets/sounds/effects/metal-pipe-falling.mp3"),
+                loop=False,
+                relative_volume=min(max(len(messages) / 4.0, 0.1), 3.0),
+                channel="sound",
+            )
+            renpy.music.pump()
+        renpy.restart_interaction()
+
 
     class SubmodUpdateInfo(python_object):
         """
@@ -2082,6 +2112,73 @@ init -1000 python in mas_submod_utils:
             return None
 
         return submod.directory
+
+
+screen mas_submod_update_notify(messages, with_chibi=False):
+    zorder 999
+
+    timer 4 action Hide("mas_submod_update_notify")
+
+    fixed:
+        at (mas_submod_update_notify_appear_chibi_tfm if with_chibi else mas_submod_update_notify_appear_norm_tfm)
+
+        vbox:
+            box_reverse True
+
+            if with_chibi:
+                add "chibika 3":
+                    at mas_submod_update_notify_chibi_hang
+
+            frame:
+                at transform:
+                    alpha 0.9
+
+                vbox:
+                    for message in messages:
+                        text "[message!tq]" style "notify_text"
+
+transform mas_submod_update_notify_chibi_hang:
+    animation
+    anchor (80, 84)
+    subpixel True
+    transform_anchor True
+    rotate_pad True
+
+    xpos 0.4
+    rotate -25.0
+    block:
+        warp _warper.ease_cubic 1.0 rotate -65.0
+        warp _warper.ease_cubic 1.0 rotate -25.0
+        repeat
+
+transform mas_submod_update_notify_appear_norm_tfm:
+    animation
+    subpixel True
+
+    on show:
+        yanchor 1.0
+        linear 1.0 yanchor 0.0
+    on hide:
+        linear 1.0 yanchor 1.0
+
+transform mas_submod_update_notify_appear_chibi_tfm:
+    animation
+    subpixel True
+    transform_anchor True
+    rotate_pad True
+
+    on show:
+        yanchor 1.0
+        warp _warper.easein_bounce 1.25 yanchor 0.125
+        pause 0.1
+        warp _warper.ease_quart 1.0 yanchor 0.0
+    on hide:
+        anchor (0.0, 0.0)
+        warp _warper.easein_elastic 1.0 rotate 33.0
+        warp _warper.easeout_expo 0.75:
+            rotate 90.0
+            ypos 1.0
+            xpos 0.05
 
 
 init -999 python in mas_submod_utils:
