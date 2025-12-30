@@ -204,7 +204,11 @@ init -1000 python in mas_submod_utils:
                 True if the updater is idling
                 False if we're updating/fetching/etc
             """
-            return self._is_idle
+            with self._lock as has_grabbed:
+                if not has_grabbed:
+                    return False
+
+                return self._is_idle
 
         def can_check_for_updates(self, now: float | None = None) -> bool:
             """
