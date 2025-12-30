@@ -546,16 +546,16 @@ init -1000 python in mas_submod_utils:
             if not self.settings:
                 raise ValueError("Submod updater settings are empty")
 
-            # TODO: use match or smth?
-            if self.provider is _UpdateProviders.git:
-                url = self.settings.get("url", None)
-                if url is None:
-                    raise ValueError("Submod updater url wasn't provided in settings")
-                if not url:
-                    raise ValueError("Submod updater url setting is empty")
+            match self.provider:
+                case _UpdateProviders.git:
+                    url = self.settings.get("url", None)
+                    if url is None:
+                        raise ValueError("Submod updater url wasn't provided in settings")
+                    if not url:
+                        raise ValueError("Submod updater url setting is empty")
 
-            else:
-                raise NotImplementedError(f"updater provider {self.provider} is not supported")
+                case _:
+                    raise NotImplementedError(f"updater provider {self.provider} is not supported")
 
         @classmethod
         def from_json(cls, data: dict[str, Any]) -> Self:
@@ -956,11 +956,12 @@ init -1000 python in mas_submod_utils:
             if header.updater is None:
                 return
 
-            if header.updater.provider is _UpdateProviders.git:
-                provider = _GitUpdateProvider(header.updater.settings["url"], submod.abs_directory)
+            match header.updater.provider:
+                case _UpdateProviders.git:
+                    provider = _GitUpdateProvider(header.updater.settings["url"], submod.abs_directory)
 
-            else:
-                raise RuntimeError("unreachable code")
+                case _:
+                    raise RuntimeError("unreachable code")
 
             submod.updater = Updater(submod, provider)
 
