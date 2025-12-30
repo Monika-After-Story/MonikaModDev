@@ -3159,8 +3159,6 @@ screen submods():
         default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled. Click to enable it and restart the game")
         default TOOLTIP_NOTIFS_ENABLED = _("Update notifications are enabled")
         default TOOLTIP_NOTIFS_DISABLED = _("Update notifications are disabled")
-        # This is slow, maybe we should cache it after loading submods?
-        default submods = store.mas_submod_utils._Submod._get_alpha_sorted_submods()
 
         timer 1.0:
             repeat True
@@ -3175,6 +3173,7 @@ screen submods():
                 sensitive False
                 action NullAction()
 
+            # TODO: vpgrid might be faster
             viewport id "scrollme":
                 scrollbars "vertical"
                 mousewheel True
@@ -3185,7 +3184,7 @@ screen submods():
                     xfill True
                     xmaximum 1000
 
-                    for submod in submods:
+                    for submod in mas_submod_utils.ALPHA_SORTED_SUBMODS:
                         vbox:
                             xfill True
                             xmaximum 1000

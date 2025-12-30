@@ -18,6 +18,9 @@ init 10 python in mas_submod_utils:
     # Run updates if need be
     _Submod._run_submods_update_hooks()
 
+# Cache this, we're not adding/removing submods after the initial load, this helps us keep 60 fps in the submods screen
+define 10 mas_submod_utils.ALPHA_SORTED_SUBMODS = store.mas_submod_utils._Submod._get_alpha_sorted_submods()
+
 
 init -1000 python in mas_submod_utils:
     import bisect
