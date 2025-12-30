@@ -3238,10 +3238,10 @@ screen submods():
                                         action Function(submod.install_update_in_background)
 
                                     textbutton _("Enable notifications"):
-                                        selected store.mas_submod_utils._SubmodSettings.is_auto_update_check_enabled(submod)
+                                        selected submod.is_auto_update_check_enabled
                                         tooltip (
                                             "[TOOLTIP_NOTIFS_ENABLED]"
-                                            if store.mas_submod_utils._SubmodSettings.is_auto_update_check_enabled(submod)
+                                            if submod.is_auto_update_check_enabled
                                             else "[TOOLTIP_NOTIFS_DISABLED]"
                                         )
                                         action Function(store.mas_submod_utils._SubmodSettings.toggle_auto_update_check, submod)

@@ -985,12 +985,12 @@ init -1000 python in mas_submod_utils:
 
     def _log_inited_submods() -> None:
         if _Submod.has_any_submods():
-            disabled_txt = " (disabled)"
+            disabled_txt = " (inactive)"
             empty_txt = ""
             submod_log.info(
                 "INSTALLED SUBMODS:\n{}".format(
                     ",\n".join(
-                        f"    '{submod.name}' v{submod.version_str}{disabled_txt if not submod.is_enabled else empty_txt}"
+                        f"    '{submod.name}' v{submod.version_str}{disabled_txt if not submod.is_active else empty_txt}"
                         for submod in _Submod._get_alpha_sorted_submods()
                     )
                 )
@@ -1238,9 +1238,16 @@ init -1000 python in mas_submod_utils:
             return self._failed_to_load
 
         @property
+        def is_active(self) -> bool:
+            return not self.failed_to_load and self.is_enabled
+
+        @property
         def is_enabled(self) -> bool:
-            # TODO: rename to is_active?
-            return not self.failed_to_load and _SubmodSettings.is_submod_enabled(self)
+            return _SubmodSettings.is_submod_enabled(self)
+
+        @property
+        def is_auto_update_check_enabled(self) -> bool:
+            return _SubmodSettings.is_auto_update_check_enabled(self)
 
         def _mark_broken(self) -> None:
             """
@@ -1300,7 +1307,7 @@ init -1000 python in mas_submod_utils:
             return sorted(cls._submod_map.values(), key=lambda x: x.name)
 
         @classmethod
-        def _get_topologically_sorted_submods(cls, only_enabled: bool) -> "list[_Submod]":
+        def _get_topologically_sorted_submods(cls, only_active: bool) -> "list[_Submod]":
             """
             Topologically sorts the submods from dependencies to dependents
             NOTE: load order of independent submods is not declared, not stable,
@@ -1309,7 +1316,7 @@ init -1000 python in mas_submod_utils:
                 it just sorts and returns the submods, everything else is done in other methods
 
             IN:
-                only_enabled - whether to only sort and return enabled submods
+                only_active - whether to only sort and return enabled submods
 
             OUT:
                 list of sorted submod objects
@@ -1320,7 +1327,7 @@ init -1000 python in mas_submod_utils:
             unvisited: "set[_Submod]" = set(
                 submod
                 for submod in cls._submod_map.values()
-                if submod.is_enabled or not only_enabled
+                if submod.is_active or not only_active
             )
 
             def visit(submod: "_Submod") -> None:
@@ -1335,7 +1342,7 @@ init -1000 python in mas_submod_utils:
                     dependency = cls._get_submod(dependency_name)
                     # If the dependency is missing, we don't care about it here
                     # If it's disabled, then it depends on the provided flag
-                    if dependency is None or (not dependency.is_enabled and only_enabled):
+                    if dependency is None or (not dependency.is_active and only_active):
                         continue
 
                     try:
@@ -1426,7 +1433,7 @@ init -1000 python in mas_submod_utils:
             """
             Runs on-install hook for the submod
             """
-            if not self.is_enabled:
+            if not self.is_active:
                 return
 
             hook = self._submod_install_hooks.get(self.name, None)
@@ -1480,7 +1487,7 @@ init -1000 python in mas_submod_utils:
             """
             Runs first-time-install hook for the submod
             """
-            if not self.is_enabled:
+            if not self.is_active:
                 return
 
             hook = self._submod_first_install_hooks.get(self.name, None)
@@ -1552,7 +1559,7 @@ init -1000 python in mas_submod_utils:
             ASSUMES:
                 last_update_version is valid version
             """
-            if not self.is_enabled:
+            if not self.is_active:
                 return
 
             # Get all version + hooks for this submod
@@ -1610,7 +1617,7 @@ init -1000 python in mas_submod_utils:
             """
             Checks if submods have updated and runs the appropriate update hooks for them
             """
-            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
+            for submod in cls._get_topologically_sorted_submods(only_active=True):
                 if submod._has_just_installed_for_first_time():
                     submod._run_first_time_install_hook()
                 elif submod._should_run_update_hooks():
@@ -1634,7 +1641,7 @@ init -1000 python in mas_submod_utils:
                         f"dependency '{dependency_name}' is not installed and is required"
                     )
 
-                if not dependency_submod.is_enabled:
+                if not dependency_submod.is_active:
                     raise SubmodError(
                         f"dependency '{dependency_name}' is disabled or cannot be loaded"
                     )
@@ -1674,7 +1681,7 @@ init -1000 python in mas_submod_utils:
             """
             Disables the submods that are missing dependencies
             """
-            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
+            for submod in cls._get_topologically_sorted_submods(only_active=True):
                 try:
                     submod._check_dependencies()
 
@@ -1715,7 +1722,7 @@ init -1000 python in mas_submod_utils:
             """
             Disables the submods that do not support user OS
             """
-            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
+            for submod in cls._get_topologically_sorted_submods(only_active=True):
                 try:
                     submod._check_os_compatibility()
 
@@ -1734,7 +1741,7 @@ init -1000 python in mas_submod_utils:
             """
             while True:
                 try:
-                    cls._get_topologically_sorted_submods(only_enabled=True)
+                    cls._get_topologically_sorted_submods(only_active=True)
 
                 except DependencyCycleError as e:
                     submod_log.error(
@@ -1757,7 +1764,7 @@ init -1000 python in mas_submod_utils:
             RAISES:
                 SubmodError - on module failure
             """
-            if not self.is_enabled:
+            if not self.is_active:
                 return
 
             for mod_name in self.modules:
@@ -1782,7 +1789,7 @@ init -1000 python in mas_submod_utils:
 
             Loads modules for every submod
             """
-            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
+            for submod in cls._get_topologically_sorted_submods(only_active=True):
                 submod._load()
 
         @classmethod
@@ -1796,7 +1803,7 @@ init -1000 python in mas_submod_utils:
             previous_install_history = frozenset(persistent._mas_submod_install_history)
             new_install_history = set()
 
-            for submod in cls._get_topologically_sorted_submods(only_enabled=True):
+            for submod in cls._get_topologically_sorted_submods(only_active=True):
                 if submod.name not in previous_install_history:
                     submod._run_install_hook()
                 new_install_history.add(submod.name)
@@ -1877,7 +1884,7 @@ init -1000 python in mas_submod_utils:
                     for submod in cls._get_alpha_sorted_submods():
                         # NOTE: We don't check for updates submods that the user has disabled
                         # However we allow updating submods that are marked as broken - for example to install a fix
-                        if submod.can_check_for_update() and _SubmodSettings.is_auto_update_check_enabled(submod):
+                        if submod.is_auto_update_check_enabled and submod.can_check_for_update():
                             submod.updater.check_for_updates()
                             if submod.can_update():
                                 new_version_str = _dump_version(submod.updater.latest_version)
