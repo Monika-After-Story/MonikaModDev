@@ -1,4 +1,4 @@
-init -1000:
+init -1002:
     # NOTE: For historical reasons we keep strings here instead of tuples
     default persistent._mas_submod_version_data = {}
     default persistent._mas_submod_settings = {}
@@ -6,11 +6,11 @@ init -1000:
     default persistent._mas_submod_last_update_check = {}
 
 
-init -999 python in mas_submod_utils:
+init -1000 python in mas_submod_utils:
     # Init submods
     _init_and_load_submods()
 
-init -995 python in mas_submod_utils:
+init -990 python in mas_submod_utils:
     # Runs hooks at -995, the creators should have defined their hooks by now
     _Submod._run_submods_install_hooks()
 
@@ -22,7 +22,7 @@ init 10 python in mas_submod_utils:
 define 10 mas_submod_utils.ALPHA_SORTED_SUBMODS = store.mas_submod_utils._Submod._get_alpha_sorted_submods()
 
 
-init -1000 python in mas_submod_utils:
+init -1001 python in mas_submod_utils:
     import bisect
     import glob
     import re
