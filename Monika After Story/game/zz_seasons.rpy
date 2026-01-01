@@ -143,7 +143,7 @@ init 10 python in mas_seasons:
         store.mas_consumable_hotchocolate.disable()
 
         #Run spring function plugins
-        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_SPRING)
+        store.mas_submod_utils.execute_plugins(key=PLUGIN_PP_SPRING)
 
         #NOTE: All things which shouldn't be allowed to be overridden go below the plugins
 
@@ -163,7 +163,7 @@ init 10 python in mas_seasons:
         store.mas_protectedShowEVL("monika_fireworks", "EVE", _random=True)
 
         #Run summer function plugins
-        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_SUMMER)
+        store.mas_submod_utils.execute_plugins(key=PLUGIN_PP_SUMMER)
 
     def _pp_fall():
         """
@@ -173,7 +173,7 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_fireworks", "EVE", derandom=True)
 
         #Run fall function plugins
-        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_FALL)
+        store.mas_submod_utils.execute_plugins(key=PLUGIN_PP_FALL)
 
 
     def _pp_winter():
@@ -204,7 +204,7 @@ init 10 python in mas_seasons:
             store.mas_consumable_hotchocolate.enable()
 
         #Run winter function plugins
-        store.mas_submod_utils.getAndRunFunctions(key=PLUGIN_PP_WINTER)
+        store.mas_submod_utils.execute_plugins(key=PLUGIN_PP_WINTER)
 
         #NOTE: All things which shouldn't be allowed to be overridden go below the plugins
         # want to ensure first time we see the islands they are dead and covered in snow

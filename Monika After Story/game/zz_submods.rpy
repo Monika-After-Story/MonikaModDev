@@ -2247,11 +2247,14 @@ init -999 python in mas_submod_utils:
 
 
 #START: Function Plugins
-init -999 python in mas_submod_utils:
+init -1000 python in mas_submod_utils:
+    import bisect
     import inspect
     import store
+    import typing
 
     from store import mas_utils
+    from collections.abc import Callable
 
     #Store the current label for use elsewhere
     current_label = None
@@ -2259,65 +2262,44 @@ init -999 python in mas_submod_utils:
     last_label = None
 
     #Dict of all function plugins
-    function_plugins = dict()
+    function_plugins: "dict[str, list[_FPEntry]]" = {}
 
     #Default priority
-    DEF_PRIORITY = 0
+    _FP_DEF_PRIORITY: int = 0
 
     PRIORITY_SORT_KEY = lambda x: x[1][2]
 
+    class _FPEntry(typing.NamedTuple):
+        callable_: Callable
+        priority: int
+        auto_error_handling: bool
+
+        def __repr__(self) -> str:
+            return (
+                f"<FunctionPluginEntry({self.callable_.__qualname__}, "
+                f"priority={self.priority}, "
+                f"auto_error_handling={self.auto_error_handling})>"
+            )
+
     #START: Decorator Function
-    def functionplugin(_label, _args=None, auto_error_handling=True, priority=0):
+    def functionplugin(key: str, *, priority: int = _FP_DEF_PRIORITY, auto_error_handling: bool = True) -> Callable:
         """
         Decorator function to register a plugin
 
-        The same as registerFunction. See its doc for parameter details
+        The same as register_plugin. See its doc for parameter details
         """
-        # TODO: functools.wraps
-        def wrap(_function):
-            registerFunction(
-                _label,
+        def wrap(_function: Callable) -> Callable:
+            register_plugin(
+                key,
                 _function,
-                _args,
-                auto_error_handling,
-                priority
+                priority=priority,
+                auto_error_handling=auto_error_handling,
             )
             return _function
         return wrap
 
     #START: Internal functions
-    def getAndRunFunctions(key=None):
-        """
-        Gets and runs functions within the key provided
-
-        IN:
-            key - Key to retrieve and run functions from
-        """
-        global function_plugins
-
-        #If the key isn't provided, we assume it from the caller
-        if not key:
-            key = inspect.stack()[1][3]
-
-        func_dict = function_plugins.get(key)
-
-        if not func_dict:
-            return
-
-        #Firstly, let's get our sorted list
-        # TODO: use insort instead of sorting every time we run things
-        sorted_plugins = __prioritySort(key)
-        for _action, data_tuple in sorted_plugins:
-            if data_tuple[1]:
-                try:
-                    store.__run(_action, __getArgs(key, _action))
-                except Exception as ex:
-                    store.mas_utils.mas_log.error("function {0} failed because {1}".format(_action.__name__, ex))
-
-            else:
-                store.__run(_action, __getArgs(key, _action))
-
-    def registerFunction(key, _function, args=None, auto_error_handling=True, priority=DEF_PRIORITY):
+    def register_plugin(key: str, callable_: Callable, *, priority: int = _FP_DEF_PRIORITY, auto_error_handling: bool = True) -> None:
         """
         Registers a function to the function_plugins dict
 
@@ -2334,144 +2316,42 @@ init -999 python in mas_submod_utils:
                 NOTE: The key is either a label, or a function name
                 NOTE: Function names only work if the function contains a getAndRunFunctions call.
                     Without it, it does nothing.
-            _function - function to register
-            auto_error_handling - whether or function plugins should ignore errors in functions
-                (Set this to False for functions which call or jump)
+            _funcallable_ction - function to register
+            auto_error_handling - whether or not function plugins should ignore errors in functions
+                NOTE: keep this as True, disabling will prevent other code from executing. It only makes
+                    sense to set to False for functions which call or jump to other labels, but this
+                    makes renpy stop executing current python block and can easily lead to bugs.
             priority - Order priority to run functions
                 (Like init levels, the lower the number, the earlier it runs)
-
-        OUT:
-            boolean:
-                - True if the function was registered successfully
-                - False otherwise
         """
         global function_plugins
 
-        #Verify that the function is callable
-        if not callable(_function):
-            store.mas_utils.mas_log.error("{0} is not callable".format(_function.__name__))
-            return False
+        # Check for overrides if the key is a label
+        if renpy.has_label(key):
+            key = _get_override_label(key)
 
-        # TODO: remove args entirely in r8
-        if args is None:
-            args = ()
+        entry = _FPEntry(
+            callable_=callable_,
+            priority=priority,
+            auto_error_handling=auto_error_handling,
+        )
 
-        else:
-            mas_utils.report_deprecation(
-                "parameter 'args' in 'registerFunction'",
-                use_instead="functools.partial",
-                use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
-            )
-            #Too many args
-            if len(args) > len(inspect.getargspec(_function).args):
-                store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
-                return False
-
-        #Check for overrides
-        key = __getOverrideLabel(key)
-
-        #Create the key if we need to
         if key not in function_plugins:
-            function_plugins[key] = dict()
+            function_plugins[key] = []
 
-        #If we just created a key, then there won't be any existing values so we elif
-        elif _function in function_plugins[key]:
-            return False
+        bisect.insort_right(function_plugins[key], entry, key=lambda e: e.priority)
 
-        function_plugins[key][_function] = (args, auto_error_handling, priority)
-        return True
+    @store.mas_utils.deprecated(use_instead="mas_submod_utils.register_plugin")
+    def registerFunction(*args, **kwargs):
+        register_plugin(*args, **kwargs)
 
-    def __getArgs(key, _function):
-        """
-        TODO: remove this with r8
-        Gets args for the given function at the given key
-
-        IN:
-            key - key to retrieve the function from
-            _function - function to retrieve args from
-
-        OUT:
-            list of args if the function is present
-            If function is not present, None is returned
-        """
-        global function_plugins
-
-        try:
-            return function_plugins[key][_function][0]
-
-        except KeyError:
-            # Unknown key/function
-            # We do not handle index error as that shouldn't be possible
-            # and means there's a bug in the system
-            return None
-
-    @mas_utils.deprecated(
-        use_instead="functools.partial",
-        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
-    )
-    def getArgs(key, _function):
-        """
-        Gets args for the given function at the given key
-
-        IN:
-            key - key to retrieve the function from
-            _function - function to retrieve args from
-
-        OUT:
-            list of args if the function is present
-            If function is not present, None is returned
-        """
-        return __getArgs(key, _function)
-
-    @mas_utils.deprecated(
-        use_instead="functools.partial",
-        use_instead_msg_fmt="Wrap your callable in '{use_instead}' to provide it args/kwargs."
-    )
-    def setArgs(key, _function, args=None):
-        """
-        Sets args for the given function at the key
-
-        IN:
-            key - key that the function's function dict is stored in
-            _function - function to set the args
-
-        OUT:
-            boolean:
-                - True if args were set successfully
-                - False if not
-        """
-        global function_plugins
-
-        func_dict = function_plugins.get(key)
-
-        #Key doesn't exist
-        if not func_dict:
-            return False
-
-        #Function not in dict
-        if _function not in func_dict:
-            return False
-
-        if args is None:
-            args = ()
-
-        #Too many args provided
-        elif len(args) > len(inspect.getargspec(_function).args):
-            store.mas_utils.mas_log.error("Too many args provided for function {0}".format(_function.__name__))
-            return False
-
-        #Otherwise we can set
-        old_values = func_dict[_function]
-        func_dict[_function] = (args, old_values[1], old_values[2])
-        return True
-
-    def unregisterFunction(key, _function):
+    def unregister_plugin(key: str, callable_: Callable) -> bool:
         """
         Unregisters a function from the function_plugins dict
 
         IN:
             key - key the function we want to unregister is in
-            _function - function we want to unregister
+            callable_ - function we want to unregister
 
         OUT:
             boolean:
@@ -2480,43 +2360,48 @@ init -999 python in mas_submod_utils:
         """
         global function_plugins
 
-        func_dict = function_plugins.get(key)
+        hooks = function_plugins.get(key, ())
+        for i, entry in enumerate(hooks):
+            if entry.callable_ == callable_:
+                hooks.pop(i)
+                if not hooks:
+                    function_plugins.pop(key)
+                return True
 
-        #Key doesn't exist
-        if not func_dict:
-            return False
+        return False
 
-        #Function not in plugins dict
-        elif _function not in func_dict:
-            return False
+    @store.mas_utils.deprecated(use_instead="mas_submod_utils.unregister_plugin")
+    def unregisterFunction(*args, **kwargs):
+        unregister_plugin(*args, **kwargs)
 
-        #Otherwise we can pop
-        function_plugins[key].pop(_function)
-        return True
-
-    def __prioritySort(_label):
+    def execute_plugins(key: str | None = None) -> None:
         """
-        Sorts function plugins based on the priority order system
+        Gets and runs functions within the key provided
 
         IN:
-            _label - label to sort functions by priority for
-
-        OUT:
-            sorted list of (_function, data_tuple) tuples
-
-        NOTE: This assumes that the label exists in the function_plugins dict
+            key - Key to retrieve and run functions from
         """
         global function_plugins
 
-        #First, we need to convert the functions into a list of tuples
-        func_list = [
-            (_function, data_tuple)
-            for _function, data_tuple in function_plugins[_label].items()
-        ]
+        #If the key isn't provided, we assume it from the caller
+        if not key:
+            key = inspect.stack()[1][3]
 
-        return sorted(func_list, key=PRIORITY_SORT_KEY)
+        hooks = function_plugins.get(key, ())
+        for entry in hooks:
+            try:
+                store.__run(entry.callable_)
 
-    def __getOverrideLabel(_label):
+            except Exception as ex:
+                if not entry.auto_error_handling:
+                    raise
+                store.mas_utils.mas_log.error(f"function plugin hook '{entry}' for key '{key}' failed: {ex}")
+
+    @store.mas_utils.deprecated(use_instead="mas_submod_utils.execute_plugins")
+    def getAndRunFunctions(*args, **kwargs):
+        execute_plugins(*args, **kwargs)
+
+    def _get_override_label(_label):
         """
         Gets the override label for the given label (will follow the chain if overrides are overridden)
 
@@ -2526,13 +2411,13 @@ init -999 python in mas_submod_utils:
         OUT:
             string representing the last label in the override chain or _label if there are no overrides
         """
-        while renpy.config.label_overrides.get(_label) is not None:
+        while _label in renpy.config.label_overrides:
             _label = renpy.config.label_overrides[_label]
         return _label
 
 #Global run area
 init -990 python:
-    def __run(_function, args):
+    def __run(_function, *args, **kwargs):
         """
         Private function to run a function in the global store
         """
@@ -2540,7 +2425,7 @@ init -990 python:
 
 #Label callback to get last label and run function plugins from the label
 init 999 python:
-    def label_callback(name, abnormal):
+    def _mas_label_callback(name, abnormal):
         """
         Function to run plugin functions and store the last label
         """
@@ -2549,20 +2434,11 @@ init 999 python:
         #Now we can update the current
         store.mas_submod_utils.current_label = name
         #Run functions
-        store.mas_submod_utils.getAndRunFunctions(name)
+        store.mas_submod_utils.execute_plugins(name)
 
         #Let's also check if the current label is an override label, if so, we'll then mark the base label as seen
         base_label = _OVERRIDE_LABEL_TO_BASE_LABEL_MAP.get(name)
         if base_label is not None:
             persistent._seen_ever[base_label] = True
 
-    config.label_callback = label_callback
-
-    @store.mas_submod_utils.functionplugin("ch30_reset", priority=-999)
-    def __build_override_label_to_base_label_map():
-        """
-        Populates a lookup dict for all label overrides which are in effect
-        """
-        #Let's loop here to update our label overrides map
-        for overridden_label, label_override in config.label_overrides.items():
-            _OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
+    config.label_callback = _mas_label_callback

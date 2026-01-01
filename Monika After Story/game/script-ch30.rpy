@@ -824,6 +824,17 @@ init 999 python in mas_reset:
     #Simple persist handling for cleanliness
     from store import persistent
 
+
+    @ch30_reset(priority=-999)
+    def build_override_label_to_base_label_map():
+        """
+        Populates a lookup dict for all label overrides which are in effect
+        """
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in store.config.label_overrides.items():
+            store._OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
+
+
     @ch30_reset(-980)
     def start():
         """
@@ -1353,7 +1364,7 @@ init 999 python in mas_reset:
         """
         if persistent._mas_is_backup:
             store.MASEventList.push("mas_backup_restored")
-            mas_utils.mas_log.info("Detected a restored backup")
+            mas_utils.mas_log.info("detected a restored backup")
             persistent._mas_is_backup = False
 
     @ch30_reset(-300)
