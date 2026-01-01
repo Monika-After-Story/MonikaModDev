@@ -1,6 +1,7 @@
 #Catch all rpa, rpyc, rpyb, and rpyms
 *.rpa
 *.rpy[cbm]
+*.rpymc
 
 #Catch any persist info
 persistent
@@ -14,6 +15,7 @@ __pycache__
 *.swp
 **/*.vscode
 tools/*
+.idea/
 
 #Various other clutter-y things
 log.txt
@@ -36,3 +38,17 @@ zzzz*
 cacert.pem
 navigation.json
 Monika_After_Story-[0-9]*.[0-9]*.[0-9]*-dists
+
+# Development
+.env
+Monika After Story/game/cache/
+Monika After Story/game/masrun
+Monika After Story/game/Submods
+Monika After Story/game/saves
+Monika After Story/update.pem
+venv/
+
+# Other
+*.disabled
+Monika After Story/characters
+Monika After Story/chess_games

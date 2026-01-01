@@ -857,7 +857,7 @@ screen fake_main_menu():
 
         textbutton _("Settings")
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils._Submod.has_any_submods():
             textbutton _("Submods")
 
         textbutton _("Hotkeys")
@@ -919,7 +919,7 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
-        if store.mas_submod_utils.submod_map:
+        if store.mas_submod_utils._Submod.has_any_submods():
             textbutton _("Submods") action [ShowMenu("submods"), SensitiveIf(renpy.get_screen("submods") == None)]
 
         if store.mas_windowreacts.can_show_notifs and not main_menu:
@@ -3133,57 +3133,131 @@ style chibika_note_text:
     color "#000"
     outlines []
 
+
+screen mas_dbug():
+    zorder 999
+
+    default positions = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)]
+
+    if store._mas_root.is_dbug_enabled():
+        for p in positions:
+            text "debug":
+                align p
+                black_color "#ffffff04"
+                color "#ffffff04"
+                outlines []
+
+
 #Submods screen, integrated with the Submod class where a custom screen can be passed in as an arg, and will be added here
 screen submods():
     tag menu
 
     use game_menu(("Submods")):
 
-        default tooltip = Tooltip("")
+        default TOOLTIP_CANNOT_LOAD_SUBMOD = _("This submod cannot be loaded, check submod_log.log for details")
+        default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled. Click to disable it and restart the game")
+        default TOOLTIP_SUBMOD_DISABLED = _("This submod is currently disabled. Click to enable it and restart the game")
+        default TOOLTIP_NOTIFS_ENABLED = _("Update notifications are enabled")
+        default TOOLTIP_NOTIFS_DISABLED = _("Update notifications are disabled")
 
-        viewport id "scrollme":
-            scrollbars "vertical"
-            mousewheel True
-            draggable True
+        timer 1.0:
+            repeat True
+            action Function(renpy.restart_interaction)
 
-            vbox:
-                style_prefix "check"
-                xfill True
-                xmaximum 1000
+        vbox:
+            spacing 10
 
-                for submod in sorted(store.mas_submod_utils.submod_map.values(), key=lambda x: x.name):
-                    vbox:
-                        xfill True
-                        xmaximum 1000
+            textbutton _("Add a submod"):
+                style "navigation_button"
+                xalign 0.5
+                sensitive False
+                action NullAction()
 
-                        label submod.name:
-                            yanchor 0
-                            xalign 0
-                            text_text_align 0.0
+            # TODO: vpgrid might be faster
+            viewport id "scrollme":
+                scrollbars "vertical"
+                mousewheel True
+                draggable True
 
-                        if submod.coauthors:
-                            $ authors = "v{0}{{space=20}}by {1}, {2}".format(submod.version, submod.author, ", ".join(submod.coauthors))
+                vbox:
+                    style_prefix "generic_fancy_check"
+                    xfill True
+                    xmaximum 1000
 
-                        else:
-                            $ authors = "v{0}{{space=20}}by {1}".format(submod.version, submod.author)
+                    for submod in mas_submod_utils.ALPHA_SORTED_SUBMODS:
+                        vbox:
+                            xfill True
+                            xmaximum 1000
 
-                        text "[authors]":
-                            yanchor 0
-                            xalign 0
-                            text_align 0.0
-                            layout "greedy"
-                            style "main_menu_version"
+                            label "[submod.name]":
+                                yanchor 0
+                                xalign 0
+                                text_text_align 0.0
 
-                        if submod.description:
-                            text submod.description text_align 0.0
+                            text _("v[submod.version_str]{space=20}by [submod.fmt_author_str()]"):
+                                yanchor 0
+                                xalign 0
+                                text_align 0.0
+                                layout "greedy"
+                                style "main_menu_version"
 
-                    if submod.settings_pane:
-                        $ renpy.display.screen.use_screen(submod.settings_pane, _name="{0}_{1}".format(submod.author, submod.name))
+                            hbox:
+                                spacing 10
 
-    text tooltip.value:
-        xalign 0 yalign 1.0
-        xoffset 300 yoffset -10
-        style "main_menu_version"
+                                if submod.failed_to_load:
+                                    textbutton _("Enable submod"):
+                                        # NOTE: renpy doesn't support tooltips for insensitive buttons
+                                        # because it'd be a good UI/UX (https://github.com/renpy/renpy/issues/5269),
+                                        # so as always we have to do it ourselves with a hack
+                                        style "generic_fancy_check_button_disabled"
+                                        text_style "generic_fancy_check_button_disabled_text"
+                                        tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD]"
+                                        selected False
+                                        sensitive True
+                                        action NullAction()
+                                else:
+                                    textbutton _("Enable submod"):
+                                        tooltip (
+                                            "[TOOLTIP_SUBMOD_ENABLED]"
+                                            if submod.is_enabled
+                                            else "[TOOLTIP_SUBMOD_DISABLED]"
+                                        )
+                                        selected submod.is_enabled
+                                        action Function(store.mas_submod_utils._SubmodSettings.toggle_submod, submod)
+
+                                if submod.is_updatable():
+                                    textbutton _("Check for updates"):
+                                        style "mas_button_simple"
+                                        sensitive submod.can_check_for_update()
+                                        action Function(submod.check_for_updates_in_background)
+
+                                    textbutton _("Update"):
+                                        style "mas_button_simple"
+                                        sensitive submod.can_update()
+                                        action Function(submod.install_update_in_background)
+
+                                    textbutton _("Enable notifications"):
+                                        selected submod.is_auto_update_check_enabled
+                                        tooltip (
+                                            "[TOOLTIP_NOTIFS_ENABLED]"
+                                            if submod.is_auto_update_check_enabled
+                                            else "[TOOLTIP_NOTIFS_DISABLED]"
+                                        )
+                                        action Function(store.mas_submod_utils._SubmodSettings.toggle_auto_update_check, submod)
+
+                            if submod.description:
+                                text "[submod.description!i]":
+                                    text_align 0.0
+
+                        if submod.settings_pane and renpy.has_screen(submod.settings_pane):
+                            use expression submod.settings_pane
+
+    $ tooltip = GetTooltip()
+    if tooltip:
+        text "[tooltip!i]":
+            xalign 0 yalign 1.0
+            xoffset 300 yoffset -10
+            style "main_menu_version"
 
 
 screen mas_apikeys():
@@ -3197,14 +3271,8 @@ screen mas_apikeys():
                 style "main_menu_version"
 
         else:
-
             vbox:
                 spacing 30
-
-                if store.mas_can_import.certifi():
-                    textbutton _("Update Certificate"):
-                        style "mas_button_simple"
-                        action Function(store.mas_api_keys.screen_update_cert)
 
                 for feature_data in store.mas_api_keys.features_for_display():
                     hbox:

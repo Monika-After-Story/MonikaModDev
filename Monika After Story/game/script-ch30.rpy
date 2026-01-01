@@ -475,7 +475,7 @@ init python:
                         when mouse is clicked after an interaction ends.
         """
         # skip check
-        # if config.skipping and not config.developer:
+        # if config.skipping and not store._mas_root.is_dbug_enabled():
         #     persistent.tried_skip = True
         #     config.skipping = False
         #     config.allow_skipping = False
@@ -645,7 +645,7 @@ init python:
         2 - text speed enabled if affection above happy
         3 - text speed disabled otherwise
         """
-        if config.developer and not ignoredev:
+        if store._mas_root.is_dbug_enabled() and not ignoredev:
             mas_enableTextSpeed()
 
         elif (
@@ -819,9 +819,21 @@ init 999 python in mas_reset:
     import store.mas_utils as mas_utils
     import store.mas_windowutils as mas_windowutils
     import store.mas_xp as mas_xp
+    import store.mas_compliments as mas_compliments
 
     #Simple persist handling for cleanliness
     from store import persistent
+
+
+    @ch30_reset(priority=-999)
+    def build_override_label_to_base_label_map():
+        """
+        Populates a lookup dict for all label overrides which are in effect
+        """
+        #Let's loop here to update our label overrides map
+        for overridden_label, label_override in store.config.label_overrides.items():
+            store._OVERRIDE_LABEL_TO_BASE_LABEL_MAP[label_override] = overridden_label
+
 
     @ch30_reset(-980)
     def start():
@@ -1352,9 +1364,25 @@ init 999 python in mas_reset:
         """
         if persistent._mas_is_backup:
             store.MASEventList.push("mas_backup_restored")
-            mas_utils.mas_log.info("Detected a restored backup")
+            mas_utils.mas_log.info("detected a restored backup")
             persistent._mas_is_backup = False
 
+    @ch30_reset(-300)
+    def submods():
+        """
+        Checks for submod updates
+        """
+        store.mas_submod_utils._Submod.notify_about_submods_updates_in_background()
+
+    @ch30_reset(-100)
+    def compliments():
+        """
+        Runs reset for compliments
+        """
+        # this is in case of crashes mid compliment
+        mas_compliments.thanks_quip = renpy.substitute(renpy.random.choice(
+            mas_compliments.thanking_quips
+        ))
 
     def final():
         """
@@ -1587,9 +1615,9 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
 label ch30_main:
     $ mas_skip_visuals = False
     $ m.display_args["callback"] = slow_nodismiss
-    $ m.what_args["slow_abortable"] = config.developer
+    $ m.what_args["slow_abortable"] = store._mas_root.is_dbug_enabled()
     $ quick_menu = True
-    if not config.developer:
+    if not store._mas_root.is_dbug_enabled():
         $ style.say_dialogue = style.default_monika
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
@@ -1679,9 +1707,9 @@ label ch30_autoload:
         import store.evhand as evhand
 
         m.display_args["callback"] = slow_nodismiss
-        m.what_args["slow_abortable"] = config.developer
+        m.what_args["slow_abortable"] = store._mas_root.is_dbug_enabled()
 
-        if not config.developer:
+        if not store._mas_root.is_dbug_enabled():
             config.allow_skipping = False
 
         mas_resetTextSpeed()
@@ -2247,7 +2275,6 @@ label ch30_end:
 #   on start right away
 label ch30_minute(time_since_check):
     python:
-
         #Checks to see if affection levels have met the criteria to push an event or not.
         mas_checkAffection()
 
@@ -2281,6 +2308,8 @@ label ch30_minute(time_since_check):
 
         #Check if we need to lock/unlock the songs rand delegate
         mas_songs.checkRandSongDelegate()
+
+        _mas_root.handle_dbug()
 
         # save the persistent
         renpy.save_persistent()
@@ -2364,9 +2393,7 @@ label ch30_day:
         # Give the bonus
         mas_affection._withdraw_aff()
 
-        # do cert updates if certifi enabled
-        if store.mas_can_import.certifi():
-            store.mas_can_import.certifi.ch30_day_cert_update()
+        store.mas_submod_utils._Submod.notify_about_submods_updates_in_background()
 
     return
 

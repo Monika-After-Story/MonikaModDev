@@ -15,6 +15,7 @@ init -1 python in mas_dev_unit_tests:
         ("mas_set_pronouns", "dev_unit_test_mas_set_pronouns", False, False),
         ("encoded struct pickling", "dev_unit_test_encoded_struct_pickle", False, False),
         ("Jump with args", "dev_unit_test_jump_with_args", False, False),
+        ("mas_utils.compare_versions", "dev_unit_test_compare_versions", False, False),
     ]
 
     class MASUnitTest(object):
@@ -2642,7 +2643,6 @@ label dev_unit_test_strict_can_pickle:
         # non-structure types
         scp_tester.prepareTest("strings check")
         scp_tester.assertEqual(can_pickle, scp(str("test")))
-        scp_tester.assertEqual(can_pickle, scp(unicode("test")))
 
         scp_tester.prepareTest("bool check")
         scp_tester.assertEqual(can_pickle, scp(bool(1)))
@@ -2650,7 +2650,6 @@ label dev_unit_test_strict_can_pickle:
         scp_tester.prepareTest("numbers check")
         scp_tester.assertEqual(can_pickle, scp(int(1)))
         scp_tester.assertEqual(can_pickle, scp(float(1)))
-        scp_tester.assertEqual(can_pickle, scp(long(1)))
         scp_tester.assertEqual(can_pickle, scp(complex(1)))
 
         scp_tester.prepareTest("date, timedelta check")
@@ -2904,13 +2903,14 @@ label dev_unit_test_jump_with_args:
 
     $ jump_tester.prepareTest("Expecting a crash if jumped and gave args to a label without args")
     # This is janky...
-    $ e = None
+    $ err = None
     python:
         try:
             mas_jump_with_args("dev_unit_test_jump_with_args_crash_no_args", "crash", "aboom")
         except Exception as e:
-            pass
-    $ jump_tester.assertIsNotNone(e)
+            # Thanks renpy...
+            store.err = e
+    $ jump_tester.assertIsNotNone(err)
 
     call dev_unit_test_jump_with_args_no_test_vars_in_store
 
@@ -2931,7 +2931,7 @@ label dev_unit_test_jump_with_args:
     call dev_unit_test_jump_with_args_no_test_vars_in_store
 
     call dev_unit_tests_finish_test(jump_tester)
-    $ del jump_tester, TEST_VARS, e
+    $ del jump_tester, TEST_VARS, err
 
     return
 
@@ -3001,4 +3001,197 @@ label dev_unit_test_jump_with_args_depth_2(foo, bar):
 
         jump_tester.prepareTest("Validating 'egg' is not in store")
         jump_tester.assertFalse(hasattr(store, "egg"))
+    return
+
+label dev_unit_test_compare_versions:
+    # Setup
+    m "Running tests...{w=0.2}{nw}"
+    $ comp_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+    # Tests
+    python:
+        comp_tester.prepareTest("test current version is bigger; use versions of equal length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [2, 0, 0],
+                [1, 2, 3],
+            ),
+            1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 3, 0],
+                [1, 2, 3],
+            ),
+            1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 4],
+                [1, 2, 3],
+            ),
+            1,
+        )
+
+        comp_tester.prepareTest("test current version is bigger; use versions of diff length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3, 0, 0, 0, 1],
+                [1, 2, 3],
+            ),
+            1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3, 1],
+                [1, 2, 3],
+            ),
+            1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [3],
+                [1, 2, 3, 4],
+            ),
+            1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0, 0, 0, 9],
+                [0, 0, 0, 0, 9],
+            ),
+            1,
+        )
+
+        comp_tester.prepareTest("test versions are equal; use versions of equal length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [],
+                [],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0, 0, 0],
+                [0, 0, 0],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [3, 2, 1],
+                [3, 2, 1],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3, 0],
+                [1, 2, 3, 0],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [5, 0, 0, 0, 0, 0, 0, 0, 10],
+                [5, 0, 0, 0, 0, 0, 0, 0, 10],
+            ),
+            0,
+        )
+
+        comp_tester.prepareTest("test versions are equal; use versions of diff length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0, 0, 0],
+                [0],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0],
+                [0, 0, 0, 0],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [7, 0],
+                [7],
+            ),
+            0,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [2, 0, 1, 0],
+                [2, 0, 1, 0, 0],
+            ),
+            0,
+        )
+
+        comp_tester.prepareTest("test current version is lower; use versions of equal length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3],
+                [2, 0, 0],
+            ),
+            -1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3],
+                [1, 3, 0],
+            ),
+            -1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3],
+                [1, 2, 4],
+            ),
+            -1,
+        )
+
+        comp_tester.prepareTest("test current version is lower; use versions of diff length")
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3],
+                [1, 2, 3, 0, 0, 0, 1],
+            ),
+            -1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3],
+                [1, 2, 3, 1],
+            ),
+            -1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [1, 2, 3, 4],
+                [3],
+            ),
+            -1,
+        )
+        comp_tester.assertEqual(
+            mas_utils.compare_versions(
+                [0, 0, 0, 0, 9],
+                [0, 0, 0, 9],
+            ),
+            -1,
+        )
+
+
+    # Cleanup
+    call dev_unit_tests_finish_test(comp_tester)
+    $ del comp_tester
     return

@@ -229,8 +229,6 @@ init python in mas_sprites:
         IN:
             exp - spritecode to generate
         """
-        exp = unicode(exp)
-
         if is_wink_sprite(exp):
             generate_wink_sprite(exp)
         elif is_follow_sprite(exp):

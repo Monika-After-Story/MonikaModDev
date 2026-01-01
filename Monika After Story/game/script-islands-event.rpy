@@ -285,13 +285,8 @@ init -20 python in mas_island_event:
             else:
                 filenames = self.filenames
 
-            # FIXME: Use f-strings with py3 pls
             return {
-                filename: filepath_fmt.format(
-                    type_=type_,
-                    name=name,
-                    filename=filename
-                )
+                filename: f"{type_}/{name}/{filename}"
                 for filename in filenames
             }
 
@@ -327,7 +322,6 @@ init -20 python in mas_island_event:
             OUT:
                 dict
             """
-            # FIXME: py3 update
             return {
                 id_: data.default_unlocked
                 for id_, data in cls._data_map.items()
@@ -341,7 +335,6 @@ init -20 python in mas_island_event:
             OUT:
                 dict
             """
-            # FIXME: py3 update
             return {
                 id_: data.fp_map
                 for id_, data in cls._data_map.items()
@@ -572,7 +565,7 @@ init -20 python in mas_island_event:
         )
     )
     IslandsDataDefinition(
-        "decal_house",# FIXME: clear and snow sprites appear to be of different sizes
+        "decal_house",# BUG: clear and snow sprites appear to be of different sizes
         partial_disp=functools.partial(
             ParallaxDecal,
             x=215,
@@ -1124,7 +1117,6 @@ init -25 python in mas_island_event:
                 zip_file - the zip file opened for reading
                 map_ - the map to get filenames from, and which will be overriden
             """
-            # FIXME: py3 update
             for name, path_map in map_.items():
                 for sprite_type, path in path_map.items():
                     raw_data = zip_file.read(path)
@@ -1255,7 +1247,6 @@ init -25 python in mas_island_event:
         """
         Takes multiple maps with images and builds displayables from them, sets global vars
         NOTE: no sanity checks
-        FIXME: py3 update
 
         IN:
             island_imgs_maps - the map from island names to raw images map
@@ -1718,7 +1709,6 @@ init -25 python in mas_island_event:
         """
         Builds an image for islands and returns it
         NOTE: This is temporary until we split islands into foreground/background
-        FIXME: py3 update
 
         IN:
             enable_interaction - whether to enable events or not (including parallax effect)
@@ -2262,12 +2252,9 @@ label mas_islands(
         renpy.start_predict(islands_displayable)
 
     if fade_in:
-        # HACK: Show the disp so we can fade in
-        # fix it in r7 where you can show/call screens with transitions
         scene
-        show expression islands_displayable as islands_background onlayer screens zorder mas_island_event.DEF_SCREEN_ZORDER
+        show screen mas_islands(islands_displayable, show_return_button=False)
         with Fade(0.5, 0, 0.5)
-        hide islands_background onlayer screens with None
 
     if raise_shields:
         python:
@@ -2302,12 +2289,8 @@ label mas_islands(
             mas_OVLShow()
 
     if fade_out:
-        hide screen mas_islands
-        # HACK: Show the disp so we can fade out of it into spaceroom,
-        # fix it in r7 where you can hide screens with transitions
-        show expression islands_displayable as islands_background onlayer screens zorder mas_island_event.DEF_SCREEN_ZORDER with None
         call spaceroom(**spaceroom_kwargs)
-        hide islands_background onlayer screens
+        hide screen mas_islands
         with Fade(0.5, 0, 0.5)
 
     python:
@@ -2743,45 +2726,6 @@ screen mas_islands(islands_displayable, show_return_button=True):
             textbutton _("Go Back"):
                 action Return(False)
 
-# screen mas_islands_background:
-
-#     add mas_island_event.getBackground()
-
-#     if _mas_island_shimeji:
-#         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-#             xpos 935
-#             ypos 395
-#             zoom 0.5
-
-# screen mas_show_islands():
-#     style_prefix "island"
-#     imagemap:
-
-#         ground mas_island_event.getBackground()
-
-#         hotspot (11, 13, 314, 270) action Return("mas_island_upsidedownisland") # island upside down
-#         hotspot (403, 7, 868, 158) action Return("mas_island_sky") # sky
-#         hotspot (699, 347, 170, 163) action Return("mas_island_glitchedmess") # glitched house
-#         hotspot (622, 269, 360, 78) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
-#         hotspot (716, 164, 205, 105) action Return("mas_island_cherry_blossom_tree") # cherry blossom tree
-#         hotspot (872, 444, 50, 30) action Return("mas_island_bookshelf") # bookshelf
-
-#         if _mas_island_shimeji:
-#             hotspot (935, 395, 30, 80) action Return("mas_island_shimeji") # Mini Moni
-
-#     if _mas_island_shimeji:
-#         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-#             xpos 935
-#             ypos 395
-#             zoom 0.5
-
-#     hbox:
-#         yalign 0.98
-#         xalign 0.96
-#         textbutton _mas_toggle_frame_text action [ToggleVariable("_mas_island_window_open"),ToggleVariable("_mas_toggle_frame_text","Open Window", "Close Window") ]
-#         textbutton "Go Back" action Return(False)
-
-
 # Defining a new style for buttons, because other styles look ugly
 
 # properties for these island view buttons
@@ -2810,11 +2754,3 @@ style island_button_text_dark is generic_button_text_dark:
     xalign 0.5
     kerning 0.2
     outlines []
-
-# mini moni ATL
-# transform moni_sticker_mid:
-#     block:
-#         function randomPauseMonika
-#         parallel:
-#             sticker_move_n
-#         repeat

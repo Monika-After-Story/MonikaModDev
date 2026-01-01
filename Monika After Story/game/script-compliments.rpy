@@ -40,7 +40,7 @@ init 22 python in mas_compliments:
     __last_called_callback = None
     __wait_time = 55.0
     # set this here in case of a crash mid-compliment
-    thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+    thanks_quip = ""
 
     def __set_wait_time():
         """

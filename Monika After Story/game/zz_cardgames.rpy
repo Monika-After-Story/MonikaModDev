@@ -813,7 +813,7 @@ init 5 python in mas_nou:
                 amount = 6
                 offset = 32
 
-            xpos -= (amount * offset / 2)
+            xpos -= (amount * offset // 2)
 
             return xpos
 
@@ -1459,7 +1459,7 @@ init 5 python in mas_nou:
                         renpy.pause(1, hard=True)
 
                     # it'safe to assume that the drawpile has 10+ cards
-                    new_id = len(self.drawpile) / 2 + renpy.random.randint(-10, 10)
+                    new_id = len(self.drawpile) // 2 + renpy.random.randint(-10, 10)
 
                     self._play_draw_sfx()
 
@@ -2610,7 +2610,7 @@ init 5 python in mas_nou:
                 if total_cards > 12:
                     total_to_shuffle = 7
                 else:
-                    total_to_shuffle = total_cards / 2
+                    total_to_shuffle = total_cards // 2
 
                 # make a list of ids we'll shuffle
                 for i in range(total_to_shuffle):
@@ -4143,7 +4143,7 @@ label monika_change_nou_house_rules:
 
 
 label .no_change:
-    
+
     if from_game:
         return False
 
@@ -6384,8 +6384,8 @@ init -10 python in mas_cardgames:
             render = renpy.render(self.base, width, height, st, at)
             cw, ch = render.get_size()
 
-            cx = self.x - cw / 2
-            cy = self.y - ch / 2
+            cx = self.x - cw // 2
+            cy = self.y - ch // 2
 
             self.rect = (cx, cy, cw, ch)
             rv.blit(render, (cx, cy))
@@ -6522,8 +6522,8 @@ init -10 python in mas_cardgames:
             render = renpy.render(d, width, height, st, at)
             w, h = render.get_size()
 
-            x -= w / 2
-            y -= h / 2
+            x -= w // 2
+            y -= h // 2
 
             self.rect = (x, y, w, h)
 
@@ -6541,8 +6541,8 @@ init -10 python in mas_cardgames:
             self.start = table.st
 
             cx, cy, cw, ch = self.card.rect
-            x = cx + cw / 2
-            y = cy + ch / 2
+            x = cx + cw // 2
+            y = cy + ch // 2
 
             self.startx = x
             self.starty = y

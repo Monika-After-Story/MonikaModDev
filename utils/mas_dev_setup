@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Usage:
+#   mas_dev_setup <base ddlc folder> <dev (repo) folder> <output folder>
+#   
+#   <base ddlc folder> - the folder containing DDLC (expects game/ and DDLC.exe)
+#   <dev (repo) folder> - the folder containing git/repo code (dev env)
+#       - expects either "Monika After Story/game/*.rpy" or "game/*.rpy"
+#   <output folder> - can be anything - set it to whatever the renpy sdk will see
+
+
+if [[ $# -ne 3 ]]; then
+    echo "Usage: $0 <base ddlc folder> <dev (repo) folder> <renpy folder>"
+    exit 1
+fi
+
+# arg parsing
+DDLC_FOLDER="${1%/}"
+DDLC_FOLDER="${DDLC_FOLDER%\\}"
+DDLC_GAME="$DDLC_FOLDER/game"
+if [[ ! -d "$DDLC_FOLDER" ]]; then
+    echo "$DDLC_FOLDER does not exist"
+    exit 1
+elif [[ ! -f "$DDLC_FOLDER/DDLC.exe" || ! -f "$DDLC_GAME/scripts.rpa"
+    || ! -f "$DDLC_GAME/audio.rpa" || ! -f "$DDLC_GAME/fonts.rpa"
+    || ! -f "$DDLC_GAME/images.rpa" ]]; then
+
+    echo "DDLC files not found, is $DDLC_FOLDER actually DDLC?"
+    exit 1
+fi
+
+DEV_FOLDER="${2%/}"
+DEV_FOLDER="${DEV_FOLDER%\\}"
+DEV_FOLDER="${DEV_FOLDER%/game}"
+DEV_FOLDER="${DEV_FOLDER%\\game}"
+if [[ ! -d "$DEV_FOLDER" ]]; then
+    echo "$DEV_FOLDER does not exist"
+    exit 1
+elif [[ ! "$DEV_FOLDER" == */"Monika After Story" ]]; then
+    echo "$DEV_FOLDER is not a Monika After Story repo"
+    exit 1
+fi
+
+OUT_FOLDER="${3%/}"
+OUT_FOLDER="${OUT_FOLDER%\\}"
+if [[ ! -d "$OUT_FOLDER" ]]; then
+    echo "$OUT_FOLDER does not exist, creating directory"
+    mkdir "$OUT_FOLDER"
+    mkdir "$OUT_FOLDER/game"
+fi
+
+# copying
+echo "Copying DDLC... ($DDLC_FOLDER -> $OUT_FOLDER)"
+cp -f "$DDLC_GAME/audio.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/fonts.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/images.rpa" "$OUT_FOLDER/game/"
+cp -f "$DDLC_GAME/firstrun" "$OUT_FOLDER/game/"
+cp -Rf "$DDLC_GAME/python-packages" "$OUT_FOLDER/game/"
+cp -f "$DDLC_FOLDER/COPYRIGHT.txt" "$OUT_FOLDER/"
+
+echo "Copying dev... ($DEV_FOLDER -> $OUT_FOLDER)"
+cp -Ruf "$DEV_FOLDER/." "$OUT_FOLDER"
+
+# setting up overrides
+echo "pass" >> "$OUT_FOLDER/game/script-poemgame.rpy"
+echo "I_AM_RESPONSIBLE_FOR_ALL_ISSUES_AND_WILLING_TO_VOID_MY_WARRANTY_AND_SUPPORT=Yes, I will regret this! Enable DBUG!" >> "$OUT_FOLDER/.env"
+
+echo "Done"
+

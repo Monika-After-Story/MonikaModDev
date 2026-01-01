@@ -1,0 +1,139 @@
+{
+    "title": "_SubmodSchema",
+    "description": "Schema for validating submod json",
+    "type": "object",
+    "properties": {
+        "header_version": {
+            "title": "Header Version",
+            "type": "integer"
+        },
+        "author": {
+            "title": "Author",
+            "description": "Name of the submod author.",
+            "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "description": "Name of the submod. Must be unique.",
+            "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
+            "description": "A version number following the semantic versioning format (https: //semver.org/)",
+            "pattern": "^[0-9]+(\\.[0-9]+)*$",
+            "type": "string"
+        },
+        "modules": {
+            "title": "Modules",
+            "description": "List of modules of this submod. Must be non-empty, all modules must exist, forwardslashes must be used instead of backslashes, paths must also not start with a slash, nor end in one, likewise it must not end in .rpy* or a slash",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^(?!.*\\\\)(?!\\/)(?!.*\\.rpy.*$).*[^\\/]$"
+            }
+        },
+        "description": {
+            "title": "Description",
+            "description": "A short description for the submod. Does not support interpolation.",
+            "default": "",
+            "type": "string"
+        },
+        "dependencies": {
+            "title": "Dependencies",
+            "description": "Dictionary in the following structure: {'name': ('minimum_version', 'maximum_version')}corresponding to the needed submod name and version requiredNOTE: versions must be passed in the same way as the version property is done",
+            "default": "",
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "settings_pane": {
+            "title": "Settings Pane",
+            "description": "String referring to the screen used for the submod's settings",
+            "default": "",
+            "type": "string"
+        },
+        "version_updates": {
+            "title": "Version Updates",
+            "description": "Dictionary of the format {'old_version_update_label_name': 'new_version_update_label_name'}NOTE: submods MUST use the format <author>_<name>_v<version> for update labels relating to their submodsNOTE: capital letters will be forced to lower and spaces will be replaced with underscoresNOTE: Update labels MUST accept a version parameter, defaulted to the version of the labelFor example:    author name: MonikaAfterStory,    submod name: Example Submod    submod vers: 1.2.3becomes:    label monikaafterstory_example_submod_v1_2_3(version='v1_2_3')",
+            "default": {},
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "coauthors": {
+            "title": "Coauthors",
+            "description": "List of co-authors who helped work on this submod.",
+            "default": [],
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][ 0-9a-zA-Z_]*$"
+            }
+        },
+        "repository": {
+            "title": "Repository",
+            "description": "Link to the submod git repository",
+            "default": "",
+            "type": "string"
+        },
+        "priority": {
+            "title": "Priority",
+            "description": "Submod loading priority. Must be within -999 and 999",
+            "default": 0,
+            "minimum": -999,
+            "maximum": 999,
+            "type": "integer"
+        },
+        "required_os": {
+            "description": "Set of OS that are supported by the submod",
+            "default": [],
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Platform"
+            }
+        },
+        "blacklist_os": {
+            "description": "Set of OS that the submod does not support",
+            "default": [],
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Platform"
+            }
+        }
+    },
+    "required": [
+        "header_version",
+        "author",
+        "name",
+        "version",
+        "modules"
+    ],
+    "definitions": {
+        "Platform": {
+            "title": "Platform",
+            "description": "\n        Enum for representing OS platforms that are supported by MAS\n        ",
+            "enum": [
+                "",
+                "windows",
+                "linux",
+                "darwin"
+            ],
+            "type": "string"
+        }
+    }
+}

@@ -638,7 +638,7 @@ init -500 python in mas_parallax:
 
                     return None
 
-            if renpy.config.developer:
+            if store._mas_root.is_dbug_enabled():
                 if ev.type == pygame.KEYDOWN and ev.key == pygame.K_v:
                     self.debug = not self.debug
                     self._container.debug = not self._container.debug
@@ -1036,7 +1036,7 @@ transform fade_in(time=1.0):
 # kissing animation transform
 transform mas_kissing(_zoom, _y,time=2.0):
     i11
-    xcenter 640 yoffset 700 yanchor 1.0
+    xcenter 640 yanchor 1.0
     linear time ypos _y zoom _zoom
 
 transform mas_back_from_kissing(time, y):
@@ -1100,8 +1100,8 @@ label monika_kissing_motion(
     show monika at i11
     # do the appropriate calculations
     $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
-    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
-    $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
+    $ _mas_kiss_y = 2760 - ( 1700  * (mas_sprites.value_zoom - 1.1))
+    $ _mas_kiss_y2 = -2020 + (1700 * (mas_sprites.value_zoom - 1.1))
 
     # start the kiss animation
     $ renpy.show("monika {}".format(initial_exp), [mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)])

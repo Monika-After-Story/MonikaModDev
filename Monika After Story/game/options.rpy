@@ -68,8 +68,6 @@ init python:
     #Override the choose renderer screen
     mas_override_label("_choose_renderer", "mas_choose_renderer_override")
 
-    #The rest
-    # if len(renpy.loadsave.location.locations) > 1: del(renpy.loadsave.location.locations[1])
     renpy.game.preferences.pad_enabled = False
     def replace_text(s):
         s = s.replace('--', u'\u2014') # em dash
@@ -122,7 +120,8 @@ init python:
     ## Classify files as None to exclude them from the built distributions.
 
     ##This tells Renpy to build an updater file
-    build.include_update = True
+    build.include_update = not _mas_root.in_ci_build()
+    build.update_formats.append("zsync")
 
     ## Define the archives to use
     build.archive("scripts", "all")
@@ -139,7 +138,8 @@ init python:
     # Add README
     build.classify("README.html", "all")
 
-    # build.package(build.directory_name + "Mod", "zip", "all", description="DDLC Compatible Mod")
+    # the package (mac is separate)
+    build.package(build.directory_name + "Mod", "zip", "windows linux renpy all", description="MAS Mod")
 
     ## These files will be excluded
     # Remove everything else from the game folder

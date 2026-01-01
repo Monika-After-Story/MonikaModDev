@@ -37,7 +37,7 @@ python early in mas_overrides:
 
     renpy.savetoken.verify_data = verify_data_override
 
-    
+
     def savelocation_init_override():
         """
         Run **SOME** of the stuff savelocation.init runs
@@ -59,14 +59,14 @@ python early in mas_overrides:
         # 1. User savedir.
         location.add(savelocation.FileLocation(renpy.config.savedir))
 
-        # # 2. Game-local savedir.
+        # 2. Game-local savedir.
         # if (not renpy.mobile) and (not renpy.macapp):
         #     path = os.path.join(renpy.config.gamedir, "saves")
-        #     location.add(savelocation.FileLocation(path))
+        #     location_add(path)
 
-        # # 3. Extra savedirs.
+        # 3. Extra savedirs.
         # for i in renpy.config.extra_savedirs:
-        #     location.add(savelocation.FileLocation(i))
+        #     location_add(i)
 
         # Scan the location once.
         location.scan()
@@ -79,4 +79,8 @@ python early in mas_overrides:
 
     savelocation.init = savelocation_init_override
 
-
+init -999 python:
+    # With our override we should always have only one save location
+    # If there's more, we better just crash than let some data mismatch
+    if len(renpy.loadsave.location.locations) > 1:
+        raise RuntimeError("multiple savelocations detected, exiting")
