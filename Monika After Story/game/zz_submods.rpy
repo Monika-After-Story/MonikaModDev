@@ -2272,13 +2272,11 @@ init -1000 python in mas_submod_utils:
     class _FPEntry(typing.NamedTuple):
         callable_: Callable
         priority: int
-        auto_error_handling: bool
 
         def __repr__(self) -> str:
             return (
                 f"<FunctionPluginEntry({self.callable_.__qualname__}, "
-                f"priority={self.priority}, "
-                f"auto_error_handling={self.auto_error_handling})>"
+                f"priority={self.priority})>"
             )
 
     #START: Decorator Function
@@ -2293,7 +2291,6 @@ init -1000 python in mas_submod_utils:
                 key,
                 _function,
                 priority=priority,
-                auto_error_handling=auto_error_handling,
             )
             return _function
         return wrap
@@ -2317,10 +2314,7 @@ init -1000 python in mas_submod_utils:
                 NOTE: Function names only work if the function contains a getAndRunFunctions call.
                     Without it, it does nothing.
             _funcallable_ction - function to register
-            auto_error_handling - whether or not function plugins should ignore errors in functions
-                NOTE: keep this as True, disabling will prevent other code from executing. It only makes
-                    sense to set to False for functions which call or jump to other labels, but this
-                    makes renpy stop executing current python block and can easily lead to bugs.
+            auto_error_handling - unused
             priority - Order priority to run functions
                 (Like init levels, the lower the number, the earlier it runs)
         """
@@ -2333,7 +2327,6 @@ init -1000 python in mas_submod_utils:
         entry = _FPEntry(
             callable_=callable_,
             priority=priority,
-            auto_error_handling=auto_error_handling,
         )
 
         if key not in function_plugins:
@@ -2392,9 +2385,13 @@ init -1000 python in mas_submod_utils:
             try:
                 store.__run(entry.callable_)
 
+            except (renpy.game.JumpException, renpy.game.CallException):
+                # Allow advanced users to use renpy.call and renpy.jump
+                # NOTE: this will prevent other plugins from executing and will terminate
+                # the python block renpy is currently executing, this can easily lead to bugs
+                raise
+
             except Exception as ex:
-                if not entry.auto_error_handling:
-                    raise
                 store.mas_utils.mas_log.error(f"function plugin hook '{entry}' for key '{key}' failed: {ex}")
 
     @store.mas_utils.deprecated(use_instead="mas_submod_utils.execute_plugins")
