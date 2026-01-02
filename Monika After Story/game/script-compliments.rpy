@@ -1358,3 +1358,58 @@ label mas_compliment_outfit_repeat:
         m 3hubsb "[other_quip]"
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_teaching",
+            prompt="Thanks for teaching me something new!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_teaching:
+    if not renpy.seen_label("mas_compliment_teaching_2"):
+        call mas_compliment_teaching_2
+    else:
+        call mas_compliment_teaching_3
+    return
+
+label mas_compliment_teaching_2:
+    m 1hubla "Aww, [player]..."
+    m 3hublb "I'm glad I could teach you something!"
+    m 3ekb "It means a lot to me when you really take interest in what I'm saying..."
+    m 1eka "It really makes me feel appreciated."
+    menu:
+        "You inspire me to keep learning.":
+            $ mas_gainAffection(5, bypass=True)
+            m 1ekbfa "Oh, [player]..."
+            m 1hubfb "I'll do my best to keep thinking of things to teach, then!"
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
+            m 5hubfb "Life is a long journey of learning, and I'm glad I'm on it with you."
+
+        "You're so smart.":
+            $ mas_gainAffection(3, bypass=True)
+            m 1hublb "Ahaha~ You're too sweet."
+            m 3tublb "I do my best to keep sharp. Thank you for noticing!"
+
+        "Will you do my homework for me?":
+            $ mas_loseAffection(0.5) 
+            m 1eusdld "Uh..."
+            m 2rksdld "I think you should do it yourself, [player]."
+    return
+
+label mas_compliment_teaching_3:
+    python:
+        teaching_quips = [
+            _("We're on a journey of learning together~"),
+            _("I'm happy to be your study buddy."),
+            _("I'll try to keep learning interesting things for you!'"),
+        ]
+        teaching_quip = random.choice(teaching_quips)
+
+    m 1hubsb "[mas_compliments.thanks_quip]"
+    m 2ekbfb "[teaching_quip]"
+    return
