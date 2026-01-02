@@ -1406,7 +1406,7 @@ label mas_compliment_teaching_3:
         teaching_quips = [
             _("We're on a journey of learning together~"),
             _("I'm happy to be your study buddy."),
-            _("I'll try to keep learning interesting things for you!'"),
+            _("I look forward to learning from you, too!"),
         ]
         teaching_quip = random.choice(teaching_quips)
 
