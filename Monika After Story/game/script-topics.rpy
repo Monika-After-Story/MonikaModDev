@@ -18050,7 +18050,7 @@ label monika_catsordogs:
     m 1eub "It's kind of funny to me that this question is commonly seen as a binary in the first place."
     m 3hksdlb "...it's literally like comparing apples and oranges, ahaha~"
     m 3eka "Personally, I really like both, and I doubt I'm in the minority."
-    m 6eub "Cats and dogs both make really good companions, even if they have different strengths."
+    m 4eub "Cats and dogs both make really good companions, even if they have different strengths."
     m 6rub "For example, I could say I prefer dogs because I live a pretty active lifestyle."
     m 4hub "Taking one for a walk every day sounds like a lot of fun to me!"
     m 4lub "But at the same time, I might prefer cats because they can make good reading buddies."
@@ -18061,5 +18061,5 @@ label monika_catsordogs:
     extend 1eka "But yeah, I don't actually know what I'd pick if I had to choose just one."
     m 3lksdlb "I'd probably end up just picking randomly based on my mood."
     m 3eksdla "Sorry if that's not a very satisfying answer, [player]."
-    m hubla "But I suppose it's a good thing--we could have whichever one you prefer, ahaha~"
+    m 3hubla "But I suppose it's a good thing--we could have whichever one you prefer, ahaha~"
     return
