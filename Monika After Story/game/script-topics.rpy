@@ -18047,17 +18047,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_antilibrary",category=['literature'],prompt="Tsundoku and the antilibrary",random=True))
 
 label monika_antilibrary:
-m 3eud "[player], have you heard of an {i}antilibrary{/i} before?"
-m 3eub "It's a term inspired by the Japanese concept of {i}tsundoku,{/i} or collecting books without reading them."
-m 4eub "The antilibrary, then, is the collection of those unread books."
-m 4lksdlb "You might think this is just a hoarding habit, or the product of a little too much shopping..."
-m 4eud "But some scholars argue that the antilibrary can be a research tool, or another similar service to its owner."
-m 3eud "It's basically a tiny private library, when you think about it."
-m "Though, personally, I think an important factor of an antilibrary should be its organization."
-m 3eka "Having a bunch of stray books hiding around your house is nice, but if you want to use it well, it needs some sort of structure."
-m 1eua "Some factors might make organizing more complicated, however--{w=0.1}{nw}"
-extend 1hub "for example, what if we were living together?"
-m "We might find an antilibrary in each others' collections!"
-m 1tub "So it doesn't necessarily {i}need{/i} to be so structured, I guess.{w=0.2}{nw}" 
-extend 1hub "Still, I'll strive to read through my antilibrary over time!"
-return
+    m 3eud "[player], have you heard of an {i}antilibrary{/i} before?"
+    m 3eub "It's a term inspired by the Japanese concept of {i}tsundoku,{/i} or collecting books without reading them."
+    m 4eub "The antilibrary, then, is the collection of those unread books."
+    m 4lksdlb "You might think this is just a hoarding habit, or the product of a little too much shopping..."
+    m 4eud "But some scholars argue that the antilibrary can be a research tool, or another similar service to its owner."
+    m 3eud "It's basically a tiny private library, when you think about it."
+    m "Though, personally, I think an important factor of an antilibrary should be its organization."
+    m 3eka "Having a bunch of stray books hiding around your house is nice, but if you want to use it well, it needs some sort of structure."
+    m 1eua "That said, different people have different ways of organizing their personal library--{w=0.1}{nw}"
+    extend 1hub "so I suppose it's kind of a moot point, as long as they can find what they need."
+    m "For example, if we were living together, our antilibraries might look totally different, or even merge together, ehehe~"
+    m 1tub "So for now, you have an excuse for any books you've been putting off reading, [player]. {w=0.2}{nw}" 
+    extend 1hub "Still, I'll strive to read through my antilibrary over time!"
+    return
