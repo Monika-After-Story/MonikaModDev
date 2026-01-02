@@ -1386,7 +1386,7 @@ label mas_compliment_teaching_2:
         "You inspire me to keep learning.":
             $ mas_gainAffection(5, bypass=True)
             m 1ekbfa "Oh, [player]..."
-            m 1hubfb "I'll do my best to keep thinking of things to teach, then!"
+            m 1hubfb "I'll do my best to keep thinking of things to teach you, then!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
             m 5hubfb "Life is a long journey of learning, and I'm glad I'm on it with you."
 
