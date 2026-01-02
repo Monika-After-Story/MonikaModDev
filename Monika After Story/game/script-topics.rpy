@@ -18042,3 +18042,24 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_catsordogs",category=['misc'],prompt="Cats or dogs?",pool=True,unlocked=True))
+
+label monika_catsordogs:
+    m 1eub "It's kind of funny to me that this question is commonly seen as a binary in the first place."
+    m 3hksdlb "It's literally like comparing apples and oranges, ahaha~"
+    m 3eka "I really like both, and I doubt I'm in the minority to say so."
+    m 6eub "Cats and dogs both make really good companions, even if they have different strengths."
+    m 6rub "For example--I could say I prefer dogs because I live a pretty active lifestyle."
+    m 4hub "Taking one for a walk every day sounds like a lot of fun to me!"
+    m 4lub "But at the same time, I might prefer cats because they can make good reading buddies."
+    m 1eub "They also seem to get up to such strange antics, and I really like that about them."
+    m 1euc "...{w=0.1}{nw}"
+    extend 1ekd "Not that either one of them deserves to be cooped up in this place like me."
+    m 1dkc "...{w=0.2}{nw}"
+    extend 1eka "But yeah, I don't actually know what I'd pick if I had to choose just one."
+    m 3lksdlb "I'd probably end up just picking randomly based on my mood."
+    m 3eksdla "Sorry if that's not a very satisfying answer, [player]."
+    m hubla "But I suppose it's a good thing--we could have whichever one you prefer, ahaha~"
+    return
