@@ -18049,7 +18049,7 @@ init 5 python:
 label monika_petpeeve:
     m 2eub "This is an easy one, [player]."
     m 2lfd "I {i}really{/i} don't like being interrupted."
-    m 2dsd "I don't mean by accident--I mean consistently, or when I'm saying something important."
+    m 2dsd "I don't mean by genuine accident. I mean consistently, or when I'm saying something important."
     m 4esd "You'd think it might be something that I got used to in debate club, but it was quite the opposite."
     m 4eub "Debate club wasn't about shouting over each other, it was a great place for structured discussions."
     m 3ltd "...You know, maybe that's why I slowed down the text when we first came here, too."
