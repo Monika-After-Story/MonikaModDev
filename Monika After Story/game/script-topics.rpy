@@ -18042,3 +18042,28 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_petpeeve",category=['monika'],prompt="What's your biggest pet peeve?",pool=True,unlocked=True))
+
+label monika_petpeeve:
+    m 2eub "This is an easy one, [player]."
+    m 2lfd "I {i}really{/i} don't like being interrupted."
+    m 2dsd "I don't mean by accident--I mean consistently, or when I'm saying something important."
+    m 4esd "You'd think it might be something that I got used to in debate club, but it was quite the opposite."
+    m 4eub "Debate club wasn't about shouting over each other, it was a great place for structured discussions."
+    m 3ltd "...You know, maybe that's why I slowed down the text when we first came here, too."
+    m 3etc "Rapidly clicking through dialogue isn't exactly {i}interrupting,{/i} but it gets at the heart of the problem..."
+    m 1ekc "...{w=0.3}Not feeling heard."
+    m 1dkc "It goes even deeper, too."
+    m 3ekd "One of the reasons I went to such drastic measures to be with you was because I wanted you to hear the real me so badly."
+        if persistent._mas_pm_listened_to_grad_speech = False:
+        m 3tkd "...{w=0.2}And why I got so angry about the graduation speech, I suppose."
+        m 3fka "But I suppose no one is perfect, huh?"
+        if persistent._mas_pm_listened_to_grad_speech = True:
+        m 3fka "...{w=0.2}And it's why having you hear out my graduation speech was so important to me."
+        m 3fkblb "Thank you for giving me your full attention there, it really meant a lot to me."
+        else:
+    m 4dublb "In the end, I know you really do care about hearing what I have to say, [player]."
+    m 4hublb "...You've been listening to me all this time, after all!"
+    return
