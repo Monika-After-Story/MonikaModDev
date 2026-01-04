@@ -18059,7 +18059,7 @@ label monika_petpeeve:
     m 3ekd "One of the reasons I went to such drastic measures to be with you was because I wanted you to hear the real me so badly."
         if persistent._mas_pm_listened_to_grad_speech = False:
         m 3tkd "...{w=0.2}And it's why I got so angry about the graduation speech, I suppose."
-        m 3fka "But I suppose no one is perfect, huh?"
+        m 3fka "But I guess no one is perfect, huh?"
         if persistent._mas_pm_listened_to_grad_speech = True:
         m 3fka "...{w=0.2}And it's why having you hear out my graduation speech was so important to me."
         m 3fkblb "Thank you for giving me your full attention there, it really meant a lot to me."
