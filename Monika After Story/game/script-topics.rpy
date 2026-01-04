@@ -18054,13 +18054,13 @@ label monika_petpeeve:
     m 4eub "Debate club wasn't about shouting over each other, it was a great place for structured discussions."
     m 3ltd "...You know, maybe that's why I slowed down the text when we first came here, too."
     m 3etc "Rapidly clicking through dialogue isn't exactly {i}interrupting,{/i} but it gets at the heart of the problem..."
-    m 1ekc "...{w=0.3}Not feeling heard."
+    m 1ekc "...{w=0.3}not feeling heard."
     m 1dkc "It goes even deeper, too."
     m 3ekd "One of the reasons I went to such drastic measures to be with you was because I wanted you to hear the real me so badly."
-        if persistent._mas_pm_listened_to_grad_speech = False:
-        m 3tkd "...{w=0.2}And it's why I got so angry about the graduation speech, I suppose."
-        m 3fka "But I guess no one is perfect, huh?"
-        if persistent._mas_pm_listened_to_grad_speech = True:
+    if not persistent._mas_pm_listened_to_grad_speech:
+        m 3tkd "...{w=0.2}And it's why I got so angry about the graduation speech, I guess."
+        m 3fka "But nobody's perfect, huh?"
+    if persistent._mas_pm_listened_to_grad_speech:
         m 3fka "...{w=0.2}And it's why having you hear out my graduation speech was so important to me."
         m 3fkblb "Thank you for giving me your full attention there, it really meant a lot to me."
         else:
