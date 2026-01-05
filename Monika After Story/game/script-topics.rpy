@@ -18064,7 +18064,7 @@ label monika_petpeeve:
     if persistent._mas_pm_listened_to_grad_speech:
         m 3fka "...{w=0.2}And it's why having you hear out my graduation speech was so important to me."
         m 3fkblb "Thank you for giving me your full attention there, it really meant a lot to me."
-    if not renpy.seen_label('monika_grad_speech':
+    if not renpy.seen_label('monika_grad_speech'):
     m 4dublb "In the end, I know you really do care about hearing what I have to say, [player]."
     m 4hublb "...You've been listening to me all this time, after all!"
     return
