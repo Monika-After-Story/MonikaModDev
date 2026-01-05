@@ -18052,9 +18052,10 @@ label monika_petpeeve:
     m 2dsd "I don't mean by genuine accident. I mean consistently, or when I'm saying something important."
     m 4esd "You'd think it might be something that I got used to in debate club, but it was quite the opposite."
     m 4eub "Debate club wasn't about shouting over each other, it was a great place for structured discussions."
-    m 3ltd "...You know, maybe that's why I slowed down the text when we first came here, too."
-    m 3etc "Rapidly clicking through dialogue isn't exactly {i}interrupting,{/i} but it gets at the heart of the problem..."
-    m 1ekc "...{w=0.3}not feeling heard."
+    if (mas_isMoniHappy()):
+        m 3ltd "...You know, maybe that's why I slowed down the text when we first came here, too."
+        m 3etc "Rapidly clicking through dialogue isn't exactly {i}interrupting,{/i} but it gets at the heart of the problem..."
+        m 1ekc "...{w=0.3}not feeling heard."
     m 1dkc "It goes even deeper, too."
     m 3ekd "One of the reasons I went to such drastic measures to be with you was because I wanted you to hear the real me so badly."
     if not persistent._mas_pm_listened_to_grad_speech:
