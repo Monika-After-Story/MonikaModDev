@@ -4510,6 +4510,7 @@ init 5 python:
 init 1:
     # NOTE this should be defined AFTER init 0
     # NOTE: default may be not completely reliable, always save the snapshot yourself
+    # NOTE: Added a skip to another dialogue if the player is sick, we want Monika to remember it and still ask if this event procs
     default persistent._mas_previous_moni_state = monika_chr.save_state(True, True, True, True)
 
 label greeting_after_bath:
@@ -4574,6 +4575,7 @@ label greeting_after_bath:
 
         else:
             m 1eua "I'll get dressed soon~"
+    jump mas_pm_sick_after_shower #This should take us to the new workaround at the end of the dialouge
 
     python:
         # enable music menu and music hotkeys
@@ -4585,6 +4587,24 @@ label greeting_after_bath:
 
         del bathing_showering
 
+    return
+
+# Label to jump to if the player is still sick, affection check is not needed here, higher affection is already required for this event.
+label mas_pm_sick_after_shower:
+    m "Oh, I nearly forgot, [player]!"
+    m "Are you feeling any better today?"
+    $ _history_list.pop()
+    menu:
+        m "Are you feeling any better today?"
+
+        "Yes":
+            $ persistent._mas_mood_sick = False
+            if mas_isMoniNormal(higher=True):
+                m 1hub "Great! Now we can spend some more time together."
+                m 1hubsa "Even if I am still drying off. Ehehe~"
+        "No.":
+            jump greeting_stillsick 
+            #Jump back to the original dialogue, this shouldn't case issues with the clean up if the player leaves or stays.
     return
 
 # NOTE: This is not a greeting, but a followup for the greeting above, so I decided to keep them together
@@ -4639,6 +4659,7 @@ init 5 python:
                     new_hair,
                     by_user=False
                 )
+
 
 label mas_after_bath_cleanup:
     # Sanity check (checking for towel should be enough)
