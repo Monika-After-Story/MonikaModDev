@@ -4591,8 +4591,8 @@ label greeting_after_bath:
 
 # Label to jump to if the player is still sick, affection check is not needed here, higher affection is already required for this event.
 label mas_pm_sick_after_shower:
-    m "Oh, I nearly forgot, [player]!"
-    m "Are you feeling any better today?"
+    m 3eub "Oh, I nearly forgot, [player]!"
+    m 3eua "Are you feeling any better today?"
     $ _history_list.pop()
     menu:
         m "Are you feeling any better today?"
