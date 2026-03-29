@@ -272,7 +272,7 @@ init 3 python:
         "egoist",
         "egotistical",
         "evil",
-        "faggot",
+        r"fag{1,2}ot",
         "failure",
         "fake",
         "fetus",
