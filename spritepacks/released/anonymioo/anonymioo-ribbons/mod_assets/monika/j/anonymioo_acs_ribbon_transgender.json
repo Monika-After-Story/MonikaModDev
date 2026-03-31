@@ -2,8 +2,8 @@
     "__author": "anonymioo",
     "version": 3,
     "type": 0,
-    "name": "anonymioo_ribbon_transexualpride",
-    "img_sit": "anonymioo_ribbon_transexualpride",
+    "name": "anonymioo_ribbon_trangenderpride",
+    "img_sit": "anonymioo_ribbon_trangenderpride",
     "pose_map": {
         "default": "0",
         "l_default": "5"
@@ -14,12 +14,12 @@
     "dlg_desc": "transgender-pride-themed ribbon",
     "dlg_plural": false,
     "ex_props": {
-        "transexualpride": true,
+        "trangenderpride": true,
         "ribbon-multicolor": true
     },
     "select_info": {
         "display_name": "Ribbon (Transgender Pride Themed)",
-        "thumb": "anonymioo_ribbon_transexualpride",
+        "thumb": "anonymioo_ribbon_transgenderpride",
         "group": "ribbon"
     },
     "giftname": "transgenderpridethemedribbon"

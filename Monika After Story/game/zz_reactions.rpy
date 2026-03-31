@@ -2164,8 +2164,8 @@ label mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite:
     call mas_reaction_json_ribbon_base("anonymioo_ribbon_striped_pinkandwhite","pink and white striped","mas_reaction_gift_acs_anonymioo_ribbon_striped_pinkandwhite")
     return
 
-label mas_reaction_gift_acs_anonymioo_ribbon_transexualpride:
-    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transexualpride","transgender-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transexualpride")
+label mas_reaction_gift_acs_anonymioo_ribbon_transgenderpride:
+    call mas_reaction_json_ribbon_base("anonymioo_ribbon_transgenderpride","transgender-pride-themed","mas_reaction_gift_acs_anonymioo_ribbon_transgenderpride")
     return
 
 # velius94
