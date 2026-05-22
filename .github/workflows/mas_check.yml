@@ -71,13 +71,13 @@ jobs:
         if: steps.cache-mas.outputs.cache-hit != 'true'
         run: |
           wget https://monika-after-story.s3.us-west-2.amazonaws.com/ddlc/mas8.zip
-          mkdir $MAS_BASE_DIR
-          unzip mas8.zip -d $MAS_BASE_DIR/ # this is so we cache ONLY the aws download and NOT the full repo
+          mkdir -p $MAS_BASE_DIR
+          unzip -o mas8.zip -d $MAS_BASE_DIR/ # this is so we cache ONLY the aws download and NOT the full repo
 
       # setup build folder
       - name: setup build folder
         run: |
-          mkdir $MAS_DIR
+          mkdir -p $MAS_DIR
           cp -Rf $MAS_BASE_DIR/* $MAS_DIR/
           echo "pass" >> "$MAS_DIR/game/script-poemgame.rpy" # prevents scripts.rpa from causing a crash
 
