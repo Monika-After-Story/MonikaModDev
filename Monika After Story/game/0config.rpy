@@ -11,13 +11,13 @@ python early:
     ## title, and shows up in the interface and error reports.
     ##
     ## The _() surrounding the string marks it as eligible for translation.
-    renpy.config.name = "Monika After Story"
+    renpy.config.name = __("Monika After Story")
 
     ## The version of the game.
     renpy.config.version = "0.13.0"
 
     #Triple space suffix to avoid potential issues with same names in window title
-    config.window_title = "Monika After Story   "
+    # config.window_title = "Monika After Story   "
 
     ## Save directory ##############################################################
     ##
@@ -160,7 +160,8 @@ define config.window_hide_transition = dissolve_textbox
 init python:
     config.per_frame_screens.append("_trace_screen")
 
-init -1099 python:
-    ## 8.1 Disable syncing
-    ## NOTE: MUST BE AFTER INIT -1100
-    renpy.config.has_sync = False
+# Disable your ass, shitheads
+# init -1099 python:
+#     ## 8.1 Disable syncing
+#     ## NOTE: MUST BE AFTER INIT -1100
+#     renpy.config.has_sync = False
