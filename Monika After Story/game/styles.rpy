@@ -500,6 +500,7 @@ init 25 python in mas_ui:
             boolean whether or not the event pass the criteria
         """
         ev_prompt = ev.prompt.lower()
+        ev_prompt_tl = renpy.translation.translate_string(ev.prompt).lower()
         ev_label = ev.eventlabel.lower()
         ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
@@ -538,6 +539,7 @@ init 25 python in mas_ui:
         for search_kw in search_kws:
             if (
                 search_kw in ev_prompt
+                or search_kw in ev_prompt_tl
                 or search_kw in ev_label
                 or (ev_cat_full and search_kw in ev_cat_full)
             ):
@@ -558,6 +560,7 @@ init 25 python in mas_ui:
             weight as int
         """
         ev_prompt = ev.prompt.lower()
+        ev_prompt_tl = renpy.translation.translate_string(ev.prompt).lower()
         ev_label = ev.eventlabel.lower()
         ev_cat_full = " ".join(map(str, ev.category)) if ev.category else ""
 
@@ -565,11 +568,11 @@ init 25 python in mas_ui:
         base_increment = 2
         base_modifier = len(search_kws) + 1
 
-        if search_query == ev_prompt or search_query == ev_label:
+        if search_query == ev_prompt or search_query == ev_prompt_tl or search_query == ev_label:
             weight += base_increment * base_modifier**8
 
-        elif search_query in ev_prompt:
-            if ev_prompt.startswith(search_query):
+        elif search_query in ev_prompt or search_query in ev_prompt_tl:
+            if ev_prompt.startswith(search_query) or ev_prompt_tl.startswith(search_query):
                 weight += base_increment * base_modifier**7
 
             else:
@@ -584,7 +587,7 @@ init 25 python in mas_ui:
 
         else:
             for search_kw in search_kws:
-                if search_kw in ev_prompt:
+                if search_kw in ev_prompt or search_kw in ev_prompt_tl:
                     weight += base_increment * base_modifier**3
 
                 elif search_kw in ev_label:
