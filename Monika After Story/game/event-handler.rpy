@@ -3225,7 +3225,7 @@ label prompt_menu:
             unseen_num = len(unseen_event_labels)
             mas_setEVLPropValues(
                 "mas_show_unseen",
-                prompt="I would like to see 'Unseen' ([unseen_num]) again"
+                prompt=_("I would like to see 'Unseen' ([unseen_num]) again")
             )
         else:
             mas_hideEVL('mas_show_unseen','EVE',lock=True)
@@ -3363,16 +3363,17 @@ label prompts_categories(pool=True):
                 no_cat_list.append(unlocked_events[key])
 
         # sort the lists
-        main_cat_list.sort()
+        _get_cat_label = getattr(store, 'mas_get_cat_label', lambda x: x)
+        main_cat_list.sort(key=lambda x: _get_cat_label(x).lower())
         no_cat_list.sort(key=Event.getSortPrompt)
 
         # tuplelize the main the category list
         # NOTE: we use a 2nd list here to do displaying, keeping track of the
         # older cat list for checking if a category was picked
-        dis_cat_list = [(x.capitalize() + "...",x) for x in main_cat_list]
+        dis_cat_list = [(_get_cat_label(x).capitalize() + "...",x) for x in main_cat_list]
 
         # tupelize the event list
-#        no_cat_list = evhand.tuplizeEventLabelList(no_cat_list, unlocked_events)
+        # no_cat_list = evhand.tuplizeEventLabelList(no_cat_list, unlocked_events)
         no_cat_list = [(x.prompt, x.eventlabel) for x in no_cat_list]
 
         # extend the display cat list with no category items
@@ -3412,10 +3413,17 @@ label prompts_categories(pool=True):
                 #   main categories to subcats
 
                 # otherwise make sort event list
-                no_cat_list = sorted(
-                    unlocked_events.values(),
-                    key=Event.getSortPrompt
-                )
+                import datetime
+                if "anniversary" in current_category:
+                    no_cat_list = sorted(
+                        unlocked_events.values(),
+                        key=lambda x: x.start_date if x.start_date is not None else datetime.datetime.min
+                    )
+                else:
+                    no_cat_list = sorted(
+                        unlocked_events.values(),
+                        key=Event.getSortPrompt
+                    )
 
                 # but remake into display
                 no_cat_list = [(x.prompt, x.eventlabel) for x in no_cat_list]
@@ -3617,12 +3625,12 @@ label mas_bookmarks_unbookmark(bookmarks_items):
 
     # decicde which prompt
     if len(bookmarks_items) > 1:
-        $ renpy.say(m, "Which bookmarks do you want to remove?", interact=False)
+        $ renpy.say(m, _("Which bookmarks do you want to remove?"), interact=False)
 
     else:
-        $ renpy.say(m, "Just select the bookmark if you're sure you want to remove it.", interact=False)
+        $ renpy.say(m, _("Just select the bookmark if you're sure you want to remove it."), interact=False)
 
-    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Remove selected")
+    call screen mas_check_scrollable_menu(bookmarks_items, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt=_("Remove selected"))
 
     $ bookmarks_to_remove = _return
     $ bookmarks_items = _convert_items(bookmarks_items, "GEN_ITEMS")
