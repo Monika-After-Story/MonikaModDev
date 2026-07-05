@@ -330,7 +330,8 @@ init -1001 python in mas_submod_utils:
                 case _Platform.mac:
                     # TODO: Somehow build git for mac?
                     # return "bin/git/mac/git"
-                    raise NotImplementedError("git updater doesn't support mac os")
+                    # raise NotImplementedError("git updater doesn't support mac os")
+                    return "bin/git/mac/git"
                 case _:
                     raise NotImplementedError("git updater couldn't detect current os")
 
@@ -886,7 +887,7 @@ init -1001 python in mas_submod_utils:
         """
         header_json = None
         try:
-            with open(header_path) as header_file:
+            with renpy.open_file(header_path.split("/game/")[1], encoding="utf-8") as header_file:
                 header_json = json.load(header_file)
 
         except Exception as e:
