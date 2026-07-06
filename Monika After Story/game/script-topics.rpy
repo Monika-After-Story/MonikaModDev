@@ -18050,7 +18050,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_HumanRandomness",
             category=["psychology", 'philosophy', 'society'],
-            prompt="Huamn Randomness",
+            prompt="Human Randomness",
             random=True
         )
     )
@@ -18058,12 +18058,12 @@ init 5 python:
 label monika_HumanRandomness:
     m 3eua "Say, [player], have you thought about how things are random?"
     m 7eua "Sorry, I know this sounds silly, but it has me thinking about how random people truly are."
-    m 1euc "Think of it this way, when someone asks for a random number between one and five, do you often change your number in your head before you tell them what number you thought of randomly? {w=1.2}{nw}"
+    m 1euc "Think of it this way; When someone asks for a random number between one and five, do you often change your number in your head before you tell them what number you thought of randomly? {w=1.2}{nw}"
     extend 3eud "Believe it or not, that's a very common thing."
     m 7etd "There are many studies that tackle this very subject, [player]."
-    m 3eua "They state that many people actually gravitate to certain numbers more than others, which leads to a sort of bias on their random numbers they give you. {w=1.2}{nw}"
-    m 1euc "Or they unintentionally create patterns to make up what they preceieve as randomness."
-    m 3eud "The original intention of the experiment was to see if there are linked patterns between human randomness, and a greater whole of the entire population giving similiar numbers."
-    m 7eub "However, the study managed to find connections to congnitive behaviors and also showcased that bias is part of our subconcious, and not our concious mind."
+    m 3eua "They state that many people actually gravitate to certain numbers more than others, which leads to a sort of bias in the random numbers they give you. {w=1.2}{nw}"
+    m 1euc "Or they unintentionally create patterns to make up what they perceive as randomness."
+    m 3eud "The original intention of the experiment was to see if there are linked patterns between human randomness and a greater whole of the entire population giving similar numbers."
+    m 7eub "However, the study managed to find connections to cognitive behaviors and also showcased that bias is part of our subconscious, and not our conscious mind."
     m 1eua "It's an interesting study, and shows us that we aren't as foolhardy as we believe."
     return
