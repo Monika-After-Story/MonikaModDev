@@ -161,7 +161,7 @@ init -4 python:
             IN:
                 wordfile - the filename/path of the file to read words
             """
-            with open(f"{renpy.config.gamedir}/{wordfile}", "r") as words:
+            with renpy.open_file(wordfile, encoding="utf-8") as words:
                 for line in words:
 
                     line = line.strip()
