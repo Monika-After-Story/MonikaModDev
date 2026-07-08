@@ -8,16 +8,19 @@ image def_weather = MASFallbackFilterDisplayable(
     day=Movie(
         channel="window_1",
         play="mod_assets/window/def_day_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/def_day_mask_fb.png"
     ),
     sunset=Movie(
         play="mod_assets/window/def_sunset_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/def_sunset_mask_fb.png"
     ),
     night=Movie(
         channel="window_2",
         play="mod_assets/window/def_night_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/def_night_mask_fb.png"
     )
 )
 image def_weather_fb = MASFallbackFilterDisplayable(
@@ -30,12 +33,14 @@ image rain_weather = MASFallbackFilterDisplayable(
     day=Movie(
         channel="window_3",
         play="mod_assets/window/rain_day_mask.mpg",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/rain_day_mask_fb.png"
     ),
     night=Movie(
         channel="window_4",
         play="mod_assets/window/rain_night_mask.mpg",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/rain_night_mask_fb.png"
     )
 )
 image rain_weather_fb = MASFallbackFilterDisplayable(
@@ -47,12 +52,14 @@ image overcast_weather = MASFallbackFilterDisplayable(
     day=Movie(
         channel="window_5",
         play="mod_assets/window/overcast_day_mask.mpg",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/overcast_day_mask_fb.png"
     ),
     night=Movie(
         channel="window_6",
         play="mod_assets/window/overcast_night_mask.mpg",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/overcast_night_mask_fb.png"
     ),
 )
 image overcast_weather_fb = MASFallbackFilterDisplayable(
@@ -64,16 +71,19 @@ image snow_weather = MASFallbackFilterDisplayable(
     day=Movie(
         channel="window_7",
         play="mod_assets/window/snow_day_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/snow_day_mask_fb.png"
     ),
     sunset=Movie(
         play="mod_assets/window/snow_sunset_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/snow_sunset_mask_fb.png"
     ),
     night=Movie(
         channel="window_8",
         play="mod_assets/window/snow_night_mask.mp4",
-        mask=None
+        mask=None,
+        start_image="mod_assets/window/snow_night_mask_fb.png"
     ),
 )
 image snow_weather_fb = MASFallbackFilterDisplayable(
@@ -1104,7 +1114,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_change_weather",
             category=["weather"],
-            prompt="Can you change the weather?",
+            prompt=_("Can you change the weather?"),
             pool=True,
             unlocked=True,
             rules={"no_unlock": None},
