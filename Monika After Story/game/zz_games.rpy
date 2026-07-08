@@ -52,7 +52,7 @@ init 7 python in mas_games:
 
         #Now search
         for ev in game_db.values():
-            if renpy.substitute(ev.prompt).lower() == gamename:
+            if ev.prompt.lower() == gamename or renpy.substitute(ev.prompt).lower() == gamename:
                 return ev
         return None
 
@@ -106,7 +106,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_pong",
-            prompt="Pong",
+            prompt=_("Pong"),
             unlocked=True
         ),
         code="GME",
@@ -122,7 +122,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_chess",
-            prompt="Chess",
+            prompt=_("Chess"),
             conditional=(
                 "persistent._mas_chess_timed_disable is not True "
                 "and mas_games.is_platform_good_for_chess() "
@@ -146,7 +146,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_hangman",
-            prompt="Hangman"
+            prompt=_("Hangman")
         ),
         code="GME",
         restartBlacklist=True
@@ -161,7 +161,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_piano",
-            prompt="Piano",
+            prompt=_("Piano"),
             rules={
                 "display_name": "piano",
             }
@@ -179,7 +179,7 @@ init 5 python:
         Event(
             persistent._mas_game_database,
             eventlabel="mas_nou",
-            prompt="NOU",
+            prompt=_("NOU"),
             aff_range=(mas_aff.NORMAL, None)
         ),
         code="GME",
@@ -246,7 +246,7 @@ label mas_pick_a_game:
                         _("Challenge accepted!"),
                     ]
 
-                game_quip = renpy.substitute(renpy.random.choice(begin_quips))
+                game_quip = renpy.substitute(renpy.translation.translate_string(renpy.random.choice(begin_quips)))
 
 
             if mas_isMoniBroken():
