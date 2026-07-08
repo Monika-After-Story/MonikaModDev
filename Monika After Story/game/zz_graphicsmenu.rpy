@@ -106,17 +106,17 @@ init -1 python:
                 activate_sound=gui.activate_sound,
                 return_value="angle"
             )
-            self.button_sw = MASButtonDisplayable.create_stb(
-                _("Software"),
-                True,
-                button_x,
-                button_y + (3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound,
-                return_value="sw"
-            )
+            # self.button_sw = MASButtonDisplayable.create_stb(
+            #     _("Software"),
+            #     True,
+            #     button_x,
+            #     button_y + (3 * (self.BUTTON_SPACING + self.BUTTON_HEIGHT)),
+            #     self.BUTTON_WIDTH,
+            #     self.BUTTON_HEIGHT,
+            #     hover_sound=gui.hover_sound,
+            #     activate_sound=gui.activate_sound,
+            #     return_value="sw"
+            # )
             self.button_ret = MASButtonDisplayable.create_stb(
                 _("Return"),
                 False,
@@ -173,7 +173,7 @@ init -1 python:
                 self.button_auto,
                 self.button_gl,
                 self.button_dx,
-                self.button_sw,
+                # self.button_sw,
                 self.button_ret
             ]
 
@@ -191,8 +191,8 @@ init -1 python:
             elif self.curr_renderer == "gl":
                 self.button_gl.disable()
 
-            elif self.curr_renderer == "sw":
-                self.button_sw.disable()
+            # elif self.curr_renderer == "sw":
+            #     self.button_sw.disable()
 
 
         def _xcenter(self, v_width, width):
@@ -336,7 +336,7 @@ screen mas_gmenu_confirm(sel_rend):
             yalign .5
             spacing 30
 
-            label _("Switch renderer to " + sel_rend + "?"):
+            label _("Switch renderer to [sel_rend!t]?"):
                 style "confirm_prompt"
                 xalign 0.5
 
