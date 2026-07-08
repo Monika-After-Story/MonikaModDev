@@ -218,7 +218,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
         EVENT_H = 640
         EVENT_XALIGN = 0.96
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
-        EVENT_RETURN = "< Go back"
+        EVENT_RETURN = _("< Go back")
 
         def __init__(self, select_date=False):
             """
@@ -300,7 +300,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # Change title depending on flag
             if select_date:
                 self.text_title = Text(
-                    "Select a Date",
+                    _("Select a Date"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
@@ -308,7 +308,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 )
             else:
                 self.text_title = Text(
-                    "Calendar",
+                    _("Calendar"),
                     font=gui.default_font,
                     size=33,
                     color=("#ffffff" if self.day_mode else "#000000"),
@@ -723,7 +723,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             said list is a list of Strings to show
             """
 
-            event_list_title = ("Events for the day:", False, True)
+            event_list_title = (_("Events for the day:"), False, True)
 
             # build list
             event_list_items = [(e, False, False) for e in events]
@@ -1326,7 +1326,7 @@ init -1 python in mas_calendar:
 
         """
         try:
-            with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
+            with open(renpy.config.savedir + '/db.mcal', 'r', encoding="utf-8") as fp:
                 calendar_database = json.load(fp)
         except (IOError, ValueError):
             pass
