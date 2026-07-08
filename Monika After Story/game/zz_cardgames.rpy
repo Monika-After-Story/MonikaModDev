@@ -663,7 +663,18 @@ init 5 python in mas_nou:
             This should be called on init, but after class creation
             """
             nou_ma_dir = os.path.join(ASSETS, "sfx")
-            nou_sfx = os.listdir(os.path.join(config.gamedir, nou_ma_dir))
+            
+            # Normalize prefix to use forward slashes
+            search_prefix = (ASSETS + "sfx/").replace("\\", "/")
+            nou_sfx = [os.path.basename(f) for f in renpy.list_files() if f.startswith(search_prefix)]
+
+            if not nou_sfx:
+                # Fallback to os.listdir if physical files are loose and renpy.list_files() is empty
+                full_path = os.path.join(config.gamedir, nou_ma_dir)
+                if os.path.exists(full_path):
+                    nou_sfx = os.listdir(full_path)
+                else:
+                    nou_sfx = []
 
             cls._reset_sfx()
 
@@ -1883,13 +1894,13 @@ init 5 python in mas_nou:
                 or not player.plays_turn
                 or player.played_card
             ):
-                return "Sorry, I'm not sure, [player]..."
+                return _("Sorry, I'm not sure, [player]...")
 
             card = discardpile[-1]
 
             if get_total_games() > 15 and random.random() < 0.2:
                 if player.should_skip_turn:
-                    return "The give up button is right below~"
+                    return _("The give up button is right below~")
 
                 elif (
                     # If Moni has drawn more than 10 cards in the last 10 turns...
@@ -1899,22 +1910,22 @@ init 5 python in mas_nou:
                         if log_data["drew_card"]
                     ) > 10
                 ):
-                    return "Find a better deck, this one is rigged..."
+                    return _("Find a better deck, this one is rigged...")
 
                 elif (
                     (player.hand and len(monika.hand)/len(player.hand) < 0.7)
                     or monika_win_streak > 2
                 ):
-                    return "Just git gud, [player]! Ahaha~"
+                    return _("Just git gud, [player]! Ahaha~")
 
                 elif (
                     (monika.hand and len(player.hand)/len(monika.hand) < 0.7)
                     or player_win_streak > 2
                 ):
-                    return "Play anything but {i}Draw Two{/i} and {i}Draw Four{/i}, darling. I don't have anything to counter those~"
+                    return _("Play anything but {i}Draw Two{/i} and {i}Draw Four{/i}, darling. I don't have anything to counter those~")
 
                 else:
-                    return "Just draw more cards, always works~"
+                    return _("Just draw more cards, always works~")
 
 
             dlg_line_list = []
@@ -1930,22 +1941,22 @@ init 5 python in mas_nou:
 
                 if player.drew_card:
                     dlg_line_list.append(
-                        " Since you drew a card, you can try to play it or skip your turn."
+                        _(" Since you drew a card, you can try to play it or skip your turn.")
                     )
 
                 elif len(player.hand) >= self.HAND_CARDS_LIMIT:
                     dlg_line_list.append(
-                        " If you don't have an appropriate card, then you'll have to skip this turn."
+                        _(" If you don't have an appropriate card, then you'll have to skip this turn.")
                     )
 
                 else:
                     dlg_line_list.append(
-                        " If you don't have an appropriate card, you should draw a card and then either play it or skip your turn."
+                        _(" If you don't have an appropriate card, you should draw a card and then either play it or skip your turn.")
                     )
 
             else:
                 if player.should_skip_turn:
-                    dlg_line_list.append("You have to skip this turn")
+                    dlg_line_list.append(_("You have to skip this turn"))
 
                     insert_line = (
                         len(self.game_log) > 2
@@ -1954,7 +1965,7 @@ init 5 python in mas_nou:
                     )
 
                     if insert_line:
-                        dlg_line_list.append("--just like the last one--")
+                        dlg_line_list.append(_("--just like the last one--"))
 
                     if player.should_draw_cards and len(player.hand) < self.HAND_CARDS_LIMIT:
                         dlg_line_list.append(
@@ -1964,7 +1975,7 @@ init 5 python in mas_nou:
                             )
                         )
                         if player.drew_card:
-                            dlg_line_list.append(" more")
+                            dlg_line_list.append(_(" more"))
 
                         dlg_line_list.append(
                             " card{}".format(
@@ -2012,10 +2023,10 @@ init 5 python in mas_nou:
                         if random.random() < 0.33:
                             if random.random() < 0.5:
                                 dlg_line_list.append(
-                                    " Can't promise I won't reflect it back to you~"
+                                    _(" Can't promise I won't reflect it back to you~")
                                 )
                             else:
-                                dlg_line_list.append(".. If you're brave enough~")
+                                dlg_line_list.append(_(".. If you're brave enough~"))
 
                 else:
                     if card.type == "action":
@@ -2029,7 +2040,7 @@ init 5 python in mas_nou:
                     else:
                         if card.color is None:
                             dlg_line_list.append(
-                                "You need to choose a color before we can continue."
+                                _("You need to choose a color before we can continue.")
                             )
 
                         else:
@@ -2039,18 +2050,18 @@ init 5 python in mas_nou:
 
                             if player.drew_card or len(player.hand) >= self.HAND_CARDS_LIMIT:
                                 dlg_line_list.append(
-                                    " Otherwise you'll have to skip your turn~"
+                                    _(" Otherwise you'll have to skip your turn~")
                                 )
 
                             else:
                                 dlg_line_list.append(
-                                    " Otherwise draw a card and try to play it."
+                                    _(" Otherwise draw a card and try to play it.")
                                 )
 
             if dlg_line_list:
                 return "".join(dlg_line_list)
 
-            return "Sorry, I'm not sure, [player]..."
+            return _("Sorry, I'm not sure, [player]...")
 
         def say_help(self):
             """
@@ -3973,7 +3984,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_change_nou_house_rules",
-            prompt="Let's change our house rules for NOU",
+            prompt=_("Let's change our house rules for NOU"),
             category=["games"],
             pool=True,
             unlocked=False,
@@ -4296,7 +4307,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_explain_nou_rules",
-            prompt="Can you explain NOU rules to me?",
+            prompt=_("Can you explain NOU rules to me?"),
             category=["games"],
             pool=True,
             unlocked=False,
@@ -4435,7 +4446,9 @@ label mas_nou_game_end:
     hide screen nou_stats
     hide screen nou_gui
     # Hide the desk, render spaceroom
-    call spaceroom(scene_change=True, force_exp="monika 1eua")
+    # Show weather fallback (static image) to cover the movie decoder warmup
+    $ renpy.show(store.mas_current_weather.img_tag)
+    call spaceroom(scene_change=False, force_exp="monika 1eua")
     # Show UI
     $ enable_esc()
     $ HKBShowButtons()
@@ -5165,7 +5178,7 @@ screen nou_gui():
 
         null height 15
 
-        textbutton _("Can you h{}lp me?".format("a" if mas_isA01() or mas_isO31() else "e")):
+        textbutton (_("Can you halp me?") if mas_isA01() or mas_isO31() else _("Can you help me?")):
             sensitive player.plays_turn and not player.played_card
             action Function(game.say_help)
 
@@ -5193,61 +5206,61 @@ screen nou_gui():
             )
             and player.hand
         ):
-            $ top_card = game.discardpile[-1]
+            $ top_card, ordered_colors = game.discardpile[-1], (sorted([(_("Red"), "red"), (_("Blue"), "blue"), (_("Green"), "green"), (_("Yellow"), "yellow")], key=lambda x: renpy.translation.translate_string(x[0]).lower()) if _preferences.language else [(_("Red"), "red"), (_("Blue"), "blue"), (_("Green"), "green"), (_("Yellow"), "yellow")])
 
-            textbutton _("Red"):
+            textbutton (_("Red") if False else ordered_colors[0][0]):
                 xminimum 230
                 action If(
                     player.played_card,
                     true = [
-                        SetField(top_card, "color", "red"),
+                        SetField(top_card, "color", "red" if False else ordered_colors[0][1]),
                         Function(fn_end_turn, player, monika),
                         Return([])
                     ],
                     false = [
-                        SetField(top_card, "color", "red"),
+                        SetField(top_card, "color", "red" if False else ordered_colors[0][1]),
                         Return([])
                     ]
                 )
-            textbutton _("Blue"):
+            textbutton (_("Blue") if False else ordered_colors[1][0]):
                 xminimum 230
                 action If(
                     player.played_card,
                     true = [
-                        SetField(top_card, "color", "blue"),
+                        SetField(top_card, "color", "blue" if False else ordered_colors[1][1]),
                         Function(fn_end_turn, player, monika),
                         Return([])
                     ],
                     false = [
-                        SetField(top_card, "color", "blue"),
+                        SetField(top_card, "color", "blue" if False else ordered_colors[1][1]),
                         Return([])
                     ]
                 )
-            textbutton _("Green"):
+            textbutton (_("Green") if False else ordered_colors[2][0]):
                 xminimum 230
                 action If(
                     player.played_card,
                     true = [
-                        SetField(top_card, "color", "green"),
+                        SetField(top_card, "color", "green" if False else ordered_colors[2][1]),
                         Function(fn_end_turn, player, monika),
                         Return([])
                     ],
                     false = [
-                        SetField(top_card, "color", "green"),
+                        SetField(top_card, "color", "green" if False else ordered_colors[2][1]),
                         Return([])
                     ]
                 )
-            textbutton _("Yellow"):
+            textbutton (_("Yellow") if False else ordered_colors[3][0]):
                 xminimum 230
                 action If(
                     player.played_card,
                     true = [
-                        SetField(top_card, "color", "yellow"),
+                        SetField(top_card, "color", "yellow" if False else ordered_colors[3][1]),
                         Function(fn_end_turn, player, monika),
                         Return([])
                     ],
                     false = [
-                        SetField(top_card, "color", "yellow"),
+                        SetField(top_card, "color", "yellow" if False else ordered_colors[3][1]),
                         Return([])
                     ]
                 )
@@ -5330,6 +5343,7 @@ init 500 python in mas_cardgames:
 init -10 python in mas_cardgames:
     import pygame
     import store
+    import os
     from store import RotoZoom, ConditionSwitch, MASFilterSwitch
 
     # The path to the desk assets, place your background there to automatically load it into the map
@@ -5349,8 +5363,16 @@ init -10 python in mas_cardgames:
         Scans the folder with the desk sprites and fills the desk sprites map
         """
         sprites_map = dict()
+        # Normalize search prefix to use forward slashes
+        search_prefix = DESK_SPRITES_PATH.replace("\\", "/")
+        desk_files = [os.path.basename(f) for f in renpy.list_files() if f.startswith(search_prefix)]
+
+        if not desk_files:
+            # Fallback to MASDockingStation if list_files is empty
+            desk_files = store.MASDockingStation(GAME_DIR_PATH + DESK_SPRITES_PATH).getPackageList()
+
         # Get the sprites we have
-        for file in store.MASDockingStation(GAME_DIR_PATH + DESK_SPRITES_PATH).getPackageList():
+        for file in desk_files:
             # Remove the extension
             key = file.rpartition(".")[0]
             if key:
