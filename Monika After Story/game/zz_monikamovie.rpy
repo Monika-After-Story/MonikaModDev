@@ -11,7 +11,7 @@ label mas_monikamovie:
         MOVIE_H = 640
         MOVIE_XALIGN = -0.05
         MOVIE_AREA = (MOVIE_X, MOVIE_Y, MOVIE_W, MOVIE_H)
-        MOVIE_RETURN = "I changed my mind"
+        MOVIE_RETURN = _("I changed my mind")
 
 
         gamedir = os.path.normpath(config.gamedir)
@@ -25,7 +25,7 @@ label mas_monikamovie:
                 self.checkMovies()
 
             def checkMovies(self):
-                with open(os.path.join(gamedir, "movies-info.mms"),"r") as f: #duplicated code
+                with renpy.open_file("movies-info.mms", encoding="utf-8") as f: #duplicated code
                     lines = f.readlines()
                 listOfStrings = [x.strip() for x in lines]
 
@@ -119,7 +119,7 @@ label mas_monikamovie:
                 return data.replace('"','')
 
             def retrieveMovie(self, movieName):
-                with open(os.path.join(gamedir, "movies-info.mms"),"r") as f:
+                with renpy.open_file("movies-info.mms", encoding="utf-8") as f:
                     lines = f.readlines()
                 listOfStrings = [x.strip() for x in lines]
 
@@ -307,7 +307,7 @@ label mas_monikamovie:
         label mm_movie_repeattime:
             m 1eub "Tell me in the format HH:MM:SS, [player]."
             python:
-                player_dialogue = renpy.input('What time should I set the movie to? ',default='',pixel_width=720,length=50)
+                player_dialogue = renpy.input(_('What time should I set the movie to? '),default='',pixel_width=720,length=50)
                 splittedTime = player_dialogue.split(":",2)
                 bad_format = len(splittedTime) != 3
                 if not bad_format:
