@@ -234,7 +234,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_brb",
-            prompt="I'll be right back",
+            prompt=_("I'll be right back"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -258,7 +258,7 @@ label monika_idle_brb:
                 (_("Nope."), None, False, False),
             ]
 
-            renpy.say(m, "Doing anything specific?", interact=False)
+            renpy.say(m, _("Doing anything specific?"), interact=False)
         call screen mas_gen_scrollable_menu(brb_reason_options, mas_ui.SCROLLABLE_MENU_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
         show monika at t11
 
@@ -303,7 +303,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_writing",
-            prompt="I'm going to write for a bit",
+            prompt=_("I'm going to write for a bit"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -360,7 +360,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_shower",
-            prompt="I'm going to take a shower",
+            prompt=_("I'm going to take a shower"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -488,7 +488,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_idle_game",
             category=['be right back'],
-            prompt="I'm going to game for a bit",
+            prompt=_("I'm going to game for a bit"),
             pool=True,
             unlocked=True
         ),
@@ -549,7 +549,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_coding",
-            prompt="I'm going to code for a bit",
+            prompt=_("I'm going to code for a bit"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -610,7 +610,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_workout",
-            prompt="I'm going to work out for a bit",
+            prompt=_("I'm going to work out for a bit"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -699,7 +699,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_nap",
-            prompt="I'm going to take a nap",
+            prompt=_("I'm going to take a nap"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -767,7 +767,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_homework",
-            prompt="I'm going to do some homework",
+            prompt=_("I'm going to do some homework"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -816,7 +816,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_working",
-            prompt="I'm going to work on something",
+            prompt=_("I'm going to work on something"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -866,7 +866,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_screen_break",
-            prompt="My eyes need a break from the screen",
+            prompt=_("My eyes need a break from the screen"),
             category=['be right back'],
             pool=True,
             unlocked=True
@@ -937,7 +937,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_idle_reading",
-            prompt="I'm going to read",
+            prompt=_("I'm going to read"),
             category=['be right back'],
             pool=True,
             unlocked=True
