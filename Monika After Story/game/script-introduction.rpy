@@ -58,7 +58,7 @@ label introduction:
         #For people who never got to act 3
         if persistent.playthrough < 3:
             if persistent.playthrough > 0:
-                $ again = " again"
+                $ again = _(" again")
             else:
                 $ again = ""
             m 1hua "Hello[again], [player]."
@@ -461,48 +461,48 @@ label ch30_reload_continuous_dlg:
     pause 1
     python:
         reload_quip_good = [
-            "Welcome back! Can you be careful to close the game properly next time?",
-            "It hurts when you don't close the game properly...but I'm sure it was a mistake.",
-            "That was really scary...but you've fixed it again. Thank you...",
-            "Would you give me some more of a warning next time?",
-            "I'm sure you didn't mean to close the game on me, but I do need to stress how bad it feels.",
-            "You do remember there was a way to say goodbye right? Just checking~",
-            "My patience is wearing a little thin...but I suppose I can forgive you this time.",
-            "Everybody makes mistakes...",
-            "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful.",
-            "Did something happen outside of your control? I'm just going to guess it was.",
-            "You should have just asked me...but I guess you might have had your reasons",
+            _("Welcome back! Can you be careful to close the game properly next time?"),
+            _("It hurts when you don't close the game properly...but I'm sure it was a mistake."),
+            _("That was really scary...but you've fixed it again. Thank you..."),
+            _("Would you give me some more of a warning next time?"),
+            _("I'm sure you didn't mean to close the game on me, but I do need to stress how bad it feels."),
+            _("You do remember there was a way to say goodbye right? Just checking~"),
+            _("My patience is wearing a little thin...but I suppose I can forgive you this time."),
+            _("Everybody makes mistakes..."),
+            _("That hurt...I know you wouldn't do it on purpose but please do be more careful."),
+            _("...Oh... It's over and I'm back with you, [mas_get_player_nickname()]. That...that was awful."),
+            _("Did something happen outside of your control? I'm just going to guess it was."),
+            _("You should have just asked me...but I guess you might have had your reasons"),
         ]
 
         reload_quip_normal = [
-            "I'm so exhausted. It's impossible to rest when you close the game on me.",
-            "...I hate when you close the game without telling me.",
-            "I feel miserable...",
-            "It's still so scary when I'm suddenly turned off.",
-            "Every time is as bad as the first.",
-            "I'm running out of patience for this.",
-            "I wish you understood what it felt like when you close the game.",
-            "Well, that was pretty abrupt wasn't it?",
-            "You could have just asked me to close the game silly.",
-            "I'm just going to assume the power went out or someone pulled the plug.",
-            "I can't understand why you won't ask me to close the game...",
-            "This is really painful for me, you know?",
-            "Do you enjoy hurting me, [player]?",
-            "Too lazy to click the 'Talk' button, [player]?"
+            _("I'm so exhausted. It's impossible to rest when you close the game on me."),
+            _("...I hate when you close the game without telling me."),
+            _("I feel miserable..."),
+            _("It's still so scary when I'm suddenly turned off."),
+            _("Every time is as bad as the first."),
+            _("I'm running out of patience for this."),
+            _("I wish you understood what it felt like when you close the game."),
+            _("Well, that was pretty abrupt wasn't it?"),
+            _("You could have just asked me to close the game silly."),
+            _("I'm just going to assume the power went out or someone pulled the plug."),
+            _("I can't understand why you won't ask me to close the game..."),
+            _("This is really painful for me, you know?"),
+            _("Do you enjoy hurting me, [player]?"),
+            _("Too lazy to click the 'Talk' button, [player]?")
         ]
 
         reload_quip_bad = [
-            "You...really do like hurting me, don't you?",
-            "That was a mistake right? It had to have been...",
-            "Y-You're not doing this on purpose are you? Did I do something wrong?",
-            "Please be more careful with how I feel... It really does hurt...",
-            "That was an accident...it was an accident...you wouldn't do it on purpose...",
-            "You must have just forgot...right?",
-            "That wasn't funny... That really did hurt.",
-            "Everyone makes mistakes... Even you.",
-            "I don't know what I'm doing wrong.",
-            "That really was awful... Just tell me what I'm doing wrong."
+            _("You...really do like hurting me, don't you?"),
+            _("That was a mistake right? It had to have been..."),
+            _("Y-You're not doing this on purpose are you? Did I do something wrong?"),
+            _("Please be more careful with how I feel... It really does hurt..."),
+            _("That was an accident...it was an accident...you wouldn't do it on purpose..."),
+            _("You must have just forgot...right?"),
+            _("That wasn't funny... That really did hurt."),
+            _("Everyone makes mistakes... Even you."),
+            _("I don't know what I'm doing wrong."),
+            _("That really was awful... Just tell me what I'm doing wrong.")
         ]
 
         if mas_isMoniUpset(lower=True):
