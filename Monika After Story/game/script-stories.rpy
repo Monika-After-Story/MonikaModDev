@@ -33,7 +33,7 @@ init -1 python in mas_stories:
     TYPE_SCARY = "scary"
 
     # pane constant
-    STORY_RETURN = "Nevermind"
+    STORY_RETURN = _("Nevermind")
     story_database = dict()
 
     #Time between story unlocks of the same type (in hours). Changes over sessions, but also changes after the next story unlocks
@@ -136,7 +136,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_short_stories",
             category=['literature'],
-            prompt="Can you tell me a story?",
+            prompt=_("Can you tell me a story?"),
             pool=True,
             unlocked=True
         )
@@ -188,16 +188,16 @@ label monika_short_stories_menu:
         stories_menu_items.sort()
 
         #Add new story
-        stories_menu_items.insert(0, ("A new story", mas_stories.UNLOCK_NEW, True, False))
+        stories_menu_items.insert(0, (_("A new story"), mas_stories.UNLOCK_NEW, True, False))
 
         # build switch button
         #TODO: Build a generalized switch for more than just two items
         if story_type == mas_stories.TYPE_SCARY:
-            switch_str = "short"
+            switch_str = _("short")
         else:
-            switch_str = "scary"
+            switch_str = _("scary")
 
-        switch_item = ("I'd like to hear a " + switch_str + " story", "monika_short_stories_menu", False, False, 20)
+        switch_item = (_("I'd like to hear a {0} story").format(switch_str), "monika_short_stories_menu", False, False, 20)
 
         final_item = (mas_stories.STORY_RETURN, False, False, False, 0)
 
@@ -205,11 +205,11 @@ label monika_short_stories_menu:
     show monika 1eua at t21
 
     if story_type == mas_stories.TYPE_SCARY:
-        $ which = "Witch"
+        $ which = _("Witch")
     else:
-        $ which = "Which"
+        $ which = _("Which")
 
-    $ renpy.say(m, which + " story would you like to hear?" + end, interact=False)
+    $ renpy.say(m, _("{0} story would you like to hear?").format(which) + end, interact=False)
 
     # call scrollable pane
     call screen mas_gen_scrollable_menu(stories_menu_items, mas_ui.SCROLLABLE_MENU_TXT_LOW_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, switch_item, final_item)
@@ -236,7 +236,7 @@ label monika_short_stories_menu:
             if story_to_push == mas_stories.UNLOCK_NEW:
                 if not can_unlock_story:
                     show monika at t11
-                    $ _story_type = story_type if story_type != 'normal' else 'short'
+                    $ _story_type = _(story_type) if story_type != 'normal' else _('short')
                     m 1ekc "Sorry [player]...I can't really think of a new [_story_type] story right now..."
                     m 1eka "If you give me some time I might be able to think of one soon...but in the meantime, I can always tell you an old one again~"
                     show monika 1eua
@@ -354,7 +354,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_tyrant",
-            prompt="The Cat and the Cock",
+            prompt=_("The Cat and the Cock"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=True
         ),
@@ -377,7 +377,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_despise",
-            prompt="The Fox",
+            prompt=_("The Fox"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -400,7 +400,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_lies",
-            prompt="The Shepherd Boy and the Wolf",
+            prompt=_("The Shepherd Boy and the Wolf"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -430,7 +430,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_story_grasshoper",
             category=[mas_stories.TYPE_NORMAL],
-            prompt="The Grasshopper",
+            prompt=_("The Grasshopper"),
             unlocked=False
         ),
         code="STY"
@@ -455,7 +455,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_wind_sun",
-            prompt="The Wind and the Sun",
+            prompt=_("The Wind and the Sun"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -479,7 +479,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_seeds",
-            prompt="The Seeds",
+            prompt=_("The Seeds"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -507,7 +507,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_gray_hair",
-            prompt="The Gray Hair",
+            prompt=_("The Gray Hair"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -533,7 +533,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_fisherman",
-            prompt="The Fisherman",
+            prompt=_("The Fisherman"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -556,7 +556,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_ravel",
-            prompt="Old Man's Three Wishes",
+            prompt=_("Old Man's Three Wishes"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -581,7 +581,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_genie_simple",
-            prompt="The Simple Genie",
+            prompt=_("The Simple Genie"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -632,7 +632,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_genie_regret",
-            prompt="The Genie's Regret",
+            prompt=_("The Genie's Regret"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -668,7 +668,7 @@ label mas_story_genie_regret:
     m 1eka "As for me..."
     m 1rksdlc "Who knows what would have happened in my world if I hadn't done anything..."
 
-    $ placeholder = " at least"
+    $ placeholder = _(" at least")
     if persistent.clearall:
         $ placeholder = ""
         m 1eua "You've gotten to know each and every club member here, so I'd guess you don't regret missing out on anything."
@@ -683,7 +683,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_genie_end",
-            prompt="The Genie's End",
+            prompt=_("The Genie's End"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -727,7 +727,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_immortal_love",
-            prompt="Love Never Ends",
+            prompt=_("Love Never Ends"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -762,7 +762,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_mother_and_trees",
-            prompt="A mother and her trees",
+            prompt=_("A mother and her trees"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -808,7 +808,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_self_hate",
-            prompt="Self-hate",
+            prompt=_("Self-hate"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -856,7 +856,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_o_tei",
-            prompt="The Tale of O-Tei",
+            prompt=_("The Tale of O-Tei"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -903,7 +903,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_crow_and_pitcher",
-            prompt="The Crow and the Pitcher",
+            prompt=_("The Crow and the Pitcher"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -938,7 +938,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_friend",
-            prompt="Having A Best Friend",
+            prompt=_("Having A Best Friend"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -969,7 +969,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_tanabata",
-            prompt="The Weaver Girl and the Cowherd",
+            prompt=_("The Weaver Girl and the Cowherd"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False,
             aff_range=(mas_aff.AFFECTIONATE, None)
@@ -1003,7 +1003,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_mindthegap",
-            prompt="Mind the Gap",
+            prompt=_("Mind the Gap"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -1043,7 +1043,7 @@ init 5 python:
         Event(
             persistent._mas_story_database,
             eventlabel="mas_story_knock",
-            prompt="Knock",
+            prompt=_("Knock"),
             category=[mas_stories.TYPE_NORMAL],
             unlocked=False
         ),
@@ -1101,7 +1101,7 @@ label mas_story_knock:
 #START: SCARY STORIES
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Hunter"),unlocked=True),
     code="STY")
 
 label mas_scary_story_hunter:
@@ -1149,7 +1149,7 @@ label mas_scary_story_hunter:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_kuchisake_onna",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Kuchisake-Onna",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("Kuchisake-Onna"),unlocked=False),
     code="STY")
 
 label mas_scary_story_kuchisake_onna:
@@ -1225,7 +1225,7 @@ label .end:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_mujina",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Mujina",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("Mujina"),unlocked=False),
     code="STY")
 
 label mas_scary_story_mujina:
@@ -1273,7 +1273,7 @@ label mas_scary_story_mujina:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Ubume",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Ubume"),unlocked=False),
     code="STY")
 
 label mas_scary_story_ubume:
@@ -1305,7 +1305,7 @@ label mas_scary_story_ubume:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Woman in Black",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Woman in Black"),unlocked=False),
     code="STY")
 
 label mas_scary_story_womaninblack:
@@ -1338,7 +1338,7 @@ label mas_scary_story_womaninblack:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_resurrection_mary",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Resurrection Mary",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("Resurrection Mary"),unlocked=False),
     code="STY")
 
 label mas_scary_story_resurrection_mary:
@@ -1366,7 +1366,7 @@ label mas_scary_story_resurrection_mary:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Resuscitated Corpse",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Resuscitated Corpse"),unlocked=False),
     code="STY")
 
 label mas_scary_story_corpse:
@@ -1416,7 +1416,7 @@ label mas_scary_story_corpse:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O' Lantern",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("Jack O' Lantern"),unlocked=False),
     code="STY")
 
 label mas_scary_story_jack_o_lantern:
@@ -1451,7 +1451,7 @@ label mas_scary_story_jack_o_lantern:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_baobhan_sith",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Baobhan Sith",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("Baobhan Sith"),unlocked=False),
     code="STY")
 
 label mas_scary_story_baobhan_sith:
@@ -1502,7 +1502,7 @@ label mas_scary_story_baobhan_sith:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Serial Killer",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Serial Killer"),unlocked=False),
     code="STY")
 
 label mas_scary_story_serial_killer:
@@ -1534,7 +1534,7 @@ label mas_scary_story_serial_killer:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_revenant",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The Revenant",unlocked=False),
+    category=[store.mas_stories.TYPE_SCARY], prompt=_("The Revenant"),unlocked=False),
     code="STY")
 
 label mas_scary_story_revenant:
@@ -1571,7 +1571,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_yuki_onna",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="Yuki-onna",
+            prompt=_("Yuki-onna"),
             unlocked=False
         ),
         code="STY"
@@ -1615,7 +1615,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_many_loves",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="Many Loves",
+            prompt=_("Many Loves"),
             unlocked=False
         ),
         code="STY"
@@ -1664,7 +1664,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_gray_lady",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="The Gray Lady",
+            prompt=_("The Gray Lady"),
             unlocked=False
         ),
     code="STY"
@@ -1700,7 +1700,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_flowered_lantern",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="The Flowered Lantern",
+            prompt=_("The Flowered Lantern"),
             unlocked=False
         ),
         code="STY"
@@ -1750,7 +1750,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_flowered_lantern_2",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="The Flowered Lantern 2",
+            prompt=_("The Flowered Lantern 2"),
             pool=True,
             unlocked=False
         ),
@@ -1818,7 +1818,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_flowered_lantern_3",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="The Flowered Lantern 3",
+            prompt=_("The Flowered Lantern 3"),
             pool=True,
             unlocked=False
         ),
@@ -1876,7 +1876,7 @@ init 5 python:
             persistent._mas_story_database,
             eventlabel="mas_scary_story_prison_escape",
             category=[store.mas_stories.TYPE_SCARY],
-            prompt="Prison Escape",
+            prompt=_("Prison Escape"),
             unlocked=False
         ),
         code="STY"
