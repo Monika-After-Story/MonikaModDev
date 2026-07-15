@@ -37,7 +37,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_fun_facts_open",
             category=['misc'],
-            prompt="Can you tell me a fun fact?",
+            prompt=_("Can you tell me a fun fact?"),
             pool=True
         )
     )
@@ -716,19 +716,19 @@ label mas_fun_fact_antarctica_brain:
             or (persistent._mas_pm_have_fam_mess and persistent._mas_pm_have_fam_mess_better in ["YES", "MAYBE"])
         )
 
-        dlg_prefix = "But make sure you keep up with your "
+        dlg_prefix = _("But make sure you keep up with your ")
 
         if has_fam_to_talk and has_friends:
-            dlg_line = dlg_prefix + "family and friends too, okay?"
+            dlg_line = dlg_prefix + _("family and friends too, okay?")
 
         elif has_fam_to_talk and not has_friends:
-            dlg_line = dlg_prefix + "family too, okay?"
+            dlg_line = dlg_prefix + _("family too, okay?")
 
         elif has_friends and not has_fam_to_talk:
-            dlg_line = dlg_prefix + "friends too, okay?"
+            dlg_line = dlg_prefix + _("friends too, okay?")
 
         else:
-            dlg_line = "Just be sure you find some people to talk to in your reality too, okay?"
+            dlg_line = _("Just be sure you find some people to talk to in your reality too, okay?")
 
     m 3eud "Apparently, spending a year in Antarctica can shrink one part of your brain by about 7 percent."
     m 3euc "It looks like it results in reduced memory capacity and spatial thinking ability."
