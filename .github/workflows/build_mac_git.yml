@@ -1,0 +1,85 @@
+name: Build macOS Git Binary
+
+on:
+  push:
+    branches:
+      - renpy8
+  workflow_dispatch:
+    inputs:
+      git_version:
+        description: 'Git version to compile'
+        required: true
+        default: '2.43.0'
+
+jobs:
+  build:
+    name: Build Portable Git for macOS
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Git Source Code
+        run: |
+          VERSION="${{ github.event.inputs.git_version || '2.43.0' }}"
+          echo "Downloading Git v${VERSION}..."
+          curl -LO https://mirrors.edge.kernel.org/pub/software/scm/git/git-${VERSION}.tar.xz
+          tar -xf git-${VERSION}.tar.xz
+
+      - name: Compile Git
+        run: |
+          VERSION="${{ github.event.inputs.git_version || '2.43.0' }}"
+          cd git-${VERSION}
+          
+          # Build directly using Makefile arguments to avoid autoconf dependencies
+          make -j$(sysctl -n hw.ncpu) \
+               prefix=/tmp/git-portable \
+               NO_OPENSSL=YesPlease \
+               APPLE_COMMON_CRYPTO=YesPlease \
+               NO_GETTEXT=YesPlease \
+               NO_EXPAT=YesPlease \
+               NO_TCLTK=YesPlease \
+               RUNTIME_PREFIX=YesPlease \
+               CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.9" \
+               LDFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.9" \
+               all
+                      
+          # Install to temporary folder
+          make prefix=/tmp/git-portable \
+               NO_OPENSSL=YesPlease \
+               APPLE_COMMON_CRYPTO=YesPlease \
+               NO_GETTEXT=YesPlease \
+               NO_EXPAT=YesPlease \
+               NO_TCLTK=YesPlease \
+               RUNTIME_PREFIX=YesPlease \
+               CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.9" \
+               LDFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.9" \
+               install
+
+      - name: Package Git Bundle
+        run: |
+          # Create a minimal portable bundle structure
+          mkdir -p git-mac-portable/bin
+          mkdir -p git-mac-portable/libexec/git-core
+          
+          # Copy main binary
+          cp /tmp/git-portable/bin/git git-mac-portable/bin/
+          
+          # Copy helpers needed for HTTPS networking (required by submod updater)
+          cp /tmp/git-portable/libexec/git-core/git-remote-http git-mac-portable/libexec/git-core/
+          cp /tmp/git-portable/libexec/git-core/git-remote-https git-mac-portable/libexec/git-core/
+          
+          # Verify file types and architectures (should be Universal Binaries)
+          echo "Checking binary architectures:"
+          file git-mac-portable/bin/git
+          file git-mac-portable/libexec/git-core/git-remote-http
+          
+          # Compress the folder
+          zip -r git-mac-portable.zip git-mac-portable
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: git-mac-portable
+          path: git-mac-portable.zip
