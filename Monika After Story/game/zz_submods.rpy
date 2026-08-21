@@ -72,7 +72,7 @@ init -1001 python in mas_submod_utils:
     SUBMODS_DIR = "Submods"
 
     # A string that can be used as a stable identifier
-    RE_SAFE_NAME = re.compile(r"^[^\W\d][ \w\d]*[\w\d]$")
+    RE_SAFE_NAME = re.compile(r"^[^\W\d](?:[ \w\d]*[\w\d])?$")
 
 
     class _Platform(str, Enum):
@@ -887,7 +887,8 @@ init -1001 python in mas_submod_utils:
         """
         header_json = None
         try:
-            with renpy.open_file(header_path.split("/game/")[1], encoding="utf-8") as header_file:
+            rel_header_path = os.path.relpath(header_path, start=config.gamedir).replace("\\", "/")
+            with renpy.open_file(rel_header_path, encoding="utf-8") as header_file:
                 header_json = json.load(header_file)
 
         except Exception as e:
