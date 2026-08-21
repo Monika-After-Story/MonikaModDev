@@ -523,7 +523,7 @@ init -20 python in mas_island_event:
             ParallaxSprite,
             x=912,
             y=46,
-            z=200,
+            z=170,
             function=None,
             on_click="mas_island_distant_islands"
         )
