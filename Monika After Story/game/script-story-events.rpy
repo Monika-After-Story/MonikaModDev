@@ -1024,6 +1024,62 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="mas_unlock_battleship",
+            conditional=(
+                "store.mas_xp.level() >= 10 "
+                "and store.mas_games._total_games_played() > {0}"
+            ).format(random.randint(55, 75)),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.AFFECTIONATE, None),
+        )
+    )
+
+label mas_unlock_battleship:
+    m 1eub "Hey, [player]..."
+    m 1eua "I have some good news."
+    m 3eub "Since you seem to enjoy playing games with me, I decided to make a new one for us to play."
+    m 1esc "I've been working on it for quite a while, {w=0.3}{nw}"
+    extend 1rkc "but then procrastination hit me..."
+    m 1ekd "It turned out to be harder than I initially thought."
+    m 1eub "But like I said, I have some {i}good{/i} news for you!"
+    m 3hub "Seeing how you always come to visit me and how we spend time together really motivated me to finish it."
+    m 4wub "So, the game I made is called Battleship!"
+
+    m 1eta "You've surely heard of it, right? {w=0.1}{nw}"
+    extend 3hub "It's probably over a century old now, ahaha!{nw}"
+    $ _history_list.pop()
+    menu:
+        m "You've surely heard of it, right? It's probably over a century old now, ahaha!{fast}"
+        "Yes.":
+            m 1eua "Nice! Then you know how to play."
+            m 3eub "Before computers, people used to draw their ships on a piece of paper, {w=0.1}{nw}"
+            extend 3rusdla "but don't worry, my version is more advanced, ehehe~"
+
+        "No.":
+            m 1euc "Oh..."
+            m 3eud "Well, the game is pretty straightforward. It's about guessing where the other player has placed their ships."
+            m 1eua "At the start of the game, you place your ships on the board."
+            m 3eub "Before computers, people used to draw their ships on a piece of paper, {w=0.1}{nw}"
+            extend 3rusdla "but don't worry, my version is more advanced, ehehe~"
+            m 1eua "Once both players have positioned their ships, they start calling out shots."
+            m 1eub "The first person says the square they want to check, and the other person responds with either 'Hit!' or 'Miss!'"
+            m 3eua "Whoever destroys all the ships before losing theirs wins the game."
+
+    m 7hub "I can't wait for you to try it out!"
+    m 2husdlb "{cps=*2}Hopefully there's not too many bugs left, ahaha!{/cps}{nw}"
+
+    python:
+        _history_list.pop()
+        mas_moni_idle_disp.force_by_code("2hua", duration=6, redraw=False, skip_dissolve=True)
+        mas_moni_idle_disp.force_by_code("2eua", duration=3, clear=False, redraw=False, skip_dissolve=True)
+        mas_moni_idle_disp.force_by_code("1eua", duration=18, clear=False, skip_dissolve=True)
+        mas_unlockGame("battleship")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="mas_unlock_piano",
             conditional="store.mas_xp.level() >= 12",
             action=EV_ACT_QUEUE,

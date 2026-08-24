@@ -356,7 +356,23 @@ init 999 python:
                 )
             )
 
-            if mas_isGameUnlocked("NOU"):
+            # NOTE: Can't check for unlock here because affection hasn't been loaded yet and the check would return False
+            # If we played at least 1 game, we count it as unlocked
+            if store.mas_battleship.get_total_games():
+                _total_battleship_games = float(store.mas_battleship.get_total_games())
+                _var_data_file.write(
+                    "BATTLESHIP GAMES: {:.0f}\nW/R: {:.1%}\nMACR: {:.1%}\nMB: {}\nPACR: {:.1%}\nPB: {}\n\n".format(
+                        _total_battleship_games,
+                        store.mas_battleship.get_player_winrate(),
+                        store.mas_battleship.get_monika_accuracy(),
+                        store.mas_battleship.get_best_monika_scores(),
+                        store.mas_battleship.get_player_accuracy(),
+                        store.mas_battleship.get_best_player_scores(),
+                    ),
+                )
+                del _total_battleship_games
+
+            if mas_isGameUnlocked("nou"):
                 _total_nou_games = float(store.mas_nou.get_total_games())
                 _var_data_file.write(
                     "NOU GAMES: {:.0f}\nMONIKA W/R: {}\nPLAYER W/R: {}\n\n".format(
@@ -370,8 +386,8 @@ init 999 python:
                             "{:.1%}".format(store.mas_nou.get_wins_for("Player")/_total_nou_games)
                             if _total_nou_games != 0
                             else "N/A"
-                        )
-                    )
+                        ),
+                    ),
                 )
                 del _total_nou_games
 
