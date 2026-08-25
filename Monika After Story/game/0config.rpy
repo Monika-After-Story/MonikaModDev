@@ -160,7 +160,7 @@ define config.window_hide_transition = dissolve_textbox
 init python:
     config.per_frame_screens.append("_trace_screen")
 
-# Disable your ass, shitheads
+# Sync is working as-is, and it's a better way to transfer data between devices
 # init -1099 python:
 #     ## 8.1 Disable syncing
 #     ## NOTE: MUST BE AFTER INIT -1100
