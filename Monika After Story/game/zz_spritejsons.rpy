@@ -2247,7 +2247,7 @@ init 189 python in mas_sprites_json:
         log.info(READING_FILE.format(filepath), pfx_newline=True)
 
         # can we read file
-        with open(filepath, "r") as jsonfile:
+        with renpy.open_file(filepath.split("/game/")[1], encoding="utf-8") as jsonfile:
             jobj = json.load(jsonfile)
 
         # is file json

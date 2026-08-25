@@ -190,7 +190,6 @@ init -1 python in mas_hangman:
         for word in MONI_WORDS:
             wordlist.append(renpy.store.MASPoemWord(sPoint=0,yPoint=0,nPoint=0, mPoint=4, word=word))
 
-
     # file names
     EASY_LIST = "mod_assets/games/hangman/poemwords.txt"
     NORMAL_LIST = "mod_assets/games/hangman/MASpoemwords.txt"
@@ -245,7 +244,7 @@ init -1 python in mas_hangman:
         easy_list = all_hm_words[EASY_MODE]
 
         # lets start with Non Monika words
-        with open(renpy.config.gamedir + "/" + EASY_LIST, "r") as poemwords:
+        with renpy.open_file(EASY_LIST, encoding="utf-8") as poemwords:
             for line in poemwords:
                 line = line.strip()
 
@@ -380,11 +379,11 @@ label game_hangman:
         is_window_sayori_visible = False
 
         # instruction text and other sensitive stuff
-        instruct_txt = (
+        instruct_txt = __(
             "Guess a letter: (Type {0}'!' to give up)"
         )
 
-        instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
+        instruct_txt = instruct_txt.format(__("'?' to repeat the hint, "))
         store.mas_hangman.game_name = "Hangman"
 
 label mas_hangman_game_select_diff:

@@ -44,7 +44,7 @@ init python in mas_chess:
     CHESS_SAVE_PATH = "/chess_games/"
     CHESS_SAVE_EXT = ".pgn"
     CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
-    CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+    CHESS_PROMPT_FORMAT = _("{0} | {1} | Turn: {2} | You: {3}")
 
     #chess modes
     MODE_NORMAL = "normal_chess"
@@ -169,9 +169,9 @@ init python in mas_chess:
 
         # now which one is the player?
         if pgn_game.headers["White"] == mth:
-            the_player = "Black"
+            the_player = _("Black")
         elif pgn_game.headers["Black"] == mth:
-            the_player = "White"
+            the_player = _("White")
         else: # monika must be a player
             return None
 
@@ -868,60 +868,60 @@ label mas_chess_remenu:
         menu_contents = {
             "gamemode_select": {
                 "options": [
-                    ("Normal Chess", mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
-                    ("Randomized Chess", mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
-                    ("Chess 960", mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960)),
+                    (_("Normal Chess"), mas_chess.MODE_NORMAL, False, (chessmode == mas_chess.MODE_NORMAL)),
+                    (_("Randomized Chess"), mas_chess.MODE_BAD_CHESS, False, (chessmode == mas_chess.MODE_BAD_CHESS)),
+                    (_("Chess 960"), mas_chess.MODE_960, False, (chessmode == mas_chess.MODE_960)),
                     # Keep this last
-                    ("Can you explain these game-modes?", "explain_modes", False, False)
+                    (_("Can you explain these game-modes?"), "explain_modes", False, False)
                 ],
                 "final_items": [
-                    ("Ruleset", "ruleset_select", False, False, 20),
-                    ("Practice or Play", "mode_select", False, False, 0),
-                    ("Color", "color_select", False, False, 0),
-                    ("Let's play!", "confirm", False, False, 20),
-                    ("Nevermind.", -1, False, False, 0)
+                    (_("Ruleset"), "ruleset_select", False, False, 20),
+                    (_("Practice or Play"), "mode_select", False, False, 0),
+                    (_("Color"), "color_select", False, False, 0),
+                    (_("Let's play!"), "confirm", False, False, 20),
+                    (_("Nevermind."), -1, False, False, 0)
                 ]
             },
             "ruleset_select": {
                 "options": [
-                    ("Casual Rules", True, False, casual_rules),
-                    ("Traditional Rules", False, False, not casual_rules),
+                    (_("Casual Rules"), True, False, casual_rules),
+                    (_("Traditional Rules"), False, False, not casual_rules),
                     # Keep this last
-                    ("What's the difference?", 0, False, False)
+                    (_("What's the difference?"), 0, False, False)
                 ],
                 "final_items": [
-                    ("Gamemode", "gamemode_select", False, False, 20),
-                    ("Practice or Play", "mode_select", False, False, 0),
-                    ("Color", "color_select", False, False, 0),
-                    ("Let's play!", "confirm", False, False, 20),
-                    ("Nevermind.", -1, False, False, 0)
+                    (_("Gamemode"), "gamemode_select", False, False, 20),
+                    (_("Practice or Play"), "mode_select", False, False, 0),
+                    (_("Color"), "color_select", False, False, 0),
+                    (_("Let's play!"), "confirm", False, False, 20),
+                    (_("Nevermind."), -1, False, False, 0)
                 ]
             },
             "mode_select": {
                 "options": [
-                    ("Practice", True, False, practice_mode),
-                    ("Play", False, False, not practice_mode)
+                    (_("Practice"), True, False, practice_mode),
+                    (_("Play"), False, False, not practice_mode)
                 ],
                 "final_items": [
-                    ("Gamemode", "gamemode_select", False, False, 20),
-                    ("Ruleset", "ruleset_select", False, False, 0),
-                    ("Color", "color_select", False, False, 0),
-                    ("Let's play!", "confirm", False, False, 20),
-                    ("Nevermind.", -1, False, False, 0)
+                    (_("Gamemode"), "gamemode_select", False, False, 20),
+                    (_("Ruleset"), "ruleset_select", False, False, 0),
+                    (_("Color"), "color_select", False, False, 0),
+                    (_("Let's play!"), "confirm", False, False, 20),
+                    (_("Nevermind."), -1, False, False, 0)
                 ]
             },
             "color_select": {
                 "options": [
-                    ("White", True, False, is_player_white),
-                    ("Black", False, False, is_player_white is False),
-                    ("Let's draw lots!", 0, False, is_player_white is 0) #Is check here specifically for states
+                    (_("White"), True, False, is_player_white),
+                    (_("Black"), False, False, is_player_white is False),
+                    (_("Let's draw lots!"), 0, False, is_player_white is 0) #Is check here specifically for states
                 ],
                 "final_items": [
-                    ("Gamemode", "gamemode_select", False, False, 20),
-                    ("Ruleset", "ruleset_select", False, False, 0),
-                    ("Practice or Play", "mode_select", False, False, 0),
-                    ("Let's play!", "confirm", False, False, 20),
-                    ("Nevermind.", -1, False, False, 0)
+                    (_("Gamemode"), "gamemode_select", False, False, 20),
+                    (_("Ruleset"), "ruleset_select", False, False, 0),
+                    (_("Practice or Play"), "mode_select", False, False, 0),
+                    (_("Let's play!"), "confirm", False, False, 20),
+                    (_("Nevermind."), -1, False, False, 0)
                 ]
             }
         }
@@ -1106,11 +1106,11 @@ label mas_chess_start_chess:
         if new_pgn_game.headers.get("DrawRequested"):
             m 1eua "Sure, we'll call this game a draw."
             m 3wuo "That was a pretty long game!"
-            $ line_start = "Great job though"
+            $ line_start = _("Great job though")
 
         else:
             m 1eka "Aw, looks like we have a stalemate."
-            $ line_start = "But on the bright side"
+            $ line_start = _("But on the bright side")
 
         if not persistent._mas_ever_won["chess"]:
             m 3hub "[line_start], you're getting closer and closer to beating me, [player]~"
@@ -1131,6 +1131,7 @@ label mas_chess_start_chess:
                 _("I'm happy to see you win!"),
                 _("No matter the outcome, I'll always enjoy playing with you.")
             ]
+            player_win_quip = renpy.substitute(renpy.translation.translate_string(random.choice(player_win_quips)))
             persistent._mas_chess_stats["practice_wins" if practice_mode else "wins"] += 1
 
             #Give player XP if this is their first win
@@ -1160,11 +1161,11 @@ label mas_chess_start_chess:
                 m 1eka "You undid [undo_count] moves though.{w=0.3} {nw}"
                 extend 3eua "But I'm sure if we keep practicing, we can get that number lower."
 
-            m 3hua "[renpy.substitute(random.choice(player_win_quips))]"
+            m 3hua "[player_win_quip]"
 
         else:
             m 3eub "Great job, you won!"
-            m 3hub "[renpy.substitute(random.choice(player_win_quips))]"
+            m 3hub "[player_win_quip]"
 
         m 1eua "Anyway..."
 
@@ -1219,7 +1220,7 @@ label mas_chess_play_again_ask:
 label mas_chess_draw_lots(begin=True):
     show monika at t11
     $ drew_lots = True
-    $ lets_begin = "{w=0.2} Let's begin." if begin else ""
+    $ lets_begin = _("{w=0.2} Let's begin.") if begin else ""
 
     if random.randint(0, 1) == 0:
         $ is_player_white = chess.WHITE
@@ -1254,7 +1255,7 @@ label mas_chess_savegame(silent=False, allow_return=True):
             save_name = ""
             while len(save_name) == 0:
                 save_name = mas_input(
-                    "Enter a name for this game:",
+                    _("Enter a name for this game:"),
                     allow=mas_chess.CHESS_SAVE_NAME,
                     length=15,
                     screen_kwargs={"use_return_button": allow_return}
@@ -2421,20 +2422,14 @@ init python:
                 # Monika turn actions
                 if not self.is_player_turn() and not self.is_game_over:
                     renpy.show("monika 1dsc")
-                    renpy.say(
-                        m,
-                        renpy.random.choice(
-                            self.monika_move_quips["check"] if self.board.is_check() else self.monika_move_quips["generic"]
-                        ),
-                        False
-                    )
-                    store._history_list.pop()
                     self.handle_monika_move()
 
                 # prepare a quip before the player turn loop
                 should_update_quip = False
-                quip = renpy.random.choice(
-                    self.player_move_prompts["check"] if self.board.is_check() else self.player_move_prompts["generic"]
+                quip = renpy.translation.translate_string(
+                    renpy.random.choice(
+                        self.player_move_prompts["check"] if self.board.is_check() else self.player_move_prompts["generic"]
+                    )
                 )
 
                 # player turn actions
@@ -3310,30 +3305,30 @@ init python:
                 casual_rules,
                 player_move_prompts={
                     "generic": [
-                        "It's your turn, [player].",
-                        "Your move, [player]~",
-                        "What will you do, I wonder...",
-                        "Alright, your turn, [player]~",
-                        "You got this, [player]!"
+                        _("It's your turn, [player]."),
+                        _("Your move, [player]~"),
+                        _("What will you do, I wonder..."),
+                        _("Alright, your turn, [player]~"),
+                        _("You got this, [player]!")
                     ],
                     "check": [
-                        "[mas_quipExp('3tfb')]Check!",
-                        "[mas_quipExp('3huu')]I've got you now, [player]!",
-                        "[mas_quipExp('3hub')]Looks like you're in check!"
+                        _("[mas_quipExp('3tfb')]Check!"),
+                        _("[mas_quipExp('3huu')]I've got you now, [player]!"),
+                        _("[mas_quipExp('3hub')]Looks like you're in check!")
                     ]
                 },
                 monika_move_quips={
                     "generic": [
-                        "Alright, let's see...",
-                        "Okay, my turn...",
-                        "Let's see what I can do.",
-                        "I think I'll try this...",
-                        "Okay, I'll move this here then."
+                        _("Alright, let's see..."),
+                        _("Okay, my turn..."),
+                        _("Let's see what I can do."),
+                        _("I think I'll try this..."),
+                        _("Okay, I'll move this here then.")
                     ],
                     "check": [
-                        "[mas_quipExp('1eusdlc')]Uh oh...",
-                        "[mas_quipExp('1rksdlc')]Hmm...{w=0.2}I need to get out of this...",
-                        "[mas_quipExp('1etc')]What's the right move here..."
+                        _("[mas_quipExp('1eusdlc')]Uh oh..."),
+                        _("[mas_quipExp('1rksdlc')]Hmm...{w=0.2}I need to get out of this..."),
+                        _("[mas_quipExp('1etc')]What's the right move here...")
                     ]
                 }
             )
@@ -3431,9 +3426,9 @@ init python:
                 except OSError as os_err:
                     if not renpy.windows:
                         renpy.show("monika 1etsdlc", at_list=[t11])
-                        renpy.say(m, "Hmm, that's odd. It seems some permissions were changed and I can't get chess running on your system.")
+                        renpy.say(m, _("Hmm, that's odd. It seems some permissions were changed and I can't get chess running on your system."))
                         renpy.show("monika 3eua")
-                        renpy.say(m, "Hold on a second, [player]. I'm going to try something quickly.{w=0.3}.{w=0.3}.{w=0.3}{nw}")
+                        renpy.say(m, _("Hold on a second, [player]. I'm going to try something quickly.{w=0.3}.{w=0.3}.{w=0.3}{nw}"))
 
                         store.mas_ptod.rst_cn()
                         local_ctx = {
@@ -3460,7 +3455,7 @@ init python:
                             stockfish_proc = start_stockfish_proc(path, startupinfo)
 
                             renpy.show("monika 3hua", at_list=[t11])
-                            renpy.say(m, "Yay! We should be able to play now~")
+                            renpy.say(m, _("Yay! We should be able to play now~"))
                             renpy.show("monika", at_list=[t21])
                             return stockfish_proc
 
@@ -3640,32 +3635,37 @@ init python:
             """
             # Poll Monika for moves if it's her turn
             if not self.is_game_over:
-                #Queue a Moni move if this is implemented
+                # Prepare and display Monika's turn quip naturally
+                raw_quip = renpy.random.choice(
+                    self.monika_move_quips["check"] if self.board.is_check() else self.monika_move_quips["generic"]
+                )
+                quip = renpy.translation.translate_string(raw_quip)
+
+                # Prepare fast version for subsequent pause refreshes (no re-typing, no re-pausing)
+                fast_quip = re.sub(r"\{w=[^}]*\}", "", quip)
+                if "{fast}" not in fast_quip:
+                    fast_quip = fast_quip + "{fast}"
+
                 monika_move = None
-                while monika_move is None:
-                    # We have to wait for stockfish to send us a move
-                    monika_move = self.poll_monika_move()
-                    # TODO: FIX THIS SHIT
-                    # 1. MASChessDisplayableBase.handle_monika_move can quit early
-                    #   if there's no moves in the queue for Monika, this might be a bug or not
-                    # 2. stockfish takes time to come up with a move, if we poll here and don't get one, we'd
-                    #   have to run handle_monika_move (and thus game_loop) around 50 times per turn.
-                    #   This is stupid and causes issues when we show multiple quips per turn
-                    # 3. I added this while loop here, in MASChessDisplayable.handle_monika_move we assume that we're using stockfish
-                    #   and will always get a move eventually. but it's still a while loop that freezes the game, to fix this
-                    #   we add short pause here to let screen redraws
-                    # 4. the point is, we have to rethink and remake this turn logic eventually
-                    # 5. Legend: add ellipses to her last dlg and loop it with the ellipses moving while pausing to make it look like she's thinking
+                cycles = 0
+                min_cycles = 4 # ~1.4s minimum thinking time for natural feel
+
+                while monika_move is None or cycles < min_cycles:
                     if monika_move is None:
-                        renpy.pause(0.1)
+                        monika_move = self.poll_monika_move()
+
+                    # First cycle types out text with natural CPS; subsequent cycles keep it held with fast_quip
+                    display_quip = quip if cycles == 0 else fast_quip
+                    renpy.say(m, display_quip, False)
+                    store._history_list.pop()
+
+                    renpy.pause(0.35, hard=True)
+                    cycles += 1
 
                 #Now verify legality
                 monika_move_check = chess.Move.from_uci(monika_move)
 
                 if self.board.is_legal(monika_move_check):
-                    #Monika is thonking
-                    renpy.pause(1.5)
-
                     #Push her move
                     self.__push_move(monika_move)
 

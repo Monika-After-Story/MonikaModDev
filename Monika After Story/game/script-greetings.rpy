@@ -356,7 +356,7 @@ init 5 python:
     )
 
 label greeting_back:
-    $ tod = "day" if mas_globals.time_of_day_4state != "night" else "night"
+    $ tod = _("day") if mas_globals.time_of_day_4state != "night" else _("night")
     m 1eua "[player], you're back!"
     m 1eka "I was starting to miss you."
     m 1hua "Let's have another lovely [tod] together, alright?"
@@ -1220,7 +1220,7 @@ label i_greeting_monikaroom:
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
-    $ _opendoor_text = "...Gently open the door."
+    $ _opendoor_text = _("...Gently open the door.")
 
     if mas_isMoniBroken():
         pause 4.0
@@ -1309,7 +1309,7 @@ label monikaroom_greeting_ear_narration:
 
     if mas_isMoniNormal(higher=True):
         $ tempname = m_name
-        $ m_name = "???"
+        $ m_name = _("???")
         m "As [player] inches [his] ear toward the door,{w=0.3} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
         $ m_name = tempname
@@ -1636,7 +1636,7 @@ label monikaroom_greeting_ear_recursionerror:
 
     python:
         for loop_count in range(random.randint(2, 3)):
-            renpy.say(m, "Great! Alright, let's see...")
+            renpy.say(m, _("Great! Alright, let's see..."))
 
     show noise
     play sound "sfx/s_kill_glitch1.ogg"
@@ -2180,7 +2180,7 @@ label greeting_amnesia:
 
     python:
         entered_good_name = True
-        fakename = renpy.input("What's your name?", allow=name_characters_only, length=20).strip(" \t\n\r")
+        fakename = renpy.input(_("What's your name?"), allow=name_characters_only, length=20).strip(" \t\n\r")
         lowerfake = fakename.lower()
 
     if lowerfake in ("sayori", "yuri", "natsuki"):
@@ -2212,14 +2212,14 @@ label greeting_amnesia:
 
     python:
         if entered_good_name:
-            name_line = renpy.substitute(", [fakename]")
+            name_line = renpy.substitute(_(", [fakename]"))
         else:
             name_line = ""
 
         if mas_current_background == mas_background_def:
-            end_of_line = "I can't seem to leave this classroom."
+            end_of_line = _("I can't seem to leave this classroom.")
         else:
-            end_of_line = "I'm not sure where I am."
+            end_of_line = _("I'm not sure where I am.")
 
     m 1hua "Well, it's nice to meet you[name_line]!"
     m 3eud "Say[name_line], do you happen to know where everyone else is?"
@@ -2897,17 +2897,17 @@ init 5 python:
 label greeting_upset:
     python:
         upset_greeting_quips_first = [
-            "Oh.{w=1} It's you, [player].",
-            "Oh.{w=1} You're back, [player].",
-            "Hello, [player].",
-            "Oh.{w=1} Hello, [player]."
+            _("Oh.{w=1} It's you, [player]."),
+            _("Oh.{w=1} You're back, [player]."),
+            _("Hello, [player]."),
+            _("Oh.{w=1} Hello, [player].")
         ]
 
         upset_greeting_quips_second = [
 #            "What do you want?",
 #            "What now?",
-            "Well...",
-            "Did you want something?",
+            _("Well..."),
+            _("Did you want something?"),
         ]
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
@@ -2935,19 +2935,19 @@ init 5 python:
 label greeting_distressed:
     python:
         distressed_greeting_quips_first = [
-            "Oh...{w=1} Hi, [player].",
-            "Oh...{w=1} Hello, [player].",
-            "Hello, [player]...",
-            "Oh...{w=1} You're back, [player]."
+            _("Oh...{w=1} Hi, [player]."),
+            _("Oh...{w=1} Hello, [player]."),
+            _("Hello, [player]..."),
+            _("Oh...{w=1} You're back, [player].")
         ]
 
         distressed_greeting_quips_second = [
-            "I guess we can spend some time together now.",
-            "I wasn't sure when you'd visit again.",
-            "Hopefully we can enjoy our time together.",
-            "I wasn't expecting you.",
-            "I hope things start going better soon.",
-            "I thought you forgot about me..."
+            _("I guess we can spend some time together now."),
+            _("I wasn't sure when you'd visit again."),
+            _("Hopefully we can enjoy our time together."),
+            _("I wasn't expecting you."),
+            _("I hope things start going better soon."),
+            _("I thought you forgot about me...")
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
@@ -3029,12 +3029,12 @@ label greeting_back_from_school:
 
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
-            final_item = ("I don't want to talk about it.", False, False, False, 20)
+            final_item = (_("I don't want to talk about it."), False, False, False, 20)
             menu_items = [
-                ("It was class related.", ".class_related", False, False),
-                ("It was caused by people.", ".by_people", False, False),
-                ("It was just a bad day.", ".bad_day", False, False),
-                ("I felt sick today.", ".sick", False, False),
+                (_("It was class related."), ".class_related", False, False),
+                (_("It was caused by people."), ".by_people", False, False),
+                (_("It was just a bad day."), ".bad_day", False, False),
+                (_("I felt sick today."), ".sick", False, False),
             ]
 
         show monika 2ekc at t21
@@ -3242,14 +3242,14 @@ label greeting_back_from_work:
 
         #Since this menu is too long, we'll use a gen-scrollable instead
         python:
-            final_item = ("I don't want to talk about it.", False, False, False, 20)
+            final_item = (_("I don't want to talk about it."), False, False, False, 20)
             menu_items = [
-                ("I got yelled at.", ".yelled_at", False, False),
-                ("I got passed over for someone else.", ".passed_over", False, False),
-                ("I had to work late.", ".work_late", False, False),
-                ("I didn't get much done today.", ".little_done", False, False),
-                ("Just another bad day.", ".bad_day", False, False),
-                ("I felt sick today.", ".sick", False, False),
+                (_("I got yelled at."), ".yelled_at", False, False),
+                (_("I got passed over for someone else."), ".passed_over", False, False),
+                (_("I had to work late."), ".work_late", False, False),
+                (_("I didn't get much done today."), ".little_done", False, False),
+                (_("Just another bad day."), ".bad_day", False, False),
+                (_("I felt sick today."), ".sick", False, False),
             ]
 
         show monika 2ekc at t21
@@ -4288,7 +4288,7 @@ label greeting_back_from_hangout:
             m 1eua "Welcome back, [player]."
             m 3hub "I hope you had a good time!"
 
-            $ anyway_lets = "Let's"
+            $ anyway_lets = _("Let's")
 
         else:
             m 3eub "Welcome back, [player]."
@@ -4322,7 +4322,7 @@ label greeting_back_from_hangout:
                     m 3eua "I hope you're able to spend time with them often."
                     $ persistent._mas_pm_has_friends = True
 
-            $ anyway_lets = "Anyway, let's"
+            $ anyway_lets = _("Anyway, let's")
 
         m 1eua "[anyway_lets] spend some more time together~"
 
@@ -4360,7 +4360,7 @@ init 5 python:
 init 11 python:
     MASPoem(
         poem_id="gre_1",
-        category="generic",
+        category=_("generic"),
         prompt=_("Shadows in the Garden"),
         title="",
         text=_("""\
@@ -4555,7 +4555,7 @@ label greeting_after_bath:
     extend 2wuo "[player]! {w=0.2}{nw}"
     extend 2lubsa "I was thinking about you."
 
-    $ bathing_showering = random.choice(("bathing", "showering"))
+    $ bathing_showering = random.choice((_("bathing"), _("showering")))
 
     if mas_getEVL_shown_count("greeting_after_bath") < 5:
         m 7lubsb "I just finished [bathing_showering]...{w=0.3}{nw}"
@@ -4738,7 +4738,7 @@ label greeting_found_nou_shirt:
             $ persistent._mas_pm_snitched_on_chibika = True
             $ renpy.invoke_in_thread(
                 mas_utils.trywrite,
-                os.path.join(renpy.config.basedir, "characters/for snitch.txt"),
+                os.path.join(renpy.config.basedir, "characters/" + _("for snitch.txt")),
                 ">:("
             )
             jump greeting_found_nou_shirt.menu_choice_other

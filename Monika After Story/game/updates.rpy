@@ -665,7 +665,7 @@ label v0_12_5(version="v0_12_5"):
         if seen_event("monika_affection_nickname"):
             mas_setEVLPropValues(
                 "monika_affection_nickname",
-                prompt="Can I call you a different nickname?"
+                prompt=_("Can I call you a different nickname?")
             )
 
         if datetime.date.today() < datetime.date(2021, 12, 31) and persistent._mas_nye_spent_nye:
@@ -1268,16 +1268,16 @@ label v0_11_3(version="v0_11_3"):
 
         #Store all the files we need to rename
         filenames_to_rename = [
-            "imsorry",
-            "imsorry.txt",
-            "forgive me.txt",
-            "can you hear me.txt",
-            "please listen.txt",
-            "surprise.txt",
-            "ehehe.txt",
-            "secret.txt",
-            "for you.txt",
-            "My one and only love.txt"
+            _("imsorry"),
+            _("imsorry.txt"),
+            _("forgive me.txt"),
+            _("can you hear me.txt"),
+            _("please listen.txt"),
+            _("surprise.txt"),
+            _("ehehe.txt"),
+            _("secret.txt"),
+            _("for you.txt"),
+            _("My one and only love.txt")
         ]
 
         for fn in filenames_to_rename:
@@ -1292,11 +1292,11 @@ label v0_11_3(version="v0_11_3"):
         #We'll also get rid of hehehe.txt if it's still here
         try:
             os.rename(
-                renpy.config.basedir + "/hehehe.txt",
-                renpy.config.basedir + "/characters/ehehe.txt"
+                renpy.config.basedir + "/" + _("hehehe.txt"),
+                renpy.config.basedir + "/characters/" + _("ehehe.txt")
             )
         except:
-            mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+            mas_utils.trydel(renpy.config.basedir + "/" + _("hehehe.txt"))
 
         # add to the default unlocked pool topics
         pool_unlock_list = [
@@ -2492,7 +2492,7 @@ label v0_9_1(version="v0_9_1"):
         if plush_ev is not None:
             plush_ev.unlocked = False
             plush_ev.category = None
-            plush_ev.prompt = "monika_plushie"
+            plush_ev.prompt= "monika_plushie"
 
         if renpy.seen_label("monika_driving"):
             mas_unlockEVL("monika_vehicle","EVE")

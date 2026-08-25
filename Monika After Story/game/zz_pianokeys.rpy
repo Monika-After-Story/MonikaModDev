@@ -1470,7 +1470,7 @@ init 790 python in mas_piano_keys:
                 (Default: False)
         """
         # can we read file?
-        with open(filepath, "r") as jsonfile:
+        with renpy.open_file(filepath.split("/game/")[1], encoding="utf-8") as jsonfile:
             # load JSON
             jobj = json.load(jsonfile)
 

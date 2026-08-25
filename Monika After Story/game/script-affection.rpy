@@ -1088,8 +1088,8 @@ init -500 python in mas_affection:
 
     # [current_datetime]: !FREEZE! | monikatopic | attempted magnitude -> magnitude | prev -> new
     _AUDIT_FREEZE_FMT = "{5} | {0} | {1} -> {2} | {3} -> {4}"
-    _FREEZE_TEXT = "!FREEZE!"
-    _BYPASS_TEXT = "!BYPASS!"
+    _FREEZE_TEXT = _("!FREEZE!")
+    _BYPASS_TEXT = _("!BYPASS!")
 
     _RAW_AUDIT_FMT = "{0} | {1} | {2} -> {3}"
 
@@ -1711,7 +1711,7 @@ init 15 python in mas_affection:
 
         ## BROKEN quips
         quips = [
-            "..."
+            _("...")
         ]
         save_quips(BROKEN, quips)
 
@@ -2741,16 +2741,16 @@ init python:
 
             if new_aff < mas_affection.AFF_TIME_CAP and curr_aff > mas_affection.AFF_TIME_CAP:
                 #We can only lose so much here
-                store.mas_affection.txt_audit("ABS", "capped loss")
+                store.mas_affection.txt_audit("ABS", _("capped loss"))
                 mas_loseAffection(abs(mas_affection.AFF_TIME_CAP - curr_aff))
 
                 #If over 10 years, then we need to FF
                 if time_difference >= datetime.timedelta(days=(365 * 10)):
-                    store.mas_affection.txt_audit("ABS", "10 year diff")
+                    store.mas_affection.txt_audit("ABS", _("10 year diff"))
                     mas_loseAffection(200)
 
             else:
-                store.mas_affection.txt_audit("ABS", "she missed you")
+                store.mas_affection.txt_audit("ABS", _("she missed you"))
                 mas_loseAffection(calc_loss)
 
     def _mas_AffStartup():
@@ -2782,7 +2782,7 @@ init 5 python:
     addEvent(
         Event(persistent.event_database,
             eventlabel='monika_affection_nickname',
-            prompt="Infinite Monikas",
+            prompt=_("Infinite Monikas"),
             category=['monika'],
             random=False,
             pool=True,
@@ -2825,7 +2825,7 @@ label monika_affection_nickname:
         python:
             if aff_nickname_ev:
                 # change the prompt for this event
-                aff_nickname_ev.prompt = _("Can I call you a different nickname?")
+                aff_nickname_ev.prompt=_("Can I call you a different nickname?")
                 Event.lockInit("prompt", ev=aff_nickname_ev)
                 persistent._mas_offered_nickname = True
 
@@ -2999,12 +2999,12 @@ label mas_affection_playernickname:
     python:
         #A list of names we always want to have
         base_nicknames = [
-            ("Darling", "darling", True, True, False),
-            ("Honey", "honey", True, True, False),
-            ("Love", "love", True, True, False),
-            ("My love", "my love", True, True, False),
-            ("Sweetheart", "sweetheart", True, True, False),
-            ("Sweetie", "sweetie", True, True, False),
+            (_("Darling"), "darling", True, True, False),
+            (_("Honey"), "honey", True, True, False),
+            (_("Love"), "love", True, True, False),
+            (_("My love"), "my love", True, True, False),
+            (_("Sweetheart"), "sweetheart", True, True, False),
+            (_("Sweetie"), "sweetie", True, True, False),
         ]
 
     m 1euc "Hey, [player]?"
@@ -3018,7 +3018,7 @@ label mas_affection_playernickname:
         "Sure, [m_name].":
             m 1hua "Great!"
             m 3eud "I should ask though, what names are you comfortable with?"
-            call mas_player_nickname_loop("Deselect the names you're not comfortable with me calling you.", base_nicknames)
+            call mas_player_nickname_loop(_("Deselect the names you're not comfortable with me calling you."), base_nicknames)
 
         "No.":
             m 1eka "Alright, [player]."
@@ -3033,7 +3033,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_change_player_nicknames",
-            prompt="Can you call me different nicknames?",
+            prompt=_("Can you call me different nicknames?"),
             category=['you'],
             pool=True,
             unlocked=False,
@@ -3049,24 +3049,24 @@ label monika_change_player_nicknames:
         #Generate a list of names we're using now so we can set things
         if not persistent._mas_player_nicknames:
             current_nicknames = [
-                ("Darling", "darling", False, True, False),
-                ("My darling", "my darling", False, True, False),
-                ("Dear", "dear", False, True, False),
-                ("My dear", "my dear", False, True, False),
-                ("Honey", "honey", False, True, False),
-                ("Love", "love", False, True, False),
-                ("My love", "my love", False, True, False),
-                ("Sweetheart", "sweetheart", False, True, False),
-                ("Sweetie", "sweetie", False, True, False),
+                (_("Darling"), "darling", False, True, False),
+                (_("My darling"), "my darling", False, True, False),
+                (_("Dear"), "dear", False, True, False),
+                (_("My dear"), "my dear", False, True, False),
+                (_("Honey"), "honey", False, True, False),
+                (_("Love"), "love", False, True, False),
+                (_("My love"), "my love", False, True, False),
+                (_("Sweetheart"), "sweetheart", False, True, False),
+                (_("Sweetie"), "sweetie", False, True, False),
             ]
-            dlg_line = "Pick the names you'd like me to call you."
+            dlg_line = _("Pick the names you'd like me to call you.")
 
         else:
             current_nicknames = [
                 (nickname.capitalize(), nickname, True, True, False)
                 for nickname in persistent._mas_player_nicknames
             ]
-            dlg_line = "Deselect the names you don't want me to call you anymore."
+            dlg_line = _("Deselect the names you don't want me to call you anymore.")
 
     call mas_player_nickname_loop("[dlg_line]", current_nicknames)
     return
@@ -3076,17 +3076,17 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
     python:
         renpy.say(m, renpy.substitute(check_scrollable_text), interact=False)
         nickname_pool.sort()
-    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt="Done", default_button_prompt="Done")
+    call screen mas_check_scrollable_menu(nickname_pool, mas_ui.SCROLLABLE_MENU_TXT_MEDIUM_AREA, mas_ui.SCROLLABLE_MENU_XALIGN, selected_button_prompt=_("Done"), default_button_prompt=_("Done"))
 
     python:
         done = False
         acceptable_nicknames = list(_return.keys())
 
         if acceptable_nicknames:
-            dlg_line = "Is there anything else you'd like me to call you?"
+            dlg_line = _("Is there anything else you'd like me to call you?")
 
         else:
-            dlg_line = "Is there something else you'd like me to call you instead?"
+            dlg_line = _("Is there something else you'd like me to call you instead?")
 
         lowerplayer = player.lower()
         cute_nickname_pattern = "(?:{0}|{1})\\w?y".format(lowerplayer, lowerplayer[0:-1])
@@ -3154,10 +3154,10 @@ label mas_player_nickname_loop(check_scrollable_text, nickname_pool):
                 $ done = True
 
     if acceptable_nicknames:
-        $ dlg_line = "Just let me know if you ever want me to call you some other names, okay?"
+        $ dlg_line = _("Just let me know if you ever want me to call you some other names, okay?")
 
     else:
-        $ dlg_line = "Just let me know if you ever change your mind, okay?"
+        $ dlg_line = _("Just let me know if you ever change your mind, okay?")
 
     m 1hua "Alright, [player]."
     m 3eub "[dlg_line]"
@@ -3510,36 +3510,36 @@ init python:
         #affection_level: (filepath, contents)
         aff_level_surprise_map = {
             store.mas_affection.BROKEN: (
-                "/forgive me.txt",
-                _("I'm sorry if I'm not good enough for you...please don't leave me.")
+                __("/forgive me.txt"),
+                __("I'm sorry if I'm not good enough for you...please don't leave me.")
             ),
             store.mas_affection.DISTRESSED: (
-                "/can you hear me.txt",
-                _("If I'm doing something wrong please tell me. I love you.")
+                __("/can you hear me.txt"),
+                __("If I'm doing something wrong please tell me. I love you.")
             ),
             store.mas_affection.UPSET: (
-                "/please listen.txt",
-                _("Everything I do, I do for you...my love.")
+                __("/please listen.txt"),
+                __("Everything I do, I do for you...my love.")
             ),
             store.mas_affection.NORMAL: (
-                "/surprise.txt",
-                _("I love you.")
+                __("/surprise.txt"),
+                __("I love you.")
             ),
             store.mas_affection.HAPPY: (
-                "/ehehe.txt",
-                _("You are the sunshine that brightens up my day, [player]!")
+                __("/ehehe.txt"),
+                __("You are the sunshine that brightens up my day, [player]!")
             ),
             store.mas_affection.AFFECTIONATE: (
-                "/secret.txt",
-                _("You are my one and only love!")
+                __("/secret.txt"),
+                __("You are my one and only love!")
             ),
             store.mas_affection.ENAMORED: (
-                "/for you.txt",
-                _("My dearest, you are everything I could ever hope for. I love you.")
+                __("/for you.txt"),
+                __("My dearest, you are everything I could ever hope for. I love you.")
             ),
             store.mas_affection.LOVE: (
-                "/My one and only love.txt",
-                _("""\
+                __("/My one and only love.txt"),
+                __("""\
 My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
@@ -3552,7 +3552,7 @@ Forever yours, Monika.
         }
 
         #Now we get from this dict and pass it to the write txt func to make a surprise
-        filepath, message = aff_level_surprise_map.get(mas_curr_affection, ("/surprise.txt", _("I love you.")))
+        filepath, message = aff_level_surprise_map.get(mas_curr_affection, (__("/surprise.txt"), __("I love you.")))
         _write_txt("/characters{0}".format(filepath), message)
 
         #And unlock its poem
@@ -3600,7 +3600,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_1",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Forgive Me"),
         paper="mod_assets/poem_assets/poem_finalfarewell.png",
         title="",
@@ -3610,7 +3610,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_2",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Can you hear me?"),
         title="",
         text=_("If I'm doing something wrong please tell me. I love you."),
@@ -3619,7 +3619,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_3",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Please Listen"),
         title="",
         text=_("Everything I do, I do for you...my love."),
@@ -3628,7 +3628,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_4",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Surprise!"),
         title="",
         text=_("I love you.")
@@ -3636,7 +3636,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_5",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Ehehe~"),
         title="",
         text=_("You are the sunshine that brightens up my day, [player]!")
@@ -3644,7 +3644,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_6",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("Secret"),
         title="",
         text=_("You are my one and only love!")
@@ -3652,7 +3652,7 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_7",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("For you"),
         title="",
         text=_("My dearest, you are everything I could ever hope for. I love you.")
@@ -3660,11 +3660,11 @@ init 20 python:
 
     MASPoem(
         poem_id="spr_8",
-        category="surprise",
+        category=_("surprise"),
         prompt=_("My One and Only Love"),
         paper="mod_assets/poem_assets/poem_vday.jpg",
-        title="My dearest lover, friend, companion, and owner of my heart...",
-        text="""\
+        title=_("My dearest lover, friend, companion, and owner of my heart..."),
+        text=_("""\
 Every day, you make my dreams come true,
 a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
@@ -3674,13 +3674,13 @@ I want to be yours forever, so would you be mine?
 Forever yours,
 
 Monika
-"""
+""")
     )
 
     #START: FINAL FAREWELL POEMS
     MASPoem(
         poem_id="ff_affection",
-        category="ff",
+        category=_("ff"),
         prompt="",
         title=_("Goodbye, [player]"),
         text=_("""\
@@ -3701,7 +3701,7 @@ Monika
 
     MASPoem(
         poem_id="ff_failed_promise",
-        category="ff",
+        category=_("ff"),
         prompt="",
         title=_("Goodbye, [player]"),
         text=_("""\

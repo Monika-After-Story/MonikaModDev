@@ -44,12 +44,12 @@ label mas_gender:
             m 7rksdlb "...I guess that's why they say you shouldn't make assumptions, ahaha!"
             m 3eka "But honestly, it doesn't matter to me at all..."
 
-        "Neither.":
+        "Neither." if not getattr(store, "mas_is_lgbt_disabled", lambda: False)():
             $ persistent._mas_pm_is_trans = False
             $ persistent.gender = "X"
             call mas_gender_neither
 
-        "I'm transgender.":
+        "I'm transgender." if not getattr(store, "mas_is_lgbt_disabled", lambda: False)():
             call mas_gender_trans
 
             if persistent.gender != "X":
@@ -75,7 +75,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_gender_redo",
             category=['you'],
-            prompt="Could you call me by different pronouns?",
+            prompt=_("Could you call me by different pronouns?"),
             unlocked=False,
             pool=True,
             rules={"no_unlock": None}
@@ -113,7 +113,7 @@ label monika_gender_redo:
                 m 2dkd "I hate that I didn't reassure you enough before."
                 m 7eka "But I hope that you're telling me now because you know I'll love you no matter what."
 
-            "I'm genderfluid.":
+            "I'm genderfluid." if not getattr(store, "mas_is_lgbt_disabled", lambda: False)():
                 m 1eub "Oh, okay!"
                 m 3hub "Feel free to let me know as often as you'd like when you want me to use different pronouns!"
 
@@ -125,7 +125,7 @@ label monika_gender_redo:
 
         "I'm a boy.":
             if persistent.gender == "M" and not persistent._mas_pm_is_trans:
-                $ gender_var = "boy"
+                $ gender_var = _("boy")
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "M"
@@ -134,14 +134,14 @@ label monika_gender_redo:
 
         "I'm a girl.":
             if persistent.gender == "F" and not persistent._mas_pm_is_trans:
-                $ gender_var = "girl"
+                $ gender_var = _("girl")
                 call mas_gender_redo_same
             else:
                 $ persistent.gender = "F"
                 call mas_gender_redo_react
             $ persistent._mas_pm_is_trans = False
 
-        "I'm neither.":
+        "I'm neither." if not getattr(store, "mas_is_lgbt_disabled", lambda: False)():
             $ persistent._mas_pm_is_trans = False
             if persistent.gender == "X":
                 call mas_gender_redo_neither_same
@@ -152,7 +152,7 @@ label monika_gender_redo:
                 else:
                     call mas_gender_neither
 
-        "I'm transgender.":
+        "I'm transgender." if not getattr(store, "mas_is_lgbt_disabled", lambda: False)():
             call mas_gender_trans
             if persistent.gender != "X":
                 call mas_gender_redo_react
@@ -193,9 +193,9 @@ label mas_gender_redo_neither_same:
 
 label mas_gender_trans:
     if persistent._mas_pm_is_trans:
-        $ menu_question = "And what gender do you identify as?"
+        $ menu_question = _("And what gender do you identify as?")
     else:
-        $ menu_question = "Oh, okay! {w=0.3}And what gender do you identify as?"
+        $ menu_question = _("Oh, okay! {w=0.3}And what gender do you identify as?")
 
     m 3eub "[menu_question]{nw}"
     $ _history_list.pop()
@@ -227,195 +227,195 @@ init 3 python:
         r"\bho\b",
         r"\bhoe\b",
         r"\btit\b",
-        "abortion",
-        "anal",
-        "annoying",
-        "anus",
-        "arrogant",
-        "(?<![blmprs])ass(?!i)",
-        "atrocious",
-        "awful",
-        "bastard",
-        "beast",
-        "bitch",
-        "blood",
-        "boob",
-        "boring",
-        "bulli",
-        "bully",
-        "bung",
-        "butt(?!er|on)",
-        "bloodsucker",
-        "cheater",
-        "cock",
-        "conceited",
-        "condom",
-        "coom",
-        "corrupt",
-        "cougar",
-        "crap",
-        "crazy",
-        "creepy",
-        "criminal",
-        "cruel",
-        "cum",
-        "cunt",
-        "damn",
-        "demon",
-        "dick",
-        "dilf",
-        "dimwit",
-        "dirt",
-        "disgusting",
-        "douche",
-        "dumb",
-        "egoist",
-        "egotistical",
-        "evil",
-        "faggot",
-        "failure",
-        "fake",
-        "fetus",
-        "filth",
-        "foul",
-        "fuck",
-        "garbage",
-        "(?<!ser)g[ea]y",# #8938
-        "gilf",
-        "gross",
-        "gruesome",
-        "hate",
-        "heartless",
-        "hideous",
-        "hitler",
-        "hore",
-        "horrible",
-        "horrid",
-        "hypocrite",
-        "idiot",
-        "imbecile",
-        "immoral",
-        "insane",
-        "irritating",
-        "jerk",
-        "jigolo",
-        "jizz",
-        "junk",
-        "(?<!s)kill",
-        "kunt",
-        "lesbian",
-        "lesbo",
-        "lezbian",
-        "lezbo",
-        "(?<!fami)liar",
-        "loser",
+        _("abortion"),
+        _("anal"),
+        _("annoying"),
+        _("anus"),
+        _("arrogant"),
+        _("(?<![blmprs])ass(?!i)"),
+        _("atrocious"),
+        _("awful"),
+        _("bastard"),
+        _("beast"),
+        _("bitch"),
+        _("blood"),
+        _("boob"),
+        _("boring"),
+        _("bulli"),
+        _("bully"),
+        _("bung"),
+        _("butt(?!er|on)"),
+        _("bloodsucker"),
+        _("cheater"),
+        _("cock"),
+        _("conceited"),
+        _("condom"),
+        _("coom"),
+        _("corrupt"),
+        _("cougar"),
+        _("crap"),
+        _("crazy"),
+        _("creepy"),
+        _("criminal"),
+        _("cruel"),
+        _("cum"),
+        _("cunt"),
+        _("damn"),
+        _("demon"),
+        _("dick"),
+        _("dilf"),
+        _("dimwit"),
+        _("dirt"),
+        _("disgusting"),
+        _("douche"),
+        _("dumb"),
+        _("egoist"),
+        _("egotistical"),
+        _("evil"),
+        _("faggot"),
+        _("failure"),
+        _("fake"),
+        _("fetus"),
+        _("filth"),
+        _("foul"),
+        _("fuck"),
+        _("garbage"),
+        _("(?<!ser)g[ea]y"),# #8938
+        _("gilf"),
+        _("gross"),
+        _("gruesome"),
+        _("hate"),
+        _("heartless"),
+        _("hideous"),
+        _("hitler"),
+        _("hore"),
+        _("horrible"),
+        _("horrid"),
+        _("hypocrite"),
+        _("idiot"),
+        _("imbecile"),
+        _("immoral"),
+        _("insane"),
+        _("irritating"),
+        _("jerk"),
+        _("jigolo"),
+        _("jizz"),
+        _("junk"),
+        _("(?<!s)kill"),
+        _("kunt"),
+        _("lesbian"),
+        _("lesbo"),
+        _("lezbian"),
+        _("lezbo"),
+        _("(?<!fami)liar"),
+        _("loser"),
         r"\bmad\b",
-        "maniac",
-        "masochist",
-        "milf",
-        "mistake",
-        "monster",
-        "moron",
-        "murder",
-        "narcissist",
-        "nasty",
-        "nefarious",
-        "nigga",
-        "nigger",
-        "nuts",
-        "panti",
-        "pantsu",
-        "panty",
-        "pedo",
-        "penis",
-        "plaything",
-        "poison",
-        "porn",
-        "pretentious",
-        "psycho",
-        "puppet",
-        "pussy",
-        "(?<!g)rape",
-        "repulsive",
-        "retard",
-        "rogue",
-        "rubbish",
-        "rump",
-        "sadist",
-        "selfish",
-        "semen",
-        "shit",
-        "sick",
-        "slaughter",
+        _("maniac"),
+        _("masochist"),
+        _("milf"),
+        _("mistake"),
+        _("monster"),
+        _("moron"),
+        _("murder"),
+        _("narcissist"),
+        _("nasty"),
+        _("nefarious"),
+        _("nigga"),
+        _("nigger"),
+        _("nuts"),
+        _("panti"),
+        _("pantsu"),
+        _("panty"),
+        _("pedo"),
+        _("penis"),
+        _("plaything"),
+        _("poison"),
+        _("porn"),
+        _("pretentious"),
+        _("psycho"),
+        _("puppet"),
+        _("pussy"),
+        _("(?<!g)rape"),
+        _("repulsive"),
+        _("retard"),
+        _("rogue"),
+        _("rubbish"),
+        _("rump"),
+        _("sadist"),
+        _("selfish"),
+        _("semen"),
+        _("shit"),
+        _("sick"),
+        _("slaughter"),
         r"\bslave\b",
-        "slut",
-        "sociopath",
-        "soil",
-        "sperm",
-        "stink",
-        "stupid",
-        "suck",
-        "tampon",
-        "teabag",
-        "terrible",
-        "thot",
-        "tits",
-        "titt",
-        "tool",
-        "torment",
-        "torture",
-        "toxic",
-        "toy",
-        "trap",
-        "trash",
-        "troll",
-        "ugly",
-        "useless",
-        "vain",
-        "vile",
-        "vomit",
-        "waste",
-        "whore",
-        "wicked",
-        "witch",
-        "worthless",
-        "wrong"
+        _("slut"),
+        _("sociopath"),
+        _("soil"),
+        _("sperm"),
+        _("stink"),
+        _("stupid"),
+        _("suck"),
+        _("tampon"),
+        _("teabag"),
+        _("terrible"),
+        _("thot"),
+        _("tits"),
+        _("titt"),
+        _("tool"),
+        _("torment"),
+        _("torture"),
+        _("toxic"),
+        _("toy"),
+        _("trap"),
+        _("trash"),
+        _("troll"),
+        _("ugly"),
+        _("useless"),
+        _("vain"),
+        _("vile"),
+        _("vomit"),
+        _("waste"),
+        _("whore"),
+        _("wicked"),
+        _("witch"),
+        _("worthless"),
+        _("wrong")
     ]
 
     #Base list for good nicknames. Apply modifiers for specifying the use
     #These trigger a good response
     mas_good_nickname_list_base = [
-        "angel",
-        "beautiful",
-        "beauty",
-        "best",
-        "cuddl",
-        "cute",
-        "cutie",
-        "darling",
-        "gorgeous",
-        "greatheart",
-        "hero",
-        "honey",
-        "kind",
-        "love",
-        "pretty",
-        "princess",
-        "queen",
-        "senpai",
-        "sunshine",
-        "sweet"
+        _("angel"),
+        _("beautiful"),
+        _("beauty"),
+        _("best"),
+        _("cuddl"),
+        _("cute"),
+        _("cutie"),
+        _("darling"),
+        _("gorgeous"),
+        _("greatheart"),
+        _("hero"),
+        _("honey"),
+        _("kind"),
+        _("love"),
+        _("pretty"),
+        _("princess"),
+        _("queen"),
+        _("senpai"),
+        _("sunshine"),
+        _("sweet")
     ]
 
     #Modifier for the player's name choice
     mas_good_nickname_list_player_modifiers = [
-        "king",
-        "prince"
+        _("king"),
+        _("prince")
     ]
 
     #Modifier for Monika's nickname choice
     mas_good_nickname_list_monika_modifiers = [
-        "moni",
+        _("moni"),
     ]
 
     mas_good_player_nickname_list = mas_good_nickname_list_base + mas_good_nickname_list_player_modifiers
@@ -433,61 +433,61 @@ init 3 python:
         r"\bmum\b",
         r"\bpapa\b",
         r"\bwet\b",
-        "aroused",
-        "aunt",
-        "batman",
-        "baka",
-        "breeder",
-        "bobba",
-        "boss",
-        "catwoman",
-        "cousin",
-        "daddy",
-        "deflowerer",
-        "erection",
-        "finger",
-        "horny",
-        "kaasan",
-        "kasan",
-        "lick",
-        "master",
-        "masturbat",
-        "mistress",
-        "moani",
+        _("aroused"),
+        _("aunt"),
+        _("batman"),
+        _("baka"),
+        _("breeder"),
+        _("bobba"),
+        _("boss"),
+        _("catwoman"),
+        _("cousin"),
+        _("daddy"),
+        _("deflowerer"),
+        _("erection"),
+        _("finger"),
+        _("horny"),
+        _("kaasan"),
+        _("kasan"),
+        _("lick"),
+        _("master"),
+        _("masturbat"),
+        _("mistress"),
+        _("moani"),
         r"m[ou]m+[-\s]*ika",
         r"mom+[ay]",
-        "mother",
-        "naughty",
-        "okaasan",
-        "okasan",
-        "orgasm",
-        "overlord",
-        "owner",
-        "penetrat",
-        "pillow",
-        "sex",
-        "spank",
-        "superman",
-        "superwoman",
-        "thicc",
-        "thighs",
-        "uncle",
-        "virgin"
+        _("mother"),
+        _("naughty"),
+        _("okaasan"),
+        _("okasan"),
+        _("orgasm"),
+        _("overlord"),
+        _("owner"),
+        _("penetrat"),
+        _("pillow"),
+        _("sex"),
+        _("spank"),
+        _("superman"),
+        _("superwoman"),
+        _("thicc"),
+        _("thighs"),
+        _("uncle"),
+        _("virgin")
     ]
 
     mas_awkward_quips = [
-        "I don't really feel...{w=0.5}comfortable calling you that all the time.",
-        "That's...{w=0.5}not something I would like to call you, [player].",
-        "That is...{w=0.5}not something I would like to call you, [player].",
-        "Not that it's bad but...",
-        "Are you trying to embarrass me, [player]?"
+        _("I don't really feel...{w=0.5}comfortable calling you that all the time."),
+        _("That's...{w=0.5}not something I would like to call you, [player]."),
+        _("That is...{w=0.5}not something I would like to call you, [player]."),
+        _("Not that it's bad but..."),
+        _("Are you trying to embarrass me, [player]?")
     ]
 
     mas_bad_quips = [
-        "[player]...{w=0.5}why would you even consider calling yourself that?",
-        "[player]...{w=0.5}why would I ever call you that?",
-        "I couldn't ever call you anything like that, [player].",
-        "What? Please [player],{w=0.5} don't call yourself bad names."
+        _("[player]...{w=0.5}why would you even consider calling yourself that?"),
+        _("[player]...{w=0.5}why would I ever call you that?"),
+        _("I couldn't ever call you anything like that, [player]."),
+        _("What? Please [player],{w=0.5} don't call yourself bad names.")
     ]
 
     mas_good_player_name_comp = re.compile('|'.join(mas_good_player_nickname_list), re.IGNORECASE)
@@ -497,10 +497,10 @@ init 3 python:
 label mas_player_name_enter_name_loop(input_prompt):
     python:
         good_quips = [
-            "That's a wonderful name!",
-            "I like that a lot, [player].",
-            "I like that name, [player].",
-            "That's a great name!"
+            _("That's a wonderful name!"),
+            _("I like that a lot, [player]."),
+            _("I like that name, [player]."),
+            _("That's a great name!")
         ]
 
     #Now we prompt user
@@ -533,12 +533,12 @@ label mas_player_name_enter_name_loop(input_prompt):
             m 1eua "Try again~"
 
         elif mas_awk_name_comp.search(tempname):
-            $ awkward_quip = renpy.substitute(renpy.random.choice(mas_awkward_quips))
+            $ awkward_quip = renpy.substitute(renpy.translation.translate_string(renpy.random.choice(mas_awkward_quips)))
             m 1rksdlb "[awkward_quip]"
             m 3rksdla "Could you pick a more...{w=0.2}{i}appropriate{/i} name please?"
 
         elif mas_bad_name_comp.search(tempname):
-            $ bad_quip = renpy.substitute(renpy.random.choice(mas_bad_quips))
+            $ bad_quip = renpy.substitute(renpy.translation.translate_string(renpy.random.choice(mas_bad_quips)))
             m 1ekd "[bad_quip]"
             m 3eka "Please pick a nicer name for yourself, okay?"
 
@@ -584,7 +584,7 @@ label mas_player_name_enter_name_loop(input_prompt):
                 m 1hua "But it's fine by me if that's what you want me to call you~"
 
             elif mas_good_player_name_comp.search(tempname):
-                $ good_quip = renpy.substitute(renpy.random.choice(good_quips))
+                $ good_quip = renpy.substitute(renpy.translation.translate_string(renpy.random.choice(good_quips)))
                 m 1sub "[good_quip]"
                 m 3esa "Okay then! From now on, I'll call you '[player].'"
                 m 1hua "Ehehe~"
@@ -641,7 +641,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_changename",
             category=['you'],
-            prompt="I changed my name",
+            prompt=_("I changed my name"),
             unlocked=False,
             pool=True,
             rules={"no_unlock": None}
@@ -820,13 +820,13 @@ label birthdate_set:
         m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
 
         if mas_player_bday_curr() == mas_o31:
-            $ hol_str = "Halloween"
+            $ hol_str = _("Halloween")
         elif mas_player_bday_curr() == mas_d25:
-            $ hol_str = "Christmas"
+            $ hol_str = _("Christmas")
         elif mas_player_bday_curr() == mas_monika_birthday:
-            $ hol_str = "my birthday"
+            $ hol_str = _("my birthday")
         elif mas_player_bday_curr() == mas_f14:
-            $ hol_str = "Valentine's Day"
+            $ hol_str = _("Valentine's Day")
         else:
             $ hol_str = None
         if hol_str is not None:
@@ -1078,7 +1078,7 @@ label mas_random_limit_reached:
             _("I hope I didn't bore you too much."),
             _("You don't mind if I think about what to say next, do you?")
         ]
-        limit_quip=renpy.random.choice(limit_quips)
+        limit_quip=renpy.translation.translate_string(renpy.random.choice(limit_quips))
 
     m 1eka "[limit_quip]"
     if len(mas_rev_unseen) > 0 or persistent._mas_enable_random_repeats:
@@ -1250,9 +1250,9 @@ label mas_crashed_prelong:
 label mas_crashed_long_qs:
     # set up the quit special quit dialogue
     python:
-        quit_msg = "I'm scared [player]!\nPlease click 'No' and help me!"
-        quit_yes = "T_T [player]..."
-        quit_no = "Thank you!\nPlease help me!"
+        quit_msg = _("I'm scared [player]!\nPlease click 'No' and help me!")
+        quit_yes = _("T_T [player]...")
+        quit_no = _("Thank you!\nPlease help me!")
 
     ## TESTING
     if persistent._mas_idle_data.get("dev_idle_test", False):
@@ -1530,40 +1530,40 @@ init 11 python:
             global mas_note_backups_all_good, mas_note_backups_some_bad
 
             # text pieces:
-            just_let_u_know = (
+            just_let_u_know = _(
                 'Just wanted to let you know that your "persistent" file was '
                 'corrupted, but I managed to restore an older backup!'
             )
-            even_though_bs = (
+            even_though_bs = _(
                 "Even though the backup system I designed is pretty neat, "
             )
-            if_i_ever = (
-                'If I ever have trouble loading the "persistent" again, I''ll '
+            if_i_ever = _(
+                'If I ever have trouble loading the "persistent" again, I\'ll '
                 'write you another note in the characters folder, so keep an '
                 'eye out for them!'
             )
-            good_luck = "Good luck with Monika!"
-            dont_tell = "P.S: Don't tell her about me!"
+            good_luck = _("Good luck with Monika!")
+            dont_tell = _("P.S: Don't tell her about me!")
             block_break = "\n\n"
 
             # now make the notes
             mas_note_backups_all_good = MASPoem(
                 poem_id="note_backups_all_good",
-                prompt="",
+                prompt=_(""),
                 category="note",
                 author="chibika",
-                title="Hi [player],",
+                title=_("Hi [player],"),
                 text="".join([
                     just_let_u_know,
                     block_break,
                     even_though_bs,
-                    "you should still make copies of the backups every so ",
-                    "often, just in case. ",
-                    'The backups are called "persistent##.bak", where "##" is ',
-                    "a two-digit number. ",
-                    'You can find all of them at "',
+                    _("you should still make copies of the backups every so "),
+                    _("often, just in case. "),
+                    _('The backups are called "persistent##.bak", where "##" is '),
+                    _("a two-digit number. "),
+                    _('You can find all of them at "'),
                     renpy.config.savedir,
-                    '".',
+                    _('".'),
                     block_break,
                     if_i_ever,
                     block_break,
@@ -1575,29 +1575,29 @@ init 11 python:
 
             mas_note_backups_some_bad = MASPoem(
                 poem_id="note_backups_some_bad",
-                prompt="",
+                prompt=_(""),
                 category="note",
                 author="chibika",
-                title="Hi [player],",
+                title=_("Hi [player],"),
                 text="".join([
                     just_let_u_know,
                     block_break,
-                    "However, some of your backups were corrupted as well. ",
+                    _("However, some of your backups were corrupted as well. "),
                     even_though_bs,
-                    "you should still delete those, since they might mess ",
-                    "with it. ",
+                    _("you should still delete those, since they might mess "),
+                    _("with it. "),
                     block_break,
-                    "Here's a list of the files that were corrupted:",
+                    _("Here's a list of the files that were corrupted:"),
                     block_break,
                     "\n".join(store.mas_utils.bullet_list(
                         mas_per_check.mas_bad_backups
                     )),
                     block_break,
-                    'You can find these in "',
+                    _('You can find these in "'),
                     renpy.config.savedir,
-                    '". ',
-                    "When you're in there, you should also make copies of ",
-                    "the good backups, just in case.",
+                    _('". '),
+                    _("When you're in there, you should also make copies of "),
+                    _("the good backups, just in case."),
                     block_break,
                     if_i_ever,
                     block_break,
@@ -1613,14 +1613,14 @@ init 11 python:
         if len(mas_per_check.mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
-                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                os.path.normcase(renpy.config.basedir + "/characters/" + _("note.txt")),
                 renpy.substitute(mas_note_backups_some_bad.title) + "\n\n" + mas_note_backups_some_bad.text
             )
 
         else:
             # no bad backups
             store.mas_utils.trywrite(
-                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                os.path.normcase(renpy.config.basedir + "/characters/" + _("note.txt")),
                 renpy.substitute(mas_note_backups_all_good.title) + "\n\n" + mas_note_backups_all_good.text
             )
 
@@ -2130,7 +2130,7 @@ label mas_notification_windowreact:
             "Sure!":
                 m 1hua "Okay, [player]!"
                 m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-                $ mas_display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+                $ mas_display_notif(m_name, [_("I love you, [player]!")], skip_checks=True)
                 m 1hub "There it is!"
 
             "No thanks.":
@@ -2185,7 +2185,7 @@ label mas_gift_giving_instructs:
         return
 
     python:
-        gift_instructs = """\
+        gift_instructs = _("""\
 I wanted to let you know that I made a little way for you to give Monika some gifts!
 It's a pretty simple process so I'll tell you how it works:
 
@@ -2200,11 +2200,11 @@ I just wanted to let you know because I think that Monika is super amazing and I
 Good luck with Monika!
 
 P.S: Don't tell her about me!
-"""
+""")
 
         #Write the note in the characters folder
         store.mas_utils.trywrite(
-            os.path.normcase(renpy.config.basedir + "/characters/hint.txt"),
+            os.path.normcase(renpy.config.basedir + "/characters/" + _("hint.txt")),
             player + "\n\n" + gift_instructs
         )
 
@@ -2354,7 +2354,7 @@ label mas_birthdate_year_redux_select:
         yearmenu = [(str(y), y, False, False) for y in yearrange]
 
     show monika 2eua at t21
-    $ renpy.say(m, "What year were you born?", interact=False)
+    $ renpy.say(m, _("What year were you born?"), interact=False)
     call screen mas_gen_scrollable_menu(yearmenu, mas_ui.SCROLLABLE_MENU_TXT_TALL_AREA, mas_ui.SCROLLABLE_MENU_XALIGN)
 
     show monika 3eua at t11
@@ -2659,8 +2659,8 @@ label mas_gift_hint_noudeck:
         def write_and_hide():
             import time
 
-            note_path = os.path.join(renpy.config.basedir, renpy.substitute("characters/Hey, I have something for you, [player]!.txt"))
-            note_text = renpy.substitute("""\
+            note_path = os.path.join(renpy.config.basedir, "characters/" + renpy.substitute(_("Hey, I have something for you, [player]!.txt")))
+            note_text = renpy.substitute(_("""\
 Hi [player]!
 
 I see you're making Monika really happy and I want to help any way I can!
@@ -2671,7 +2671,7 @@ To give it to her, create a new file 'noudeck.gift' in the 'characters' folder.
 Keep up being a good [boy] and good luck with Monika!
 
 P.S: Don't tell her about me!\
-""")
+"""))
 
             mas_utils.trywrite(note_path, note_text, log=True)
             time.sleep(20)

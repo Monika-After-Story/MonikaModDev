@@ -1130,11 +1130,12 @@ init 5 python:
             If None, we get it here
             (Default: None)
         """
+        import os
         #First, get all the consumables we're low on if not provided
         if low_cons_list is None:
             low_cons_list = MASConsumable._getLowCons()
 
-        START_TEXT = (
+        START_TEXT = __(
             "Hi, [player],\n"
             "Just letting you know I'm running low on a couple of things.\n"
             "You wouldn't mind getting some more for me, would you?\n\n"
@@ -1143,16 +1144,16 @@ init 5 python:
 
         MID_TEXT = ""
 
-        END_TEXT = (
+        END_TEXT = __(
             "Thanks, [player]~"
         )
 
         for cons in low_cons_list:
-            MID_TEXT += "- {0}\n".format(cons.disp_name.capitalize())
+            MID_TEXT += "- {0}\n".format(__(cons.disp_name).capitalize())
 
         MID_TEXT += "\n"
 
-        with open(renpy.config.basedir + "/characters/shopping_list.txt", "w") as shopping_list:
+        with open(os.path.normcase(renpy.config.basedir + "/characters/" + __("shopping_list.txt")), "w", encoding="utf-8") as shopping_list:
             shopping_list.write(
                 renpy.substitute(START_TEXT + MID_TEXT + END_TEXT)
             )
@@ -1383,16 +1384,16 @@ label mas_consumables_generic_get(consumable):
 
         #We need to parse the dialogue depending on the given dlg_props
         if container:
-            line_starter = renpy.substitute("I'm going to get [mas_a_an_str(container)] of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute(_("I'm going to get [mas_a_an_str(container)] of [consumable.disp_name][plur]."))
 
         #Otherwise we use the object reference for this
         elif obj_ref:
-            line_starter = renpy.substitute("I'm going to get [mas_a_an_str(obj_ref)] of [consumable.disp_name][plur].")
+            line_starter = renpy.substitute(_("I'm going to get [mas_a_an_str(obj_ref)] of [consumable.disp_name][plur]."))
 
         #No valid dlg props
         else:
             a_an = "some" if plur else mas_a_an(consumable.disp_name, ignore_case=True)
-            line_starter = renpy.substitute("I'm going to get [a_an] [consumable.disp_name][plur].")
+            line_starter = renpy.substitute(_("I'm going to get [a_an] [consumable.disp_name][plur]."))
 
     if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "[line_starter] I'll be right back.{w=1}{nw}"
@@ -1446,16 +1447,16 @@ label mas_consumables_generic_finish_having(consumable):
 
         dlg_map = {
             mas_consumables.PROP_CONTAINER: {
-                0: "I'm going to put this [container] away.",
-                1: "I'm going to get another [container]."
+                0: _("I'm going to put this [container] away."),
+                1: _("I'm going to get another [container].")
             },
             mas_consumables.PROP_OBJ_REF: {
-                0: "I'm going to put this away.",
-                1: "I'm going to get another [obj_ref]."
+                0: _("I'm going to put this away."),
+                1: _("I'm going to get another [obj_ref].")
             },
             "else": {
-                0: "I'm going to put this away.",
-                1: "I'm going to get another one."
+                0: _("I'm going to put this away."),
+                1: _("I'm going to get another one.")
             }
         }
 
@@ -1516,7 +1517,7 @@ label mas_consumables_generic_finish_having(consumable):
             and mas_getEV("mas_consumables_generic_queued_running_out").timePassedSinceLastSeen_d(datetime.timedelta(days=7))
             and len(MASConsumable._getLowCons()) > 0
         ):
-            $ mas_display_notif(m_name, ("Hey, [player]...",), "Topic Alerts", flash_window=True)
+            $ mas_display_notif(m_name, (_("Hey, [player]..."),), "Topic Alerts", flash_window=True)
             $ MASEventList.queue("mas_consumables_generic_queued_running_out")
 
     #Only have one left
@@ -1702,9 +1703,12 @@ label mas_consumables_generic_queued_running_out_dlg(low_cons):
         python:
             items_running_out_of = ""
             if len(low_cons) == 2:
-                items_running_out_of = "{0} and {1}".format(low_cons[0].disp_name, low_cons[1].disp_name)
+                items_running_out_of = _("{0} and {1}").format(
+                    renpy.translation.translate_string(low_cons[0].disp_name),
+                    renpy.translation.translate_string(low_cons[1].disp_name)
+                )
             else:
-                items_running_out_of = low_cons[0].disp_name
+                items_running_out_of = renpy.translation.translate_string(low_cons[0].disp_name)
 
         m 3rksdla "I'm running out of [items_running_out_of]."
         $ them = "some more"
@@ -1824,7 +1828,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_consumables_check",
             category=['supplies'],
-            prompt="Are you running out of anything?",
+            prompt=_("Are you running out of anything?"),
             conditional="MASConsumable._getEnabledConsumables()",
             pool=True,
             unlocked=False,
@@ -1844,7 +1848,7 @@ label monika_consumables_check:
             extend 3hua "but I'll be sure to let you know if I do~"
 
         else:
-            $ items_running_out_of = low_cons[0].disp_name
+            $ items_running_out_of = renpy.translation.translate_string(low_cons[0].disp_name)
             m 3rusdlb "Oh{w=0.1}, glad you asked!"
             m 1rksdla "I've been running out of [items_running_out_of]."
             m 1eka "I'd appreciate if you could get some for me~"
@@ -1873,9 +1877,12 @@ label monika_consumables_check:
         python:
             items_running_out_of = ""
             if len(low_cons) == 2:
-                items_running_out_of = "{0} and {1}".format(low_cons[0].disp_name, low_cons[1].disp_name)
+                items_running_out_of = _("{0} and {1}").format(
+                    renpy.translation.translate_string(low_cons[0].disp_name),
+                    renpy.translation.translate_string(low_cons[1].disp_name)
+                )
             else:
-                items_running_out_of = low_cons[0].disp_name
+                items_running_out_of = renpy.translation.translate_string(low_cons[0].disp_name)
 
         m 3rksdla "I'm running out of [items_running_out_of]."
         m 1eka "You wouldn't mind getting some more for me, would you?"

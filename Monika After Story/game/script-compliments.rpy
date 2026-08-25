@@ -40,7 +40,7 @@ init 22 python in mas_compliments:
     __last_called_callback = None
     __wait_time = 55.0
     # set this here in case of a crash mid-compliment
-    thanks_quip = ""
+    thanks_quip = random.choice(thanking_quips)
 
     def __set_wait_time():
         """
@@ -55,7 +55,7 @@ init 22 python in mas_compliments:
         """
         global thanks_quip, __last_called_callback
 
-        thanks_quip = renpy.substitute(renpy.random.choice(thanking_quips))
+        thanks_quip = renpy.substitute(renpy.translation.translate_string(renpy.random.choice(thanking_quips)))
 
         _now = datetime.datetime.now()
         if __last_called_callback is not None:
@@ -77,7 +77,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_compliments",
             category=['monika', 'romance'],
-            prompt="I want to tell you something...",
+            prompt=_("I want to tell you something..."),
             pool=True,
             unlocked=True
         )
@@ -89,20 +89,20 @@ label monika_compliments:
         Event.checkEvents(mas_compliments.compliment_database)
 
         # build menu list
-        compliments_menu_items = [
-            (ev.prompt, ev_label, not seen_event(ev_label), False)
-            for ev_label, ev in mas_compliments.compliment_database.items()
-            if (
-                Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
-                and ev.checkConditional()
-            )
-        ]
+        compliments_menu_items = []
+        for ev_lbl, ev in mas_compliments.compliment_database.iteritems():
+            try:
+                if (Event._filterEvent(ev, unlocked=True, aff=mas_curr_affection, flag_ban=EV_FLAG_HFM)
+                        and ev.checkConditional()):
+                    compliments_menu_items.append((ev.prompt, ev_lbl, not seen_event(ev_lbl), False))
+            except Exception:
+                pass
 
         # also sort this list
-        compliments_menu_items.sort()
+        compliments_menu_items.sort(key=lambda x: renpy.translation.translate_string(x[0]).lower().lstrip(u"┬í┬┐ "))
 
         # final quit item
-        final_item = ("Oh nevermind.", False, False, False, 20)
+        final_item = (_("Oh nevermind."), False, False, False, 20)
 
     # move Monika to the left
     show monika at t21
@@ -128,7 +128,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_beautiful",
-            prompt="You're beautiful!",
+            prompt=_("You're beautiful!"),
             unlocked=True
         ),
         code="CMP"
@@ -169,7 +169,7 @@ label mas_compliment_beautiful_3:
             _("Never forget that you're the most beautiful person in the world to me."),
             _("Nothing can compare to the beauty in your heart."),
         ]
-        beautiful_quip = random.choice(beautiful_quips)
+        beautiful_quip = renpy.substitute(random.choice(beautiful_quips))
     m 1hubsa "Ehehe~"
     m 1ekbfa "[mas_compliments.thanks_quip]"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -181,7 +181,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_eyes",
-            prompt="I love your eyes!",
+            prompt=_("I love your eyes!"),
             unlocked=True
         ),
         code="CMP"
@@ -222,7 +222,7 @@ label mas_compliment_eyes_3:
             _("I can't wait to look into your beautiful eyes."),
             _("I would stare into yours for hours if I could."),
         ]
-        eyes_quip = random.choice(eyes_quips)
+        eyes_quip = renpy.substitute(random.choice(eyes_quips))
 
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 2ekbfb "[eyes_quip]"
@@ -233,7 +233,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_goodmood",
-            prompt="You always put me in a good mood!",
+            prompt=_("You always put me in a good mood!"),
             unlocked=False,
             conditional="store.mas_anni.pastSixMonths()",
             action=EV_ACT_UNLOCK
@@ -287,7 +287,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
-            prompt="You're awesome!",
+            prompt=_("You're awesome!"),
             unlocked=True
         ),
         code="CMP"
@@ -333,7 +333,7 @@ label mas_compliment_awesome_3:
             _("We are an awesome couple together!"),
             _("You're much more awesome!"),
         ]
-        awesome_quip = random.choice(awesome_quips)
+        awesome_quip = renpy.substitute(random.choice(awesome_quips))
 
     m 1hub "[mas_compliments.thanks_quip]"
     m 1eub "[awesome_quip]"
@@ -345,7 +345,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_intelligent",
-            prompt="You're really intelligent!",
+            prompt=_("You're really intelligent!"),
             unlocked=True
         ),
         code="CMP"
@@ -387,7 +387,7 @@ label mas_compliment_intelligent_3:
             _("Remember that every day is an opportunity to learn something new!"),
             _("Always remember the world is a wonderful journey full of learning."),
         ]
-        intelligent_quip = random.choice(intelligent_quips)
+        intelligent_quip = renpy.substitute(random.choice(intelligent_quips))
 
     m 1ekbfa "[mas_compliments.thanks_quip]"
     m 1hub "[intelligent_quip]"
@@ -398,7 +398,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hair",
-            prompt="I love your hair!",
+            prompt=_("I love your hair!"),
             unlocked=True
         ),
         code="CMP"
@@ -444,7 +444,7 @@ label mas_compliment_hair_3:
                 _("I'm really happy that you like this hairstyle!"),
                 _("I'm really happy that you like my hair!")
             ]
-            hair_quip = random.choice(hair_quips)
+            hair_quip = renpy.substitute(random.choice(hair_quips))
         m 1wubsb "Thank you so much, [player]!"
         m 1hubfb "[hair_quip]"
     else:
@@ -454,7 +454,7 @@ label mas_compliment_hair_3:
                 _("I'm glad you like my ponytail!"),
                 _("I'm so happy you love my ponytail!"),
             ]
-            ponytail_quip = random.choice(ponytail_quips)
+            ponytail_quip = renpy.substitute(random.choice(ponytail_quips))
 
         m 1hubsb "Thanks, [player]!"
         m 1hubfb "[ponytail_quip]"
@@ -465,7 +465,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_fit",
-            prompt="I love your dedication to fitness!",
+            prompt=_("I love your dedication to fitness!"),
             unlocked=True
         ),
         code="CMP"
@@ -508,7 +508,7 @@ label mas_compliment_fit_3:
             _("I can't wait to work out with you!"),
             _("I hope we can both work out together someday!"),
         ]
-        fitness_quip = random.choice(fitness_quips)
+        fitness_quip = renpy.substitute(random.choice(fitness_quips))
 
     m 2eka "[mas_compliments.thanks_quip]"
     m 7hub "[fitness_quip]"
@@ -520,7 +520,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
-            prompt="Thanks for being there for me!",
+            prompt=_("Thanks for being there for me!"),
             unlocked=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
@@ -557,7 +557,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_smile",
-            prompt="I love your smile!",
+            prompt=_("I love your smile!"),
             unlocked=True
         ),
         code="CMP"
@@ -594,7 +594,7 @@ label mas_compliment_smile_3:
             _("I can't help but smile when I think of you."),
             _("I can't wait to see your beautiful smile."),
         ]
-        smile_quip = random.choice(smile_quips)
+        smile_quip = renpy.substitute(random.choice(smile_quips))
 
     m 1eub "[mas_compliments.thanks_quip]"
     m 1hua "[smile_quip]"
@@ -606,7 +606,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hero",
-            prompt="You're my hero!",
+            prompt=_("You're my hero!"),
             unlocked=True,
             aff_range=(mas_aff.LOVE, None)
         ),
@@ -636,7 +636,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_cute",
-            prompt="You're cute!",
+            prompt=_("You're cute!"),
             unlocked=True
         ),
         code="CMP"
@@ -686,7 +686,7 @@ label mas_compliment_cute_3:
             _("You'll always be my cutie~"),
             _("You can be a cutie a lot of the time too~"),
         ]
-        cute_quip = random.choice(cute_quips)
+        cute_quip = renpy.substitute(random.choice(cute_quips))
 
     m 1ekbsa "Ehehe, thanks [player]..."
     m 1hubfa "[cute_quip]"
@@ -697,7 +697,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="You're awesome at chess!",
+            prompt=_("You're awesome at chess!"),
             unlocked=False,
             conditional="persistent._mas_chess_stats.get('losses', 0) > 5",
             action=EV_ACT_UNLOCK
@@ -728,7 +728,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="You're awesome at pong!",
+            prompt=_("You're awesome at pong!"),
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
@@ -775,7 +775,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="You're the best girl!",
+            prompt=_("You're the best girl!"),
             unlocked=True
         ),
         code="CMP"
@@ -798,7 +798,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_lookuptoyou",
-            prompt="I look up to you!",
+            prompt=_("I look up to you!"),
             unlocked=True
         ),
         code="CMP"
@@ -848,7 +848,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thinking_of_you",
-            prompt="I'm always thinking about you!",
+            prompt=_("I'm always thinking about you!"),
             unlocked=True
         ),
         code="CMP"
@@ -914,7 +914,7 @@ label mas_compliment_thinking_of_you_3:
             _("You're always on my mind too!"),
             _("I'm always thinking about you too!"),
         ]
-        thinking_of_you_quip = random.choice(thinking_of_you_quips)
+        thinking_of_you_quip = renpy.substitute(random.choice(thinking_of_you_quips))
 
     m 1ekbsa "Aww thanks, [player]..."
     m 3hubfb "[thinking_of_you_quip]"
@@ -925,7 +925,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_humor",
-            prompt="I love your sense of humor!",
+            prompt=_("I love your sense of humor!"),
             unlocked=True
         ),
         code="CMP"
@@ -969,7 +969,7 @@ label mas_compliment_humor_3:
             _("Just knowing that makes me happy~"),
             _("I'll always try to brighten your day~"),
         ]
-        humor_quip = random.choice(humor_quips)
+        humor_quip = renpy.substitute(random.choice(humor_quips))
 
     m 1hubsb "[mas_compliments.thanks_quip]"
     m 1hubsu "[humor_quip]"
@@ -980,7 +980,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_missed",
-            prompt="I missed you!",
+            prompt=_("I missed you!"),
             unlocked=True,
             conditional=(
                 "store.mas_getSessionLength() <= datetime.timedelta(minutes=30) "
@@ -1048,6 +1048,12 @@ label mas_compliment_missed:
         absence_length = mas_getAbsenceLength()
         mas_flagEVL("mas_compliment_missed", "CMP", EV_FLAG_HFM)
 
+        missed_quip_long = renpy.translation.translate_string(random.choice(missed_quips_long))
+        missed_quip_short = renpy.translation.translate_string(random.choice(missed_quips_short))
+        missed_quip_upset_short = renpy.translation.translate_string(random.choice(missed_quips_upset_short))
+        missed_quip_upset_long = renpy.translation.translate_string(random.choice(missed_quips_upset_long))
+        missed_quip_dis = renpy.translation.translate_string(random.choice(missed_quips_dis))
+
     if mas_isMoniNormal(higher=True):
         if absence_length >= datetime.timedelta(days=3):
             if absence_length >= datetime.timedelta(days=7):
@@ -1057,11 +1063,11 @@ label mas_compliment_missed:
                 $ hugchance = 15
 
             m 1fka "I missed you so much, [mas_get_player_nickname()]!"
-            m 3fka "[renpy.substitute(random.choice(missed_quips_long))]"
+            m 3fka "[renpy.substitute(missed_quip_long)]"
 
         else:
             m 1fka "I missed you too, [mas_get_player_nickname()]!"
-            m 3hub "[renpy.substitute(random.choice(missed_quips_short))]"
+            m 3hub "[renpy.substitute(missed_quip_short)]"
 
         if (
             mas_isMoniEnamored(higher=True)
@@ -1103,16 +1109,16 @@ label mas_compliment_missed:
         m 2ekbla "I...{w=0.5}I missed you too."
 
         if absence_length >= datetime.timedelta(days=3):
-            m 2ekd "[renpy.substitute(random.choice(missed_quips_upset_long))]"
+            m 2ekd "[renpy.substitute(missed_quip_upset_long)]"
 
         else:
-            m 2eka "[renpy.substitute(random.choice(missed_quips_upset_short))]"
+            m 2eka "[renpy.substitute(missed_quip_upset_short)]"
 
         $ mas_moni_idle_disp.force_by_code("2eka", duration=10, skip_dissolve=True)
 
     elif mas_isMoniDis():
         m 6dkc "..."
-        m 6rktpd "[renpy.substitute(random.choice(missed_quips_dis))]"
+        m 6rktpd "[renpy.substitute(missed_quip_dis)]"
 
         if absence_length >= datetime.timedelta(days=3):
             m 6dktdc "...But at least you haven't forgetten about me...{w=0.5}yet."
@@ -1127,7 +1133,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_spending_time",
-            prompt="I love spending time with you!",
+            prompt=_("I love spending time with you!"),
             unlocked=False,
             conditional="store.mas_anni.pastThreeMonths()",
             action=EV_ACT_UNLOCK,
@@ -1146,7 +1152,7 @@ label mas_compliment_spending_time:
                 _("Just being near you makes me so happy~"),
                 _("Nothing makes me happier than being next to you~"),
             ]
-            spending_time_quip = random.choice(spending_time_quips)
+            spending_time_quip = renpy.substitute(random.choice(spending_time_quips))
 
         m 3hubsb "[mas_compliments.thanks_quip]"
         m 1ekbsu "[spending_time_quip]"
@@ -1154,16 +1160,16 @@ label mas_compliment_spending_time:
 
 label mas_compliment_spending_time_2:
     python:
-        dlg_line = ""
+        dlg_line = _("")
 
         if renpy.seen_label("monika_holdme_prep"):
-            dlg_line = ", holds me close"
+            dlg_line = _(", holds me close")
 
             if persistent._mas_filereacts_historic:
-                dlg_line += ", and even gives me nice gifts"
+                dlg_line += _(", and even gives me nice gifts")
 
         elif persistent._mas_filereacts_historic:
-            dlg_line = ", gives me nice gifts"
+            dlg_line = _(", gives me nice gifts")
 
     m 1eub "I love spending time with you too, [player]!"
     m 3ekbla "I know I say it a lot, but I really mean it when I say that you're the center of my world."
@@ -1197,7 +1203,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_sweet",
-            prompt="You're really sweet!",
+            prompt=_("You're really sweet!"),
             conditional="store.mas_anni.pastThreeMonths()",
             action=EV_ACT_UNLOCK,
             unlocked=False,
@@ -1249,7 +1255,7 @@ label mas_compliment_sweet_repeat:
             _("Hearing that always warms my heart, [player]!"),
             _("You make me feel so loved, [player]!"),
         ]
-        sweet_quip = renpy.substitute(random.choice(sweet_quips))
+        sweet_quip = renpy.substitute(renpy.translation.translate_string(random.choice(sweet_quips)))
 
     m 3hubsb "[sweet_quip]"
     m 1hubfu "...But I could never be as sweet as you~"
@@ -1261,7 +1267,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_outfit",
-            prompt="I love your outfit!",
+            prompt=_("I love your outfit!"),
             unlocked=False
         ),
         code="CMP"
@@ -1319,7 +1325,7 @@ label mas_compliment_outfit_repeat:
                 _("I'm happy you like this cosplay!"),
                 _("I'm happy to cosplay for you!"),
             ]
-            cosplay_quip = random.choice(cosplay_quips)
+            cosplay_quip = renpy.substitute(random.choice(cosplay_quips))
 
         m 3hubsb "[cosplay_quip]"
 
@@ -1329,7 +1335,7 @@ label mas_compliment_outfit_repeat:
                 _("I'm glad you like how I look with this!"),
                 _("I'm happy you like how I look in this!"),
             ]
-            clothes_quip = random.choice(clothes_quips)
+            clothes_quip = renpy.substitute(random.choice(clothes_quips))
 
         m 3hubsb "[clothes_quip]"
 
@@ -1340,7 +1346,7 @@ label mas_compliment_outfit_repeat:
                 _("Would you like a closer look?"),
                 _("Would you like a little peek?~"),
             ]
-            lingerie_quip = random.choice(lingerie_quips)
+            lingerie_quip = renpy.substitute(random.choice(lingerie_quips))
 
         m 2kubsu "[lingerie_quip]"
         show monika 5hublb at t11 zorder MAS_MONIKA_Z with dissolve_monika
@@ -1353,7 +1359,7 @@ label mas_compliment_outfit_repeat:
                 _("I'm sure you look good too!"),
                 _("I love this outfit!")
             ]
-            other_quip = random.choice(other_quips)
+            other_quip = renpy.substitute(random.choice(other_quips))
 
         m 3hubsb "[other_quip]"
 

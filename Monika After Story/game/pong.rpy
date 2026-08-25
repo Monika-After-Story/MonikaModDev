@@ -529,7 +529,9 @@ label demo_minigame_pong:
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
-    call spaceroom(scene_change=True, force_exp='monika 3eua')
+    # Show weather fallback (static image) to cover the movie decoder warmup
+    $ renpy.show(store.mas_current_weather.img_tag)
+    call spaceroom(scene_change=False, force_exp='monika 3eua')
 
     # resets the temporary difficulty bonus
     $ persistent._mas_pong_difficulty_change_next_game = 0;

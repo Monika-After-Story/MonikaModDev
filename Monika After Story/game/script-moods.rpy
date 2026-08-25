@@ -87,7 +87,7 @@ label mas_mood_start:
 
         # build menu list
         mood_menu_items = [
-            (mas_moods.mood_db[k].prompt, k, False, False)
+            (_(mas_moods.mood_db[k].prompt), k, False, False)
             for k in filtered_moods
         ]
 
@@ -116,7 +116,7 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_hungry",prompt=_("...hungry."),category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
     m 3hub "If you're hungry, go get something to eat, silly."
@@ -141,7 +141,7 @@ label mas_mood_hungry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="...sad.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt=_("...sad."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
@@ -186,7 +186,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_proud",
-            prompt="...proud of myself.",
+            prompt=_("...proud of myself."),
             category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
@@ -226,7 +226,7 @@ label mas_mood_proud:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_happy",prompt=_("...happy."),category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
@@ -239,7 +239,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_sick",
-            prompt="...sick.",
+            prompt=_("...sick."),
             category=[store.mas_moods.TYPE_BAD],
             unlocked=True
         ),
@@ -289,7 +289,7 @@ label mas_mood_sick:
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_tired",prompt="...tired.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_tired",prompt=_("...tired."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_tired:
     # TODO: should we adjust for suntime?
@@ -360,7 +360,7 @@ label mas_mood_tired:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_lonely",prompt=_("...lonely."),category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
     if mas_isMoniAff(higher=True):
@@ -404,7 +404,7 @@ label mas_mood_lonely:
 #Looking forward to input from the writers and editors on this, had trouble deciding how to write this.
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="...angry.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt=_("...angry."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_angry:
     m 1ekc "Gosh, I'm sorry that you feel that way, [player]."
@@ -429,7 +429,7 @@ label mas_mood_angry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_scared",prompt=_("...anxious."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
     m 1euc "[player], are you alright?"
@@ -461,7 +461,7 @@ label mas_mood_scared:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_inadequate",prompt="...inadequate.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_inadequate",prompt=_("...inadequate."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
     $ last_year = datetime.datetime.today().year-1
@@ -509,7 +509,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_lazy",
-            prompt="...lazy.",
+            prompt=_("...lazy."),
             category=[store.mas_moods.TYPE_NEUTRAL],
             unlocked=True
         ),
@@ -525,7 +525,7 @@ label mas_mood_lazy:
         m 1eka "I can totally understand those days where you wake up and just don't want to do anything."
         m 1rksdla "Hopefully you don't actually have anything pressing coming soon."
 
-        $ line = "I know how tempting it can be to just stay in bed and not get up sometimes..."
+        $ line = _("I know how tempting it can be to just stay in bed and not get up sometimes...")
         if mas_isMoniEnamored(higher=True):
             $ line += "{w=0.5} {nw}"
         m 3hksdlb "[line]"
@@ -605,7 +605,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_mood_database,eventlabel="mas_mood_bored",
-            prompt="...bored.",
+            prompt=_("...bored."),
             category=[store.mas_moods.TYPE_NEUTRAL],
             unlocked=True
         ),
@@ -708,10 +708,10 @@ label mas_mood_bored:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt="...like crying.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_crying",prompt=_("...like crying."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_crying:
-    $ line_start = "And"
+    $ line_start = _("And")
     m 1eksdld "[player]!"
 
     m 3eksdlc "Are you okay?{nw}"
@@ -767,11 +767,11 @@ label mas_mood_uok:
         "Everything's fine.":
             m 1ekc "..."
             m 1ekd "Okay [player], if you say so..."
-            $ line_start = "But"
+            $ line_start = _("But")
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_upset",prompt="...upset.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
+    addEvent(Event(persistent._mas_mood_database,eventlabel="mas_mood_upset",prompt=_("...upset."),category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_upset:
     m 2eksdld "I'm so sorry to hear that, [player]!"
@@ -797,7 +797,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_relieved",
-            prompt="...relieved.",
+            prompt=_("...relieved."),
             category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
@@ -843,7 +843,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_excited",
-            prompt="...excited.",
+            prompt=_("...excited."),
             category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
@@ -895,7 +895,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_grateful",
-            prompt="...grateful.",
+            prompt=_("...grateful."),
             category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
@@ -951,7 +951,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_insecure",
-            prompt="...insecure.",
+            prompt=_("...insecure."),
             category=[store.mas_moods.TYPE_BAD],
             unlocked=True
         ),
@@ -974,7 +974,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_loved",
-            prompt="...loved.",
+            prompt=_("...loved."),
             category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
@@ -988,11 +988,12 @@ label mas_mood_loved:
     $ has_family = persistent._mas_pm_have_fam and not persistent._mas_pm_no_talk_fam
     if has_family or persistent._mas_pm_has_friends:
         if has_family and persistent._mas_pm_has_friends:
-            $ fnf_str = "friends and family"
+            $ fnf_str = _("friends and family")
         elif has_family:
-            $ fnf_str = "family"
+            $ fnf_str = _("family")
         else:
-            $ fnf_str = "friends"
+            $ fnf_str = _("friends")
+
 
         m 3eub "And I'm sure it's not just me that makes you feel loved, but your [fnf_str] as well!"
 
@@ -1007,7 +1008,7 @@ init 5 python:
         Event(
             persistent._mas_mood_database,
             eventlabel="mas_mood_guilty",
-            prompt="...guilty.",
+            prompt=_("...guilty."),
             category=[store.mas_moods.TYPE_BAD],
             unlocked=True
         ),

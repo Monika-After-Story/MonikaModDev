@@ -324,35 +324,20 @@ init -1 python:
                 new_url - the redirect we want to connect to
             Returns read_json if we got a connection, Nnone otherwise
             """
-            from http.client import HTTPConnection, HTTPException
-
-            _http, double_slash, url = new_url.partition("//")
-            url, single_slash, req_uri = url.partition("/")
-            read_json = None
-            h_conn = HTTPConnection(url)
+            import urllib.request
+            import urllib.error
 
             try:
-                # make connection
-                h_conn.connect()
-
-                # get file we need
-                h_conn.request("GET", single_slash + req_uri)
-                server_response = h_conn.getresponse()
-
-                if server_response.status != 200:
-                    # we dont follow anymore redirects
-                    return None
-
-                read_json = server_response.read()
-
-            except HTTPException:
-                # we assume a timeout / connection error
-                return None
-
-            finally:
-                h_conn.close()
-
-            return read_json
+                req = urllib.request.Request(
+                    new_url,
+                    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) MonikaAfterStory/1.0'}
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    if response.status == 200:
+                        return response.read()
+            except Exception:
+                pass
+            return None
 
         def cancel_value(self):
             """
@@ -375,59 +360,29 @@ init -1 python:
                 _thread_result
                     appends appropriate state for use
             """
-            from http.client import HTTPConnection, HTTPException
+            import urllib.request
+            import urllib.error
             import json
 
-            # separate the update link parts
-            # (its okay to access this, main thread does not)
-            _http, double_slash, url = update_link.partition("//")
-            url, single_slash, json_file = url.partition("/")
-            read_json = None
-            h_conn = HTTPConnection(url)
-
             try:
-                # make connection and attempt to connect
-                h_conn.connect()
-
-                # get the file we need
-                h_conn.request("GET", "/" + json_file)
-                server_response = h_conn.getresponse()
-
-                # check status
-                if server_response.status == 301:
-                    # redirect, pull the location header and continue
-                    new_url = server_response.getheader("location", None)
-
-                    if new_url is None:
-                        # we have to have the redirect location to continue
+                req = urllib.request.Request(
+                    update_link,
+                    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) MonikaAfterStory/1.0'}
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    if response.status != 200:
                         thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
                         return
-
-                    # otherwise, switch connection to the new url
-                    h_conn.close()
-                    read_json = MASUpdaterDisplayable._handleRedirect(new_url)
-
-                    if read_json is None:
-                        # redirect failed too
-                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
-                        return
-
-                elif server_response.status != 200:
-                    # didnt get an OK response
-                    thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
-                    return
-
-                else:
-                    # good status, lets get the value
-                    read_json = server_response.read()
-
-            except HTTPException:
-                # we assume a timeout / connection error
+                    read_json = response.read()
+            except urllib.error.HTTPError:
+                thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                return
+            except (urllib.error.URLError, TimeoutError):
                 thread_result.append(MASUpdaterDisplayable.STATE_TIMEOUT)
                 return
-
-            finally:
-                h_conn.close()
+            except Exception:
+                thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                return
 
             # now to parse the json
             try:

@@ -745,7 +745,7 @@ init -10 python:
             diff = length - self._eff_chunk_min_end()
 
             # make a list of inc amounts for easy looping
-            inc_amts = [diff / es_count] * es_count
+            inc_amts = [diff // es_count] * es_count
 
             # reverse add lefovers
             store.mas_utils.lo_distribute(
@@ -3259,7 +3259,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_change_background",
             category=["location"],
-            prompt="Can we go somewhere else?",
+            prompt=_("Can we go somewhere else?"),
             pool=True,
             unlocked=False,
             rules={"no_unlock": None},

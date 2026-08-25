@@ -72,7 +72,7 @@ init -1001 python in mas_submod_utils:
     SUBMODS_DIR = "Submods"
 
     # A string that can be used as a stable identifier
-    RE_SAFE_NAME = re.compile(r"^[^\W\d][ \w\d]*[\w\d]$")
+    RE_SAFE_NAME = re.compile(r"^[^\W\d](?:[ \w\d]*[\w\d])?$")
 
 
     class _Platform(str, Enum):
@@ -330,7 +330,8 @@ init -1001 python in mas_submod_utils:
                 case _Platform.mac:
                     # TODO: Somehow build git for mac?
                     # return "bin/git/mac/git"
-                    raise NotImplementedError("git updater doesn't support mac os")
+                    # raise NotImplementedError("git updater doesn't support mac os")
+                    return "bin/git/mac/git"
                 case _:
                     raise NotImplementedError("git updater couldn't detect current os")
 
@@ -886,7 +887,8 @@ init -1001 python in mas_submod_utils:
         """
         header_json = None
         try:
-            with open(header_path) as header_file:
+            rel_header_path = os.path.relpath(header_path, start=config.gamedir).replace("\\", "/")
+            with renpy.open_file(rel_header_path, encoding="utf-8") as header_file:
                 header_json = json.load(header_file)
 
         except Exception as e:

@@ -23,7 +23,7 @@ define gui.about = _("")
 define build.name = "Monika_After_Story"
 
 ## Name of the executables, we must keep it DDLC to obey the guidelines
-define build.executable_name = "DDLC"
+define build.executable_name = "MAS"
 
 ## Preference defaults #########################################################
 
@@ -40,6 +40,27 @@ default preferences.afm_time = 15
 
 default preferences.music_volume = 0.75
 default preferences.sfx_volume = 0.75
+
+define config.default_language = None
+
+init -990 python:
+    # Dynamically detect default translation language from game/tl/ folder
+    _detected_language = None
+    try:
+        for f in renpy.list_files():
+            parts = f.split('/')
+            if len(parts) >= 2 and parts[0] == "tl":
+                lang_name = parts[1]
+                if lang_name not in ("None", "default", "english", ""):
+                    _detected_language = lang_name
+                    break
+    except Exception:
+        pass
+
+    if _detected_language:
+        config.default_language = _detected_language
+        if _preferences.language is None:
+            _preferences.language = _detected_language
 
 
 #define config.gl_resize = False
@@ -87,6 +108,18 @@ init python:
             return (float(height) * (float(config.screen_width) / float(config.screen_height)), height)
 
     #config.adjust_view_size = force_integer_multiplier
+
+# DO NOT USE IN PRODUCTION!
+define config.raise_image_exceptions = True # for raising "Could not load image" exceptions
+define config.raise_image_load_exceptions = True # for raising "Could not load image" exceptions
+define config.debug_sound = True # for raising "Could not load file" exceptions
+# ---
+
+# Some fixes
+define config.atl_start_on_show = False # fixes some DDLC animations
+define config.save_on_mobile_background = False # prevents "_reload" files creation when the game was minimized on mobile devices
+# ---
+
 ## Build configuration #########################################################
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
@@ -124,15 +157,31 @@ init python:
     build.update_formats.append("zsync")
 
     ## Define the archives to use
-    build.archive("scripts", "all")
+    build.archive("z-scripts", "all")
+    build.archive("z-images", "all")
+    build.archive("z-audio", "all")
+    build.archive("z-fonts", "all")
 
     ## These files will be included in the package
+    # Add fonts to fonts archive
+    build.classify("game/gui/**.ttf", "z-fonts")
+    build.classify("game/gui/**.otf", "z-fonts")
+
+    # Add audio to audio archive
+    build.classify("game/mod_assets/**.ogg", "z-audio")
+    build.classify("game/mod_assets/**.wav", "z-audio")
+    build.classify("game/mod_assets/**.mp3", "z-audio")
+
     # Add mod assets
-    build.classify("game/mod_assets/**", "all")
-    build.classify("game/gui/**", "all")
+    build.classify("game/mod_assets/mas_icon.ico", "all")
+    build.classify("game/mod_assets/**", "z-images")
+    build.classify("game/gui/**", "z-images")
+
     # Add scripts in the game folder
-    # build.classify("game/*.rpy", "scripts")# Optional, includes source
-    build.classify("game/*.rpyc", "scripts")
+    # build.classify("game/*.rpy", "z-scripts")# Optional, includes source
+    build.classify("game/*.rpyc", "z-scripts")
+    build.classify("game/movies-info.mms", "z-scripts")
+
     # Add python packages
     build.classify("game/python-packages/**", "all")
     # Add README
@@ -144,9 +193,8 @@ init python:
     ## These files will be excluded
     # Remove everything else from the game folder
     build.classify("game/**", None)
-    # Remove cache
-    # build.classify("game/cache/**", None)
-    # build.classify("game/saves/**", None)
+    build.classify("game/cache/**", None)
+    build.classify("game/saves/**", None)
     # Remove logs
     build.classify("log/**", None)
     build.classify("*.log", None)

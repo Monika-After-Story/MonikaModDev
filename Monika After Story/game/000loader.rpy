@@ -121,9 +121,10 @@ python early in _mas_loader:
                 scripts.pop(i)
 
     def __handle_scripts():
-        if not store._mas_root.is_dbug_enabled():
-            _unload_unrecognised_scripts()
-            _disable_unrecognised_scripts()
+        # if not store._mas_root.is_dbug_enabled():
+        #     _unload_unrecognised_scripts()
+        #     _disable_unrecognised_scripts()
+        pass
 
 
 python early in _mas_root:
@@ -150,7 +151,8 @@ python early in _mas_root:
         """
         Checks if dbug is enabled
         """
-        return __get_env_var(__ENV_KEY) == __DBUG_ENV_VALUE
+        # return __get_env_var(__ENV_KEY) == __DBUG_ENV_VALUE
+        return True
 
     def __is_cnsl_enabled() -> bool:
         """

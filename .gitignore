@@ -1,6 +1,6 @@
 #Catch all rpa, rpyc, rpyb, and rpyms
 *.rpa
-*.rpy[cbm]
+*.rpy[cb]
 *.rpymc
 
 #Catch any persist info
@@ -40,10 +40,10 @@ navigation.json
 Monika_After_Story-[0-9]*.[0-9]*.[0-9]*-dists
 
 # Development
-.env
+#.env
 Monika After Story/game/cache/
 Monika After Story/game/masrun
-Monika After Story/game/Submods
+#Monika After Story/game/Submods
 Monika After Story/game/saves
 Monika After Story/update.pem
 venv/

@@ -41,7 +41,7 @@ init python in mas_sprite_decoder:
         jobj = None
 
         try:
-            with open(store.os.path.join(renpy.config.gamedir, "mod_assets", "sprite_map.json"), "r") as jsonfile:
+            with renpy.open_file("mod_assets/sprite_map.json", encoding="utf-8") as jsonfile:
                 jobj = json.load(jsonfile)
 
             EYEBROW_MAP = jobj["eyebrows"]

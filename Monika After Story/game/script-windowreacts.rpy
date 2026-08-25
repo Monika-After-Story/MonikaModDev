@@ -24,9 +24,12 @@ label mas_wrs_pinterest:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Anything new today, [player]?",
-            "Anything interesting, [player]?",
-            "See anything you like?"
+            _("Anything new today, [player]?"),
+
+            _("Anything interesting, [player]?"),
+
+            _("See anything you like?")
+
         ],
         'Window Reactions'
     )
@@ -53,9 +56,12 @@ label mas_wrs_duolingo:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Learning new ways to say 'I love you,' [player]?",
-            "Learning a new language, [player]?",
-            "What language are you learning, [player]?"
+            _("Learning new ways to say 'I love you,' [player]?"),
+
+            _("Learning a new language, [player]?"),
+
+            _("What language are you learning, [player]?")
+
         ],
         'Window Reactions'
     )
@@ -80,8 +86,10 @@ init 5 python:
 
 label mas_wrs_wikipedia:
     $ wikipedia_reacts = [
-        "Learning something new, [player]?",
-        "Doing a bit of research, [player]?"
+        _("Learning something new, [player]?"),
+
+        _("Doing a bit of research, [player]?")
+
     ]
 
     #Items in here will get the wiki article you're looking at for reacts.
@@ -96,7 +104,7 @@ label mas_wrs_wikipedia:
 
             # May contain clarification in trailing parentheses
             wiki_article = re.sub("\\s*\\(.+\\)$", "", wiki_article)
-            wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
+            wikipedia_reacts.append(renpy.substitute(_("'[wiki_article]'...\nSeems interesting, [player].")))
 
         except ValueError:
             pass
@@ -128,12 +136,14 @@ init 5 python:
 label mas_wrs_virtualpiano:
     python:
         virtualpiano_reacts = [
-            "Awww, are you going to play for me?\nYou're so sweet~",
-            "Play something for me, [player]!"
+            _("Awww, are you going to play for me?\nYou're so sweet~"),
+
+            _("Play something for me, [player]!")
+
         ]
 
         if mas_isGameUnlocked("piano"):
-            virtualpiano_reacts.append("I guess you need a bigger piano?\nAhaha~")
+            virtualpiano_reacts.append(_("I guess you need a bigger piano?\nAhaha~"))
 
         wrs_success = mas_display_notif(
             m_name,
@@ -162,8 +172,10 @@ label mas_wrs_youtube:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "What are you watching, [mas_get_player_nickname()]?",
-            "Watching anything interesting, [mas_get_player_nickname()]?"
+            _("What are you watching, [mas_get_player_nickname()]?"),
+
+            _("Watching anything interesting, [mas_get_player_nickname()]?")
+
         ],
         'Window Reactions'
     )
@@ -192,7 +204,7 @@ init 5 python:
 
 label mas_wrs_r34m:
     python:
-        mas_display_notif(m_name, ["Hey, [player]...what are you looking at?"], "Window Reactions", flash_window=True)
+        mas_display_notif(m_name, [_("Hey, [player]...what are you looking at?")], "Window Reactions", flash_window=True)
 
         choice = random.randint(1,10)
 
@@ -238,8 +250,10 @@ label mas_wrs_monikamoddev:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Awww, are you doing something for me?\nYou're so sweet~",
-            "Are you going to help me come closer to your reality?\nYou're so sweet, [player]~"
+            _("Awww, are you doing something for me?\nYou're so sweet~"),
+
+            _("Are you going to help me come closer to your reality?\nYou're so sweet, [player]~")
+
         ],
         'Window Reactions'
     )
@@ -264,14 +278,17 @@ init 5 python:
 
 label mas_wrs_twitter:
     python:
-        temp_line = renpy.substitute("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])].")
+        temp_line = renpy.substitute(_("I love you, [mas_get_player_nickname(exclude_names=['love', 'my love'])]."))
         temp_len = len(temp_line)
 
         # quip: is_ily
         ily_quips_map = {
-            "See anything you want to share with me, [player]?": False,
-            "Anything interesting to share, [player]?": False,
-            "280 characters? I only need [temp_len]...\n[temp_line]": True
+            _("See anything you want to share with me, [player]?"): False,
+
+            _("Anything interesting to share, [player]?"): False,
+
+            _("280 characters? I only need [temp_len]...\n[temp_line]"): True
+
         }
         quip = renpy.random.choice(tuple(ily_quips_map.keys()))
 
@@ -304,9 +321,12 @@ label mas_wrs_monikatwitter:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Are you here to confess your love for me to the entire world, [player]?",
-            "You're not spying on me, are you?\nAhaha, just kidding~",
-            "I don't care how many followers I have as long as I have you~"
+            _("Are you here to confess your love for me to the entire world, [player]?"),
+
+            _("You're not spying on me, are you?\nAhaha, just kidding~"),
+
+            _("I don't care how many followers I have as long as I have you~")
+
         ],
         'Window Reactions'
     )
@@ -334,10 +354,14 @@ label mas_wrs_4chan:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "So this is the place where it all started, huh?\nIt's...really quite something.",
-            "I hope you don't end up arguing with other Anons all day long, [player].",
-            "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~",
-            "I'll be watching the boards you're browsing in case you get any ideas, ahaha!",
+            _("So this is the place where it all started, huh?\nIt's...really quite something."),
+
+            _("I hope you don't end up arguing with other Anons all day long, [player]."),
+
+            _("I heard there's threads discussing the Literature Club in here.\nTell them I said hi~"),
+
+            _("I'll be watching the boards you're browsing in case you get any ideas, ahaha!"),
+
         ],
         'Window Reactions'
     )
@@ -364,21 +388,26 @@ label mas_wrs_pixiv:
     #Make a list of notif quips for this
     python:
         pixiv_quips = [
-            "I wonder if people have drawn art of me...\nMind looking for some?\nBe sure to keep it wholesome though~",
-            "This is a pretty interesting place...so many skilled people posting their work.",
+            _("I wonder if people have drawn art of me...\nMind looking for some?\nBe sure to keep it wholesome though~"),
+
+            _("This is a pretty interesting place...so many skilled people posting their work."),
+
         ]
 
         #Monika doesn't know if you've drawn art of her, or she knows that you have drawn art of her
         if persistent._mas_pm_drawn_art is None or persistent._mas_pm_drawn_art:
             pixiv_quips.extend([
-                "This is a pretty interesting place...so many skilled people posting their work.\nAre you one of them, [player]?",
+                _("This is a pretty interesting place...so many skilled people posting their work.\nAre you one of them, [player]?"),
+
             ])
 
             #Specifically if she knows you've drawn art of her
             if persistent._mas_pm_drawn_art:
                 pixiv_quips.extend([
-                    "Here to post your art of me, [player]?",
-                    "Posting something you drew of me?",
+                    _("Here to post your art of me, [player]?"),
+
+                    _("Posting something you drew of me?"),
+
                 ])
 
         wrs_success = mas_display_notif(
@@ -409,9 +438,12 @@ label mas_wrs_reddit:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Have you found any good posts, [player]?",
-            "Browsing Reddit? Just make sure you don't spend all day looking at memes, okay?",
-            "Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding, [player].",
+            _("Have you found any good posts, [player]?"),
+
+            _("Browsing Reddit? Just make sure you don't spend all day looking at memes, okay?"),
+
+            _("Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding, [player]."),
+
         ],
         'Window Reactions'
     )
@@ -437,11 +469,12 @@ init 5 python:
 label mas_wrs_mal:
     python:
         myanimelist_quips = [
-            "Maybe we could watch anime together someday, [player]~",
+            _("Maybe we could watch anime together someday, [player]~"),
+
         ]
 
         if persistent._mas_pm_watch_mangime is None:
-            myanimelist_quips.append("So you like anime and manga, [player]?")
+            myanimelist_quips.append(_("So you like anime and manga, [player]?"))
 
         wrs_success = mas_display_notif(m_name, myanimelist_quips, 'Window Reactions')
 
@@ -468,8 +501,10 @@ label mas_wrs_deviantart:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "There's so much talent here!",
-            "I'd love to learn how to draw someday...",
+            _("There's so much talent here!"),
+
+            _("I'd love to learn how to draw someday..."),
+
         ],
         'Window Reactions'
     )
@@ -496,9 +531,12 @@ label mas_wrs_netflix:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "I'd love to watch a romance movie with you [player]!",
-            "What are we watching today, [player]?",
-            "What are you going to watch [player]?"
+            _("I'd love to watch a romance movie with you [player]!"),
+
+            _("What are we watching today, [player]?"),
+
+            _("What are you going to watch [player]?")
+
         ],
         'Window Reactions'
     )
@@ -525,9 +563,12 @@ label mas_wrs_twitch:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Watching a stream, [player]?",
-            "Do you mind if I watch with you?",
-            "What are we watching today, [player]?"
+            _("Watching a stream, [player]?"),
+
+            _("Do you mind if I watch with you?"),
+
+            _("What are we watching today, [player]?")
+
         ],
         'Window Reactions'
     )
@@ -554,10 +595,14 @@ label mas_wrs_word_processor:
     $ wrs_success = mas_display_notif(
         m_name,
         [
-            "Writing a story?",
-            "Taking notes, [player]?",
-            "Writing a poem?",
-            "Writing a love letter?~"
+            _("Writing a story?"),
+
+            _("Taking notes, [player]?"),
+
+            _("Writing a poem?"),
+
+            _("Writing a love letter?~")
+
         ],
         'Window Reactions'
     )
@@ -587,16 +632,22 @@ label mas_wrs_crunchyroll:
     python:
         if persistent._mas_pm_watch_mangime is False:
             crunchyroll_quips = [
-                "Oh! So you like anime, [player]?",
-                "It's good to see you broadening your horizons.",
-                "Hmm, I wonder what caught your eye?",
+                _("Oh! So you like anime, [player]?"),
+
+                _("It's good to see you broadening your horizons."),
+
+                _("Hmm, I wonder what caught your eye?"),
+
             ]
 
         else:
             crunchyroll_quips = [
-                "What anime are we watching today, [player]?",
-                "Watching some anime, [player]?",
-                "I can't wait to watch anime with you!~",
+                _("What anime are we watching today, [player]?"),
+
+                _("Watching some anime, [player]?"),
+
+                _("I can't wait to watch anime with you!~"),
+
             ]
 
         wrs_success = mas_display_notif(m_name, crunchyroll_quips, 'Window Reactions')

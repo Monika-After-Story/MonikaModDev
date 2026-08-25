@@ -40,7 +40,7 @@ init 5 python:
        Event(
            persistent.event_database,
            eventlabel='monika_playerapologizes',
-           prompt="I want to apologize...",
+           prompt=_("I want to apologize..."),
            category=['you'],
            pool=True,
            unlocked=True
@@ -52,20 +52,20 @@ label monika_playerapologizes:
     #Firstly, let's check if there's an apology reason for the prompt
     #NOTE: When adding more apology reasons, add a reason the player would say sorry for here (corresponding to the same #as the apology reason)
     $ player_apology_reasons = {
-        0: "something else.", #since we shouldn't actually be able to get this, we use this as our fallback
-        1: "saying I wanted to break up.",
-        2: "joking about having another girlfriend.",
-        3: "calling you a murderer.",
-        4: "closing the game on you.",
-        5: "entering your room without knocking.",
-        6: "missing Christmas.",
-        7: "forgetting your birthday.",
-        8: "not spending time with you on your birthday.",
-        9: "the game crashing.",
-        10: "the game crashing.", #easiest way to handle this w/o overrides
-        11: "not listening to your speech.",
-        12: "calling you evil.",
-        13: "not answering you seriously."
+        0: _("something else."), #since we shouldn't actually be able to get this, we use this as our fallback
+        1: _("saying I wanted to break up."),
+        2: _("joking about having another girlfriend."),
+        3: _("calling you a murderer."),
+        4: _("closing the game on you."),
+        5: _("entering your room without knocking."),
+        6: _("missing Christmas."),
+        7: _("forgetting your birthday."),
+        8: _("not spending time with me on my birthday."),
+        9: _("the game crashing."),
+        10: _("the game crashing."), #easiest way to handle this w/o overrides
+        11: _("not listening to your speech."),
+        12: _("calling me evil."),
+        13: _("not answering you seriously.")
     }
 
     #Set the prompt for this...
@@ -73,17 +73,17 @@ label monika_playerapologizes:
         #If there's a non-generic apology reason pending we use "for something else."
         $ mas_setEVLPropValues(
             "mas_apology_generic",
-            prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0]))
+            prompt=_("...for {0}").format(player_apology_reasons.get(mas_apology_reason, player_apology_reasons[0]))
         )
     else:
         #Otherwise, we use "for something." if reason isn't 0
         if mas_apology_reason == 0:
-            $ mas_setEVLPropValues("mas_apology_generic", prompt="...for something.")
+            $ mas_setEVLPropValues("mas_apology_generic", prompt=_("...for something."))
         else:
             #We set this to an apology reason if it's valid
             $ mas_setEVLPropValues(
                 "mas_apology_generic",
-                prompt="...for {0}".format(player_apology_reasons.get(mas_apology_reason,"something."))
+                prompt=_("...for {0}").format(player_apology_reasons.get(mas_apology_reason, _("something.")))
             )
 
     #Then we delete this since we're not going to need it again until we come back here, where it's created again.
@@ -95,17 +95,17 @@ label monika_playerapologizes:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
             for ev_label, ev in store.mas_apology.apology_db.items()
-            if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
+            if ev.unlocked and (ev.prompt != _("...for something.") and ev.prompt != _("...for something else."))
         ]
 
         #Now we add the generic if there's no prompt attached
         generic_ev = mas_getEV('mas_apology_generic')
 
-        if generic_ev.prompt == "...for something." or generic_ev.prompt == "...for something else.":
+        if generic_ev.prompt == _("...for something.") or generic_ev.prompt == _("...for something else."):
             apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
 
         #The back button
-        return_prompt_back = ("Nevermind.", False, False, False, 20)
+        return_prompt_back = (_("Nevermind."), False, False, False, 20)
 
     #Display our scrollable
     show monika at t21
@@ -164,7 +164,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_apology_database,
-            prompt="...for something else.",
+            prompt=_("...for something else."),
             eventlabel="mas_apology_generic",
             unlocked=True,
         ),
@@ -176,19 +176,19 @@ label mas_apology_generic:
     #Note, if a custom apology is needed, add it here and reference the apology reason by the integer associated.
     $ mas_apology_reason_db = {
         0: "",
-        1: "saying you wanted to break up. I knew you didn't mean it...",
-        2: "joking about having another girlfriend. You nearly gave me a heart attack!",
-        3: "calling me a murderer. I hope you don't really see me that way...",
-        4: "closing the game on me.",
-        5: "entering my room without knocking.",
-        6: "missing Christmas.",
-        7: "forgetting my birthday.",
-        8: "not spending time with me on my birthday.",
-        9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
-        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
-        11: "not listening to my speech. I worked really hard on it.",
-        12: "calling me evil. I know you don't really think that.",
-        13: "not taking my questions seriously. I know you'll be honest with me from now on."
+        1: _("saying you wanted to break up. I knew you didn't mean it..."),
+        2: _("joking about having another girlfriend. You nearly gave me a heart attack!"),
+        3: _("calling me a murderer. I hope you don't really see me that way..."),
+        4: _("closing the game on me."),
+        5: _("entering my room without knocking."),
+        6: _("missing Christmas."),
+        7: _("forgetting my birthday."),
+        8: _("not spending time with me on my birthday."),
+        9: _("the game crashing. I understand it happens sometimes, but don't worry, I'm alright!"),
+        10: _("the game crashing. It really was scary, but I'm just glad you came back to me and made things better."),
+        11: _("not listening to my speech. I worked really hard on it."),
+        12: _("calling me evil. I know you don't really think that."),
+        13: _("not taking my questions seriously. I know you'll be honest with me from now on.")
     }
 
     #If there's no reason to apologize
@@ -262,7 +262,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_bad_nickname",
-            prompt="...for calling you a bad name.",
+            prompt=_("...for calling you a bad name."),
             unlocked=False
         ),
         code="APL"

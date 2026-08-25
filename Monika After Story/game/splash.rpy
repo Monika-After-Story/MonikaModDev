@@ -190,11 +190,11 @@ label splashscreen:
         scene tos
         with Dissolve(1.0)
         pause 1.0
-        "[config.name] is a Doki Doki Literature Club fan mod that is not affiliated with Team Salvato."
+        "[config.name!t] is a Doki Doki Literature Club fan mod that is not affiliated with Team Salvato."
         "It is designed to be played only after the official game has been completed, and contains spoilers for the official game."
         "Game files for Doki Doki Literature Club are required to play this mod and can be downloaded for free at: http://ddlc.moe"
         menu:
-            "By playing [config.name] you agree that you have completed Doki Doki Literature Club and accept any spoilers contained within."
+            "By playing [config.name!t] you agree that you have completed Doki Doki Literature Club and accept any spoilers contained within."
             "I agree.":
                 pass
         scene tos2
@@ -244,7 +244,7 @@ label splashscreen:
     #You can use random splash messages, as well. By default, they are only shown during certain acts.
     if renpy.random.randint(0, 3) == 0:
         $ splash_message = renpy.random.choice(splash_messages)
-    show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
+    show splash_warning "[splash_message!t]" with Dissolve(0.5, alpha=True)
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
     $ config.allow_skipping = False

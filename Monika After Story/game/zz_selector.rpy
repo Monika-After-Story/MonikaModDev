@@ -825,7 +825,7 @@ init -10 python in mas_selspr:
         RETURNS: remover ACS selectable
         """
         if remover_name is None:
-            remover_name = "Remove"
+            remover_name = renpy.translation.translate_string("Remove")
 
         # get default mux for this acs type
         template = store.mas_sprites.get_ACSTemplate_by_type(acs_type)
@@ -2579,7 +2579,8 @@ init -1 python:
 
             ASSUMES the list is not empty
             """
-            return dlg_list[random.randint(0, len(dlg_list)-1)]
+            _dlg = dlg_list[random.randint(0, len(dlg_list)-1)]
+            return renpy.translation.translate_string(_dlg)
 
 
         def _render_bottom_frame(self, hover, st, at):
@@ -2877,24 +2878,26 @@ init -1 python:
                 st - st for renpy render
                 at - at for renpy render
             """
+            # translate display name via Ren'Py translation system
+            _disp_name = renpy.translation.translate_string(self.selectable.display_name)
             # lets initially check if the pure text renders nicely
             _render = self._check_display_name(
-                self.selectable.display_name,
+                _disp_name,
                 st,
                 at
             )
 
             if _render:
                 self.item_name = [
-                    self._display_name(False, self.selectable.display_name)
+                    self._display_name(False, _disp_name)
                 ]
                 self.item_name_hover = [
-                    self._display_name(True, self.selectable.display_name)
+                    self._display_name(True, _disp_name)
                 ]
                 return
 
             # if we got a None, the text is too long.
-            _lines = self._split_render(self.selectable.display_name, st, at)
+            _lines = self._split_render(_disp_name, st, at)
             # NOTE: rather than rewriting split_render, decided to just
             # use the returned lines and overwrite the render list
             self.item_name = [
@@ -3177,7 +3180,7 @@ style filter_dropdown_down is generic_button_light:
     child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.light_button_text_idle_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=0.9, yoffset=2),
             xalign=0.5,
@@ -3189,7 +3192,7 @@ style filter_dropdown_down is generic_button_light:
     hover_child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.light_button_text_hover_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=0.9, yoffset=2),
             xalign=0.5,
@@ -3207,7 +3210,7 @@ style filter_dropdown_down_dark is generic_button_dark:
     child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.dark_button_text_idle_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=0.9, yoffset=2),
             xalign=0.5,
@@ -3219,7 +3222,7 @@ style filter_dropdown_down_dark is generic_button_dark:
     hover_child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.dark_button_text_hover_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=0.9, yoffset=2),
             xalign=0.5,
@@ -3237,7 +3240,7 @@ style filter_dropdown_up is generic_button_light:
     child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.light_button_text_idle_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.light_button_text_idle_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow.png", yzoom=-0.9, yoffset=3),
             xalign=0.5,
@@ -3249,7 +3252,7 @@ style filter_dropdown_up is generic_button_light:
     hover_child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.light_button_text_hover_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.light_button_text_hover_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_hover.png", yzoom=-0.9, yoffset=3),
             xalign=0.5,
@@ -3267,7 +3270,7 @@ style filter_dropdown_up_dark is generic_button_dark:
     child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.dark_button_text_idle_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.dark_button_text_idle_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_d.png", yzoom=-0.9, yoffset=3),
             xalign=0.5,
@@ -3279,7 +3282,7 @@ style filter_dropdown_up_dark is generic_button_dark:
     hover_child Fixed(
         HBox(
             Null(width=8),
-            Text("Filter", color=mas_ui.dark_button_text_hover_color, outlines=[]),
+            Text(_("Filter"), color=mas_ui.dark_button_text_hover_color, outlines=[]),
             Null(width=12),
             Transform("mod_assets/buttons/dropdown/arrow_hover_d.png", yzoom=-0.9, yoffset=3),
             xalign=0.5,
@@ -3412,7 +3415,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, restore, remover=No
                 changed store.mas_selspr.selector_search_callback
 
         if not mailbox.search_text:
-            text "Search for...":
+            text _("Search for..."):
                 text_align 0.0
                 layout "nobreak"
                 color "#EEEEEEB2"
@@ -3938,7 +3941,12 @@ label mas_selector_generic_sidebar_select_acs(acs_type, use_acs=None, set_compat
         if sel_group is None:
             sel_group = acs_type
         if idle_dlg is None:
-            idle_dlg = "Which {0} would you like me to wear?".format(acs_type)
+            # Search for a context-specific translation of the accessory type to avoid JSON conflicts
+            translated_acs = renpy.translation.translate_string("type_name_{0}".format(acs_type))
+            if translated_acs == "type_name_{0}".format(acs_type):
+                # Fallback to the default acs_type if no translation exists (e.g., in English)
+                translated_acs = acs_type
+            idle_dlg = renpy.translation.translate_string("Which {0} would you like me to wear?").format(translated_acs)
 
         # filter for acs
         if use_acs is None:
@@ -3998,7 +4006,7 @@ label monika_clothes_select:
     #Setup
     python:
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which clothes would you like me to wear?"
+            renpy.translation.translate_string("Which clothes would you like me to wear?")
         )
         mailbox.send_outfit_checkbox_visible(True)
         mailbox.send_outfit_checkbox_checked(persistent._mas_setting_ocb)
@@ -4078,7 +4086,7 @@ label monika_event_clothes_select:
     # setup
     python:
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Do you want me to change?"
+            renpy.translation.translate_string("Do you want me to change?")
         )
         # only def and the outfit in question will be available here, so outfit mode only
         mailbox.send_outfit_checkbox_visible(False)
@@ -4146,7 +4154,7 @@ label monika_hair_select:
     python:
         sorted_hair = store.mas_selspr.HAIR_SEL_SL
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hairstyle would you like me to wear?"
+            renpy.translation.translate_string("Which hairstyle would you like me to wear?")
         )
         sel_map = {}
 
@@ -4222,7 +4230,7 @@ label monika_ribbon_select:
         ))
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hair tie would you like me to use?"
+            renpy.translation.translate_string("Which hair tie would you like me to use?")
         )
         sel_map = {}
 
@@ -4261,7 +4269,7 @@ init 5 python:
     )
 
 label monika_hairclip_select:
-    call mas_selector_generic_sidebar_select_acs("left-hair-clip", idle_dlg="Which hairclip would you like me to wear?")
+    call mas_selector_generic_sidebar_select_acs("left-hair-clip", idle_dlg=renpy.translation.translate_string("Which hairclip would you like me to wear?"))
     return
 
 
@@ -4296,7 +4304,7 @@ label monika_hairflower_select:
         ))
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which flower would you like me to put in my hair?"
+            renpy.translation.translate_string("Which flower would you like me to put in my hair?")
         )
         sel_map = {}
 

@@ -120,7 +120,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip000",
             category=["python tips"],
-            prompt="Can you teach me about Python?",
+            prompt=_("Can you teach me about Python?"),
             pool=True,
             rules={"bookmark_rule": store.mas_bookmarks_derand.BLACKLIST}
         )
@@ -148,7 +148,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip001",
             category=["python tips"],
-            prompt="What is Python?"
+            prompt=_("What is Python?")
         )
     )
 
@@ -179,7 +179,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
-            prompt="Types",
+            prompt=_("Types"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(3)",
             action=EV_ACT_UNLOCK,
@@ -267,7 +267,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
-            prompt="An Interpreted Language",
+            prompt=_("An Interpreted Language"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(1)",
             action=EV_ACT_UNLOCK,
@@ -331,7 +331,7 @@ label monika_ptod_tip003:
 #            persistent.event_database,
 #            eventlabel="monika_ptod_tip004",
 #            category=["python tips"],
-#            prompt="What does python code look like?",
+#            prompt=_("What does python code look like?"),
 #            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(3)",
 #            action=EV_ACT_UNLOCK,
@@ -376,7 +376,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip005",
             category=["python tips"],
-            prompt="Comparisons and Booleans",
+            prompt=_("Comparisons and Booleans"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
@@ -550,7 +550,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
-            prompt="Variables and Assignment",
+            prompt=_("Variables and Assignment"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(2)",
             action=EV_ACT_UNLOCK,
@@ -660,7 +660,7 @@ label monika_ptod_tip006:
 #            persistent.event_database,
 #            eventlabel="monika_ptod_tip007",
 #            category=["python tips"],
-#            prompt="Variable Sizes",
+#            prompt=_("Variable Sizes"),
 #            pool=True,
 #            conditional="store.mas_ptod.has_day_past_tip(6)",
 #            action=EV_ACT_UNLOCK,
@@ -696,7 +696,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip008",
             category=["python tips"],
-            prompt="Literals",
+            prompt=_("Literals"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(6)",
             action=EV_ACT_UNLOCK,
@@ -781,7 +781,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip009",
             category=["python tips"],
-            prompt="Truth Values",
+            prompt=_("Truth Values"),
             pool=True,
             conditional="store.mas_ptod.has_day_past_tip(5)",
             action=EV_ACT_UNLOCK,
@@ -867,7 +867,7 @@ label monika_ptod_tip009:
 #            persistent.event_database,
 #            eventlabel="monika_ptod_tip006",
 #            category=["python tips"],
-#            prompt="Evaluation Order and Short Circuiting",
+#            prompt=_("Evaluation Order and Short Circuiting"),
 # TODO: this should be after if statements.
 #            conditional="store.mas_ptod.has_day_past_tip(2)",
 #            action=EV_ACT_UNLOCK,

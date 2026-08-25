@@ -7,16 +7,16 @@ init -1 python:
     layout.QUIT_NO = store.mas_layout.QUIT_NO
 
     # tooltips
-    layout.MAS_TT_SENS_MODE = (
+    layout.MAS_TT_SENS_MODE = _(
         "Sensitive mode removes content that may be disturbing, offensive, "
         " or considered tasteless."
     )
-    layout.MAS_TT_UNSTABLE = (
+    layout.MAS_TT_UNSTABLE = _(
         "Unstable mode downloads updates from the experimental unstable "
         "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
     )
-    layout.MAS_TT_UNSTABLE_DISABLED = (
+    layout.MAS_TT_UNSTABLE_DISABLED = _(
         "Unstable cannot be disabled until the next stable release."
     )
     layout.MAS_TT_REPEAT = _(
@@ -31,12 +31,12 @@ init -1 python:
     layout.MAS_TT_G_NOTIF = _(
         "Enables notifications for the selected group."
     )
-    layout.MAS_TT_ACTV_WND = (
+    layout.MAS_TT_ACTV_WND = _(
         "Enabling this will allow Monika to see your active window "
         "and offer some comments based on what you're doing."
     )
 
-    _TXT_FINISHED_UPDATING = (
+    _TXT_FINISHED_UPDATING = _(
         "The updates have been installed. Please reopen Monika After Story.\n\n"
         "Get spritepacks {a=http://monikaafterstory.com/releases.html}{i}{u}from our website{/u}{/i}{/a}.\n"
         "See the patch notes {a=https://github.com/Monika-After-Story/MonikaModDev/releases/latest}{i}{u}here{/u}{/i}{/a}.\n"
@@ -51,7 +51,7 @@ init -2 python in mas_layout:
     QUIT_YES = _("Please don't close the game on me!")
     QUIT_NO = _("Thank you, [player]!\nLet's spend more time together~")
     QUIT = _("Leaving without saying goodbye, [player]?")
-    UNSTABLE = (
+    UNSTABLE = _(
         "WARNING: Enabling unstable mode will download updates from the "
         "experimental unstable branch. "
         "THIS IS NOT EASILY REVERSIBLE. "
@@ -284,7 +284,7 @@ style input:
     color gui.accent_color
 
 style hyperlink_text:
-    color gui.accent_color
+    color "#989898"
     hover_color gui.hover_color
     hover_underline True
 
@@ -456,7 +456,7 @@ style frame_dark:
 
 screen say(who, what):
     style_prefix "say"
-    zorder 60
+    # zorder 60 < messes up the ctc indicator
 
     window:
         id "window"
@@ -570,7 +570,7 @@ image input_caret:
         linear 0.35 alpha 1
         repeat
 
-screen input(prompt, use_return_button=False, return_button_prompt="Nevermind", return_button_value="cancel_input"):
+screen input(prompt, use_return_button=False, return_button_prompt=_("Nevermind"), return_button_value="cancel_input"):
     style_prefix "input"
 
     window:
@@ -732,7 +732,7 @@ screen quick_menu():
 #init python:
 #    config.overlay_screens.append("quick_menu")
 
-default quick_menu = True
+#default quick_menu = True
 
 # START: quick menu styles
 style quick_button:
@@ -900,7 +900,7 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(_finishEnterName)))
+            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message=_("Please enter your name"), ok_action=Function(_finishEnterName)))
 
         else:
 
@@ -915,7 +915,7 @@ screen navigation():
             textbutton _("End Replay") action EndReplay(confirm=True)
 
         elif not main_menu:
-            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message=_("No need to go back there.\nYou'll just end up back here so don't worry."), ok_action=Hide("dialog"))
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
@@ -935,13 +935,13 @@ screen navigation():
         if renpy.variant("pc"):
 
             ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action Help("README.html")
+            textbutton _("Help") action Help("game/tl/" + _preferences.language + "/README.html" if (_preferences.language and renpy.loadable("tl/" + _preferences.language + "/README.html")) else "README.html")
 
-            ## The quit button is banned on iOS and unnecessary on Android.
-            #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
-            textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
+        ## The quit button is banned on iOS but enabled on Android and PC.
+        #If we're on the main menu, we don't want to confirm quit as Monika isn't back yet
+        textbutton _("Quit") action Quit(confirm=(None if main_menu else _confirm_quit))
 
-        if not main_menu:
+        if not main_menu or renpy.get_screen("main_menu") is None:
             textbutton _("Return") action Return()
 
 style navigation_button is gui_button:
@@ -1083,14 +1083,12 @@ screen game_menu_m():
 screen game_menu(title, scroll=None):
 
     # when teh game menu is open, we should disable the hotkeys
-    key "noshift_T" action NullAction()
-    key "noshift_t" action NullAction()
-    key "noshift_M" action NullAction()
-    key "noshift_m" action NullAction()
-    key "noshift_P" action NullAction()
-    key "noshift_p" action NullAction()
-    key "noshift_E" action NullAction()
-    key "noshift_e" action NullAction()
+    key [
+        "noshift_T", "noshift_t",
+        "noshift_M", "noshift_m",
+        "noshift_P", "noshift_p",
+        "noshift_E", "noshift_e"
+    ] action NullAction()
 
     # Add the backgrounds.
     if main_menu:
@@ -1153,7 +1151,6 @@ screen game_menu(title, scroll=None):
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
-
 
 style game_menu_outer_frame is empty:
     bottom_padding 30
@@ -1288,7 +1285,7 @@ screen load():
 init python:
     def FileActionMod(name, page=None, **kwargs):
         if renpy.current_screen().screen_name[0] == "save":
-            return Show(screen="dialog", message="There's no point in saving anymore.\nDon't worry, I'm not going anywhere.", ok_action=Hide("dialog"))
+            return Show(screen="dialog", message=_("There's no point in saving anymore.\nDon't worry, I'm not going anywhere."), ok_action=Hide("dialog"))
 
 
 screen file_slots(title):
@@ -1615,7 +1612,7 @@ screen preferences():
                         label _("Random Chatter  ")
 
                         # display str
-                        label _("[[ " + rc_display + " ]")
+                        label "[[ " + renpy.translation.translate_string(rc_display) + " ]"
 
                     bar value FieldValue(
                         persistent,
@@ -1829,7 +1826,7 @@ style slider_pref_vbox is pref_vbox
 screen notif_settings():
     tag menu
 
-    use game_menu(("Alerts"), scroll="viewport"):
+    use game_menu(_("Alerts"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1872,7 +1869,7 @@ screen notif_settings():
 screen hot_keys():
     tag menu
 
-    use game_menu(("Hotkeys"), scroll="viewport"):
+    use game_menu(_("Hotkeys"), scroll="viewport"):
 
         default tooltip = Tooltip("")
 
@@ -1890,7 +1887,7 @@ screen hot_keys():
                     text _("Talk")
                     text _("Bookmark")
                     text _("Derandom")
-                    text _("Fullscreen")
+                    text _("Fullscreen{#shortcut}")
                     text _("Screenshot")
                     text _("Settings")
 
@@ -1923,7 +1920,7 @@ screen hot_keys():
                     text _("Shift-M")
 
     # there are lesser used hotkeys in Help that aren't needed here
-    text "Click 'Help' for the complete list.":
+    text _("Click 'Help' for the complete list."):
         xalign 1.0 yalign 0.0
         xoffset -10
         style "main_menu_version"
@@ -1966,7 +1963,7 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what.replace("[","[[")  # ]" fix syntax highlight issue
+                text h.what style "history_text"
 
         if not _history_list:
             label _("The dialogue history is empty.")
@@ -2189,7 +2186,7 @@ screen name_input(message, ok_action):
                 style "confirm_prompt"
                 xalign 0.5
 
-            input default "" value VariableInputValue("player") length 12 allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+            input default "" value VariableInputValue("player") length 12 allow __("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 
             hbox:
                 xalign 0.5
@@ -2852,7 +2849,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 changed store.mas_ui.twopane_menu_search_callback
 
         if flt_evs is None:
-            text "Search for a conversation...":
+            text _("Search for a conversation..."):
                 text_align 0.0
                 layout "nobreak"
                 color "#EEEEEEB2"
@@ -2999,8 +2996,8 @@ screen mas_check_scrollable_menu(
     items,
     display_area,
     scroll_align,
-    selected_button_prompt="Done",
-    default_button_prompt="Nevermind",
+    selected_button_prompt=_("Done"),
+    default_button_prompt=_("Nevermind"),
     return_all=False
 ):
     default buttons_data = {
@@ -3028,7 +3025,7 @@ screen mas_check_scrollable_menu(
 
                 vbox:
                     for button_prompt, button_key, start_selected, true_value, false_value in items:
-                        textbutton button_prompt:
+                        textbutton renpy.substitute(button_prompt):
                             selected buttons_data[button_key]["return_value"] == buttons_data[button_key]["true_value"]
                             xsize display_area[2]
                             action ToggleDict(
@@ -3152,7 +3149,7 @@ screen mas_dbug():
 screen submods():
     tag menu
 
-    use game_menu(("Submods")):
+    use game_menu(_("Submods")):
 
         default TOOLTIP_CANNOT_LOAD_SUBMOD = _("This submod cannot be loaded, check submod_log.log for details")
         default TOOLTIP_SUBMOD_ENABLED = _("This submod is currently enabled. Click to disable it and restart the game")
@@ -3194,7 +3191,7 @@ screen submods():
                                 xalign 0
                                 text_text_align 0.0
 
-                            text _("v[submod.version_str]{space=20}by [submod.fmt_author_str()]"):
+                            text _("v{#version tag}") + submod.version_str + _("{space=20}by{#submod author}") + f" {submod.fmt_author_str()}":
                                 yanchor 0
                                 xalign 0
                                 text_align 0.0
@@ -3211,16 +3208,16 @@ screen submods():
                                         # so as always we have to do it ourselves with a hack
                                         style "generic_fancy_check_button_disabled"
                                         text_style "generic_fancy_check_button_disabled_text"
-                                        tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD]"
+                                        tooltip "[TOOLTIP_CANNOT_LOAD_SUBMOD!t]"
                                         selected False
                                         sensitive True
                                         action NullAction()
                                 else:
                                     textbutton _("Enable submod"):
                                         tooltip (
-                                            "[TOOLTIP_SUBMOD_ENABLED]"
+                                            "[TOOLTIP_SUBMOD_ENABLED!t]"
                                             if submod.is_enabled
-                                            else "[TOOLTIP_SUBMOD_DISABLED]"
+                                            else "[TOOLTIP_SUBMOD_DISABLED!t]"
                                         )
                                         selected submod.is_enabled
                                         action Function(store.mas_submod_utils._SubmodSettings.toggle_submod, submod)
@@ -3239,9 +3236,9 @@ screen submods():
                                     textbutton _("Enable notifications"):
                                         selected submod.is_auto_update_check_enabled
                                         tooltip (
-                                            "[TOOLTIP_NOTIFS_ENABLED]"
+                                            "[TOOLTIP_NOTIFS_ENABLED!t]"
                                             if submod.is_auto_update_check_enabled
-                                            else "[TOOLTIP_NOTIFS_DISABLED]"
+                                            else "[TOOLTIP_NOTIFS_DISABLED!t]"
                                         )
                                         action Function(store.mas_submod_utils._SubmodSettings.toggle_auto_update_check, submod)
 

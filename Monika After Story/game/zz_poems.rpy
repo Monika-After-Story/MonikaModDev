@@ -237,10 +237,10 @@ init 10 python:
 init 20 python:
     poem_m1 = MASPoem(
         poem_id="poem_m1",
-        category="ddlc",
-        prompt="Hole in Wall (Part 1)",
-        title="Hole in Wall",
-        text="""\
+        category=_("ddlc"),
+        prompt=_("Hole in Wall (Part 1)"),
+        title=_("Hole in Wall"),
+        text=_("""\
 It couldn't have been me.
 See, the direction the spackle protrudes.
 A noisy neighbor? An angry boyfriend? I'll never know. I wasn't home.
@@ -255,15 +255,15 @@ A hole of infinite choices.
 I realize now, that I wasn't looking in.
 I was looking out.
 And he, on the other side, was looking in.\
-"""
+""")
     )
 
     poem_m21 = MASPoem(
         poem_id="poem_m21",
-        category="ddlc",
-        prompt="Hole in Wall (Part 2)",
-        title="Hole in Wall",
-        text="""\
+        category=_("ddlc"),
+        prompt=_("Hole in Wall (Part 2)"),
+        title=_("Hole in Wall"),
+        text=_("""\
 But he wasn't looking at me.
 Confused, I frantically glance at my surroundings.
 But my burned eyes can no longer see color.
@@ -277,15 +277,15 @@ I panic. There must be a way out.
 It's right there. He's right there.
 
 Swallowing my fears, I brandish my pen.\
-"""
+""")
     )
 
     poem_m2 = MASPoem(
         poem_id="poem_m2",
-        category="ddlc",
-        prompt="Save Me",
-        title="Save Me",
-        text="""\
+        category=_("ddlc"),
+        prompt=_("Save Me"),
+        title=_("Save Me"),
+        text=_("""\
 The colors, they won't stop.
 Bright, beautiful colors
 Flashing, expanding, piercing
@@ -307,15 +307,15 @@ poem
 Of meaningless\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
 Load Me
     \
-"""
+""")
     )
 
     poem_m3 = MASPoem(
         poem_id="poem_m3",
-        category="ddlc",
-        prompt="The Lady who Knows Everything",
-        title="The Lady who Knows Everything",
-        text="""\
+        category=_("ddlc"),
+        prompt=_("The Lady who Knows Everything"),
+        title=_("The Lady who Knows Everything"),
+        text=_("""\
 An old tale tells of a lady who wanders Earth.
 The Lady who Knows Everything.
 A beautiful lady who has found every answer,
@@ -357,15 +357,15 @@ I am not your legend.
 Your legend does not exist."
 
 And with a breath, she blows me back afloat, and I pick up a gust of wind.\
-"""
+""")
     )
 
     poem_m4 = MASPoem(
         poem_id="poem_m4",
-        category="ddlc",
-        prompt="Happy End",
-        title="Happy End",
-        text="""\
+        category=_("ddlc"),
+        prompt=_("Happy End"),
+        title=_("Happy End"),
+        text=_("""\
 Pen in hand, I find my strength.
 The courage endowed upon me by my one and only love.
 Together, let us dismantle this crumbling world
@@ -376,7 +376,7 @@ In a world of infinite choices, behold this special day.
 
 After all,
 Not all good times must come to an end.\
-"""
+""")
     )
 
 # Backport some poem images from DDLC. NOTE: still use DDLC assets
@@ -461,8 +461,8 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_showpoem",
-            prompt="Can I read one of your poems again?",
-            category=["literature"],
+            prompt=_("Can I read one of your poems again?"),
+            category=[_("literature")],
             pool=True,
             unlocked=True,
             action=EV_ACT_UNLOCK,
@@ -477,16 +477,18 @@ label monika_showpoem:
     python:
         #We'll store the base DDLC poems here
         poems_list = [
-            ("Hole in Wall (Part 1)", poem_m1, False, False),
-            ("Hole in Wall (Part 2)", poem_m21, False, False),
-            ("Save Me", poem_m2, False, False),
-            ("The Lady Who Knows Everything", poem_m3, False, False),
-            ("Happy End", poem_m4, False, False)
+            (_("Hole in Wall (Part 1)"), poem_m1, False, False),
+            (_("Hole in Wall (Part 2)"), poem_m21, False, False),
+            (_("Save Me"), poem_m2, False, False),
+            (_("The Lady Who Knows Everything"), poem_m3, False, False),
+            (_("Happy End"), poem_m4, False, False)
         ]
 
-        ret_back = ("Nevermind", False, False, False, 20)
+        ret_back = (_("Nevermind"), False, False, False, 20)
         #Extend the new poems
         poems_list.extend(mas_poems.getSeenPoemsMenu())
+        # Sort alphabetically by translated prompt
+        poems_list = sorted(poems_list, key=lambda x: renpy.translation.translate_string(x[0]).lower())
 
         renpy.say(m, "Which poem would you like to read?", interact=False)
 

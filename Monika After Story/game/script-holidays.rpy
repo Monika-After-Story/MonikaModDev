@@ -1362,7 +1362,7 @@ init 5 python:
         Event(
             persistent.farewell_database,
             eventlabel="bye_trick_or_treat",
-            prompt="I'm going to take you trick or treating.",
+            prompt=_("I'm going to take you trick or treating."),
             pool=True,
             unlocked=False,
             action=EV_ACT_UNLOCK,
@@ -2420,17 +2420,17 @@ label mas_d25_season_exit:
 #D25 holiday gift starter/connector
 label mas_d25_gift_starter:
     $ amt_gifts = len(persistent._mas_d25_gifts_given)
-    $ presents = "presents"
-    $ the = "the"
-    $ should_open = "should open"
+    $ presents = _("presents")
+    $ the = _("the")
+    $ should_open = _("should open")
 
     if amt_gifts == 1:
-        $ presents = "present"
+        $ presents = _("present")
     elif amt_gifts > 3:
-        $ the = "all of the"
+        $ the = _("all of the")
 
     if persistent._mas_d25_gone_over_d25:
-        $ should_open = "haven't opened"
+        $ should_open = _("haven't opened")
 
     if persistent._mas_d25_spent_d25 or mas_globals.returned_home_this_sesh:
         m 3wud "Oh! I [should_open] [the] [presents] you gave me!"
@@ -2782,7 +2782,7 @@ label mas_d25_monika_christmas:
 
                 if mas_is_snowing:
                     if mas_isDecoTagVisible("mas_d25_lights"):
-                        $ dlg_var = ", or the decorations"
+                        $ dlg_var = _(", or the decorations")
                     else:
                         $ dlg_var = ""
 
@@ -2790,7 +2790,7 @@ label mas_d25_monika_christmas:
 
                 else:
                     if mas_isDecoTagVisible("mas_d25_lights"):
-                        $ dlg_var = "the decorations, or "
+                        $ dlg_var = _("the decorations, or ")
                     else:
                         $ dlg_var = ""
 
@@ -2865,7 +2865,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_carolling",
             category=["holidays", "music"],
-            prompt="Carolling",
+            prompt=_("Carolling"),
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
             end_date=mas_d25p,
@@ -2925,7 +2925,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_mistletoe",
             category=["holidays"],
-            prompt="Mistletoe",
+            prompt=_("Mistletoe"),
             conditional="persistent._mas_d25_in_d25_mode",
             start_date=mas_d25c_start,
             end_date=mas_d25p,
@@ -2968,7 +2968,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_christmaslights",
             category=['holidays'],
-            prompt="Christmas Lights",
+            prompt=_("Christmas Lights"),
             start_date=mas_d25c_start,
             end_date=mas_nye,
             conditional=(
@@ -3035,10 +3035,10 @@ init 20 python:
 
     mas_poem_d25_1 = MASPoem(
         poem_id="poem_d25_1",
-        category="d25",
-        prompt="The Joy to my World",
-        title = "     My dearest [player],",
-        text = """\
+        category=_("d25"),
+        prompt=_("The Joy to my World"),
+        title = __("     My dearest [player],"),
+        text = _("""\
      You truly are the joy to my world.
      Neither the light emitted by the tallest Christmas tree,
      Nor that of the brightest star,
@@ -3052,16 +3052,16 @@ init 20 python:
 
      Forever yours,
      Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_d25_2 = MASPoem(
         poem_id="poem_d25_2",
-        category="d25",
-        prompt="Incomparable",
-        title="     My dearest [player],",
-        text="""\
+        category=_("d25"),
+        prompt=_("Incomparable"),
+        title=__("     My dearest [player],"),
+        text=_("""\
      Nothing can compare to the warmth you give me.
      Not even the feeling of wrapping my hands around a mug of hot chocolate
      Or fuzzy socks, warming my feet on a freezing day.
@@ -3078,15 +3078,15 @@ init 20 python:
 
      Forever yours,
      Monika
-"""
+""")
     )
 
     mas_poem_d25_3 = MASPoem(
         poem_id="poem_d25_3",
-        category="d25",
-        prompt="Someday",
-        title="     My dearest [player],",
-        text="""\
+        category=_("d25"),
+        prompt=_("Someday"),
+        title=__("     My dearest [player],"),
+        text=_("""\
      Warmer than the fire in the hearth,
      Brighter than any star on top of the tree,
      More comforting than any cup of hot chocolate,
@@ -3101,15 +3101,15 @@ init 20 python:
 
      Forever yours,
      Monika
-"""
+""")
     )
 
     mas_poem_d25_4 = MASPoem(
         poem_id="poem_d25_4",
-        category="d25",
-        prompt="This Christmas",
-        title="     My dearest [player],",
-        text="""\
+        category=_("d25"),
+        prompt=_("This Christmas"),
+        title=__("     My dearest [player],"),
+        text=_("""\
 
      This Christmas I never needed more gifts other than your love,
      Because having you by my side already brings me happiness,
@@ -3128,7 +3128,7 @@ init 20 python:
 
      Forever yours,
      Monika
-"""
+""")
     )
 
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
@@ -3706,7 +3706,7 @@ label mas_d25_monika_lingerie_reveal:
         call mas_d25_monika_second_time_lingerie
 
     else:
-        call mas_lingerie_intro(holiday_str="this Christmas season", lingerie_choice=mas_clothes_santa_lingerie)
+        call mas_lingerie_intro(holiday_str=_("this Christmas season"), lingerie_choice=mas_clothes_santa_lingerie)
         m 1ekbfa "Just know that I love you very, very much, [player]~"
         $ mas_ILY()
 
@@ -3758,7 +3758,7 @@ label mas_d25_monika_christmas_eve:
         else:
             m 5ekbfa "..."
             show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve_monika
-            call mas_lingerie_intro(holiday_str="on Christmas Eve", lingerie_choice=mas_clothes_santa_lingerie)
+            call mas_lingerie_intro(holiday_str=_("on Christmas Eve"), lingerie_choice=mas_clothes_santa_lingerie)
             m 1ekbfa "Just know that I love you very, very much, [player]~"
             $ mas_ILY()
     return
@@ -4459,7 +4459,7 @@ label monika_resolutions:
                 m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
                 m 2eka "That said..."
 
-                call monika_resolutions_accomplished_resolutions_menu("Did you accomplish last year's resolutions?")
+                call monika_resolutions_accomplished_resolutions_menu(_("Did you accomplish last year's resolutions?"))
 
 
             "No.":
@@ -4477,7 +4477,7 @@ label monika_resolutions:
 
     #If we made a resolution last year, then we should ask if the player accomplished it
     elif mas_HistVerifyLastYear_k(True, "nye.actions.made_new_years_resolutions"):
-        call monika_resolutions_accomplished_resolutions_menu("Since you made a resolution last year, did you accomplish it?")
+        call monika_resolutions_accomplished_resolutions_menu(_("Since you made a resolution last year, did you accomplish it?"))
 
     #This path will be the first thing you see if you didn't make a resolution last year
     m "Do you have any resolutions for next year?{nw}"
@@ -4838,7 +4838,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_d25_mode_exit",
             category=['holidays'],
-            prompt="Can you take down the holiday decorations?",
+            prompt=_("Can you take down the holiday decorations?"),
             conditional="persistent._mas_d25_deco_active",
             start_date=mas_nyd+datetime.timedelta(days=1),
             end_date=mas_d25c_end,
@@ -5730,7 +5730,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_player_bday",
             unlocked=False,
-            prompt="Let's go out for my birthday!",
+            prompt=_("Let's go out for my birthday!"),
             pool=True,
             rules={"no_unlock": None},
             aff_range=(mas_aff.NORMAL,None),
@@ -5912,10 +5912,10 @@ label return_home_post_player_bday:
 init 20 python:
     mas_poem_pbday_1 = MASPoem(
         poem_id = "poem_pbday_1",
-        category = "pbday",
-        prompt = "The One",
-        title = " My dearest [player],",
-        text = """\
+        category=_("pbday"),
+        prompt=_("The One"),
+        title = __(" My dearest [player],"),
+        text = _("""\
  To the one I love,
  The one I trust,
  The one I can't live without.
@@ -5926,16 +5926,16 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_pbday_2 = MASPoem(
         poem_id = "poem_pbday_2",
-        category = "pbday",
-        prompt = "Your Day",
-        title = " My dearest [player],",
-        text = """\
+        category=_("pbday"),
+        prompt=_("Your Day"),
+        title = __(" My dearest [player],"),
+        text = _("""\
  Any day with you is a happy day.
  One where I{i}'{/i}m free,
  One where all my troubles are gone,
@@ -5950,16 +5950,16 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_pbday_3 = MASPoem(
         poem_id = "poem_pbday_3",
-        category = "pbday",
-        prompt = "One Wish",
-        title = " My dearest [player],",
-        text = """\
+        category=_("pbday"),
+        prompt=_("One Wish"),
+        title = __(" My dearest [player],"),
+        text = _("""\
  Sprinkles and candles for my [player]’s cake,
  There's just one wish for you to make.
  May your greatest dreams come true,
@@ -5974,16 +5974,16 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_pbday_4 = MASPoem(
         poem_id = "poem_pbday_4",
-        category = "pbday",
-        prompt = "My [player]",
-        title = " My [player],",
-        text = """\
+        category=_("pbday"),
+        prompt=_("My [player]"),
+        title = __(" My [player],"),
+        text = _("""\
  How our love has grown.
  Another year,
  Another thousand moments of pride.
@@ -6008,16 +6008,16 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_pbday_5 = MASPoem(
         poem_id = "poem_pbday_5",
-        category = "pbday",
-        prompt = "Birthdays",
-        title = " My dearest [player],",
-        text = """\
+        category=_("pbday"),
+        prompt=_("Birthdays"),
+        title = __(" My dearest [player],"),
+        text = _("""\
  Some birthdays are wonderful, chock-full of fun
  with laughter and smiles from everyone.
  Some birthdays, you plan everything to the letter
@@ -6044,7 +6044,7 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     #" # I need this to keep syntax highlighting on vim
     )
 
@@ -6250,7 +6250,7 @@ label mas_f14_monika_valentines_intro:
 
         # first time seeing any lingerie
         if lingerie_eligible and not mas_hasUnlockedClothesWithExprop("lingerie"):
-            call mas_lingerie_intro(holiday_str="on Valentine's Day", lingerie_choice=mas_clothes_vday_lingerie)
+            call mas_lingerie_intro(holiday_str=_("on Valentine's Day"), lingerie_choice=mas_clothes_vday_lingerie)
 
         # first time seeing sundress/shoulderless or non-first time seeing lingerie
         elif not has_sundress or not has_shoulderless or lingerie_eligible:
@@ -6425,7 +6425,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_colors',
-            prompt="Valentine's Day colors",
+            prompt=_("Valentine's Day colors"),
             category=['holidays','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
@@ -6470,7 +6470,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_cliches',
-            prompt="Valentine's story clichés",
+            prompt=_("Valentine's story clichés"),
             category=['holidays','literature','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
@@ -6508,7 +6508,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_chocolates',
-            prompt="Valentine's Day chocolates",
+            prompt=_("Valentine's Day chocolates"),
             category=['holidays','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
@@ -6545,7 +6545,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_origins',
-            prompt="How did Valentine's Day start?",
+            prompt=_("How did Valentine's Day start?"),
             category=['holidays','romance'],
             pool=True,
             conditional="persistent._mas_f14_in_f14_mode",
@@ -6596,7 +6596,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_f14_happy_vday",
-            prompt="Happy Valentine's Day!",
+            prompt=_("Happy Valentine's Day!"),
             action=EV_ACT_UNLOCK,
             pool=False,
             start_date=mas_f14,
@@ -6821,7 +6821,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_missed_vday",
-            prompt="...for missing Valentine's Day.",
+            prompt=_("...for missing Valentine's Day."),
             unlocked=False
         ),
         code="APL"
@@ -6870,10 +6870,10 @@ label mas_apology_missed_vday:
 init 20 python:
     mas_poem_vday_1 = MASPoem(
         poem_id="poem_f14_1",
-        category="f14",
-        prompt="Found",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("Found"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  I{i}'{/i}ve always loved Valentine's Day, but this one feels different.
  Has the world changed, or just me?
  I found love, I found purpose,
@@ -6884,15 +6884,15 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     )
 
     mas_poem_vday_2 = MASPoem(
         poem_id="poem_f14_2",
-        category="f14",
-        prompt="Everything",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("Everything"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  Can it really be our second Valentine's Day?
  The first seems like just yesterday, yet so much has happened.
  I once wondered if the world had changed, or just me.
@@ -6918,17 +6918,17 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
 
     #" # I need this to keep syntax highlighting on vim
     )
 
     mas_poem_vday_3 = MASPoem(
         poem_id="poem_f14_3",
-        category="f14",
-        prompt="You",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("You"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  Boxes of chocolates and hearts; cards colored ruby red.
  Roses in my hair, petals soft as silk.
  None of it would feel complete without you.
@@ -6941,15 +6941,15 @@ init 20 python:
 
  Forever your Valentine,
  Monika
-"""
+""")
     )
 
     mas_poem_vday_4 = MASPoem(
         poem_id="poem_f14_4",
-        category="f14",
-        prompt="Roses",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("Roses"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  All the roses in the world,
  They grow and bloom into something beautiful.
  Just as our relationship will.
@@ -6968,15 +6968,15 @@ init 20 python:
 
  Forever your Valentine,
  Monika
-"""
+""")
     )
 
     mas_poem_vday_5 = MASPoem(
         poem_id="poem_f14_5",
-        category="f14",
-        prompt="Sweetest",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("Sweetest"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  Chocolate covered cherries and a goodnight kiss;
  Being with you, darling, is the sweetest bliss.
  Popsicles in summer, dancing in the rain;
@@ -6988,15 +6988,15 @@ init 20 python:
 
  Forever yours,
  Monika
-"""
+""")
     )
 
     mas_poem_vday_6 = MASPoem(
         poem_id="poem_f14_6",
-        category="f14",
-        prompt="Forget-me-not",
-        title=" My dearest [player],",
-        text="""\
+        category=_("f14"),
+        prompt=_("Forget-me-not"),
+        title=__(" My dearest [player],"),
+        text=_("""\
  All the flowers know are their vase.
  A few cups of soil, and a pretty case of porcelain.
  They will never leave without help, even if they someday outgrow it.
@@ -7010,7 +7010,7 @@ init 20 python:
  Even trapped in this vase, maybe it isn't a curse to know more.
 
  Forget-me-not.
-"""
+""")
     )
 
 #######################[HOL050] dockstat farwell###############################
@@ -7311,7 +7311,7 @@ init -1 python:
                         store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
 
                     #We should also return a new file indicating the player has confirmed the party
-                    _write_txt("/characters/gotcha", "")
+                    _write_txt("/characters/" + __("gotcha"), "")
                     #Step 5a, return true since party is confirmed
                     return True
 
@@ -7333,7 +7333,7 @@ label mas_bday_autoload_check:
             #Lock the event clothes selector
             store.mas_lockEVL("monika_event_clothes_select", "EVE")
 
-            store.mas_utils.trydel("characters/gotcha")
+            store.mas_utils.trydel("characters/" + _("gotcha"))
 
             #And reset outfit if not at the right aff
             if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_blackdress:
@@ -7387,9 +7387,9 @@ image chibi_peek = MASFilterSwitch("mod_assets/other/chibi_peek.png")
 label mas_bday_surprise_party_hint:
     #Set up letters
     python:
-        persistent._mas_bday_hint_filename = mas_utils.sanitize_filename("For {0}.txt".format(player))
+        persistent._mas_bday_hint_filename = mas_utils.sanitize_filename(__("For {0}.txt").format(player))
         if mas_isMoniNormal(higher=True):
-            message = """\
+            message = __("""\
 [player],
 As I'm sure you know, Monika's birthday is coming up soon and I want to help you make it as special as possible!
 Since I'm always here, I can easily set up the surprise party...but I need a little help from you.
@@ -7402,10 +7402,10 @@ Please leave a file named 'oki doki' in the same folder you found this note so I
 Good luck with Monika!
 
 P.S: Don't tell her about me!
-"""
+""")
 
         else:
-            message = """\
+            message = __("""\
 [player],
 As I hope you know, Monika's birthday is coming up soon and I want to make it special.
 She's been through a lot lately, and I know it'd mean the world to her if you treated her to a nice day.
@@ -7418,7 +7418,7 @@ Just leave a file named 'oki doki' in the same folder you found this note so I k
 Please, don't mess this up.
 
 P.S: Don't tell her about me.
-"""
+""")
         #Now write it to the chars folder
         _write_txt("/characters/" + persistent._mas_bday_hint_filename, message)
 
@@ -7457,7 +7457,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_pool_happy_bday",
-            prompt="Happy birthday!",
+            prompt=_("Happy birthday!"),
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             start_date=mas_monika_birthday,
@@ -7520,7 +7520,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_pool_happy_belated_bday",
-            prompt="Happy belated birthday!",
+            prompt=_("Happy belated birthday!"),
             action=EV_ACT_UNLOCK,
             rules={"no_unlock": None},
             years=[]
@@ -7981,7 +7981,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_missed_bday",
-            prompt="...for missing your birthday.",
+            prompt=_("...for missing your birthday."),
             unlocked=False
         ),
         code="APL"
@@ -8007,7 +8007,7 @@ init 5 python:
         Event(
             persistent._mas_apology_database,
             eventlabel="mas_apology_forgot_bday",
-            prompt="...for forgetting your birthday.",
+            prompt=_("...for forgetting your birthday."),
             unlocked=False
         ),
         code="APL"
