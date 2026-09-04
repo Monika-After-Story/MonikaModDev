@@ -18042,3 +18042,22 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_readingenvironment",category=['literature'],prompt="What's your favorite reading environment?",pool=True,unlocked=True))
+
+label monika_readingenvironment:
+    m 1eub "I've been thinking about this quite a bit, actually."
+    m 3eub "When I was younger, the library was easily my favorite."
+    m 3dub "A quiet space with other readers around, the soft sound of pages turning and pencils writing..."
+    m 1dua "...It was so peaceful."
+    m 1hub "Lately, though, I've been fantasizing about reading at a cafe."
+    m 1lud "The smell of coffee mingling wih the sounds of customers chatting might seem like it would detract focus for some..."
+    m 1hua "...But since they're mostly familiar sounds, I feel I'd sink right into my book with no trouble."
+    m 3wub "There's also the exotic feeling of bringing a book when you travel!"
+    m 3ekb "It might not be the best for focus, but having a book on a train or a plane really helps the hours go by!"
+    m 2eka "All that said though...I think that for me, nothing beats curling up with a good book at home."
+    m 2eub "You can set the ambience yourself, and even play some music if that helps you focus."
+    m 4hub "It's so interesting to me, how all these different environments can make you feel when reading."
+    m 4hubla "Maybe when I cross over, we can try them all out together, right [player]?"
+    return
