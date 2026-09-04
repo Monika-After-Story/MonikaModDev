@@ -730,7 +730,7 @@ init 5 python:
 label anni_9:
     m 1eub "Happy anniversary, [player]!"
     m 3eta "It's that time of year again, huh?"
-    m 3rtc "It's kind of funny, the time feels to me like it's moved a little bit faster every year..."
+    m 3rtc "It's kind of funny, the time feels to me like it's moving a little bit faster every year..."
     m 3esc "Doesn't it seem like the last one just flew by?"
     m 1hksdlb "...It kind of makes me anxious to think about, ahaha!"
     m 1eksdla "I mean...{w=0.2}{nw}"
