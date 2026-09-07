@@ -1639,12 +1639,20 @@ init -4 python in mas_sprites:
             cache_acs[day_key] = None
             return
 
+        # structure modifiers
+        if acs.use_folders:
+            pfx = ""
+            dlm = "/"
+        else:
+            pfx = PREFIX_ACS
+            dlm = ART_DLM
+
         # build img list minus file extensions
         img_list = [
             A_T_MAIN,
-            PREFIX_ACS,
+            pfx,
             acs.img_sit,
-            ART_DLM,
+            dlm,
             poseid,
             arm_code,
             FILE_EXT,
@@ -2308,34 +2316,9 @@ init -4 python in mas_sprites:
         OUT:
             rk_list - list to add render keys to
         """
-        # build img str
-        if lean:
-            img_list = (
-                H_MAIN,
-                PREFIX_HAIR_LEAN,
-                lean,
-                ART_DLM,
-                hair.img_sit,
-                ART_DLM,
-                hair_key,
-                FILE_EXT,
-            )
-
-        else:
-            img_list = (
-                H_MAIN,
-                PREFIX_HAIR,
-                hair.img_sit,
-                ART_DLM,
-                hair_key,
-                FILE_EXT,
-            )
-
-        # genreate string for key check
-        img_str = "".join(img_list)
 
         # key check
-        img_key = (flt, img_str)
+        img_key = (flt, hair.img_sit, lean, hair_key)
         cache_hair = _gc(CID_HAIR)
         if img_key in cache_hair:
             if cache_hair[img_key] is not None:
@@ -2343,11 +2326,58 @@ init -4 python in mas_sprites:
             return
 
         # check if mid and no need to render
-        if hair_key == MHAIR:
+        if hair_key in (MHAIR, store.MASHair.LAYER_MID):
             if hair.mpm_mid is None or not hair.mpm_mid.get(leanpose, False):
                 # mid not in this hair for this pose
                 cache_hair[img_key] = None
                 return
+
+        # build img str
+        if lean:
+            
+            if hair.use_folders:
+                img_list = (
+                    H_MAIN,
+                    hair.img_sit,
+                    "/",
+                    lean,
+                    ART_DLM,
+                    hair_key,
+                    FILE_EXT,
+                )
+
+            else:
+                img_list = (
+                    H_MAIN,
+                    PREFIX_HAIR_LEAN,
+                    lean,
+                    ART_DLM,
+                    hair.img_sit,
+                    ART_DLM,
+                    hair_key,
+                    FILE_EXT,
+                )
+
+        else:
+
+            if hair.use_folders:
+                pfx = ""
+                dlm = "/"
+            else:
+                pfx = PREFIX_HAIR
+                dlm = ART_DLM
+
+            img_list = (
+                H_MAIN,
+                pfx,
+                hair.img_sit,
+                dlm,
+                hair_key,
+                FILE_EXT,
+            )
+
+        # genreate string for key check
+        img_str = "".join(img_list)
 
         # otherwise need to build ImageBase
         rk_list.append((
@@ -2597,12 +2627,13 @@ init -4 python in mas_sprites:
         # initial values
         fpfx = face_lean_mode(lean)
         rk_list = []
+        back_hk, mid_hk, front_hk = hair._get_hair_keys()
 
         # 1. pre-acs
         _rk_accessory_list(rk_list, acs_pre_list, flt, leanpose)
 
         # 2. back hair
-        _rk_hair(rk_list, hair, flt, BHAIR, lean, leanpose)
+        _rk_hair(rk_list, hair, flt, back_hk, lean, leanpose)
 
         # 3. bbh-acs
         _rk_accessory_list(rk_list, acs_bbh_list, flt, leanpose)
@@ -2645,7 +2676,7 @@ init -4 python in mas_sprites:
         _rk_accessory_list(rk_list, acs_bmh_list, flt, leanpose)
 
         # 13. mid-hair
-        _rk_hair(rk_list, hair, flt, MHAIR, lean, leanpose)
+        _rk_hair(rk_list, hair, flt, mid_hk, lean, leanpose)
 
         # 14. mmh-acs
         _rk_accessory_list(rk_list, acs_mhh_list, flt, leanpose)
@@ -2700,7 +2731,7 @@ init -4 python in mas_sprites:
         _rk_face_pre(rk_list, flt, fpfx, lean, blush)
 
         # 28. front-hair
-        _rk_hair(rk_list, hair, flt, FHAIR, lean, leanpose)
+        _rk_hair(rk_list, hair, flt, front_hk, lean, leanpose)
 
         # 29. afh-acs
         _rk_accessory_list(rk_list, acs_afh_list, flt, leanpose)

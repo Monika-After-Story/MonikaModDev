@@ -703,7 +703,7 @@ init -50 python:
             self.__mhm = MASHighlightMap.create_from_mapping(
                 store.mas_weather.PRECIP_TYPES,
                 None,
-                precip_map
+                {} if precip_map is None else precip_map
             )
 
         def __iter__(self):

@@ -64,13 +64,13 @@ transform hangman_board:
     xanchor 0 yanchor 0 xpos 675 ypos 100 alpha 1.0
 
 transform hangman_missed_label:
-    xanchor 0 yanchor 0 xpos 680 ypos 105
+    xanchor 0 yanchor 0 xpos 680 ypos 95
 
 transform hangman_missed_chars:
-    xanchor 0 yanchor 0 xpos 780 ypos 105
+    xanchor 0 yanchor 0 xpos 765 ypos 95
 
 transform hangman_display_word:
-    xcenter 975 yanchor 0 ypos 475
+    xcenter 975 yanchor 0 ypos 473
 
 transform hangman_hangman:
     xanchor 0 yanchor 0 xpos 880 ypos 125
@@ -643,10 +643,10 @@ label mas_hangman_game_loop:
             else:
                 $ guesses += 1
                 python:
-                    if guess in word:
+                    if guess in word.lower():
                         for index in range(0,len(word)):
-                            if guess == word[index]:
-                                display_word[index] = guess
+                            if guess == word[index].lower():
+                                display_word[index] = word[index]
                     else:
                         chances -= 1
                         missed += guess
