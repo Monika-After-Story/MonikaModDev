@@ -374,7 +374,6 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-
 # 0.12.19
 label v0_12_19(version="v0_12_19"):
     python hide:
@@ -401,12 +400,10 @@ label v0_12_19(version="v0_12_19"):
         ):
             mas_unlockEVL("monika_affection_nickname", "EVE")
 
-    return
+        # fix conventions topic not derandoming
+        if mas_seenEvent("monika_conventions"):
+            mas_hideEVL("monika_conventions", derandom=True)
 
-# 0.12.18
-label v0_12_18(version="v0_12_18"):
-    python hide:
-        pass
     return
 
 # 0.12.13
