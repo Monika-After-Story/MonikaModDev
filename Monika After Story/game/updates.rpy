@@ -402,7 +402,7 @@ label v0_12_19(version="v0_12_19"):
 
         # fix conventions topic not derandoming
         if mas_seenEvent("monika_conventions"):
-            mas_hideEVL("monika_conventions", derandom=True)
+            mas_hideEVL("monika_conventions", "EVE", derandom=True)
 
     return
 
