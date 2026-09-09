@@ -4142,7 +4142,7 @@ label monika_change_nou_house_rules:
 
 
 label .no_change:
-    
+
     if from_game:
         return False
 
@@ -4464,7 +4464,8 @@ label mas_nou_game_end:
             store.mas_nou.player_wins_this_sesh += 1
             store.mas_nou.player_win_streak += 1
             store.mas_nou.monika_win_streak = 0
-            persistent._mas_ever_won["nou"] = True
+            if not persistent._mas_ever_won["nou"]:
+                persistent._mas_ever_won["nou"] = True
 
         if (
             mas_nou.get_house_rule("points_to_win")

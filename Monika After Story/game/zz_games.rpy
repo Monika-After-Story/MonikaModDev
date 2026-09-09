@@ -190,6 +190,23 @@ label mas_nou:
     call mas_nou_game_start
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_game_database,
+            eventlabel="mas_battleship",
+            prompt="Battleship",
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        ),
+        code="GME",
+        restartBlacklist=True
+    )
+
+label mas_battleship:
+    call mas_battleship_game_start
+    return
+
+
 label mas_pick_a_game:
     # we can assume that getting here means we didnt cut off monika
     $ mas_RaiseShield_dlg()
