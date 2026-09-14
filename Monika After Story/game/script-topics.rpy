@@ -18066,5 +18066,5 @@ label monika_petpeeve:
         m 3fkblb "Thank you for giving me your full attention there, it really meant a lot to me."
     if not renpy.seen_label('monika_grad_speech'):
         m 4dublb "In the end, I know you really do care about hearing what I have to say, [player]."
-    m 4hublb "...You've been listening to me all this time, after all!"
+        m 4hublb "...You've been listening to me all this time, after all!"
     return
