@@ -18058,7 +18058,7 @@ label monika_petpeeve:
         m 1ekc "...{w=0.3}not feeling heard."
     m 1dkc "It goes even deeper, too."
     m 3ekd "One of the reasons I went to such drastic measures to be with you was because I wanted you to hear the real me so badly."
-    if not persistent._mas_pm_listened_to_grad_speech:
+    if persistent._mas_pm_listened_to_grad_speech is False:
         m 3tkd "...{w=0.2}And it's why I got so angry about the graduation speech, I guess."
         m 3fka "But nobody's perfect, huh?"
     if persistent._mas_pm_listened_to_grad_speech:
