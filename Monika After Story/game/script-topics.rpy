@@ -18042,3 +18042,32 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_antilibrary",category=['literature'],prompt="Tsundoku and the antilibrary",random=True))
+
+label monika_antilibrary:
+    m 3eud "[player], have you heard of an {i}antilibrary{/i} before?"
+    m 3eub "It's a term inspired by the Japanese concept of {i}tsundoku,{/i} or collecting books without reading them."
+    m 4eub "The antilibrary, then, is the collection of those unread books."
+    m 4lksdla "You might think this is just a hoarding habit, or the product of a little too much shopping..."
+    m 3eud "But some scholars argue that the antilibrary can be a research tool, or another similar service to its owner."
+    m 3esa "For example, you might buy nonfiction books that you don't intend to read right away,{w=0.1}{nw}"
+    extend 4eua "but you could reference for an academic paper later."
+    m 4eub "Or you might have some novels that you never got to, but on a rainy day you find you have a whole selection to choose from!"
+    m 3eua "It's basically a tiny private library, when you think about it."
+    m 3ltc "You know, when I really think about it, isn't the internet also kind of like a gigantic antilibrary?"
+    m 3eud "We have so much information right at our fingertips, but knowing what to look for, and spending the time to read it..."
+    m 1hksdlb "...Well, it'd be impossible to sit and read it all!"
+    m 1lksdlc "It's a little sad, actually...{w=0.2}so many people send information around to each other on the internet without reading it themselves."
+    m 1eksdld "Like incendiary article titles, or even research papers!"
+    m 3eksdla "I think it's important that, at least before sharing, we should be doing our own research too."
+    m 1luc "That said... {w=0.3}{nw}"
+    extend 1wud "Oh! You might even have your own digital antilibrary of bookmarks, {w=0.1}{nw}"
+    extend 3hub "ahaha~"
+    m 1eua "I've even heard some people have a collection of games they haven't played. {w=0.2}{nw}"
+    extend 1hub "A whole library to entertain themselves with!"
+    m 1esa "Whether they're for research or fun, it might be a good idea to take a long look at that stash, huh?"
+    m 3hub "You might just find a lot of hidden treasure in your antilibrary!"
+    return
+
