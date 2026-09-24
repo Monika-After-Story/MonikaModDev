@@ -18042,3 +18042,21 @@ label monika_overton:
     m 1eua "I {i}could{/i} finish this story right up to Current Norm, but I just wanted to describe it at a basic level in order to convey an example of how it can work."
     m 1huu "Thanks for listening~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_needles",category=['life'],prompt="Are you afraid of needles?",pool=True,unlocked=True))
+
+label monika_needles:
+    m 3eud "Hmm...I can understand how they'd be pretty scary to some people."
+    m 2lusdlc "I mean, watching something {i}enter your skin{/i} isn't exactly pleasant even on the best of days..."
+    m 2eud "So I can't say I'm exactly a {i}fan,{/i} but I don't think I'm particularly afraid of them, either."
+    m 4eud "Injection is one of the most effective means to administer medications. Unlike a pill, it bypasses your digestive system."
+    m 4hub "So I try to remind myself of their effectiveness when I have to get a shot or an IV."
+    m 3eua "One thing I haven't done yet is donate blood."
+    m 3esb "Did you know that, besides helping others, donating blood actually can help you maintain healthy iron levels?"
+    m 3esd "It turns out, having excess iron can cause organ damage over time, {w=0.1}{nw}"
+    extend 3eua "and donating blood reduces iron in the bloodstream."
+    m 1rkb "Though, it might be something to avoid if you struggle with too {i}little{/i} iron."
+    m 1eka "Either way, I hope you aren't too afraid of needles, [player]."
+    m 1hubla "I want my [mas_get_player_nickname(exclude_names=[player], _default='sweetheart', regex_replace_with_nullstr='my ')] to be as healthy as [he] can be, after all."
+    return
