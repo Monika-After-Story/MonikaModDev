@@ -67,6 +67,8 @@
         }
     },
     "outfit_acs": [
-        "hatana_tracen_uniform_head_bow_white"
-    ]
+        "hatana_tracen_uniform_head_bow_white",
+        "hatana_uma_ears"
+    ],
+    "outfit_hair": "hatana_down_ears_hidden"
 }
