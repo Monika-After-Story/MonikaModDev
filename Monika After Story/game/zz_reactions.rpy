@@ -2882,3 +2882,23 @@ label mas_reaction_gift_noudeck_have_played:
         persistent._seen_ever["monika_introduce_nou_house_rules"] = True
         persistent._seen_ever["monika_explain_nou_rules"] = True
     return
+
+label mas_reaction_gift_clothes_hatana_tracen_uniform:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "hatana_tracen_uniform")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1etc "Oh, this is..."
+    m 3wub "Wait, I think I've seen this uniform before! It's from that game about horse girls, right?"
+    m 3hub "You would think this sort of uniform would be hard to run in, but they don't seem to have any trouble at all, ahaha!"
+    m 3eta "Hmm...now that I'm thinking about it..."
+    extend 3tua "I've never tried coding something like this, but I might have an idea for this costume."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
