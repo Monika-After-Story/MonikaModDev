@@ -25,7 +25,24 @@
         "display_name": "Tracen Academy Uniform (Summer)",
         "thumb": "hatana_tracen_uniform",
         "group": "clothes",
-        "visible_when_locked": false
+        "visible_when_locked": false,
+        "select_dlg": [
+            "Umapyoi! Umapyoi!",
+            "うまぴょい!　うまぴょい!",
+            "Harikitte ikou!!!!",
+            "はりきっていこう!!!!",
+            "~hachimi hachimi hachimi~",
+            "~はちみ、はちみ、はちみ~",
+            "Mambo, mambo! Omatsuri mambo!",
+            "マンボ、マンボ~!　お祭りマンボ~!",
+            "Bakushin Bakushin Bakushin!",
+            "バクシンバクシンバクシン!",
+            "Chi~yo Chiyo Chiyo Chiyono O~",
+            "チヨチヨチヨチヨチヨノオー",
+            "Konna, race wa~ Hajimete!",
+            "こんなーレースは、はじめて!",
+            "I put the new forgis on the jeep"
+        ]
     },
     "giftname": "tracenuniformcosplay",
     "pose_arms": {
