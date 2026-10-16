@@ -18,7 +18,9 @@
         "thumb": "hatana_uma_ears",
         "group": "hat",
         "select_dlg": [
-            "TODO: I AM HONSE"
+            "Are we 'horsing around,' [player]?",
+            "Ahaha, they feel kind of funny!",
+            "Hashire, hashire, Umamusume..."
         ]
     }
 }
