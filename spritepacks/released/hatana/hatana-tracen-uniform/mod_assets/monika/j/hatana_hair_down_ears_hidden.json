@@ -1,0 +1,28 @@
+{
+    "__author": "hatana", 
+    "type": 1, 
+    "version": 4,
+    "use_numeric_layer_ids": true,
+    "name": "hatana_down_ears_hidden", 
+    "img_sit": "hatana_down_ears_hidden", 
+    "pose_map": {
+        "mpm_type": 0, 
+        "default": true, 
+        "use_reg_for_l": true
+    }, 
+    "stay_on_start": true,
+    "ex_props": {
+        "day": true, 
+        "ribbon-off": true,
+        "no-tails": true
+    }, 
+    "select_info": {
+        "display_name": "Down (Ears Hidden)", 
+        "group": "hair", 
+        "thumb": "hatana_down_ears_hidden",
+        "select_dlg": [
+            "Want me to hide my ears?",
+            "Oh, I wonder why... ehehe~"
+        ]
+    }
+}

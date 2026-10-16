@@ -1,0 +1,26 @@
+{
+    "__author": "hatana",
+    "version": 4,
+    "type": 0,
+    "name": "hatana_uma_ears",
+    "img_sit": "hatana_uma_ears",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 5,
+    "acs_type": "hat",
+    "stay_on_start": true,
+    "dlg_desc": "cosplay ears",
+    "dlg_plural": true,
+    "select_info": {
+        "display_name": "Uma Ears",
+        "thumb": "hatana_uma_ears",
+        "group": "hat",
+        "select_dlg": [
+            "Are we 'horsing around,' [player]?",
+            "Ahaha, they feel kind of funny!",
+            "Hashire, hashire, Umamusume..."
+        ]
+    }
+}
