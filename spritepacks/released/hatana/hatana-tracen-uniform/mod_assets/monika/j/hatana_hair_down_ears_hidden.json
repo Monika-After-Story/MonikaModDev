@@ -21,7 +21,8 @@
         "group": "hair", 
         "thumb": "hatana_down_ears_hidden",
         "select_dlg": [
-            "TODO: LOOK [player], NO EARS!"
+            "Want me to hide my ears?",
+            "Oh, I wonder why... ehehe~"
         ]
     }
 }
