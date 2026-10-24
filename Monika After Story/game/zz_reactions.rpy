@@ -2899,7 +2899,8 @@ init 10 python in mas_sprites_hatana:
         json_sprite_unlock(sp_obj.outfit_hair)
 
         for acs in sp_obj.outfit_acs.values():
-            json_sprite_unlock(acs)
+            if acs.name != "hatana_tracen_uniform_head_bow_white":
+                json_sprite_unlock(acs)
     
 
 label mas_reaction_gift_clothes_hatana_tracen_uniform:
