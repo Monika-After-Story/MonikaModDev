@@ -1691,8 +1691,7 @@ init -10 python in mas_selspr:
         """
         unlock_prompt(group)
 
-
-    def json_sprite_unlock(sp_obj, unlock_label=True):
+    def json_sprite_unlock(sp_obj, unlock_label=True, unlock_outfit=True):
         """RUNTIME ONLY
         Unlocks selectable for the given sprite, as ewll as the selector
         topic for that sprite.
@@ -1703,19 +1702,33 @@ init -10 python in mas_selspr:
             sp_obj - sprite object to unlock selectbale+
             unlock_label - True will unlock the selector lable, False will not
                 (Default: True)
+            unlock_outfit - True will unlock all outfit related parts of the 
+                given sprite object if its a clothes type
+                (Default: True)
         """
         sp_type = sp_obj.gettype()
 
-        # unlocks the selectable
-        _unlock_item(sp_obj, sp_type)
+        # gather selectables to unlock
+        items_to_unlock = [(sp_obj, sp_type)]
 
-        # retrieve selectable and unlock the group's selector
-        if unlock_label:
-            sel_obj = _get_sel(sp_obj, sp_type)
-            if check_prompt(sel_obj.group):
-                unlock_prompt(sel_obj.group)
+        # include outfit objects if clothes
+        if unlock_outfit and sp_type == store.mas_sprites_json.SP_CLOTHES:
+            items_to_unlock.extend([
+                (outfit_obj, outfit_obj.gettype())
+                for outfit_obj in sp_obj.outfit_objs_to_unlock()
+            ])
 
-                # make sure the selector uses the right propmt
+        for sp, spt in items_to_unlock:
+
+            # unlocks the selectables
+            _unlock_item(sp, spt)
+
+            # retrieve selectable and unlock the group's selector
+            if unlock_label:
+                sel_obj = _get_sel(sp, spt)
+                if check_prompt(sel_obj.group):
+                    unlock_prompt(sel_obj.group)
+                    # make sure the selector uses the right propmt
 
     def _selector_filter_items(item, search_query, search_kws):
         """
