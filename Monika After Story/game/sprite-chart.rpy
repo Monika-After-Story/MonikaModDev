@@ -7250,6 +7250,17 @@ init -3 python:
                         NOTE: can be multiple of this format
                 values:
                     MASFilterMap objects
+            outfit_sel_unlock_rules - dict of rules to follow for outfit
+                selectable unlocks. See
+                acceptable keys:
+                    "all" - all outfit selectables
+                    "hair" - the outfit_hair selectable
+                    "acs" - all outfit_acs selectables
+                    "<acs ID>" - specific outfit_acs selectable. This should
+                        match the name in outfit_acs.
+                acceptable values:
+                    Truey - unlock the selectable
+                    Falsey - dont unlock the selectable
 
         SEE MASSpriteFallbackBase for inherited properties
         """
@@ -7259,6 +7270,7 @@ init -3 python:
         # global flag - set to False once sprite jsons have been loaded.
 
         __MHM_KEYS = store.mas_sprites._genLK(("0", "1"))
+        __OSUR_KEYS = ("all", "hair", "acs")
 
         def __init__(self,
                 name,
@@ -7274,7 +7286,8 @@ init -3 python:
                 pose_arms=None,
                 hl_data=None,
                 outfit_hair=None,
-                outfit_acs=None
+                outfit_acs=None,
+                outfit_sel_unlock_rules=None
             ):
             """
             MASClothes constructor
@@ -7333,6 +7346,10 @@ init -3 python:
                             value: acs object
                         2 - list of acs names/acs objects - mixed types allowed
                     (Default: None)
+                outfit_sel_unlock_rules - dict of rules to follow for outfit
+                    selectable unlocks. See property doc for accepted keys
+                    and values.
+                    (Default: None)
             """
             super(MASClothes, self).__init__(
                 name,
@@ -7354,6 +7371,11 @@ init -3 python:
             self.pose_arms = pose_arms
             self.outfit_hair = self._format_outfit_hair(outfit_hair)
             self.outfit_acs = self._format_outfit_acs(outfit_acs)
+
+            # private data approach so it wont be used without being checked
+            # first
+            self.__outfit_sel_unlock_rules = outfit_sel_unlock_rules
+            self.outfit_sel_unlock_rules = None
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -7517,7 +7539,27 @@ init -3 python:
             """
             cls.delay_outfit_validation = False
             for c_name in mas_sprites.CLOTH_MAP:
-                mas_sprites.CLOTH_MAP[c_name]._proc_delayed_outfit_data()
+                cloth = mas_sprites.CLOTH_MAP[c_name]
+                cloth._proc_delayed_outfit_data()
+                cloth._proc_outfit_sel_unlock_rules()
+
+        def _proc_outfit_sel_unlock_rules(self):
+            """
+            cleans up the outfit_sel_unlock_rules prop so it doesnt contain
+            invalid acs IDs
+            """
+            # NOTE: must be after delayed outfit data processing so outfit_acs
+            #   is populated
+            if self.delay_outfit_validation or self.__outfit_sel_unlock_rules is None:
+                return
+
+            self.outfit_sel_unlock_rules = self.__outfit_sel_unlock_rules
+            self.__outfit_sel_unlock_rules = None
+
+            # NOTE: list(keys) for py3
+            for rule in list(self.outfit_sel_unlock_rules.keys()):
+                if rule not in self.osur_keys() and rule not in self.outfit_acs:
+                    self.outfit_sel_unlock_rules.pop(rule)
 
         def build_loadstrs(self, prefix):
             """
@@ -7720,6 +7762,47 @@ init -3 python:
                     clothes.append(clothing)
 
             return clothes
+
+        @classmethod
+        def osur_keys(cls):
+            """
+            RETURNS: keys used for all outfit selector unlock rules
+            """
+            return cls.__OSUR_KEYS
+
+        def outfit_objs_to_unlock(self):
+            """
+            gets list of outfit hair/acs that shoudl be unlocked with this
+
+            RETURNS: list of outfit hair/acs objects that should be unlocked
+            """
+            objs = []
+
+            # start with hair
+            if self.outfit_hair is not None:
+                # try hair, then all, assume false
+                should_unlock_hair = self.outfit_sel_unlock_rules.get(
+                    "hair",
+                    self.outfit_sel_unlock_rules.get("all")
+                )
+                if should_unlock_hair:
+                    objs.append(self.outfit_hair)
+
+            # then ACS
+            if self.outfit_acs is not None:
+                for acs_name, acs in self.outfit_acs.items():
+                    # try ID, then acs, then all, assume false
+                    should_unlock_acs = self.outfit_sel_unlock_rules.get(
+                        acs_name,
+                        self.outfit_sel_unlock_rules.get(
+                            "acs",
+                            self.outfit_sel_unlock_rules.get("all")
+                        )
+                    )
+                    if should_unlock_acs:
+                        objs.append(self.acs)
+
+            return objs
 
 
     class MASOutfitChangeData(object):
