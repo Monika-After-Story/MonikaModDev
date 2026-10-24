@@ -1185,11 +1185,17 @@ init 5 python:
     )
 
 label greeting_o31_hatana_tracen_uniform:
-    # NOTE: TODO
-    m "TODO still WIP"
-    #black screen
+    #scene black
+    #pause 2.0
+
+    # NOTE: do scne eblack above if we have sfx
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
+
     m "Okay, I think everything's in place."
     m "All lined up at the starting gate...{w=0.3}and ready to run!"
+
+    # NOTE: rm this and do gate open sfx if available
+    call mas_transition_from_emptydesk("monika 2hubla")
 
     m 2hubla "Ahaha~ What do you think, [player]?"
     m "I think the ears are the perfect addition, don't you?"
@@ -1197,6 +1203,7 @@ label greeting_o31_hatana_tracen_uniform:
     m 1kua "Can you imagine me zooming around the course, [mas_get_player_nickname()]?"
     m 1hksdlb "Ahaha! I'm definitely letting myself get carried away now."
 
+    $ store.mas_sprites_hatana._unlock_all()
     call greeting_o31_deco
     call greeting_o31_cleanup
     return
