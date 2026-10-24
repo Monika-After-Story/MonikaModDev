@@ -1,0 +1,20 @@
+{
+    "version": 4,
+    "type": 1,
+    "name": "osur_test_all_down",
+    "img_sit": "down",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "ribbon": true
+    },
+    "select_info": {
+        "display_name": "OSUR TEST ALL DOWN",
+        "thumb": "down",
+        "group": "hair"
+    }
+}

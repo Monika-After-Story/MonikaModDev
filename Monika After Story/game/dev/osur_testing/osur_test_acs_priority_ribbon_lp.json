@@ -1,0 +1,20 @@
+{
+    "version": 4,
+    "type": 0,
+    "name": "osur_test_acs_priority_ribbon_lp",
+    "img_sit": "ribbon_light_purple",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 3,
+    "acs_type": "ribbon",
+    "stay_on_start": true,
+    "dlg_desc": "osur test acs pri ribbon lp",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "OSUR TEST ACS PRI RIBBON LP",
+        "thumb": "ribbon_light_purple",
+        "group": "ribbon"
+    }
+}
