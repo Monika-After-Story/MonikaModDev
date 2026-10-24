@@ -2883,6 +2883,25 @@ label mas_reaction_gift_noudeck_have_played:
         persistent._seen_ever["monika_explain_nou_rules"] = True
     return
 
+init 10 python in mas_sprites_hatana:
+    # TODO delete this block when #10631
+    import store
+    from store.mas_selspr import json_sprite_unlock
+    from store.mas_sprites import get_sprite, SP_CLOTHES
+
+    def _unlock_all():
+        uniform = get_sprite(SP_CLOTHES, "hatana_tracen_uniform")
+        json_sprite_unlock(uniform)
+        _unlock_outfit_extras(uniform)
+
+    def _unlock_outfit_extras(sp_obj):
+        # assumed sp_obj is the hatana tracen uniform
+        json_sprite_unlock(sp_obj.outfit_hair)
+
+        for acs in sp_obj.outfit_acs.values():
+            json_sprite_unlock(acs)
+    
+
 label mas_reaction_gift_clothes_hatana_tracen_uniform:
     python:
         sprite_data = mas_getSpriteObjInfo(
@@ -2899,6 +2918,7 @@ label mas_reaction_gift_clothes_hatana_tracen_uniform:
     extend 3tua "I've never tried coding something like this, but I might have an idea for this costume."
 
     $ mas_finishSpriteObjInfo(sprite_data)
+    $ store.mas_sprites_hatana._unlock_outfit_extras(sprite_object)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
