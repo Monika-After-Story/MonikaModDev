@@ -1185,18 +1185,22 @@ init 5 python:
     )
 
 label greeting_o31_hatana_tracen_uniform:
-    #scene black
-    #pause 2.0
-
-    # NOTE: do scne eblack above if we have sfx
-    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
-
+    scene black
+    pause 2.0
+    
     m "Okay, I think everything's in place."
     m "All lined up at the starting gate...{w=0.3}and ready to run!"
+    window hide
 
-    # NOTE: rm this and do gate open sfx if available
-    call mas_transition_from_emptydesk("monika 2hubla")
+    # sfx is about 2.18s
+    play sound "mod_assets/sfx/gate_open.ogg"
+    show white zorder 200 with Dissolve(0.5) 
+    pause 0.75
 
+    call spaceroom(dissolve_all=True)
+    hide white with Dissolve(1.0) # slower fade out for effect
+
+    window auto
     m 2hubla "Ahaha~ What do you think, [player]?"
     m "I think the ears are the perfect addition, don't you?"
     m 1hua "Now that I have it on, it actually does sort of make me want to go for a jog. Ehehe~"
