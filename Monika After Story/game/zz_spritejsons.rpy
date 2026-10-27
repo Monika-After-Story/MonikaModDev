@@ -161,6 +161,10 @@
 #   "outfit_acs": ["acs string IDs"]
 #       - optional
 #       - list of ACS to use with these clothes when outfit mode is enabled
+#   "outfit_sel_unlock_rules": {Outfit Unlock rules object}
+#       - optional
+#       - maps outfit acs IDs or other special keys to if the outfit objects
+#           selectors shoudl be unlocked when the main sprite is unlocked
 # }
 #
 # PoseMap JSONSs
@@ -330,6 +334,18 @@
 #       - optional
 #       - highlights for this arm
 # }
+#
+# Outfit Unlock rules JSON
+#   These objects should contain keys and values that denote if an outfit_hair
+#   or outfit_acs's selector should be unlocked upon the clothes being unlocked.
+#   rules are applied in narrowest to widest granularity approach.
+#   AKA: single acs IDs take priority over "all", etc.
+#   Any invalid rule keys/acs IDs are ignored and logged.
+#   Keys:
+#       "all" - rule applies to all. last in the priority chain
+#       "hair" - rule applies to outfit_hair. before "all" in priority
+#       "acs" - rule applies to all outfit_acs. before "all" in prioirty
+#       "<acs ID>" - rule applies to specific ACS in outfit_acs. takes priority.
 #
 # Highlight Split JSON
 #   Highlight split objects are only for MASSPlitAccessory (Split ACS).
@@ -680,6 +696,18 @@ init -21 python in mas_sprites_json:
     OE_INVALID_HAIR = "hair '{0}' does not exist, ignoring for clothes '{1}'"
     OE_INVALID_ACS = "ACS '{0}' does not exist, ignoring for clothes '{1}'"
 
+    ## outfit select unlock rules
+    OSUR_LOADING = "loading outfit selector rules..."
+    OSUR_SUCCESS = "outfit selector rules loaded successfully!"
+    OSUR_NO_OUTFIT = "no 'outfit_hair' or 'outfit_acs' provided, ignoring"
+    OSUR_INVALID_KEY = (
+        "key '{0}' found - expected 'all', 'hair', 'acs', or matching ACS "
+        "from 'outfit_acs', ignoring"
+    )
+    OSUR_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}, ignoring"
+    OSUR_NO_RULES = "no valid rules to load, ignoring"
+    OSUR_NO_OUTFIT_HAIR = "found key 'hair' but no 'outfit_hair', ignoring"
+    OSUR_NO_OUTFIT_ACS = "found key '{0}' but no 'outfit_acs', ignoring"
 
     ### CONSTANTS
     SP_ACS = 0
@@ -803,6 +831,7 @@ init -21 python in mas_sprites_json:
         "pose_arms",
         HLITE,
         "mid_hair_map",
+        "outfit_sel_unlock_rules",
     )
 
     # select info params
@@ -1808,6 +1837,7 @@ init 189 python in mas_sprites_json:
             - highlight
             - outfit_hair
             - outfit_acs
+            - outfit_sel_unlock_rules
 
         IN:
             jobj - json object to parse
@@ -1953,6 +1983,83 @@ init 189 python in mas_sprites_json:
 
             if pose_arms is not None:
                 save_obj["pose_arms"] = pose_arms
+
+        # validate outfit sel unlock rules
+        if "outfit_sel_unlock_rules" in obj_based:
+            # outfit select unlock rules exists, get and validate
+            msg_log.append((MSG_INFO_T, indent_lvl, OSUR_LOADING))
+            osur_obj = obj_based.pop("outfit_sel_unlock_rules")
+            is_bad = False
+
+            # pull data out for checking
+            outfit_hair = (post_proc_data.get("outfit_extras", {})
+                                         .get(sp_name, {})
+                                         .get("hair", None))
+            outfit_acs = (post_proc_data.get("outfit_extras", {})
+                                        .get(sp_name, {})
+                                        .get("acs", None))
+
+            if outfit_hair is None and outfit_acs is None:
+                msg_log.append((MSG_WARN_T, indent_lvl, OSUR_NO_OUTFIT))
+
+            else:
+                # parse the rules
+                real_osur_obj = {}
+                for rule_key, rule_val in osur_obj.items():
+
+                    add_key = True
+
+                    # key type
+                    if not _verify_str(rule_key):
+                        add_key = False
+                        msg_log.append((
+                            MSG_WARN_T,
+                            indent_lvl + 1,
+                            OSUR_BAD_K_TYPE.format(rule_key, str, type(rule_key))
+                        ))
+
+                    # key value
+                    elif (
+                            rule_key not in store.MASClothes.osur_keys()
+                            and rule_key not in outfit_acs
+                    ):
+                        add_key = False
+                        msg_log.append((
+                            MSG_WARN_T,
+                            indent_lvl + 1,
+                            OSUR_INVALID_KEY.format(rule_key)
+                        ))
+
+                    # hair specific rules
+                    elif rule_key == "hair":
+                        if outfit_hair is None:
+                            add_key = False
+                            msg_log.append((
+                                MSG_WARN_T,
+                                indent_lvl + 1,
+                                OSUR_NO_OUTFIT_HAIR
+                            ))
+
+                    # acs specific rules - (not hair/all should be acs or acs ID)
+                    elif rule_key != "all":
+                        if outfit_acs is None:
+                            add_key = False
+                            msg_log.append((
+                                MSG_WARN_T,
+                                indent_lvl + 1,
+                                OSUR_NO_OUTFIT_ACS.format(rule_key)
+                            ))
+
+                    # add rule if valid
+                    if add_key:
+                        real_osur_obj[rule_key] = rule_val
+
+                # only add if have valid params
+                if len(real_osru_obj) > 0:
+                    save_obj["outfit_sel_unlock_rules"] = real_osur_obj
+                    msg_log.append((MSG_INFO_T, indent_lvl, OSUR_SUCCEESS))
+                else:
+                    msg_log.append((MSG_WARN_T, indent_lvl, OSUR_NO_RULES))
 
         # now for highlight
         if HLITE in obj_based:

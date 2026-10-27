@@ -866,13 +866,16 @@ init python:
         )
 
 
-    def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
+    def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True, unlock_outfit=True):
         """
         Finishes the sprite object with the given data.
 
         IN:
             sprite_data - sprite data tuple from getSpriteObjInfo
             unlock_sel - True will unlock the selector topic, False will not
+                (Default: True)
+            unlock_outfit - True will unlock all outfit sprites linked to
+                the sprite to unlock (only if clothes)
                 (Default: True)
         """
         sp_type, sp_name, giftname, gifted_before, sp_obj = sprite_data
@@ -899,7 +902,11 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
+        store.mas_selspr.json_sprite_unlock(
+            sp_obj,
+            unlock_label=unlock_sel,
+            unlock_outfit=unlock_outfit
+        )
 
         # save persistent
         renpy.save_persistent()
@@ -1048,7 +1055,7 @@ label mas_reaction_gift_starter_f14:
     m 1sua "Now, let's see... What's inside?"
     return
 
-### REACTIONS [RCT100]
+### REACTIONS [RCT100] #######################################################
 
 init 5 python:
     addReaction("mas_reaction_generic", None)

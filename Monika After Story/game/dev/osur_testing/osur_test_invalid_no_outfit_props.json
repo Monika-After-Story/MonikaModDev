@@ -1,0 +1,65 @@
+{
+    "version": 4,
+    "type": 2,
+    "img_sit": "def",
+    "name": "osur_test_invalid_no_outfit_props",
+    "pose_arms": {
+        "crossed": {
+            "layers": "5^10",
+            "tag": "crossed"
+        },
+        "def|left-def": {
+            "layers": "10",
+            "tag": "def"
+        },
+        "def|right-def": {
+            "layers": "5^10",
+            "tag": "def"
+        },
+        "left-down": {
+            "layers": "0",
+            "tag": "down"
+        },
+        "left-rest": {
+            "layers": "10",
+            "tag": "rest"
+        },
+        "right-down": {
+            "layers": "0",
+            "tag": "down"
+        },
+        "right-point": {
+            "layers": "0",
+            "tag": "point"
+        },
+        "right-restpoint": {
+            "layers": "10",
+            "tag": "restpoint"
+        },
+        "steepling": {
+            "layers": "10",
+            "tag": "steepling"
+        }
+    },
+    "pose_map": {
+        "default": false,
+        "mpm_type": 0,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true,
+        "use_reg_for_l": true
+    },
+    "select_info": {
+        "display_name": "OSUR TEST NO PROPS",
+        "group": "clothes",
+        "thumb": "schooluniform"
+    },
+    "giftname": "osurtestnooutfitprops",
+    "outfit_sel_unlock_rules": {
+        "all": true
+    }
+}
