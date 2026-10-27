@@ -2882,3 +2882,44 @@ label mas_reaction_gift_noudeck_have_played:
         persistent._seen_ever["monika_introduce_nou_house_rules"] = True
         persistent._seen_ever["monika_explain_nou_rules"] = True
     return
+
+init 10 python in mas_sprites_hatana:
+    # TODO delete this block when #10631
+    import store
+    from store.mas_selspr import json_sprite_unlock
+    from store.mas_sprites import get_sprite, SP_CLOTHES
+
+    def _unlock_all():
+        uniform = get_sprite(SP_CLOTHES, "hatana_tracen_uniform")
+        json_sprite_unlock(uniform)
+        _unlock_outfit_extras(uniform)
+
+    def _unlock_outfit_extras(sp_obj):
+        # assumed sp_obj is the hatana tracen uniform
+        json_sprite_unlock(sp_obj.outfit_hair)
+
+        for acs in sp_obj.outfit_acs.values():
+            if acs.name != "hatana_tracen_uniform_head_bow_white":
+                json_sprite_unlock(acs)
+    
+
+label mas_reaction_gift_clothes_hatana_tracen_uniform:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "hatana_tracen_uniform")
+        )
+        sprite_type, sprite_name, giftname, gifted_before, sprite_object = sprite_data
+
+        mas_giftCapGainAff(3)
+
+    m 1etc "Oh, this is..."
+    m 3wub "Wait, I think I've seen this uniform before! It's from that game about horse girls, right?"
+    m 3hub "You would think this sort of uniform would be hard to run in, but they don't seem to have any trouble at all, ahaha!"
+    m 3eta "Hmm...now that I'm thinking about it..."
+    extend 3tua "I've never tried coding something like this, but I might have an idea for this costume."
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    $ store.mas_sprites_hatana._unlock_outfit_extras(sprite_object)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return

@@ -1,0 +1,28 @@
+{
+    "__author": "hatana",
+    "version": 4,
+    "type": 0,
+    "name": "hatana_tracen_uniform_head_bow_white",
+    "img_sit": "hatana_tracen_uniform_head_bow_white",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "rec_layer": 1,
+    "acs_type": "left-hair-clip",
+    "mux_type": [
+        "left-hair-clip"
+    ],
+    "stay_on_start": true,
+    "dlg_desc": "bow",
+    "dlg_plural": false,
+    "select_info": {
+        "display_name": "Head Bow (White)",
+        "thumb": "hatana_head_bow_white",
+        "group": "left-hair-clip",
+        "select_dlg": [
+            "What a cute little bow!",
+            "Much smaller than my usual hair tie, ehehe~"
+        ]
+    }
+}

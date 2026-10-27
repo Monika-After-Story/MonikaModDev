@@ -1174,6 +1174,45 @@ label greeting_o31_hatana_2b:
     call greeting_o31_cleanup
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_o31_hatana_2b",
+            category=[store.mas_greetings.TYPE_HOL_O31]
+        ),
+        code="GRE"
+    )
+
+label greeting_o31_hatana_tracen_uniform:
+    scene black
+    pause 2.0
+    
+    m "Okay, I think everything's in place."
+    m "All lined up at the starting gate...{w=0.3}and ready to run!"
+    window hide
+
+    # sfx is about 2.18s
+    play sound "mod_assets/sfx/gate_open.ogg"
+    show white zorder 200 with Dissolve(0.5) 
+    pause 0.75
+
+    call spaceroom(dissolve_all=True)
+    hide white with Dissolve(1.0) # slower fade out for effect
+
+    window auto
+    m 2hubla "Ahaha~ What do you think, [player]?"
+    m "I think the ears are the perfect addition, don't you?"
+    m 1hua "Now that I have it on, it actually does sort of make me want to go for a jog. Ehehe~"
+    m 1kua "Can you imagine me zooming around the course, [mas_get_player_nickname()]?"
+    m 1hksdlb "Ahaha! I'm definitely letting myself get carried away now."
+
+    $ store.mas_sprites_hatana._unlock_all()
+    call greeting_o31_deco
+    call greeting_o31_cleanup
+    return
+        
+
 label greeting_o31_deco:
     m 1eua "Anyway..."
     m 3eua "Do you like what I've done with the room?"

@@ -1,0 +1,92 @@
+{
+    "__author": "hatana",
+    "version": 4,
+    "type": 2,
+    "name": "hatana_tracen_uniform",
+    "img_sit": "hatana_tracen_uniform",
+    "pose_map": {
+        "mpm_type": 0,
+        "default": false,
+        "l_default": false,
+        "p1": true,
+        "p2": true,
+        "p3": true,
+        "p4": true,
+        "p5": true,
+        "p6": true,
+        "p7": true
+    },
+    "stay_on_start": true,
+    "ex_props": {
+        "cosplay": true,
+        "costume": "o31"
+    },
+    "select_info": {
+        "display_name": "Tracen Academy Uniform (Summer)",
+        "thumb": "hatana_tracen_uniform",
+        "group": "clothes",
+        "visible_when_locked": false,
+        "select_dlg": [
+            "Umapyoi! Umapyoi!",
+            "うまぴょい!　うまぴょい!",
+            "Harikitte ikou!!!!",
+            "はりきっていこう!!!!",
+            "~hachimi hachimi hachimi~",
+            "~はちみ、はちみ、はちみ~",
+            "Mambo, mambo! Omatsuri mambo!",
+            "マンボ、マンボ~!　お祭りマンボ~!",
+            "Bakushin Bakushin Bakushin!",
+            "バクシンバクシンバクシン!",
+            "Chi~yo Chiyo Chiyo Chiyono O~",
+            "チヨチヨチヨチヨチヨノオー",
+            "Konna, race wa~ Hajimete!",
+            "こんなーレースは、はじめて!",
+            "I put the new forgis on the jeep",
+            "My history! My victory!"
+        ]
+    },
+    "giftname": "tracenuniformcosplay",
+    "pose_arms": {
+        "crossed": {
+            "tag": "crossed",
+            "layers": "5^10"
+        },
+        "left-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "left-rest": {
+            "tag": "rest",
+            "layers": "10"
+        },
+        "right-down": {
+            "tag": "down",
+            "layers": "0"
+        },
+        "right-point": {
+            "tag": "point",
+            "layers": "0"
+        },
+        "right-restpoint": {
+            "tag": "restpoint",
+            "layers": "10"
+        },
+        "steepling": {
+            "tag": "steepling",
+            "layers": "10"
+        },
+        "def|left-def": {
+            "tag": "def",
+            "layers": "10"
+        },
+        "def|right-def": {
+            "tag": "def",
+            "layers": "5^10"
+        }
+    },
+    "outfit_acs": [
+        "hatana_tracen_uniform_head_bow_white",
+        "hatana_uma_ears"
+    ],
+    "outfit_hair": "hatana_down_ears_hidden"
+}

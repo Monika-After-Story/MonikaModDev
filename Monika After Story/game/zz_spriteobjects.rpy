@@ -554,6 +554,13 @@ init -2 python in mas_sprites:
         if store.persistent._mas_acs_enable_promisering:
             _moni_chr.wear_acs(store.mas_acs_promisering)
 
+    def _clothes_hatana_tracen_uniform_exit(_moni_chr, **kwargs):
+        """
+        Exit prog point for hatana tracen uniform
+        """
+        # remove head bow 
+        _acs_remove_if_found(_moni_chr, "hatana_tracen_uniform_head_bow_white")
+
 
     ######### ACS [SPR030] ###########
     # available kwargs:
