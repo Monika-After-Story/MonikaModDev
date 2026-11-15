@@ -35,6 +35,9 @@ init -1 python:
         "Enabling this will allow Monika to see your active window "
         "and offer some comments based on what you're doing."
     )
+    layout.MAS_TT_R8_TEST = _(
+        "Enables Renpy 8/Python 3 test build."
+    )
 
     _TXT_FINISHED_UPDATING = (
         "The updates have been installed. Please reopen Monika After Story.\n\n"
@@ -1503,6 +1506,15 @@ screen preferences():
                     textbutton _("Repeat Topics"):
                         action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
                         hovered tooltip.Action(layout.MAS_TT_REPEAT)
+
+                    textbutton _("R8 Testing"):
+                        action [
+                            ToggleField(persistent, "_mas_r8_testing_enabled", True, False),
+                            Function(store.mas_r8_testing._onclick_r8_checkbox)
+                        ]
+                        selected persistent._mas_r8_testing_mode
+                        hovered tooltip.Action(layout.MAS_TT_R8_TEST)
+                            
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.

@@ -1120,6 +1120,9 @@ init -810 python:
             # actions / mas
             "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
             "_mas_pm_snitched_on_chibika": "pm.actions.mas.snitched_on_chibika",
+            "_mas_pm_tested_r8": "pm.actions.mas.tested_r8_build",
+            "_mas_pm_enabled_r8_testing": "pm.actions.mas.enabled_r8_build",
+            "_mas_pm_touched_r8_testing": "pm.actions.mas.touched_r8_checkbox",
 
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
