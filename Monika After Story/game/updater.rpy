@@ -13,6 +13,10 @@ default persistent._mas_just_updated = False
 define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
 define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
 
+# v0.13.0+ s3 links
+# NOTE: no unstable - normal r8 links in r8 build
+define mas_updater.r8 = "http://d24r4ac2pb37di.cloudfront.net/updates.json"
+
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 define mas_updater._forced_updater_start_state = None
