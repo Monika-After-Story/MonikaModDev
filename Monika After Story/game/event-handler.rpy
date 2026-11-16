@@ -2249,7 +2249,7 @@ init python:
 
             IN:
                 @event_label - a renpy label for the event to be called
-                skipmidloopeval - do we want to skip the mid loop eval to
+                skipeval - do we want to skip the mid loop eval to
                     prevent other rogue events from interrupting.
                     (Defaults: False)
                 notify - True will trigger a notification if appropriate. False
