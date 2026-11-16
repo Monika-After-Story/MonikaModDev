@@ -7,11 +7,8 @@ default persistent._mas_r8_testing_enabled = False
 default persistent._mas_r8_testing_confirmed = False
 # true if Monika has confirmed with player to leave r8 testing enabled
 
-default persistent._mas_r8_need_to_confirm_mode = False
+default persistent._mas_r8_need_to_confirm_testing = False
 # true if player just enabled r8 testing and we need to confirm 
-
-default persistent._mas_r8_checkbox_touched = False
-# true if player has touched the r8 checkbox
 
 default persistent._mas_pm_tested_r8 = False
 # true if the user has tested r8 (aka they are running r8 build)
@@ -23,31 +20,46 @@ default persistent._mas_pm_enabled_r8_testing = False
 default persistent._mas_pm_touched_r8_testing = False
 # true if player touched the r8 checkbox at all
 
+init 49 python in mas_r8_testing_ctx:
+
+    r8_checkbox_touched = False
+    # set when the r8 checkbox has been touched
+
 init 50 python in mas_r8_testing:
-    import renpy
+    import store
+    import store.mas_r8_testing_ctx as ctx
+    from store import MASEventList, mas_rmallEVL, persistent
 
     def _onclick_r8_checkbox():
         """
         Called when the r8 checkbox is toggled in some way.
         this is AFTER the testing mode is enabled/disabled
         """
-        if renpy.persistent._mas_r8_testing_enabled:
-            # r8 checkbox enabled
+        ctx.r8_checkbox_touched = True
+        persistent._mas_pm_touched_r8_testing = True
 
-            # TODO:
-            #   1 - set need_to_confirm to True
-            #   2 - push EV to confirm r8 testing
+        # only confirm with user if they just enabled r8 testnig and 
+        # they arent already confirmed for r8 testing
+        persistent._mas_r8_need_to_confirm_testing = (
+            persistent._mas_r8_testing_enabled and not persistent._mas_r8_testing_confirmed
+        )
 
-            pass
-            
-        else:
-            # r8 checkbox disabled
 
-            # TODO:
-            #   1 - clear EV for confirming (if was pushed)
-            #   2 - need_to_confirm to False
+    def _on_mas_game_menu_end(scope):
+        """
+        Called when the game menu is closed
+        """
+        # NOTE: this is here to avoid having to reset midloopeval skip
+        if persistent._mas_r8_need_to_confirm_testing:
+            # should immediately talk to the player about this
+            MASEventList.push("mas_r8_testing", skipeval=True, notify=True)
 
-            pass
+        elif ctx.r8_checkbox_touched and not persistent._mas_r8_testing_enabled:
+            # user touched the checkbox, but testing is not enabled, assume they dont want to test anymore
+            persistent._mas_r8_testing_confirmed = False
+
+        # clear checkbox touch status
+        ctx.r8_checkbox_touched = False
 
 
 init 5 python:
@@ -61,6 +73,8 @@ init 5 python:
     ))
 
 label mas_r8_testing:
+
+    m 1eua "TODO: wow r8"
 
     # TODO:
     # Case 1: user clicks checkbox for first time

@@ -290,6 +290,9 @@ init python:
         elif store.mas_settings.dark_mode_clicked:
             renpy.restart_interaction()
 
+        # r8 related things
+        store.mas_r8_testing._on_mas_game_menu_end(scope)
+
         # reset these vars so we don't run weird shit
         store.mas_settings.ui_changed = False
         store.mas_settings.dark_mode_clicked = False
